@@ -1,0 +1,38 @@
+__author__ = 'Tom Schaul, tom@idsia.ch'
+
+from pybrain.utilities import abstractMethod
+
+
+class Environment:
+    """ The general interface for whatever we would like to model, learn about, predict, or simply interact in. 
+        We can perform actions, and access (partial) observations. 
+    """       
+
+    def getSensors(self):
+        """ the currently visible state of the world (the observation may be 
+            stochastic - repeated calls returning different values)
+            @rtype: by default, this is assumed to be a numpy array of doubles
+            @note: This function is abstract and has to be implemented.
+        """
+        abstractMethod()
+                    
+    def performAction(self, action):
+        """ perform an action on the world that changes it's internal state (maybe stochastically) 
+            @param action: an action that should be executed in the Environment. 
+            @type action: by default, this is assumed to be a numpy array of doubles
+            @note: This function is abstract and has to be implemented.
+        """
+        abstractMethod()
+
+    def reset(self):
+        """ Most environments will implement this optional method that allows for reinitialization. 
+        """
+        
+    def getInDim(self):
+        """ the number of action values the environment accepts """
+        abstractMethod()
+
+    def getOutDim(self):
+        """ the number of sensor values the environment produces """
+        abstractMethod()
+

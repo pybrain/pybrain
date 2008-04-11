@@ -1,0 +1,533 @@
+import sys, time
+from scipy import sin, cos, pi, random
+import ode, xode.parser, xode.body, xode.geom
+
+from pybrain.rl.environments.graphical import GraphicalEnvironment
+from tools.configgrab import ConfigGrabber
+import sensors, actuators
+from renderer import ODERenderer
+
+class ODEEnvironment(GraphicalEnvironment):
+    """
+    Virtual simulation for rigid bodies. Uses ODE as a physics engine and OpenGL as graphics
+    interface to simulate and display arbitrary objects. Virtual worlds are defined through
+    an XML file in XODE format (see http://tanksoftware.com/xode/). This file can be loaded
+    into the world with the "loadXODE(...)" function. Use performAction(...) or step() to advance
+    the simulation by one step.
+    """  
+    # objects with names within one tuple can pass each other
+    passpairs = []
+    # define a verbosity level for selective debug output (0=none)
+    verbosity = 0
+
+    def __init__(self, render=True):
+        """ initializes the virtual world, variables, the frame rate and the callback functions."""
+        print "ODEEnvironment -- based on Open Dynamics Engine."
+        print "$Id: odeenvironment.py 415 2007-09-26 13:41:33Z sehnke $"
+        
+        # initialize base class
+        GraphicalEnvironment.__init__(self)
+        
+        # set renderer
+        if render:
+            self.setRenderer(ODERenderer())
+            self.getRenderer().setKeyboardCallback(self._keyfunc)
+        
+        # initialize attributes
+        self.resetAttributes()
+
+        # initialize the textures dictionary
+        self.textures = {}
+
+        # initialize sensor list
+        self.sensors = []    
+        
+        #initialize actuators list
+        self.actuators = []
+        
+        # joint sensor for actions
+        ## self._jointSensor = sensors.JointSensor('JointSensor');
+
+        # A joint group for the contact joints that are generated whenever two bodies collide
+        self.contactgroup = ode.JointGroup()
+         
+        self.dt = 0.01
+        self.stepsPerAction = 1
+        self.stepCounter = 0
+        
+
+    def resetAttributes(self):
+        """resets the class attributes to their default values"""
+        # initialize root node
+        self.root = None
+
+        # A list with (body, geom) tuples
+        self.body_geom = []
+
+    def reset(self):
+        """resets the model and all its parameters to their original values"""
+        self.loadXODE(self._currentXODEfile, reload=True) 
+        self.stepCounter = 0
+
+    def setGravity(self,g):
+        """set the world's gravity constant in negative y-direction"""
+        self.world.setGravity( (0,-g,0) ) 
+
+        
+    def _setWorldParameters(self):
+        """ sets parameters for ODE world object: gravity, error correction (ERP, default=0.2),
+        constraint force mixing (CFM, default=1e-5).  """
+        self.world.setGravity( (0,-9.81,0) ) 
+        self.world.setERP(0.2)
+        self.world.setCFM(1E-9)
+
+    def _create_box(self, space, density, lx, ly, lz):
+        """Create a box body and its corresponding geom."""
+        # Create body and mass
+        body = ode.Body(self.world)
+        M = ode.Mass()
+        M.setBox(density, lx, ly, lz)
+        body.setMass(M)
+        body.name = None
+        # Create a box geom for collision detection
+        geom = ode.GeomBox(space, lengths=(lx, ly, lz))
+        geom.setBody(body)
+        geom.name = None
+
+        return (body,geom)
+
+    def _create_sphere(self, space, density, radius):
+        """Create a sphere body and its corresponding geom."""
+        # Create body and mass
+        body = ode.Body(self.world)
+        M = ode.Mass()
+        M.setSphere(density, radius)
+        body.setMass(M)
+        body.name = None
+
+        # Create a sphere geom for collision detection
+        geom = ode.GeomSphere(space, radius)
+        geom.setBody(body)
+        geom.name = None
+
+        return (body,geom)
+
+    def drop_object(self):
+        """Drops a random object (box, sphere) into the scene."""
+        # choose between boxes and spheres
+        if random.uniform() > 0.5:
+          (body,geom) = self._create_sphere(self.space, 10, 0.4)
+        else:
+            (body,geom) = self._create_box(self.space, 10, 0.5,0.5,0.5)
+        # randomize position slightly
+        body.setPosition( (random.normal(0, 0.1), 3.0, random.normal(0, 0.1)) )
+        # body.setPosition( (0.0, 3.0, 0.0) )
+        # randomize orientation slightly
+        theta = random.uniform(0,2*pi)
+        ct = cos (theta)
+        st = sin (theta)
+        # rotate body and append to (body,geom) tuple list
+        # body.setRotation([ct, 0., -st, 0., 1., 0., st, 0., ct])
+        self.body_geom.append((body,geom))
+    
+    # -- sensor and actuator functions
+    def addSensor(self, sensor):
+        """ adds a sensor object to the list of sensors """
+        if not isinstance(sensor, sensors.Sensor):
+            raise TypeError("the given sensor is not an instance of class 'Sensor'.")
+        # add sensor to sensors list
+        self.sensors.append(sensor)
+        # connect sensor and give it the virtual world object
+        sensor._connect(self)  
+        
+    def addActuator(self, actuator):
+        """ adds a sensor object to the list of sensors """
+        if not isinstance(actuator, actuators.Actuator):
+            raise TypeError("the given actuator is not an instance of class 'Actuator'.")
+        # add sensor to sensors list
+        self.actuators.append(actuator)
+        # connect actuator and give it the virtual world object
+        actuator._connect(self)   
+    
+    def addTexture(self, name, texture):
+        """ adds a texture to the given ODE object name """
+        self.textures[name] = texture
+
+    def centerOn(self, name):
+        """ if set, keeps camera to the given ODE object name. """
+        try:
+            self.getRenderer().setCenterObj(self.root.namedChild(name).getODEObject())
+        except KeyError:
+            # name not found, unset centerObj
+            print "Warning: Cannot center on "+name
+            self.centerObj = None
+
+    def loadXODE(self, filename, reload=False):
+        """ loads an XODE file (xml format) and parses it. """
+        f = file(filename)
+        self._currentXODEfile = filename
+        p = xode.parser.Parser()
+        self.root = p.parseFile(f)
+        f.close()
+        try:
+            # filter all xode "world" objects from root, take only the first one
+            world = filter(lambda x: isinstance(x, xode.parser.World), self.root.getChildren())[0]
+        except IndexError:
+            # malicious format, no world tag found
+            print "no <world> tag found in " + filename + ". quitting."
+            sys.exit()
+        self.world = world.getODEObject()
+        self._setWorldParameters()
+        try:
+            # filter all xode "space" objects from world, take only the first one
+            space = filter(lambda x: isinstance(x, xode.parser.Space), world.getChildren())[0]
+        except IndexError:
+            # malicious format, no space tag found
+            print "no <space> tag found in " + filename + ". quitting."
+            sys.exit()
+        self.space = space.getODEObject()
+                
+        # load bodies and geoms for painting
+        self.body_geom = [] 
+        self._parseBodies(self.root)
+
+        if self.verbosity > 0:
+            print "-------[body/mass list]-----"
+            for (body,geom) in self.body_geom:
+                try:
+                    print body.name, body.getMass()
+                except AttributeError:
+                    print "<Nobody>"
+
+        # now parse the additional parameters at the end of the xode file
+        self.loadConfig(filename, reload)
+
+    
+    def loadConfig(self, filename, reload=False):
+        # parameters are given in (our own brand of) config-file syntax
+        self.config = ConfigGrabber(filename, sectionId="<!--odeenvironment parameters", delim=("<",">"))
+
+        # <passpairs>
+        self.passpairs = []
+        for passpairstring in self.config.getValue("passpairs")[:]:
+            self.passpairs.append(eval(passpairstring))
+        if self.verbosity > 0:
+            print "-------[pass tuples]--------"
+            print self.passpairs
+            print "----------------------------"
+
+        # <centerOn>
+        # set focus of camera to the first object specified in the section, if any
+        if self.hasRenderer():
+            try:
+                self.centerOn(self.config.getValue("centerOn")[0])
+            except IndexError:
+                pass
+
+        # <affixToEnvironment>
+        for jointName in self.config.getValue("affixToEnvironment")[:]:
+            try:
+                # find first object with that name
+                obj = self.root.namedChild(jointName).getODEObject()
+            except IndexError:
+                print "ERROR: Could not affix object '"+jointName+"' to environment!"
+                sys.exit(1)
+            if isinstance(obj, ode.Joint):
+                # if it is a joint, use this joint to fix to environment
+                obj.attach(obj.getBody(0), ode.environment)
+            elif isinstance(obj, ode.Body):
+                # if it is a body, create new joint and fix body to environment
+                j = ode.FixedJoint(self.world)
+                j.attach(obj, ode.environment)
+                j.setFixed()
+
+        if not reload:
+            # add the JointSensor as default
+            self.sensors = [] 
+            ## self.addSensor(self._jointSensor)
+            
+            # <sensors>
+            # expects a list of strings, each of which is the executable command to create a sensor object
+            # example: DistToPointSensor('legSensor', (0.0, 0.0, 5.0))
+            sens = self.config.getValue("sensors")[:]
+            for s in sens:
+                try:
+                    self.addSensor(eval('sensors.' + s))
+                except AttributeError:
+                    print dir(sensors)
+                    warnings.warn("Sensor name with name " + s + " not found. skipped.")
+        else:
+            for s in self.sensors:
+                s._connect(self)
+            for a in self.actuators:
+                a._connect(self)
+
+    def _parseBodies(self, node):
+        """ parses through the xode tree recursively and finds all bodies and geoms for drawing. """
+        # body (with nested geom)
+        if isinstance(node, xode.body.Body):
+            body = node.getODEObject()
+            body.name = nodename
+            try:
+                # filter all xode geom objects and take the first one
+                xgeom = filter(lambda x: isinstance(x, xode.geom.Geom), node.getChildren())[0]
+            except IndexError:
+                return() # no geom object found, skip this node
+            # get the real ode object
+            geom = xgeom.getODEObject()
+            # if geom doesn't have own name, use the name of its body
+            geom.name = node.name
+            self.body_geom.append((body, geom))
+        # geom on its own without body
+        elif isinstance(node, xode.geom.Geom):
+            try:
+                node.getFirstAncestor(ode.Body)
+            except xode.node.AncestorNotFoundError:
+                body = None;
+                geom = node.getODEObject()
+                geom.name = node.name
+                self.body_geom.append((body, geom))
+        elif isinstance(node, xode.joint.Joint):
+            joint = node.getODEObject()
+            if type(joint) == ode.UniversalJoint:
+                # insert an additional AMotor joint to read the angles from and to add torques
+                amotor = ode.AMotor(self.world)
+                amotor.attach(joint.getBody(0), joint.getBody(1))
+
+                amotor.setNumAxes(3)
+                amotor.setAxis(0, 0, joint.getAxis2())
+                amotor.setAxis(2, 0, joint.getAxis1())
+                amotor.setMode(ode.AMotorEuler)
+
+                xode_amotor = xode.joint.Joint(None, node.getParent())
+                xode_amotor.setODEObject(amotor)
+                # node.getParent().addChild(xode_amotor)
+
+            if type(joint) == ode.AMotor:
+                # do the euler angle calculations automatically (ref. ode manual)
+                joint.setMode(ode.AMotorEuler)
+            if type(joint) == ode.FixedJoint:
+                # prevent fixed joints from bouncing to center of first body
+                joint.setFixed()
+
+        # recursive call for all child nodes
+        for c in node.getChildren():
+            self._parseBodies(c)
+
+    def getSensors(self):
+        """ returns combined sensor data """
+        output = []
+        for s in self.sensors:
+            output.extend(s.getValues())
+        return output
+    
+    def getSensorNames(self):
+        return [s.name for s in self.sensors]
+
+    def getActuatorNames(self):
+        return [a.name for a in self.actuators]
+    
+    def getSensorByName(self, name):
+        try:
+            idx = self.getSensorNames().index(name)
+        except ValueError:
+            warnings.warn('sensor ' + name + ' is not in sensor list.')
+            return []
+            
+        startIdx = 0
+        for i in range(idx):
+            startIdx += self.sensors[i].getNumValues()
+        endIdx = startIdx + self.sensors[idx].getNumValues()
+        return self.getSensors()[startIdx:endIdx]        
+        
+    def getActionLength(self):
+        num = 0
+        for a in self.actuators:
+            num += a.getNumValues()
+        return num
+
+    def performAction(self, action):
+        """ sets the values for all actuators combined. """
+        pointer = 0
+        for a in self.actuators:
+            val = a.getNumValues()
+            a._update(action[pointer:pointer+val])
+            pointer += val
+        
+        for i in range(self.stepsPerAction):
+            self.step()
+
+    def getXODERoot(self):
+        return self.root
+
+
+    #--- callback functions ---#
+    def _near_callback(self, args, geom1, geom2):
+        """Callback function for the collide() method.
+        This function checks if the given geoms do collide and
+        creates contact joints if they do."""
+
+        # only check parse list, if objects have name
+        if geom1.name != None and geom2.name != None:
+            # Preliminary checking, only collide with certain objects
+            for p in self.passpairs:
+                g1 = False
+                g2 = False
+                for x in p:
+                    g1 = g1 or (geom1.name.find(x) != -1)
+                    g2 = g2 or (geom2.name.find(x) != -1)
+                if g1 and g2:
+                    return()
+
+        # Check if the objects do collide
+        contacts = ode.collide(geom1, geom2)
+
+        # Create contact joints
+        world,contactgroup = args
+        for c in contacts:
+            p = c.getContactGeomParams()
+            # parameters from Niko Wolf
+            c.setBounce(0.2)
+            c.setBounceVel(0.05)
+            c.setSoftERP(0.6)
+            c.setSoftCFM(0.00005)
+            c.setSlip1(0.02)
+            c.setSlip2(0.02)
+            c.setMu(10.0)
+            j = ode.ContactJoint(self.world, self.contactgroup, c)
+            j.name = None
+            j.attach(geom1.getBody(), geom2.getBody())
+
+    def getCurrentStep(self):
+        return self.stepCounter
+    
+    def step(self):
+        """ Here the ode physics is calculated by one step. """
+
+        # call additional callback functions for all kinds of tasks (e.g. printing)
+        self._printfunc()
+
+        # Detect collisions and create contact joints
+        self.space.collide((self.world, self.contactgroup), self._near_callback)
+        # Simulation step
+        self.world.step(float(self.dt))
+        # Remove all contact joints
+        self.contactgroup.empty() 
+
+        # update data for renderer if available
+        if self.hasRenderer():
+            self.getRenderer().updateData(self.body_geom)
+
+            # if capturing mode on, wait for renderer to save image
+            if self.renderer.getCaptureScreen():
+                self.renderer.waitScreenCapturing()
+                while self.renderer.isScreenCapturing():
+                    time.sleep(0.001)
+                    pass
+            
+        # update all sensors
+        for s in self.sensors:
+            s._update()
+            
+        # increase step counter
+        self.stepCounter += 1
+        return self.stepCounter
+            
+    def _keyfunc (self, c, x, y):
+        """ keyboard call-back function. """
+        if self.specialkeyfunc(c, x, y):
+            return
+        if c=='s':
+            self.renderer.setCaptureScreen(not self.renderer.getCaptureScreen())
+            print "Screen Capture: " + (self.renderer.getCaptureScreen() and "on" or "off")
+        # if c=='m':
+        #     self.mouseView = not self.mouseView
+        #     print "Mouse view mode: " + (self.mouseView and "on" or "off")
+        if c=='d':
+            self.drop_object()
+        if c in ['x', 'q']:
+            sys.exit()
+        if c == 'j':
+            print self.getSensors()
+        if c == 'r':
+            rvec = [random.random()*20.0-10.0 for x in range(self.getActionLength())]
+            self.performAction(rvec)
+        if c == 'f':
+            # add force in positive y direction to all objects
+            for o in [x[0] for x in self.body_geom]:
+                if o is not None:
+                    o.addForce((0, 0, -100))
+        if c == 'z':
+            # add same torque to all joints
+            rvec = [3] * self.getActionLength()
+            self.performAction(rvec)
+        if c == 'a':
+            # add same torque to all joints
+            rvec = [-3] * self.getActionLength()
+            self.performAction(rvec)
+        if c =='g':
+            # get current state
+            print self.getSensors()
+        if c =='n':
+            # get current state
+            self.reset()        
+
+    def _printfunc (self):
+        pass
+        # print self.root.namedChild('palm').getODEObject().getPosition()
+
+    def specialkeyfunc(self, c, x, y):
+        """Derived classes can implement extra functionality here"""
+        pass
+
+
+    #--- helper functions ---#
+    def _print_help(self):
+        """ prints out the keyboard shortcuts. """
+        print "s   -> toggle screen capture on/off"
+        print "d   -> drop an object"
+        print "f   -> lift all objects"
+        print "m   -> toggle mouse view (press button to zoom)"
+        print "r   -> random torque at all joints"
+        print "a/z -> negative/positive torque to all joints"
+        print "g   -> print current state"
+        print "n   -> reset environment"
+        self.specialfunctionDoc()
+        print "x,q -> exit program"
+
+    def specialfunctionDoc(self):
+        """Derived classes can implement extra functionality here"""
+        pass
+
+
+#--- main function, if called directly ---
+
+if __name__ == '__main__' :
+    """
+    little example on how to use the virtual world.
+    Synopsis: python odeenvironment.py [modelname]
+    Parameters: modelname = base name of the xode file to use (default: crawler)
+    """
+
+    print "ODEEnvironment - test program"
+    if len(sys.argv) > 1:
+        modelName = sys.argv[1]
+    else:
+        modelName = "johnnie"
+
+    # initialize world and renderer and attach renderer to world
+    w = ODEEnvironment() 
+    # load model file
+    w.loadXODE("models/"+modelName+".xode")             # load XML file that describes the world
+    
+    w.addSensor(sensors.JointSensor())
+    w.addActuator(actuators.JointActuator())
+    
+    w.getRenderer().setFrameRate(30) 
+    w.getRenderer().start()
+    print "action vector length: ", w.getActionLength()
+    
+    # start simulating the world
+    while True:
+        w.step() 
+    

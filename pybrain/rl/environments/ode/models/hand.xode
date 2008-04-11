@@ -1,0 +1,430 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<xode version="1.0r23" name="crawler"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://tanksoftware.com/xode/1.0r23/xode.xsd">
+
+<world>
+	<space>
+		<body name="palm">
+			<transform>  
+				<position x="0" y="0" z="0"/>    
+			</transform>  
+			<mass>  
+				<mass_shape density="30">  
+					<box sizex="1" sizey="0.2" sizez="1"/>  
+				</mass_shape>  
+			</mass>  
+			<geom name="palm">  
+				<box sizex="1" sizey="0.2" sizez="1"/>  
+			</geom>  
+		</body>  
+		<body name="pressure">
+			<transform>  
+				<position x="0" y="0.1" z="0"/>    
+			</transform>  
+			<mass>  
+				<mass_shape density="30">  
+					<box sizex="0.8" sizey="0.05" sizez="0.8"/>  
+				</mass_shape>  
+			</mass>  
+			<geom name="pressure">  
+				<box sizex="0.8" sizey="0.05" sizez="0.8"/>  
+			</geom>  
+		</body>  
+		<joint name="palm_pressure">   
+			<link1 body="palm"/>    
+			<link2 body="pressure"/>    
+			<slider>
+				<axis x="0" y="1" z="0" HiStop="0.0" LowStop="-0.05" StopERP="0.9999" StopCFM="0.0002" />
+			</slider>		
+		</joint>    
+		
+		<body name="finger0_link0"> 
+			<transform> 
+				<rotation> 
+					<euler x="0" y="90" z="0" aformat="degrees"/> 
+				</rotation> 
+				<position x="-0.875" y="0" z="-0.25"/> 
+			</transform> 
+			<mass> 
+				<mass_shape density="5"> 
+					<cappedCylinder radius="0.1" length="0.75"/> 
+				</mass_shape> 
+			</mass> 
+			<geom name="finger0_link0"> 
+				<cappedCylinder radius="0.1" length="0.75"/> 
+			</geom> 
+		</body> 
+		<body name="finger0_link1">  
+			<transform>  
+				<position x="-1.45" y="0" z="-0.25"/>  
+				<rotation>  
+					<euler x="0" y="90" z="0" aformat="degrees"/>  
+				</rotation>  
+			</transform>  
+			<mass>  
+				<mass_shape density="5">  
+					<cappedCylinder radius="0.1" length="0.4"/>  
+				</mass_shape>  
+			</mass>  
+			<geom name="finger0_link1">  
+				<cappedCylinder radius="0.1" length="0.4"/>  
+			</geom>  
+		</body>  
+		<body name="finger0_link2">  
+			<transform>  
+				<position x="-1.795" y="0" z="-0.25"/>  
+				<rotation>  
+					<euler x="0" y="90" z="0" aformat="degrees"/>  
+				</rotation>  
+			</transform>  
+			<mass>  
+				<mass_shape density="5">  
+					<cappedCylinder radius="0.1" length="0.29"/>  
+				</mass_shape>  
+			</mass>  
+			<geom name="finger0_link2">  
+				<cappedCylinder radius="0.1" length="0.29"/>  
+			</geom>  
+		</body>  
+		<body name="finger0_link3">  
+			<transform>  
+				<position x="-1.9" y="0" z="-0.25"/>  
+			</transform>  
+			<mass>  
+				<mass_shape density="5">  
+					<sphere radius="0.1"/>  
+				</mass_shape>  
+			</mass>  
+			<geom name="finger0_link3">  
+				<sphere radius="0.1"/>  
+			</geom>  
+		</body>  
+		 
+		<joint name="finger0_joint0">  
+			<link1 body="palm"/>   
+			<link2 body="finger0_link0"/>   
+			<hinge>   
+				<anchor x="-0.5" y="0" z="-0.25"/>   
+				<axis x="0" y="0" z="1" FMax="0.5" LowStop="0" HiStop="1.5"/>   
+			</hinge>   
+		</joint>   
+		<joint name="finger0_joint1">  
+			<link1 body="finger0_link0"/>   
+			<link2 body="finger0_link1"/>   
+			<hinge>   
+				<anchor x="-1.25" y="0" z="-0.25"/>   
+				<axis x="0" y="0" z="1" FMax="0.25" LowStop="0" HiStop="1.5"/>   
+			</hinge>   
+		</joint>   
+		<joint name="finger0_joint2">   
+			<link1 body="finger0_link1"/>    
+			<link2 body="finger0_link2"/>    
+			<hinge>    
+				<anchor x="-1.65" y="0" z="-0.25"/>    
+				<axis x="0" y="0" z="1" FMax="0.1" LowStop="0" HiStop="1.5"/>    
+			</hinge>    
+		</joint>    
+		<joint name="finger0_joint3">   
+			<link1 body="finger0_link2"/>    
+			<link2 body="finger0_link3"/>    
+			<slider>
+				<axis x="1" y="0" z="0" HiStop="0.0" LowStop="-0.05" StopERP="0.9999" StopCFM="0.0002" />
+			</slider>		
+		</joint>    
+		 
+		<body name="finger1_link0">  
+			<transform>  
+				<position x="-0.375" y="0" z="0.875"/>  
+			</transform>  
+			<mass>  
+				<mass_shape density="5">  
+					<cappedCylinder radius="0.1" length="0.75"/>  
+				</mass_shape>  
+			</mass>  
+			<geom name="finger1_link0">  
+				<cappedCylinder radius="0.1" length="0.75"/>  
+			</geom>  
+		</body>  
+		<body name="finger1_link1">  
+			<transform>  
+				<position x="-0.375" y="0" z="1.45"/>  
+			</transform>  
+			<mass>  
+				<mass_shape density="5">  
+					<cappedCylinder radius="0.1" length="0.4"/>  
+				</mass_shape>  
+			</mass>  
+			<geom name="finger1_link1">  
+				<cappedCylinder radius="0.1" length="0.4"/>  
+			</geom>  
+		</body>  
+		<body name="finger1_link2">  
+			<transform>  
+				<position x="-0.375" y="0" z="1.795"/>   
+			</transform>  
+			<mass>  
+				<mass_shape density="5">  
+					<cappedCylinder radius="0.1" length="0.29"/>  
+				</mass_shape>  
+			</mass>  
+			<geom name="finger1_link2">  
+				<cappedCylinder radius="0.1" length="0.29"/>  
+			</geom>  
+		</body>  
+		<body name="finger1_link3">  
+			<transform>  
+				<position x="-0.375" y="0" z="1.90"/>  
+			</transform>  
+			<mass>  
+				<mass_shape density="5">  
+					<sphere radius="0.1"/>  
+				</mass_shape>  
+			</mass>  
+			<geom name="finger1_link3">  
+				<sphere radius="0.1"/>  
+			</geom>  
+		</body>  
+		 
+		<joint name="finger1_joint0">  
+			<link1 body="palm"/>    
+			<link2 body="finger1_link0"/>    
+			<hinge>    
+				<anchor x="-0.375" y="0" z="0.5"/>    
+				<axis x="1" y="0" z="0" FMax="0.50" LowStop="0" HiStop="1.5"/>    
+			</hinge>    
+		</joint>    
+		<joint name="finger1_joint1">  
+			<link1 body="finger1_link0"/>    
+			<link2 body="finger1_link1"/>    
+			<hinge>    
+				<anchor x="-0.375" y="0" z="1.25"/>    
+				<axis x="1" y="0" z="0" FMax="0.25"  LowStop="0" HiStop="1.5"/>    
+			</hinge>    
+		</joint>    
+		<joint name="finger1_joint2">   
+			<link1 body="finger1_link1"/>     
+			<link2 body="finger1_link2"/>     
+			<hinge>     
+				<anchor x="-0.375" y="0" z="1.65"/>     
+				<axis x="1" y="0" z="0" FMax="0.1" LowStop="0" HiStop="1.5"/>     
+			</hinge>     
+		</joint>     
+		<joint name="finger1_joint3">   
+			<link1 body="finger1_link2"/>    
+			<link2 body="finger1_link3"/>    
+			<slider>
+				<axis x="0" y="0" z="1" HiStop="0.0" LowStop="-0.05" StopERP="0.9999" StopCFM="0.0002" />
+			</slider>		
+		</joint>
+				  
+		<body name="finger2_link0">   
+			<transform>   
+				<position x="0" y="0" z="0.875"/>    
+			</transform>   
+			<mass>   
+				<mass_shape density="5">   
+					<cappedCylinder radius="0.1" length="0.75"/>   
+				</mass_shape>   
+			</mass>   
+			<geom name="finger2_link0">   
+				<cappedCylinder radius="0.1" length="0.75"/>   
+			</geom>   
+		</body>   
+		<body name="finger2_link1">   
+			<transform>   
+				<position x="0" y="0" z="1.45"/>    
+			</transform>   
+			<mass>   
+				<mass_shape density="5">   
+					<cappedCylinder radius="0.1" length="0.4"/>   
+				</mass_shape>   
+			</mass>   
+			<geom name="finger2_link1">   
+				<cappedCylinder radius="0.1" length="0.4"/>   
+			</geom>   
+		</body>   
+		<body name="finger2_link2">   
+			<transform>   
+				<position x="0" y="0" z="1.795"/>   
+			</transform>   
+			<mass>   
+				<mass_shape density="5">   
+					<cappedCylinder radius="0.1" length="0.29"/>   
+				</mass_shape>   
+			</mass>   
+			<geom name="finger2_link2">   
+				<cappedCylinder radius="0.1" length="0.29"/>   
+			</geom>   
+		</body>   
+		<body name="finger2_link3">  
+			<transform>  
+				<position x="0" y="0" z="1.90"/>  
+			</transform>  
+			<mass>  
+				<mass_shape density="5">  
+					<sphere radius="0.1"/>  
+				</mass_shape>  
+			</mass>  
+			<geom name="finger2_link3">  
+				<sphere radius="0.1"/>  
+			</geom>  
+		</body>  
+		  
+		<joint name="finger2_joint0">  
+			<link1 body="palm"/>    
+			<link2 body="finger2_link0"/>    
+			<hinge>    
+				<anchor x="0" y="0" z="0.5"/>    
+				<axis x="1" y="0" z="0" FMax="0.5" LowStop="0" HiStop="1.5"/>    
+			</hinge>    
+		</joint>    
+		<joint name="finger2_joint1">  
+			<link1 body="finger2_link0"/>    
+			<link2 body="finger2_link1"/>    
+			<hinge>    
+				<anchor x="0" y="0" z="1.25"/>    
+				<axis x="1" y="0" z="0" FMax="0.25" LowStop="0" HiStop="1.5"/>    
+			</hinge>    
+		</joint>    
+		<joint name="finger2_joint2">   
+			<link1 body="finger2_link1"/>     
+			<link2 body="finger2_link2"/>     
+			<hinge>     
+				<anchor x="0" y="0" z="1.65"/>     
+				<axis x="1" y="0" z="0" FMax="0.1" LowStop="0" HiStop="1.5"/>     
+			</hinge>     
+		</joint>     
+		<joint name="finger2_joint3">   
+			<link1 body="finger2_link2"/>    
+			<link2 body="finger2_link3"/>    
+			<slider>
+				<axis x="0" y="0" z="1" HiStop="0.0" LowStop="-0.05" StopERP="0.9999" StopCFM="0.0002" />
+			</slider>		
+		</joint>
+		 
+		<body name="finger3_link0">  
+			<transform>  
+				<position x="0.375" y="0" z="0.875"/>  
+			</transform>  
+			<mass>  
+				<mass_shape density="5">  
+					<cappedCylinder radius="0.1" length="0.75"/>  
+				</mass_shape>  
+			</mass>  
+			<geom name="finger3_link0">  
+				<cappedCylinder radius="0.1" length="0.75"/>  
+			</geom>  
+		</body>  
+		<body name="finger3_link1">  
+			<transform>  
+				<position x="0.375" y="0" z="1.45"/>   
+			</transform>  
+			<mass>  
+				<mass_shape density="5">  
+					<cappedCylinder radius="0.1" length="0.4"/>  
+				</mass_shape>  
+			</mass>  
+			<geom name="finger3_link1">  
+				<cappedCylinder radius="0.1" length="0.4"/>  
+			</geom>  
+		</body>  
+		<body name="finger3_link2">  
+			<transform>  
+				<position x="0.375" y="0" z="1.795"/>  
+			</transform>  
+			<mass>  
+				<mass_shape density="5">  
+					<cappedCylinder radius="0.1" length="0.29"/>  
+				</mass_shape>  
+			</mass>  
+			<geom name="finger3_link2">  
+				<cappedCylinder radius="0.1" length="0.29"/>  
+			</geom>  
+		</body>  
+		<body name="finger3_link3">  
+			<transform>  
+				<position x="0.375" y="0" z="1.90"/>  
+			</transform>  
+			<mass>  
+				<mass_shape density="5">  
+					<sphere radius="0.1"/>  
+				</mass_shape>  
+			</mass>  
+			<geom name="finger3_link3">  
+				<sphere radius="0.1"/>  
+			</geom>  
+		</body>  
+		 
+		<joint name="finger3_joint0">  
+			<link1 body="palm"/>   
+			<link2 body="finger3_link0"/>   
+			<hinge>   
+				<anchor x="0.375" y="0" z="0.5"/>   
+				<axis x="1" y="0" z="0" FMax="0.5" LowStop="0" HiStop="1.5"/>   
+			</hinge>   
+		</joint>   
+		<joint name="finger3_joint1">  
+			<link1 body="finger3_link0"/>   
+			<link2 body="finger3_link1"/>   
+			<hinge>   
+				<anchor x="0.375" y="0" z="1.25"/>   
+				<axis x="1" y="0" z="0" FMax="0.25" LowStop="0" HiStop="1.5"/>   
+			</hinge>   
+		</joint>   
+		<joint name="finger3_joint2">   
+			<link1 body="finger3_link1"/>    
+			<link2 body="finger3_link2"/>    
+			<hinge>    
+				<anchor x="0.375" y="0" z="1.65"/>    
+				<axis x="1" y="0" z="0" FMax="0.1" LowStop="0" HiStop="1.5"/>    
+			</hinge>    
+		</joint>    
+		<joint name="finger3_joint3">   
+			<link1 body="finger3_link2"/>    
+			<link2 body="finger3_link3"/>    
+			<slider>
+				<axis x="0" y="0" z="1" HiStop="0.0" LowStop="-0.05" StopERP="0.9999" StopCFM="0.0002" />
+			</slider>		
+		</joint>
+		
+		<geom name="floor">
+			<plane
+				a="0"
+				b="1"
+				c="0"
+				d="-0.1"
+			/>
+		</geom>			
+		
+	</space>
+</world>
+
+</xode>
+<!--odeenvironment parameters
+<passpairs>
+('palm', 'pressure')
+('palm', 'finger0_link0')
+('palm', 'finger1_link0')
+('palm', 'finger2_link0')
+('palm', 'finger3_link0')
+('finger0_link0', 'finger0_link1')
+('finger0_link1', 'finger0_link2')
+('finger0_link2', 'finger0_link3')
+('finger1_link0', 'finger1_link1')
+('finger1_link1', 'finger1_link2')
+('finger1_link2', 'finger1_link3')
+('finger2_link0', 'finger2_link1')
+('finger2_link1', 'finger2_link2')
+('finger2_link2', 'finger2_link3')
+('finger3_link0', 'finger3_link1')
+('finger3_link1', 'finger3_link2')
+('finger3_link2', 'finger3_link3')
+<affixToEnvironment>
+finger0_link3
+<sensors>
+SpecificJointSensor(['finger1_joint1', 'finger1_joint2', 'finger2_joint1', 'finger2_joint2'], 'fingers')
+<centerOn>
+palm
+<end>
+-->
+

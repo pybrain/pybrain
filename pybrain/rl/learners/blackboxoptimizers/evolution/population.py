@@ -1,0 +1,113 @@
+
+__author__ = 'Michael Isik'
+
+
+import collections
+
+
+class Population:
+    """ Abstract template for a minimal Population.
+        Implement just the methods you need.
+    """
+    def __init__(self):pass
+    def getIndividuals(self):
+        """ Should return a shallow copy of the individuals container, so that
+            individuals can be manipulated, but not the set of individuals itself.
+            For removing or appending individuals to the population, use methods
+            like removeIndividual() or addIndividual().
+        """
+        raise NotImplementedError()
+
+    def addIndividual(self, individual):
+        """ Should add an individual to the individual container.
+        """
+        raise NotImplementedError()
+
+    def addIndividuals(self, individuals):
+        """ Should add a set of individuals.
+        """
+        raise NotImplementedError()
+
+    def removeIndividual(self, individual):
+        """ Should remove an individual from the individual container.
+        """
+        raise NotImplementedError()
+
+    def removeIndividuals(self, individuals):
+        """ Should remove a set of individuals.
+        """
+        raise NotImplementedError()
+
+    def setIndividualFitness(self, individual, fitness):
+        """ Should associate the fitness value to the specified individual. 
+        """
+        raise NotImplementedError()
+
+    def getIndividualFitness(self, individual):
+        """ Should return the associated fitness value of the specified individual. 
+        """
+        raise NotImplementedError()
+
+
+class SimplePopulation(Population):
+    """ A simple implementation of the abstract Population class.
+        Sets are used as individual container. The fitness values are
+        stored in a separate dictionary, which maps individuals to fitness values.
+        For descriptions of the methods please refer to the Population documentation.
+    """
+    def __init__(self):
+        self._individuals = set()
+        self._fitness = collections.defaultdict( lambda: 0. )
+
+    def getIndividuals(self):
+        return self._individuals.copy()
+
+    def addIndividual(self, individual):
+        self._individuals.add(individual)
+
+    def addIndividuals(self, individuals):
+        self._individuals = self._individuals.union(set(individuals))
+
+    def removeIndividual(self, individual):
+        self._individuals.discard(individual)
+
+    def removeIndividuals(self, individuals):
+        self._individuals.difference_update(set(individuals))
+
+
+    def setIndividualFitness(self, individual, fitness):
+        self._fitness[individual] = fitness
+
+    def getIndividualFitness(self, individual):
+        assert self._fitness.has_key(individual)
+        return self._fitness[individual]
+
+
+    def clearFitness(self):
+        """ Clears all stored fitness values """
+        self._fitness.clear()
+
+    def getFitnessMap(self):
+        """ Returns the fitness dictionary """
+        return copy( self._fitness )
+
+    def getBestNIndividuals(self, n):
+        """ Returns the n individuals with the highest fitness ranking """
+        return set( self.getSortedIndividualList()[:n] )
+
+    def getWorstNIndividuals(self, n):
+        """ Returns the n individuals with the lowest fitness ranking """
+        return set( self.getSortedIndividualList()[-n:] )
+
+
+    def getSortedIndividualList(self):
+        """ Returns a sorted list of all individuals with descending fitness values. """
+        fitness = self._fitness
+        return sorted( fitness.iterkeys(), key=lambda(k): -fitness[k] )
+
+
+    def getIndividualsN(self):
+        """ Returns the number of individuals inside the population """
+        return len(self._individuals)
+
+

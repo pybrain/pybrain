@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xode version="1.0r23" name="crawler"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://tanksoftware.com/xode/1.0r23/xode.xsd">
+
+	<world>
+	
+		<space>			
+			<body name="leg1">
+				<transform>
+					<position x="2" y="0" z="0" />
+				</transform>
+				<geom name="boxGeom">
+					<box
+						sizex="2"
+						sizey="0.2"
+						sizez="1"
+					/>
+				</geom>
+				<mass>
+					<mass_shape density="10"> 
+						<box
+							sizex="2"
+							sizey="0.2"
+							sizez="1"
+						/>
+					</mass_shape>
+				</mass>
+			</body>
+			<body name="leg2">
+				<transform>
+					<position x="4" y="0" z="0" />
+				</transform>
+				<geom name="boxGeom">
+					<box
+						sizex="2"
+						sizey="0.2"
+						sizez="1"
+					/>
+				</geom>
+				<mass>
+					<mass_shape density="10"> 
+						<box
+							sizex="2"
+							sizey="0.2"
+							sizez="1"
+						/>
+					</mass_shape>
+				</mass>
+			</body>
+			<body name="leg3">
+				<transform>
+					<position x="-2" y="0" z="0" />
+				</transform>
+				<geom name="boxGeom">
+					<box
+						sizex="2"
+						sizey="0.2"
+						sizez="1"
+					/>
+				</geom>
+				<mass>
+					<mass_shape density="10"> 
+						<box
+							sizex="2"
+							sizey="0.2"
+							sizez="1"
+						/>
+					</mass_shape>
+				</mass>
+			</body>
+			<body name="leg4">
+				<transform>
+					<position x="-4" y="0" z="0" />
+				</transform>
+				<geom name="boxGeom">
+					<box
+						sizex="2"
+						sizey="0.2"
+						sizez="1"
+					/>
+				</geom>
+				<mass>
+					<mass_shape density="10"> 
+						<box
+							sizex="2"
+							sizey="0.2"
+							sizez="1"
+						/>
+					</mass_shape>
+				</mass>
+			</body>
+				
+			<body name="body">
+				<transform>
+					<position x="0" y="0" z="0" />
+				</transform>
+				
+				<geom name="boxGeom">
+					<box
+						sizex="2"
+						sizey="1"
+						sizez="2"
+					/>
+				</geom>
+				<mass>
+					<mass_shape density="10"> 
+						<box
+							sizex="2"
+							sizey="1"
+							sizez="2"
+						/>
+					</mass_shape>
+				</mass>
+			</body>
+					
+			<joint>
+				<link1 body="body" />
+				<link2 body="leg1" />
+				<hinge>
+					<anchor x="1" y="0" z="0" absolute="false" />
+					<axis 
+						x="0" y="0" z="1"
+						FMax="400"
+					/>
+				</hinge>		
+			</joint>
+
+			<joint>
+				<link1 body="leg1" />
+				<link2 body="leg2" />
+				<hinge>
+					<anchor x="3" y="0" z="0" absolute="false" />
+					<axis 
+						x="0" y="0" z="1"
+						FMax="400"
+					/>
+				</hinge>		
+			</joint>
+
+			<joint>
+				<link1 body="body" />
+				<link2 body="leg3" />
+				<hinge>
+					<anchor x="-1" y="0" z="0" absolute="false" />
+					<axis 
+						x="0" y="0" z="1"
+						FMax="400"
+					/>
+				</hinge>		
+			</joint>
+
+			<joint>
+				<link1 body="leg3" />
+				<link2 body="leg4" />
+				<hinge>
+					<anchor x="-3" y="0" z="0" absolute="false" />
+					<axis 
+						x="0" y="0" z="1"
+						FMax="400"
+					/>
+				</hinge>		
+			</joint>
+
+
+			<geom name="floor">		
+				<plane
+					a="0"
+					b="10"
+					c="0"
+					d="-5"
+				/>
+			</geom>			
+		</space>
+	</world>
+</xode>
+<!--odeenvironment parameters
+<passpairs>
+('body','leg1', 'leg3')
+('leg1', 'leg2')
+('leg3', 'leg4')
+<centerOn>
+body
+<end>
+-->

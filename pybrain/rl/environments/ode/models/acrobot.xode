@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xode version="1.0r23" name="acrobot"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://tanksoftware.com/xode/1.0r23/xode.xsd">
+
+    <world>
+        <space>         
+
+            <body name="bar">
+                <transform>
+                    <position x="0" y="0" z="0"/>
+                </transform>
+                <mass>
+                    <mass_shape density="5">
+                            <cappedCylinder length="5" radius="0.1"/>
+                    </mass_shape>
+                </mass>
+                <geom>
+                    <cappedCylinder length="5" radius="0.1"/>
+                </geom>  
+            </body> 
+
+
+            <body name="leg1">
+                <transform>
+                    <position x="0" y="-1" z="0" />
+                </transform>
+                <geom name="boxGeom">
+                    <box
+                        sizex="0.2"
+                        sizey="2"
+                        sizez="0.2"
+                    />
+                </geom>
+                <mass>
+                    <mass_shape density="1"> 
+                        <box
+                            sizex="2"
+                            sizey="0.2"
+                            sizez="0.2"
+                        />
+                    </mass_shape>
+                </mass>
+            </body>
+            
+            <joint name="bar_fix">
+                <link1 body="bar" />
+                <link2 body="leg1" />
+                <fixed>
+                </fixed>        
+            </joint>
+            
+            
+            <joint name="bar_joint">
+                <link1 body="bar" />
+                <link2 body="leg1" />
+                <hinge>
+                    <anchor x="0" y="0" z="0" absolute="false" />
+                    <axis x="0" y="0" z="1" FMax="0.05" />
+                </hinge>        
+            </joint>
+                   
+
+            <geom name="floor">     
+                <plane
+                    a="0"
+                    b="1"
+                    c="0"
+                    d="-10"
+                />
+            </geom>         
+        </space>
+    </world>
+</xode>
+<!--odeenvironment parameters
+<passpairs>
+['bar','leg1']
+<centerOn>
+bar
+<affixToEnvironment>
+bar_fix
+<end>
+-->

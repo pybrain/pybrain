@@ -1,0 +1,391 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xode version="1.0r23" name="../models/johnnie"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://tanksoftware.com/xode/1.0r23/xode.xsd">
+
+<world>
+	<space>
+		<body name="palm">
+			<transform>
+				<position y="0" x="0" z="0"/>
+			</transform>
+			<mass>
+				<mass_shape density="0.135760517799">
+					<box sizex="4.12" sizez="2" sizey="3.0"/>
+				</mass_shape>
+			</mass>
+			<geom>
+				<box sizex="4.12" sizez="2" sizey="3.0"/>
+			</geom>
+		</body>
+		<body name="neck">
+			<transform>
+				<position y="2.8" x="0" z="0"/>
+				<rotation>
+					<euler y="0" x="90" aformat="degrees" z="0"/>
+				</rotation>
+			</transform>
+			<mass>
+				<mass_shape density="0.0245641069812">
+					<cappedCylinder length="5.6" radius="0.25"/>
+				</mass_shape>
+			</mass>
+			<geom>
+				<cappedCylinder length="5.6" radius="0.25"/>
+			</geom>
+		</body>
+		<body name="head">
+			<transform>
+				<position y="4.0" x="0" z="0"/>
+			</transform>
+			<mass>
+				<mass_shape density="0.0185185185185">
+					<box sizex="3.0" sizez="1.5" sizey="1.2"/>
+				</mass_shape>
+			</mass>
+			<geom>
+				<box sizex="3.0" sizez="1.5" sizey="1.2"/>
+			</geom>
+		</body>
+		<body name="arm_left">
+			<transform>
+				<position y="-2.89" x="2.06" z="0"/>
+				<rotation>
+					<euler y="0" x="90" aformat="degrees" z="0"/>
+				</rotation>
+			</transform>
+			<mass>
+				<mass_shape density="0.444525373447">
+					<cappedCylinder length="7.5" radius="0.25"/>
+				</mass_shape>
+			</mass>
+			<geom>
+				<cappedCylinder length="7.5" radius="0.25"/>
+			</geom>
+		</body>
+		<body name="arm_right">
+			<transform>
+				<position y="-2.89" x="-2.06" z="0"/>
+				<rotation>
+					<euler y="0" x="90" aformat="degrees" z="0"/>
+				</rotation>
+			</transform>
+			<mass>
+				<mass_shape density="0.444525373447">
+					<cappedCylinder length="7.5" radius="0.25"/>
+				</mass_shape>
+			</mass>
+			<geom>
+				<cappedCylinder length="7.5" radius="0.25"/>
+			</geom>
+		</body>
+		<body name="hip">
+			<transform>
+				<position y="-1.6" x="0" z="0"/>
+				<rotation>
+					<euler y="0" x="90" aformat="degrees" z="0"/>
+				</rotation>
+			</transform>
+			<mass>
+				<mass_shape density="0.0878306560526">
+					<cappedCylinder length="3.2" radius="0.25"/>
+				</mass_shape>
+			</mass>
+			<geom>
+				<cappedCylinder length="3.2" radius="0.25"/>
+			</geom>
+		</body>
+		<body name="pelvis">
+			<transform>
+				<position y="-3.2" x="0" z="0"/>
+				<rotation>
+					<euler y="90" x="0" aformat="degrees" z="0"/>
+				</rotation>
+			</transform>
+			<mass>
+				<mass_shape density="0.641969518598">
+					<cappedCylinder length="2.4" radius="0.25"/>
+				</mass_shape>
+			</mass>
+			<geom>
+				<cappedCylinder length="2.4" radius="0.25"/>
+			</geom>
+		</body>
+		<body name="pelLeft">
+			<transform>
+				<position y="-3.6" x="1.2" z="0"/>
+				<rotation>
+					<euler y="0" x="90" aformat="degrees" z="0"/>
+				</rotation>
+			</transform>
+			<mass>
+				<mass_shape density="8.52627629487">
+					<cappedCylinder length="0.8" radius="0.25"/>
+				</mass_shape>
+			</mass>
+			<geom>
+				<cappedCylinder length="0.8" radius="0.25"/>
+			</geom>
+		</body>
+		<body name="pelRight">
+			<transform>
+				<position y="-3.6" x="-1.2" z="0"/>
+				<rotation>
+					<euler y="0" x="90" aformat="degrees" z="0"/>
+				</rotation>
+			</transform>
+			<mass>
+				<mass_shape density="8.52627629487">
+					<cappedCylinder length="0.8" radius="0.25"/>
+				</mass_shape>
+			</mass>
+			<geom>
+				<cappedCylinder length="0.8" radius="0.25"/>
+			</geom>
+		</body>
+		<body name="tibiaLeft">
+			<transform>
+				<position y="-6.2" x="1.2" z="0"/>
+				<rotation>
+					<euler y="0" x="90" aformat="degrees" z="0"/>
+				</rotation>
+			</transform>
+			<mass>
+				<mass_shape density="1.60588003558">
+					<cappedCylinder length="4.4" radius="0.25"/>
+				</mass_shape>
+			</mass>
+			<geom>
+				<cappedCylinder length="4.4" radius="0.25"/>
+			</geom>
+		</body>
+		<body name="tibiaRight">
+			<transform>
+				<position y="-6.2" x="-1.2" z="0"/>
+				<rotation>
+					<euler y="0" x="90" aformat="degrees" z="0"/>
+				</rotation>
+			</transform>
+			<mass>
+				<mass_shape density="1.60588003558">
+					<cappedCylinder length="4.4" radius="0.25"/>
+				</mass_shape>
+			</mass>
+			<geom>
+				<cappedCylinder length="4.4" radius="0.25"/>
+			</geom>
+		</body>
+		<body name="sheenLeft">
+			<transform>
+				<position y="-10.3" x="1.2" z="0"/>
+				<rotation>
+					<euler y="0" x="90" aformat="degrees" z="0"/>
+				</rotation>
+			</transform>
+			<mass>
+				<mass_shape density="1.21779403988">
+					<cappedCylinder length="3.8" radius="0.25"/>
+				</mass_shape>
+			</mass>
+			<geom>
+				<cappedCylinder length="3.8" radius="0.25"/>
+			</geom>
+		</body>
+		<body name="sheenRight">
+			<transform>
+				<position y="-10.3" x="-1.2" z="0"/>
+				<rotation>
+					<euler y="0" x="90" aformat="degrees" z="0"/>
+				</rotation>
+			</transform>
+			<mass>
+				<mass_shape density="1.21779403988">
+					<cappedCylinder length="3.8" radius="0.25"/>
+				</mass_shape>
+			</mass>
+			<geom>
+				<cappedCylinder length="3.8" radius="0.25"/>
+			</geom>
+		</body>
+		<body name="footLeft">
+			<transform>
+				<position y="-12.2" x="1.2" z="0.75"/>
+			</transform>
+			<mass>
+				<mass_shape density="0.78715034965">
+					<box sizex="2.2" sizez="2.6" sizey="0.4"/>
+				</mass_shape>
+			</mass>
+			<geom>
+				<box sizex="2.2" sizez="2.6" sizey="0.4"/>
+			</geom>
+		</body>
+		<body name="footRight">
+			<transform>
+				<position y="-12.2" x="-1.2" z="0.75"/>
+			</transform>
+			<mass>
+				<mass_shape density="0.78715034965">
+					<box sizex="2.2" sizez="2.6" sizey="0.4"/>
+				</mass_shape>
+			</mass>
+			<geom>
+				<box sizex="2.2" sizez="2.6" sizey="0.4"/>
+			</geom>
+		</body>
+		<joint name="palm_neck">
+			<link1 body="palm"/>
+			<link2 body="neck"/>
+			<fixed>
+			</fixed>
+		</joint>
+		<joint name="neck_head">
+			<link1 body="neck"/>
+			<link2 body="head"/>
+			<fixed>
+			</fixed>
+		</joint>
+		<joint name="palm_arm_left">
+			<link1 body="palm"/>
+			<link2 body="arm_left"/>
+			<hinge>
+				<axis LowStop="-0.5" y="0" x="1" z="0" HiStop="1.0"/>
+				<anchor y="0.86" x="2.06" z="0" absolute="true"/>
+			</hinge>
+		</joint>
+		<joint name="palm_arm_right">
+			<link1 body="palm"/>
+			<link2 body="arm_right"/>
+			<hinge>
+				<axis LowStop="-0.5" y="0" x="1" z="0" HiStop="1.0"/>
+				<anchor y="0.86" x="-2.06" z="0" absolute="true"/>
+			</hinge>
+		</joint>
+		<joint name="palm_hip">
+			<link1 body="palm"/>
+			<link2 body="hip"/>
+			<hinge>
+				<axis LowStop="-0.5" y="1" x="0" z="0" HiStop="0.5"/>
+				<anchor y="-1.6" x="0" z="0" absolute="true"/>
+			</hinge>
+		</joint>
+		<joint name="hip_pelvis">
+			<link1 body="hip"/>
+			<link2 body="pelvis"/>
+			<fixed>
+			</fixed>
+		</joint>
+		<joint name="pelvis_pelLeft">
+			<link1 body="pelvis"/>
+			<link2 body="pelLeft"/>
+			<hinge>
+				<axis LowStop="0.0" y="0" x="0" z="-1" HiStop="0.5"/>
+				<anchor y="-3.2" x="1.2" z="0" absolute="true"/>
+			</hinge>
+		</joint>
+		<joint name="pelvis_pelRight">
+			<link1 body="pelvis"/>
+			<link2 body="pelRight"/>
+			<hinge>
+				<axis LowStop="0.0" y="0" x="0" z="1" HiStop="0.5"/>
+				<anchor y="-3.2" x="-1.2" z="0" absolute="true"/>
+			</hinge>
+		</joint>
+		<joint name="pelLeft_tibiaLeft">
+			<link1 body="pelLeft"/>
+			<link2 body="tibiaLeft"/>
+			<hinge>
+				<axis LowStop="0.0" y="0" x="1" z="0" HiStop="1.5"/>
+				<anchor y="-4.0" x="1.2" z="0" absolute="true"/>
+			</hinge>
+		</joint>
+		<joint name="pelRight_tibiaRight">
+			<link1 body="pelRight"/>
+			<link2 body="tibiaRight"/>
+			<hinge>
+				<axis LowStop="0.0" y="0" x="1" z="0" HiStop="1.5"/>
+				<anchor y="-4.0" x="-1.2" z="0" absolute="true"/>
+			</hinge>
+		</joint>
+		<joint name="tibiaLeft_sheenLeft">
+			<link1 body="tibiaLeft"/>
+			<link2 body="sheenLeft"/>
+			<hinge>
+				<axis LowStop="0.0" y="0" x="-1" z="0" HiStop="1.5"/>
+				<anchor y="-8.4" x="1.2" z="0" absolute="true"/>
+			</hinge>
+		</joint>
+		<joint name="tibiaRight_sheenRight">
+			<link1 body="tibiaRight"/>
+			<link2 body="sheenRight"/>
+			<hinge>
+				<axis LowStop="0.0" y="0" x="-1" z="0" HiStop="1.5"/>
+				<anchor y="-8.4" x="-1.2" z="0" absolute="true"/>
+			</hinge>
+		</joint>
+		<joint name="sheenLeft_footLeft">
+			<link1 body="sheenLeft"/>
+			<link2 body="footLeft"/>
+			<hinge>
+				<axis LowStop="-0.25" y="0" x="1" z="0" HiStop="0.25"/>
+				<anchor y="-12.2" x="1.2" z="0" absolute="true"/>
+			</hinge>
+		</joint>
+		<joint name="sheenRight_footRight">
+			<link1 body="sheenRight"/>
+			<link2 body="footRight"/>
+			<hinge>
+				<axis LowStop="-0.25" y="0" x="1" z="0" HiStop="0.25"/>
+				<anchor y="-12.2" x="-1.2" z="0" absolute="true"/>
+			</hinge>
+		</joint>
+<!--        <body name="bar1">
+            <transform>
+                <position x="0.5" y="2.75" z="0"/>
+            </transform>
+            <mass>
+                <mass_shape density="5">
+                    <cappedCylinder length="500" radius="0.1"/>
+                </mass_shape>
+            </mass>
+            <geom>
+                <cappedCylinder length="500" radius="0.1"/>
+            </geom>  
+        </body> 
+        <body name="bar2">
+            <transform>
+                <position x="-0.5" y="2.75" z="0"/>
+            </transform>
+            <mass>
+                <mass_shape density="5">
+                    <cappedCylinder length="500" radius="0.1"/>
+                </mass_shape>
+            </mass>
+            <geom>
+                <cappedCylinder length="500" radius="0.1"/>
+            </geom>  
+        </body>
+        
+                <joint name="bar_fix1">
+                <link1 body="bar1" />
+                <fixed>
+                </fixed>        
+        </joint>
+        <joint name="bar_fix2">
+                <link1 body="bar2" />
+                <fixed>
+                </fixed>        
+        </joint>-->
+      
+		<geom name="floor">
+			<plane a="0" c="0" b="1" d="-12.7"/>
+		</geom>
+	</space>
+</world>
+</xode>
+<!--odeenvironment parameters
+<passpairs>
+('arm_right', 'hip', 'head', 'pelRight', 'neck', 'tibiaRight', 'pelLeft', 'tibiaLeft', 'sheenLeft', 'footRight', 'palm', 'sheenRight', 'pelvis', 'arm_left', 'footLeft')
+<centerOn>
+palm
+<end>
+-->

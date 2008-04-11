@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xode version="1.0r23" name="crawler"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://tanksoftware.com/xode/1.0r23/xode.xsd">
+
+	<world>
+	
+		<space>			
+			<body name="leg1">
+				<transform>
+					<position x="-0.6" y="4.6" z="0" />
+				</transform>
+				<geom name="boxGeom">
+					<box
+						sizex="0.2"
+						sizey="0.8"
+						sizez="0.2"
+					/>
+				</geom>
+				<mass>
+					<mass_shape density="100"> 
+						<box
+							sizex="0.2"
+							sizey="0.8"
+							sizez="0.2"
+						/>
+					</mass_shape>
+				</mass>
+			</body>
+			<body name="leg2">
+				<transform>
+					<position x="0.6" y="4.6" z="0" />
+				</transform>
+				<geom name="boxGeom">
+					<box
+						sizex="0.2"
+						sizey="0.8"
+						sizez="0.2"
+					/>
+				</geom>
+				<mass>
+					<mass_shape density="100"> 
+						<box
+							sizex="0.2"
+							sizey="0.8"
+							sizez="0.2"
+						/>
+					</mass_shape>
+				</mass>
+			</body>
+				
+			<body name="body">
+				<transform>
+					<position x="0" y="5" z="0" />
+				</transform>
+				
+				<geom name="boxGeom">
+					<box
+						sizex="0.9"
+						sizey="0.5"
+						sizez="0.9"
+					/>
+				</geom>
+				<mass>
+					<mass_shape density="10"> 
+						<box
+							sizex="0.9"
+							sizey="0.5"
+							sizez="0.9"
+						/>
+					</mass_shape>
+				</mass>
+			</body>
+
+			<joint>
+				<link1 body="leg1" />
+				<link2 body="body" />
+				<hinge>
+					<anchor x="-0.5" y="5" z="0" absolute="false" />
+					<axis x="1" y="0" z="0"
+					/>
+				</hinge>		
+			</joint>
+
+			<joint>
+				<link1 body="leg2" />
+				<link2 body="body" />
+				<hinge>
+					<anchor x="0.5" y="5" z="0" absolute="false" />
+					<axis x="1" y="0" z="0"
+					/>
+				</hinge>		
+			</joint>			
+			
+			<geom name="floor">		
+				<plane
+					a="0"
+					b="1"
+					c="0.05"
+					d="0"
+				/>
+			</geom>			
+		</space>
+	</world>
+</xode>
+<!--odeenvironment parameters
+<passpairs>
+('body', 'leg1', 'leg2')
+<centerOn>
+body
+<end>
+-->

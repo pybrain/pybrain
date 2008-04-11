@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xode version="1.0r23" name="octacrawl"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://tanksoftware.com/xode/1.0r23/xode.xsd">
+
+	<world>
+	
+		<space>			
+			<body name="leg1">
+				<transform>
+					<position x="1" y="0" z="0" />
+				</transform>
+				<geom name="boxGeom">
+					<box
+						sizex="2"
+						sizey="0.2"
+						sizez="1"
+					/>
+				</geom>
+				<mass>
+					<mass_shape density="10"> 
+						<box
+							sizex="2"
+							sizey="0.2"
+							sizez="1"
+						/>
+					</mass_shape>
+				</mass>
+			</body>
+			<body name="leg2">
+				<transform>
+					<position x="3" y="0" z="0" />
+				</transform>
+				<geom name="boxGeom">
+					<box
+						sizex="2"
+						sizey="0.2"
+						sizez="1"
+					/>
+				</geom>
+				<mass>
+					<mass_shape density="10"> 
+						<box
+							sizex="2"
+							sizey="0.2"
+							sizez="1"
+						/>
+					</mass_shape>
+				</mass>
+			</body>
+				
+			<body name="body">
+				<transform>
+					<position x="0" y="0" z="0" />
+				</transform>
+				
+				<geom name="boxGeom">
+					<box
+						sizex="2"
+						sizey="2"
+						sizez="2"
+					/>
+				</geom>
+				<mass>
+					<mass_shape density="5"> 
+						<box
+							sizex="2"
+							sizey="2"
+							sizez="2"
+						/>
+					</mass_shape>
+				</mass>
+			</body>
+					
+			<body name="body2">
+				<transform>
+					<position x="0" y="0" z="0" />
+					<rotation>
+						<euler x="0" y="0" z="45" aformat="degrees" />
+					</rotation>
+				</transform>
+				
+				<geom name="boxGeom">
+					<box
+						sizex="2"
+						sizey="2"
+						sizez="2"
+					/>
+				</geom>
+				<mass>
+					<mass_shape density="5"> 
+						<box
+							sizex="2"
+							sizey="2"
+							sizez="2"
+						/>
+					</mass_shape>
+				</mass>
+			</body>
+					
+			<joint>
+				<link1 body="body" />
+				<link2 body="leg1" />
+				<hinge>
+					<anchor x="0" y="0" z="0" absolute="false" />
+					<axis 
+						x="0" y="0" z="1"
+						FMax="400"
+					/>
+				</hinge>		
+			</joint>
+
+			<joint>
+				<link1 body="leg1" />
+				<link2 body="leg2" />
+				<hinge>
+					<anchor x="2" y="0" z="0" absolute="false" />
+					<axis 
+						x="0" y="0" z="1"
+						FMax="400"
+					/>
+				</hinge>		
+			</joint>
+
+			<joint>
+				<link1 body="body" />
+				<link2 body="body2" />
+				<fixed>
+				</fixed>		
+			</joint>
+
+
+			<geom name="floor">		
+				<plane
+					a="0"
+					b="1"
+					c="0"
+					d="-5"
+				/>
+			</geom>			
+		</space>
+	</world>
+</xode>
+<!--odeenvironment parameters
+<passpairs>
+('body','body2','leg1', 'leg2')
+<centerOn>
+body
+<end>
+-->
+
