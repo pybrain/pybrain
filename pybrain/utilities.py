@@ -226,10 +226,10 @@ def substitute(target):
             module = _import(".".join(module_path))
             opt_func = getattr(module, func_name)
         except (ImportError, AttributeError), e:
-            print e
-            logging.error("Could not find substitution for %s. (Tried: %s)" 
+            #print e
+            logging.info("Could not find substitution for %s. (Tried: %s)" 
                          % (func.__name__, target))
-            logging.info("from %s import %s" % (".".join(module_path), func_name))
+            #logging.info("from %s import %s" % (".".join(module_path), func_name))
             return func
         if type(opt_func) is types.BuiltinFunctionType:
             opt_func = makeBuiltinWrapper(opt_func)

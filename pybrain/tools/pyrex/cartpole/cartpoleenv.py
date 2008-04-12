@@ -2,12 +2,17 @@ __author__ = 'Tom Schaul, tom@idsia.ch'
 
 
 from scipy import array
+import logging
 
 from pybrain.rl import EpisodicTask
-import cartpolewrap as impl
+
+try: 
+    import cartpolewrap as impl
+except ImportError, e:
+    logging.error("CartPoleTask is wrapping C code that needs to be compiled - it's simple: run .../cartpolecompile.py")
+    raise e
 
 
-# TODO: random starting angles?
 
 class CartPoleTask(EpisodicTask):
     """ A Python wrapper of the standard C implentation of the pole-balancing task, directly using the 
