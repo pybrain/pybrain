@@ -12,7 +12,9 @@ class ES(SearchProcess):
     lambada = 50
     noisy = True
      
-    def __init__(self, evolvable, evaluator, desiredFitness = None):
+    def __init__(self, evolvable, evaluator, desiredFitness = None, mu = 5, lambada = 5):
+        self.mu = mu
+        self.lambada = lambada
         self.desiredFitness = desiredFitness
         self.steps = 0
         self.population = []
