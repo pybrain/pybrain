@@ -9,7 +9,7 @@ import time, copy
 from scipy import rand, randn
 from random import shuffle
 
-from pybrain.rl.tasks.cartpole import CartPoleTask
+from pybrain.rl.tasks.polebalancing import CartPoleTask
 from pybrain.tools.shortcuts import buildNetwork
 from pybrain import FullConnection
 from nesexperiments import pickleDumpDict

@@ -9,7 +9,7 @@ from pybrain import FullConnection
 from pybrain.rl.learners.blackboxoptimizers.fem import FEM
 from pybrain.rl.learners import CMAES
 from pybrain.tools.shortcuts import buildSimpleNetwork, buildNetwork
-from pybrain.tools.pyrex.cartpole.cartpoleenv import CartPoleTask
+from pybrain.rl.tasks.polebalancing import CartPoleTask
 from pybrain.structure.modules.lstm import LSTMLayer
 from scipy import ravel
     
