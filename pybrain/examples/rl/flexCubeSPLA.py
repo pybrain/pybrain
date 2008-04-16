@@ -1,71 +1,83 @@
 #########################################################################
-# Reinforcement Learning with Policy Gradients on the SimpleEnvironment 
+# Reinforcement Learning with PGPE/SPLA on the FlexCube Environment 
 #
-# SimpleEnvironment is a one-dimensional quadratic function with its
-# maximum at x=0. Additionally, noise can be added (setNoise(variance)).
-# The Agent can make steps in either direction and has receives reward 
-# equal to the negative function value. The optimal parameter is -10.0
-
-# Requirements: pylab (for plotting only). If not available, comment the
-# 9 lines total marked as "for plotting"
+# The FlexCube Environment is a Mass-Spring-System composed of 8 mass points.
+# These resemble a cube with flexible edges.
+#
+# Control/Actions:
+# The agent can control the 12 equilibrium edge lengths. 
+#
+# A wide variety of sensors are available for observation and reward:
+# - 12 edge lengths
+# - 12 wanted edge lengths (the last action)
+# - vertexes contact with floor
+# - vertexes min height (distance of closest vertex to the floor)
+# - distance to origin
+# - distance and angle to target
+#
+# Task available are:
+# - GrowTask, agent has to maximize the volume of the cube
+# - JumpTask, agent has to maximize the distance of the lowest mass point during the episode
+# - WalkTask, agent has to maximize the distance to the starting point
+# - WalkDirectionTask, agent has to minimize the distance to a target point.
+# - TargetTask, like the previous task but with several target points
+# 
+# Requirements: scipy for the environment and the learner.
 #########################################################################
 
-from pybrain import *
-from pybrain.tools.shortcuts import *
+from pybrain.structure.modules.tanhlayer import TanhLayer
+from pybrain.tools.shortcuts import buildNetwork
 from pybrain.rl.environments.flexcube import *
 from pybrain.rl.agents import FiniteDifferenceAgent
-from pybrain.rl.learners import *
+from pybrain.rl.learners.finitedifference.spla import SPLA
 from pybrain.rl.experiments import EpisodicExperiment
-from scipy import array, mean, random
 from cPickle import load, dump
 
+# Method for loading a weight matrix and initialize the network
 def loadWeights(filename):
     filepointer = file(filename)
-    org = load(filepointer)
+    agent.learner.original = load(filepointer)
     filepointer.close()
-    return org
+    agent.learner.gd.init(agent.learner.original)
 
+# Method for saving the weight matrix    
 def saveWeights(filename, w):
     filepointer = file(filename, 'w+')
     dump(w, filepointer)
     filepointer.close()
 
-numbExp=1
+numbExp=1 #number of experiments
 for runs in range(numbExp):
     # create environment
-    env = FlexCubeEnvironment(True)
+    env = FlexCubeEnvironment(False) #set True for OpenGL output
     # create task
-    task = TargetTask(env)
+    task = WalkTask(env)
     # create controller network
-    net = buildNetwork(env.obsLen, 14, env.actLen, outclass=TanhLayer)
+    net = buildNetwork(len(task.getObservation()), 10, env.actLen, outclass=TanhLayer)
     # create agent with controller and learner
     agent = FiniteDifferenceAgent(net, SPLA())
     # learning options
-    agent.learner.original = loadWeights("target2.wgt")
-    agent.learner.gd.init(agent.learner.original)
-    agent.learner.gd.alpha = 0.2
-    agent.learner.gdSig.alpha = 0.085
+    agent.learner.gd.alpha = 0.2 #step size of \mu adaption
+    agent.learner.gdSig.alpha = 0.085 #step size of \sigma adaption
     agent.learner.gd.momentum = 0.0
-    agent.learner.epsilon = 0.0001
-    agent.learner.initSigmas()
-    # agent.learner.rprop = True
+    batch=2 #number of samples per gradient estimate
+    #create experiment
     experiment = EpisodicExperiment(task, agent)
-    batch=2
-    prnts=1
+    prnts=1 #frequency of console output
     epis=5000/batch/prnts
+    #Renderer options (relevant only if env is set up with OpenGL)
     if env.hasRenderer(): 
         env.getRenderer().fps=1 #for comps with no 3d chip
         env.getRenderer().start()  
-
     
-    rl=[]
+    #actual roll outs
     for updates in range(epis):
         for i in range(prnts):
-            experiment.doEpisodes(batch)
-            agent.learn()
-            agent.reset()
+            experiment.doEpisodes(batch) #execute #batch episodes
+            agent.learn() #learn from the gather experience
+            agent.reset() #reset agent and environment
+        #print out related data
         print "Step: ", runs, "/", (updates+1)*batch*prnts, "Best: ", agent.learner.best, "Base: ", agent.learner.baseline, "Reward: ", agent.learner.reward   
         print ""
-        rl.append(float(agent.learner.baseline))     
         #if updates/100 == float(updates)/100.0:
         #    saveWeights("walk.wgt", agent.learner.original)        
