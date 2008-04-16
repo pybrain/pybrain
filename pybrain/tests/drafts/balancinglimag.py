@@ -4,7 +4,8 @@ __author__ = 'Tom Schaul, tom@idsia.ch'
 
 from pybrain.rl.environments.functions.episodicevaluators import CartPoleEvaluator
 from pybrain.rl.environments.functions import OppositeFunction
-from pybrain.rl.learners import LiMaG, CMAES
+from pybrain.rl.learners import CMAES
+from pybrain.rl.learners.blackboxoptimizers.evolution.limag import LiMaG
 from pybrain.tools.shortcuts import buildSimpleNetwork
 
 

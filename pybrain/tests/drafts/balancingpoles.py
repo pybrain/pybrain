@@ -39,7 +39,7 @@ def testBalancing(env):
 
 def testOtherBalancing():
     markov = False
-    t = CartPoleTask(numPoles = 2, markov = markov)
+    t = CartPoleTask(numPoles = 2, markov = markov, extraObservations = True)
     net = buildNetwork(t.getOutDim(), 3, t.getInDim(), bias = False)#, hiddenclass = LSTMLayer)
     if not markov:
         # add recurrent connections in the pomdp case

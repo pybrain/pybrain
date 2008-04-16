@@ -1,4 +1,4 @@
-# TODO: this file does not work on the curren version of pybrain
+raise Exception('this file does not work on the curren version of pybrain')
 
 from pybrain.structure.modules.module import Module
 from pybrain.structure.modules.neuronlayer import NeuronLayer

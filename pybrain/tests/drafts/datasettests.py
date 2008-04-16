@@ -4,10 +4,9 @@ from pybrain.datasets import SequentialDataSet, SupervisedDataSet
 
 def testSequential():
     ds = SequentialDataSet(1, 4)
-    ds.addSample(array([1.34]), [[0.2, 0.4, 1.0, -0.3]])
-    ds.resize(10)    
+    ds.addSample(array([1.34]), [0.2, 0.4, 1.0, -0.3])
     ds.newSequence()
-    ds.addSample(2, [[0.0, -5, -3, 1.1]])
+    ds.addSample(2, array([0.0, -5, -3, 1.1]))
     ds.newSequence()
     ds.addSample(0, [0.0, -5, -3, 1.1])
 
@@ -21,11 +20,11 @@ def testSequential():
 def testSupervised():
     i = array([[1,2,3],[4,5,6]])
     t = array([[2],[3]])
-    tl = [2,3]
+    #tl = [2,3]
     ds = SupervisedDataSet(i,t)
     print str(ds)
-    ds = SupervisedDataSet(i,tl)
-    print str(ds)
+    #ds = SupervisedDataSet(i,tl)
+    #print str(ds)
 
 
 if __name__ == "__main__":

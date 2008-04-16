@@ -235,7 +235,8 @@ void rk4(double f, double y[], double dydx[], double yout[])
 
 extern void getObservation(double * input)
 {
-
+  // first is always bias, last is always cart position (state[0])
+  // pole angles are preceded by their dreivative in the markov case 
   switch(numPoles){
     case 1:
       if(markov){
