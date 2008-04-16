@@ -66,7 +66,20 @@ class BalanceTask(EpisodicTask):
         self.N = n    
 
 
-
+class JustBalanceTask(BalanceTask):
+    """ this task does not require the cart to be moved to the middle. """
+    def getReward(self):
+        angles = map(abs, self.env.getPoleAngles())
+        s = abs(self.env.getCartPosition())
+        reward = 0
+        if min(angles) < 0.05:
+            reward = 0
+        elif max(angles) > 0.7 or abs(s) > 2.4:
+            reward = -2 * (self.N - self.t)
+        else: 
+            reward = -1
+        return reward
+        
 class EasyBalanceTask(BalanceTask):
     """ this task is a bit easier to learn because it gives gradual feedback
         about the distance to the centre. """
