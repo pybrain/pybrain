@@ -66,20 +66,21 @@ class CartPoleTask(EpisodicTask):
         if self.verbose:
             print 'obs', obs
         if self.extraObs:
+            cartpos = obs[-1]
             obs.resize(self.getOutDim())
             if self.markov:
                 angle1 = obs[1]
             else:
                 angle1 = obs[0]
-            obs[-1] = 0.1*cos(angle1)
-            obs[-2] = 0.1*sin(angle1)            
+            obs[-1] = 0.1*cos(angle1)+cartpos
+            obs[-2] = 0.1*sin(angle1)+cartpos    
             if self.numPoles == 2:
                 if self.markov:
                     angle2 = obs[3]
                 else:
                     angle2 = obs[1]
-                obs[-3] = 0.1*cos(angle2)
-                obs[-4] = 0.1*sin(angle2)
+                obs[-3] = 0.05*cos(angle2)+cartpos
+                obs[-4] = 0.05*sin(angle2)+cartpos
         if self.verbose:
             print 'obs', obs
         return obs

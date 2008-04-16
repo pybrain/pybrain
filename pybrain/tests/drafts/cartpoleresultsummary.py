@@ -18,7 +18,7 @@ for f in allfiles:
             alldata[runtype] = []
         alldata[runtype].append(allfits)
 
-for runtype, res in alldata.items():
+for runtype, res in sorted(alldata.items()):
     print 'Experiment type:', runtype
     print 'Number of runs:', len(res)
     successes = filter(lambda x: len(x) > 0 and max(x) >= 50000, res)

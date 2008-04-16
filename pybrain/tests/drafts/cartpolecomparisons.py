@@ -24,7 +24,7 @@ from pybrain.rl.learners.searchprocesses.memeticcmaclimber import MemeticCMAClim
 
 
 # task: non-markov double pole balancing for 100000 iterations - fixed starting conditions
-thetask = CartPoleTask(numPoles = 2, markov = False)
+thetask = CartPoleTask(numPoles = 2, markov = False, extraObservations = True)
 
 # desired performance (cumulative reward of the task)
 desiredValue = 50000
