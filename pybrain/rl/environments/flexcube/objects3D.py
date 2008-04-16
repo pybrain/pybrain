@@ -4,7 +4,6 @@ from OpenGL.GL import *
 from OpenGL.GLU import *
 from math import sqrt
 from Image import *
-from massPoint import *
 import math
 import imp
 
@@ -26,7 +25,7 @@ class Objects3D:
       for k in range(2):
         grayI=i
         grayK=i ^ k
-        point.append(cPoints[grayI*4+grayK].pos)
+        point.append(cPoints[grayI*4+grayK])
         summe=self.addVect(summe,point[i*2+k])
     norm=self.normale(summe, centerOfGrav)
     glNormal(norm[0],norm[1],norm[2])
@@ -41,7 +40,7 @@ class Objects3D:
       for k in range(2):
         grayJ=j
         grayK=j ^ k
-        point.append(cPoints[grayJ*2+grayK].pos)
+        point.append(cPoints[grayJ*2+grayK])
         summe=self.addVect(summe,point[j*2+k])
     norm=self.normale(summe, centerOfGrav)
     glNormal(norm[0],norm[1],norm[2])
@@ -56,7 +55,7 @@ class Objects3D:
       for k in range(2):
         grayJ=j
         grayK=j ^ k
-        point.append(cPoints[4+grayJ*2+grayK].pos)
+        point.append(cPoints[4+grayJ*2+grayK])
         summe=self.addVect(summe,point[j*2+k])
     norm=self.normale(summe, centerOfGrav)
     glNormal(norm[0],norm[1],norm[2])
@@ -71,7 +70,7 @@ class Objects3D:
       for k in range(2):
         grayI=i
         grayK=i ^ k
-        point.append(cPoints[grayI*4+2+grayK].pos)
+        point.append(cPoints[grayI*4+2+grayK])
         summe=self.addVect(summe,point[i*2+k])
     norm=self.normale(summe, centerOfGrav)
     glNormal(norm[0],norm[1],norm[2])
@@ -86,7 +85,7 @@ class Objects3D:
       for j in range(2):
         grayI=i
         grayJ=i ^ j
-        point.append(cPoints[grayI*4+grayJ*2+1].pos)
+        point.append(cPoints[grayI*4+grayJ*2+1])
         summe=self.addVect(summe,point[i*2+j])
     norm=self.normale(summe, centerOfGrav)
     glNormal(norm[0],norm[1],norm[2])
@@ -101,7 +100,7 @@ class Objects3D:
       for j in range(2):
         grayI=i
         grayJ=i ^ j
-        point.append(cPoints[grayI*4+grayJ*2].pos)
+        point.append(cPoints[grayI*4+grayJ*2])
         summe=self.addVect(summe,point[i*2+j])
     norm=self.normale(summe, centerOfGrav)
     glNormal(norm[0],norm[1],norm[2])
@@ -121,7 +120,7 @@ class Objects3D:
       for k in range(2):
         grayI=i
         grayK=i ^ k
-        point.append(cPoints[grayI*4+grayK].pos)
+        point.append(cPoints[grayI*4+grayK])
         summe=self.addVect(summe,point[i*2+k])
     norm=self.normale(summe, centerOfGrav)
     glNormal(norm[0],norm[1],norm[2])
@@ -136,7 +135,7 @@ class Objects3D:
       for k in range(2):
         grayJ=j
         grayK=j ^ k
-        point.append(cPoints[grayJ*2+grayK].pos)
+        point.append(cPoints[grayJ*2+grayK])
         summe=self.addVect(summe,point[j*2+k])
     norm=self.normale(summe, centerOfGrav)
     glNormal(norm[0],norm[1],norm[2])
@@ -151,7 +150,7 @@ class Objects3D:
       for k in range(2):
         grayJ=j
         grayK=j ^ k
-        point.append(cPoints[4+grayJ*2+grayK].pos)
+        point.append(cPoints[4+grayJ*2+grayK])
         summe=self.addVect(summe,point[j*2+k])
     norm=self.normale(summe, centerOfGrav)
     glNormal(norm[0],norm[1],norm[2])
@@ -166,7 +165,7 @@ class Objects3D:
       for k in range(2):
         grayI=i
         grayK=i ^ k
-        point.append(cPoints[grayI*4+2+grayK].pos)
+        point.append(cPoints[grayI*4+2+grayK])
         summe=self.addVect(summe,point[i*2+k])
     norm=self.normale(summe, centerOfGrav)
     glNormal(norm[0],norm[1],norm[2])
@@ -181,7 +180,7 @@ class Objects3D:
       for j in range(2):
         grayI=i
         grayJ=i ^ j
-        point.append(cPoints[grayI*4+grayJ*2+1].pos)
+        point.append(cPoints[grayI*4+grayJ*2+1])
         summe=self.addVect(summe,point[i*2+j])
     norm=self.normale(summe, centerOfGrav)
     glNormal(norm[0],norm[1],norm[2])
@@ -196,7 +195,7 @@ class Objects3D:
       for j in range(2):
         grayI=i
         grayJ=i ^ j
-        point.append(cPoints[grayI*4+grayJ*2].pos)
+        point.append(cPoints[grayI*4+grayJ*2])
         summe=self.addVect(summe,point[i*2+j])
     norm=self.normale(summe, centerOfGrav)
     glNormal(norm[0],norm[1],norm[2])
@@ -219,7 +218,7 @@ class Objects3D:
       for k in range(2):
         grayI=i
         grayK=i ^ k
-        point.append([cPoints[grayI*4+grayK].pos[0]+xPers*cPoints[grayI*4+grayK].pos[1],-0.025,cPoints[grayI*4+grayK].pos[2]+zPers*cPoints[grayI*4+grayK].pos[1]])
+        point.append([cPoints[grayI*4+grayK][0]+xPers*cPoints[grayI*4+grayK][1],-0.025,cPoints[grayI*4+grayK][2]+zPers*cPoints[grayI*4+grayK][1]])
     glNormal(0.0,1.0,0.0)
     for i in range(2):
       for k in range(2):
@@ -233,7 +232,7 @@ class Objects3D:
         grayJ=j
         grayK=j ^ k
         #point.append(cPoints[grayJ*2+grayK].pos)
-        point.append([cPoints[grayJ*2+grayK].pos[0]+xPers*cPoints[grayJ*2+grayK].pos[1],-0.02,cPoints[grayJ*2+grayK].pos[2]+zPers*cPoints[grayJ*2+grayK].pos[1]])
+        point.append([cPoints[grayJ*2+grayK][0]+xPers*cPoints[grayJ*2+grayK][1],-0.02,cPoints[grayJ*2+grayK][2]+zPers*cPoints[grayJ*2+grayK][1]])
         summe=self.addVect(summe,point[j*2+k])
     norm=self.normale(summe, centerOfGrav)
     glNormal(norm[0],norm[1],norm[2])
@@ -249,7 +248,7 @@ class Objects3D:
         grayJ=j
         grayK=j ^ k
         #point.append(cPoints[4+grayJ*2+grayK].pos)
-        point.append([cPoints[4+grayJ*2+grayK].pos[0]+xPers*cPoints[4+grayJ*2+grayK].pos[1],-0.015,cPoints[4+grayJ*2+grayK].pos[2]+zPers*cPoints[4+grayJ*2+grayK].pos[1]])
+        point.append([cPoints[4+grayJ*2+grayK][0]+xPers*cPoints[4+grayJ*2+grayK][1],-0.015,cPoints[4+grayJ*2+grayK][2]+zPers*cPoints[4+grayJ*2+grayK][1]])
         summe=self.addVect(summe,point[j*2+k])
     norm=self.normale(summe, centerOfGrav)
     glNormal(norm[0],norm[1],norm[2])
@@ -265,7 +264,7 @@ class Objects3D:
         grayI=i
         grayK=i ^ k
         #point.append(cPoints[grayI*4+2+grayK].pos)
-        point.append([cPoints[grayI*4+2+grayK].pos[0]+xPers*cPoints[grayI*4+2+grayK].pos[1],-0.01,cPoints[grayI*4+2+grayK].pos[2]+zPers*cPoints[grayI*4+2+grayK].pos[1]])
+        point.append([cPoints[grayI*4+2+grayK][0]+xPers*cPoints[grayI*4+2+grayK][1],-0.01,cPoints[grayI*4+2+grayK][2]+zPers*cPoints[grayI*4+2+grayK][1]])
         summe=self.addVect(summe,point[i*2+k])
     norm=self.normale(summe, centerOfGrav)
     glNormal(norm[0],norm[1],norm[2])
@@ -281,7 +280,7 @@ class Objects3D:
         grayI=i
         grayJ=i ^ j
         #point.append(cPoints[grayI*4+grayJ*2+1].pos)
-        point.append([cPoints[grayI*4+grayJ*2+1].pos[0]+xPers*cPoints[grayI*4+grayJ*2+1].pos[1],-0.005,cPoints[grayI*4+grayJ*2+1].pos[2]+zPers*cPoints[grayI*4+grayJ*2+1].pos[1]])
+        point.append([cPoints[grayI*4+grayJ*2+1][0]+xPers*cPoints[grayI*4+grayJ*2+1][1],-0.005,cPoints[grayI*4+grayJ*2+1][2]+zPers*cPoints[grayI*4+grayJ*2+1][1]])
         summe=self.addVect(summe,point[i*2+j])
     norm=self.normale(summe, centerOfGrav)
     glNormal(norm[0],norm[1],norm[2])
@@ -297,7 +296,7 @@ class Objects3D:
         grayI=i
         grayJ=i ^ j
         #point.append(cPoints[grayI*4+grayJ*2].pos)
-        point.append([cPoints[grayI*4+grayJ*2].pos[0]+xPers*cPoints[grayI*4+grayJ*2].pos[1],-0.0,cPoints[grayI*4+grayJ*2].pos[2]+zPers*cPoints[grayI*4+grayJ*2].pos[1]])
+        point.append([cPoints[grayI*4+grayJ*2][0]+xPers*cPoints[grayI*4+grayJ*2][1],-0.0,cPoints[grayI*4+grayJ*2][2]+zPers*cPoints[grayI*4+grayJ*2][1]])
         summe=self.addVect(summe,point[i*2+j])
     norm=self.normale(summe, centerOfGrav)
     glNormal(norm[0],norm[1],norm[2])

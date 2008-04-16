@@ -5,9 +5,8 @@ from OpenGL.GL import *
 from OpenGL.GLE import *
 from OpenGL.GLU import *
 import objects3D
-from massPoint import *
 from time import *
-
+from scipy import ones, zeros, array, clip, arange, sqrt
 import threading
 
 class FlexCubeRenderer(Renderer):
@@ -33,10 +32,8 @@ class FlexCubeRenderer(Renderer):
       self.target=[80.0,0.0,0.0]
       
       self.dataLock = threading.Lock()
-      self.centerOfGrav=[0.0, 0.0, 0.0]
-      self.points=[]
-      for i in range(8):
-        self.points.append(MassPoint)
+      self.centerOfGrav=array([0.0,-2.0,0.0])
+      self.points=ones((8,3),float)
       self.savePics=False
       self.drawCounter=0
       self.fps=25
@@ -56,10 +53,10 @@ class FlexCubeRenderer(Renderer):
   def setTarget(self, target):
     self.target=target[:]
     
-  def updateData(self, points, sensors):
+  def updateData(self, pos, sensors):
     self.dataLock.acquire()
-    self.points=points[:]
-    self.centerOfGrav=sensors[0][:]
+    self.points=pos.copy()
+    self.centerOfGrav=sensors.copy()
     self.dataLock.release() 
     
   def _render(self):

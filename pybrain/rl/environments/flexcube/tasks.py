@@ -1,7 +1,9 @@
 import random, math, os
 from time import * 
 from pybrain.rl.tasks import EpisodicTask
-from scipy import ones
+from scipy import ones, array, c_, r_
+import sensors
+
         
 class NoRewardTask(EpisodicTask):
     ''' just a basic task, that doesn't return a reward '''
@@ -36,18 +38,15 @@ class NoRewardTask(EpisodicTask):
     def getObservation(self):
         # do something with self.sensors and return self.state
         aktSensors=self.env.getSensors()
-        output=[]
+        output=array([])
         for i in aktSensors:
           for j in self.obsSensors:
             if i[0]==j:
-              momSens=i[2:]
-              for k in momSens:
-                output.append(k/15.0-1.0)
+              momSense=i[2]
+              output=r_[output, momSense]
           if i[0]==self.rewardSensor[0]:
-            self.rawReward=i[2]
-        output.append(math.sin(float(self.epiStep)/60.0))
+            self.rawReward=i[2][0]
         
-        self.env.obsLen=len(output)    
         return output[:]       
     
     def performAction(self, action):
@@ -64,14 +63,15 @@ class NoRewardTask(EpisodicTask):
                     action[i]=self.action[i]+self.maxSpeed
         EpisodicTask.performAction(self, action)
         self.action=action[:] 
-      
+       
 class GrowTask(NoRewardTask):
     def __init__(self, env):
         NoRewardTask.__init__(self, env)
         self.rewardSensor=["EdgesSumReal"]
-        self.obsSensors=["EdgesReal"]    
+        self.obsSensors=["EdgesReal", "EdgesTarget"]    
         self.inDim=len(self.getObservation())     
-        self.plotString=["World Interactions", "Size", "Reward on Growing Task"]    
+        self.plotString=["World Interactions", "Size", "Reward on Growing Task"]  
+        self.env.mySensors=sensors.Sensors(self.obsSensors+self.rewardSensor)  
         
     def getReward(self):
         self.reward[0]=self.rawReward
@@ -95,35 +95,12 @@ class WalkTask(NoRewardTask):
         self.obsSensors=["EdgesTarget","EdgesReal","VerticesContact"]    
         self.inDim=len(self.getObservation())     
         self.plotString=["World Interactions", "Distance", "Reward on Walking Task"]
+        self.env.mySensors=sensors.Sensors(self.obsSensors+self.rewardSensor)  
+        self.epiLen=2000
         
     def getReward(self):
-        if self.epiStep<2000: self.reward[0]=0.0
+        if self.epiStep<self.epiLen: self.reward[0]=0.0
         else: self.reward[0]=self.rawReward
-        return self.reward[0]
-
-    def reset(self):
-        self.reward[0]=0.0   
-        self.rawReward=0.0         
-        self.env.reset()
-        self.action=[self.env.dists[0]]*self.outDim
-        self.epiStep=0
-        EpisodicTask.reset(self)
-
-    def isFinished(self):
-        return (self.epiStep>=2000)
-
-class WalkToDirectionTask(NoRewardTask):
-    def __init__(self, env):
-        NoRewardTask.__init__(self, env)
-        self.rewardSensor=["Target"]
-        self.obsSensors=["EdgesTarget","EdgesReal","VerticesContact","Target"]    
-        self.inDim=len(self.getObservation())     
-        self.plotString=["World Interactions", "Distance", "Reward on Target Approach Task"]
-        self.env.mySensors.sensors[5].targetList=[[-80.0,0.0,0.0]]
-        self.epiLen=2000
-
-    def getReward(self):
-        self.reward[0]=(80.0-self.rawReward)/float(self.epiLen)
         return self.reward[0]
 
     def reset(self):
@@ -137,42 +114,41 @@ class WalkToDirectionTask(NoRewardTask):
     def isFinished(self):
         return (self.epiStep>=self.epiLen)
 
-class TargetTask(NoRewardTask):
+class WalkDirectionTask(WalkTask):
     def __init__(self, env):
         NoRewardTask.__init__(self, env)
         self.rewardSensor=["Target"]
         self.obsSensors=["EdgesTarget","EdgesReal","VerticesContact","Target"]    
         self.inDim=len(self.getObservation())     
         self.plotString=["World Interactions", "Distance", "Reward on Target Approach Task"]
-        self.env.mySensors.sensors[5].targetList=[[-80.0,0.0,0.0]]
-        if self.env.hasRenderer():
-            self.env.getRenderer().target=[0.0,0.0,-80.0]
-
-        self.epiLen=8000
+        self.env.mySensors=sensors.Sensors(self.obsSensors)
+        self.env.mySensors.sensors[3].targetList=[array([-80.0,0.0,0.0])]
+        if self.env.hasRenderer(): self.env.getRenderer().target=self.env.mySensors.sensors[3].targetList[0]
+        self.epiLen=2000
 
     def getReward(self):
-        self.reward[0]=(80.0-self.rawReward)/float(self.epiLen)
+        if self.epiStep<self.epiLen: self.reward[0]=0.0
+        else: self.reward[0]=(80.0-self.rawReward)
         return self.reward[0]
 
-    def reset(self):
-        self.reward[0]=0.0   
-        self.rawReward=0.0         
-        self.env.reset()
-        self.action=[self.env.dists[0]]*self.outDim
-        self.epiStep=0
-        EpisodicTask.reset(self)
+class TargetTask(WalkDirectionTask):
+    def __init__(self, env):
+        WalkDirectionTask.__init__(self, env)
+        self.epiLen=6000
+
+    def getReward(self):
+        if self.epiStep==self.epiLen/3 or self.epiStep==2*self.epiLen/3 or self.epiStep==self.epiLen: 
+            self.reward[0]=(80.0-self.rawReward) 
+        else: self.reward[0]=0.0
+        return self.reward[0]
 
     def isFinished(self):
-        if self.epiStep==self.epiLen/4:
+        if self.epiStep==self.epiLen/3:
             self.env.reset()
-            self.env.mySensors.sensors[5].targetList=[[0.0,0.0,-80.0]]
-            if self.env.hasRenderer(): self.env.getRenderer().target=[0.0,0.0,-80.0]
-        if self.epiStep==self.epiLen/2:
+            self.env.mySensors.sensors[3].targetList=[array([-56.6,0.0,-56.6])]
+            if self.env.hasRenderer(): self.env.getRenderer().target=self.env.mySensors.sensors[3].targetList[0]
+        if self.epiStep==2*self.epiLen/3:
             self.env.reset()
-            self.env.mySensors.sensors[5].targetList=[[0.0,0.0,80.0]]
-            if self.env.hasRenderer(): self.env.getRenderer().target=[0.0,0.0,80.0]
-        if self.epiStep==3*self.epiLen/4:
-            self.env.reset()
-            self.env.mySensors.sensors[5].targetList=[[80.0,0.0,0.0]]
-            if self.env.hasRenderer(): self.env.getRenderer().target=[80.0,0.0,0.0]
+            self.env.mySensors.sensors[3].targetList=[array([-56.6,0.0,56.6])]
+            if self.env.hasRenderer(): self.env.getRenderer().target=self.env.mySensors.sensors[3].targetList[0]
         return (self.epiStep>=self.epiLen)
