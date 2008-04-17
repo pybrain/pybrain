@@ -41,20 +41,22 @@ class FlexCubeRenderer(object):
       self.host = servIP
       self.inPort = 21560
       self.outPort = 21561
-      self.addr = (self.host,self.outPort)
+      self.inAddr = (ownIP,self.inPort)
+      self.outAddr = (self.host,self.outPort)
+      self.ownIP=ownIP
 
       # Create socket
-      self.UDPSock = socket(AF_INET,SOCK_DGRAM)
-      self.UDPSock.sendto(ownIP,self.addr)
-      self.addr = (ownIP,self.inPort)
-      self.UDPSock = socket(AF_INET,SOCK_DGRAM)
-      self.UDPSock.bind(self.addr)
+      self.UDPOutSock = socket(AF_INET,SOCK_DGRAM)
+      self.UDPOutSock.sendto(ownIP,self.outAddr)
+      self.UDPInSock = socket(AF_INET,SOCK_DGRAM)
+      self.UDPInSock.bind(self.inAddr)
 
 
   def listen(self):
       # Receive messages
+      self.UDPOutSock.sendto(self.ownIP,self.outAddr)
       buf=1024
-      data = self.UDPSock.recv(buf)
+      data = self.UDPInSock.recv(buf)
       if not data:
           print "Client has exited!"
           return
