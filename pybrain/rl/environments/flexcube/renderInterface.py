@@ -27,6 +27,9 @@ class FlexCubeRenderInterface(object):
       self.clients=0
       self.updateDone=True
       self.updateLock=threading.Lock()
+      self.cIP=[]
+      self.addrList=[]
+      self.UDPOutSockList=[]
 
   def setTarget(self, target):
     self.target=target[:]
@@ -41,22 +44,39 @@ class FlexCubeRenderInterface(object):
       if self.clients<1:
         #listen for client
         self.UDPInSock.settimeout(None)        
-        self.cIP = self.UDPInSock.recv(self.buf)
-        self.addr = (self.cIP, self.outPort)
-        self.UDPOutSock = socket.socket(socket.AF_INET,socket.SOCK_DGRAM) #socket.SOCK_DGRAM
+        self.cIP.append(self.UDPInSock.recv(self.buf))
+        self.addrList.append((self.cIP[0], self.outPort))
+        self.UDPOutSockList.append(socket.socket(socket.AF_INET,socket.SOCK_DGRAM))
         self.clients+=1
       else:  
         self.UDPInSock.settimeout(2)
         try:
-          self.cIP = self.UDPInSock.recv(self.buf)
+          cIP = self.UDPInSock.recv(self.buf)
+          newClient=True
+          for i in self.cIP:
+              if cIP == i: 
+                  newClient=False
+                  break
+          if newClient:
+              self.cIP.append(cIP)
+              self.addrList.append((self.cIP[self.clients], self.outPort))
+              self.UDPOutSockList.append(socket.socket(socket.AF_INET,socket.SOCK_DGRAM))
+              self.clients+=1    
         except:
-          self.clients-=1
+          self.clients=0
+          self.cIP=[]
+          self.addrList=[]
+          self.UDPOutSockList=[]
+         
         sendString=""
         for i in self.points:
           for j in i:
               sendString+=repr(j)+" "
         for i in self.centerOfGrav:
           sendString+=repr(i)+" "
-        self.UDPOutSock.sendto(sendString, self.addr)
+        count=0
+        for i in self.UDPOutSockList:
+            i.sendto(sendString, self.addrList[count])
+            count+=1
       self.updateLock.release()
       self.updateDone=True

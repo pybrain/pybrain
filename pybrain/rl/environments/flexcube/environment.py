@@ -85,7 +85,6 @@ class FlexCubeEnvironment(GraphicalEnvironment):
     self.euler()
     
     if self.hasRenderInterface(): 
-      #if self.getRenderInterface().isAlive():
       if self.getRenderInterface().updateDone:
           self.getRenderInterface().updateData(self.pos, self.centerOfGrav)
       
