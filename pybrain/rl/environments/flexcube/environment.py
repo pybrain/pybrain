@@ -2,8 +2,8 @@
 
 import sys
 import sensors
-from pybrain.rl.environments.graphical import GraphicalEnvironment
-from renderer import FlexCubeRenderer
+from pybrain.rl.environments.serverInterface import GraphicalEnvironment
+from renderInterface import FlexCubeRenderInterface
 from scipy import ones, zeros, array, clip, arange, sqrt 
 from time import sleep
 
@@ -34,9 +34,10 @@ class FlexCubeEnvironment(GraphicalEnvironment):
     self.euler()
     #self.mySensors.updateSensor(self.pos, self.vel, self.action)
     if renderer:
-        self.setRenderer(FlexCubeRenderer())
-        self.getRenderer().updateData(self.pos, self.centerOfGrav)
-    
+        self.setRenderInterface(FlexCubeRenderInterface())
+        self.getRenderInterface().updateData(self.pos, self.centerOfGrav)
+        #self.setRenderer(FlexCubeRenderer())
+        #self.getRenderer().updateData(self.pos, self.centerOfGrav)
 
   def setEdges(self):
     self.edges=zeros((12,2), int)
@@ -72,14 +73,10 @@ class FlexCubeEnvironment(GraphicalEnvironment):
     self.distM = self.springM.copy() #distance matrix
     self.mySensors.updateSensor(self.pos, self.vel, self.distM, self.centerOfGrav, self.action)    
                       
-  def doNothing(self):
-    self.newPic=0
-    sleep(0.01)
-    
   def setTarget(self, target):
-    if self.hasRenderer(): 
-      if self.getRenderer().isAlive():
-        self.getRenderer().setTarget(target)    
+    if self.hasRenderInterface(): 
+      #if self.getRenderer().isAlive():
+        self.getRenderInterface().setTarget(target)    
     
   def performAction(self, action):
     action=self.normAct(action)
@@ -87,9 +84,10 @@ class FlexCubeEnvironment(GraphicalEnvironment):
     self.act(action)
     self.euler()
     
-    if self.hasRenderer(): 
-      if self.getRenderer().isAlive():
-        self.getRenderer().updateData(self.pos, self.centerOfGrav)
+    if self.hasRenderInterface(): 
+      #if self.getRenderInterface().isAlive():
+      if self.getRenderInterface().updateDone:
+          self.getRenderInterface().updateData(self.pos, self.centerOfGrav)
       
   def getSensors(self):
     self.mySensors.updateSensor(self.pos, self.vel, self.distM, self.centerOfGrav, self.action)   
@@ -118,8 +116,6 @@ class FlexCubeEnvironment(GraphicalEnvironment):
       #spring vectors normalized to 1 times the actual force from deformation
       vel = self.difM/distM #.reshape(64,1)
       vel *= disM*self.d*self.dt
-      #print difM[1], difM[8], distM[1], distM[8], disM[1], disM[8], vel[1], vel[8]
-      #sleep(2000000)
       idx2 = arange(8)
       #TODO: arggggg!!!!!
       for i in range(8):

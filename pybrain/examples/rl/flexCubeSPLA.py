@@ -49,7 +49,7 @@ def saveWeights(filename, w):
 numbExp=1 #number of experiments
 for runs in range(numbExp):
     # create environment
-    env = FlexCubeEnvironment(False) #set True for OpenGL output
+    env = FlexCubeEnvironment(True) #set True for OpenGL output
     # create task
     task = WalkTask(env)
     # create controller network
@@ -66,9 +66,10 @@ for runs in range(numbExp):
     prnts=1 #frequency of console output
     epis=5000/batch/prnts
     #Renderer options (relevant only if env is set up with OpenGL)
-    if env.hasRenderer(): 
-        env.getRenderer().fps=1 #for comps with no 3d chip
-        env.getRenderer().start()  
+    if env.hasRenderInterface():
+        print "Randerer Set"
+        #env.getRenderer().fps=25 #for comps with no 3d chip
+        #env.getRenderer()._render()  
     
     #actual roll outs
     for updates in range(epis):

@@ -151,7 +151,7 @@ def confidenceIntervalSize(stdev, nbsamples):
     return 2*1.98*stdev/sqrt(nbsamples)   
     
     
-def threaded(callback=lambda: None, daemonic=False):
+def threaded(callback=lambda *args, **kwargs: None, daemonic=False):
     """Decorate  a function to run in its own thread and report the result
     by calling callback with it."""
     def innerDecorator(func):

@@ -1,5 +1,4 @@
 #@PydevCodeAnalysisIgnore
-from rendererBase import Renderer
 from OpenGL.GLUT import *
 from OpenGL.GL import *
 from OpenGL.GLE import *
@@ -7,11 +6,12 @@ from OpenGL.GLU import *
 import objects3D
 from time import *
 from scipy import ones, zeros, array, clip, arange, sqrt
-import threading
+from socket import *
+import string
 
-class FlexCubeRenderer(Renderer):
-  def __init__(self):
-      Renderer.__init__(self)
+
+class FlexCubeRenderer(object): 
+  def __init__(self, servIP, ownIP):
       self.oldScreenValues = None
       self.view=0
       self.worldRadius = 400
@@ -31,12 +31,59 @@ class FlexCubeRenderer(Renderer):
       self.picCount=0
       self.target=[80.0,0.0,0.0]
       
-      self.dataLock = threading.Lock()
       self.centerOfGrav=array([0.0,-2.0,0.0])
       self.points=ones((8,3),float)
       self.savePics=False
       self.drawCounter=0
       self.fps=25
+
+      #UDP Sttings
+      self.host = servIP
+      self.inPort = 21560
+      self.outPort = 21561
+      self.addr = (self.host,self.outPort)
+
+      # Create socket
+      self.UDPSock = socket(AF_INET,SOCK_DGRAM)
+      self.UDPSock.sendto(ownIP,self.addr)
+      self.addr = (ownIP,self.inPort)
+      self.UDPSock = socket(AF_INET,SOCK_DGRAM)
+      self.UDPSock.bind(self.addr)
+
+
+  def listen(self):
+      # Receive messages
+      buf=1024
+      data = self.UDPSock.recv(buf)
+      if not data:
+          print "Client has exited!"
+          return
+      else:
+          data = string.split(str(data), " ")
+
+      i=0
+      j=0
+      c=0
+      p=False
+      while not p:
+          self.points[i][j]=eval(data[c])
+          c+=1
+          j+=1
+          if j==3:
+              j=0
+              i+=1
+          if i==8: 
+              i=0
+              p=True
+
+      p=False
+      while not p:
+          self.centerOfGrav[i]=eval(data[c])
+          c+=1
+          i+=1
+          if i==3: 
+              i=0
+              p=True
         
   def saveTo( self, filename, format="JPEG" ):
     """Save current buffer to filename in format"""
@@ -54,10 +101,8 @@ class FlexCubeRenderer(Renderer):
     self.target=target[:]
     
   def updateData(self, pos, sensors):
-    self.dataLock.acquire()
     self.points=pos.copy()
     self.centerOfGrav=sensors.copy()
-    self.dataLock.release() 
     
   def _render(self):
     # Call init: Parameter(Window Position -> x, y, height, width)
@@ -68,7 +113,6 @@ class FlexCubeRenderer(Renderer):
     glutMainLoop()
     
   def drawScene(self):
-    #sleep(0.01)
     ''' This methode describes the complete scene.'''
     # clear the buffer
     if self.zDis<10: self.zDis+=0.25
@@ -76,18 +120,15 @@ class FlexCubeRenderer(Renderer):
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
     glLoadIdentity()
     
-    self.dataLock.acquire()
     # Point of view
     glTranslatef(-self.centerOfGrav[0], -self.centerOfGrav[1], -self.centerOfGrav[2]-self.lastz)
-    self.dataLock.release()
     glRotatef(self.lastx, 0.0, 1.0, 0.0)
     glRotatef(self.lasty, 1.0, 0.0, 0.0)      
     
     # Calculates an rotation angle depending an a time factor
     self.rotation=time() % 359
-    #self.keyEffect()
-    # objects ###############################
 
+    #Objects
     #Target Ball
     glColor3f(1,0.25,0.25)
     glPushMatrix()
@@ -137,9 +178,7 @@ class FlexCubeRenderer(Renderer):
     glColor4f(0.5,0.75,0.5,0.75)
     glPushMatrix()
     glTranslatef(0, -0.05, 0)
-    self.dataLock.acquire()
     self.object.drawMirCreat(self.points, self.centerOfGrav)
-    self.dataLock.release()
     glPopMatrix()
     
     # Floor
@@ -174,10 +213,7 @@ class FlexCubeRenderer(Renderer):
     
     glColor4f(0.5,0.75,0.5,0.75)
     glPushMatrix()
-    #glTranslatef(self.cube[0], self.cube[1], self.cube[2])
-    self.dataLock.acquire()
     self.object.drawCreature(self.points, self.centerOfGrav)
-    self.dataLock.release()
     glPopMatrix()
     
     glEnable (GL_BLEND)
@@ -185,10 +221,7 @@ class FlexCubeRenderer(Renderer):
     
     glColor4f(0,0,0,0.5)
     glPushMatrix()
-    #glTranslatef(self.cube[0], self.cube[1], self.cube[2])
-    self.dataLock.acquire()
     self.object.drawShadow(self.points, self.centerOfGrav)
-    self.dataLock.release()
     glPopMatrix()
     
     # swap the buffer
@@ -196,13 +229,13 @@ class FlexCubeRenderer(Renderer):
     
   def drawIdleScene(self):
     if self.drawCounter==100/self.fps:
+        self.listen()
         self.drawCounter=0
         self.drawScene()
         if self.savePics:
             if self.picCount/4==float(self.picCount)/4.0: self.saveTo("./screenshots2/image"+repr(10000+self.picCount)+".jpg")
         self.picCount+=1
     self.drawCounter+=1
-    sleep(0.01) #give the world some time to calculate
       
   def resizeScene(self, width, height):
     '''Needed if window size changes.'''
@@ -262,13 +295,16 @@ class FlexCubeRenderer(Renderer):
     # 
     glColorMaterial(GL_FRONT, GL_DIFFUSE)
     glEnable(GL_COLOR_MATERIAL)
-    #glEnable(GL_LIGHTING)
     # Automatic vector normalise
     glEnable(GL_NORMALIZE)
-    # ### Instantiate the virtual world ###
     
+    ### Instantiate the virtual world ###
     glutDisplayFunc(pyWorld.drawScene)
     glutMotionFunc(pyWorld.activeMouse)
     glutMouseFunc(pyWorld.completeMouse)
     glutReshapeFunc(pyWorld.resizeScene)
     glutIdleFunc(pyWorld.drawIdleScene)
+
+if __name__ == '__main__':
+    r=FlexCubeRenderer(sys.argv[1], sys.argv[2])
+    r._render()
