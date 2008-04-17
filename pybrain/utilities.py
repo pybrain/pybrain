@@ -208,7 +208,7 @@ def substitute(target):
     
     if os.environ.get('PYBRAIN_NO_SUBSTITUTE', None) is not None:
         logging.info("substitute deactivated since PYBRAIN_NO_SUBSTITUTE is"
-                     " set for" )
+                     " set." )
         return lambda x: x
         
     def makeBuiltinWrapper(func):
