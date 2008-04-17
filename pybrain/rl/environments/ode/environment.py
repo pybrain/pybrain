@@ -23,7 +23,6 @@ class ODEEnvironment(GraphicalEnvironment):
     def __init__(self, render=True):
         """ initializes the virtual world, variables, the frame rate and the callback functions."""
         print "ODEEnvironment -- based on Open Dynamics Engine."
-        print "$Id: odeenvironment.py 415 2007-09-26 13:41:33Z sehnke $"
         
         # initialize base class
         GraphicalEnvironment.__init__(self)
@@ -39,15 +38,13 @@ class ODEEnvironment(GraphicalEnvironment):
         # initialize the textures dictionary
         self.textures = {}
 
-        # initialize sensor list
-        self.sensors = []    
-        
+        # initialize sensor and exclude list
+        self.sensors = []
+        self.excludesensors = []
+
         #initialize actuators list
         self.actuators = []
         
-        # joint sensor for actions
-        ## self._jointSensor = sensors.JointSensor('JointSensor');
-
         # A joint group for the contact joints that are generated whenever two bodies collide
         self.contactgroup = ode.JointGroup()
          
@@ -77,9 +74,9 @@ class ODEEnvironment(GraphicalEnvironment):
     def _setWorldParameters(self):
         """ sets parameters for ODE world object: gravity, error correction (ERP, default=0.2),
         constraint force mixing (CFM, default=1e-5).  """
-        self.world.setGravity( (0,-9.81,0) ) 
-        self.world.setERP(0.2)
-        self.world.setCFM(1E-9)
+        self.world.setGravity( (0,-9.81,0) )
+        # self.world.setERP(0.2)
+        # self.world.setCFM(1E-9)
 
     def _create_box(self, space, density, lx, ly, lz):
         """Create a box body and its corresponding geom."""
@@ -264,10 +261,11 @@ class ODEEnvironment(GraphicalEnvironment):
 
     def _parseBodies(self, node):
         """ parses through the xode tree recursively and finds all bodies and geoms for drawing. """
+        
         # body (with nested geom)
         if isinstance(node, xode.body.Body):
             body = node.getODEObject()
-            body.name = nodename
+            body.name = node.getName()
             try:
                 # filter all xode geom objects and take the first one
                 xgeom = filter(lambda x: isinstance(x, xode.geom.Geom), node.getChildren())[0]
@@ -276,8 +274,9 @@ class ODEEnvironment(GraphicalEnvironment):
             # get the real ode object
             geom = xgeom.getODEObject()
             # if geom doesn't have own name, use the name of its body
-            geom.name = node.name
+            geom.name = node.getName()
             self.body_geom.append((body, geom))
+        
         # geom on its own without body
         elif isinstance(node, xode.geom.Geom):
             try:
@@ -285,27 +284,29 @@ class ODEEnvironment(GraphicalEnvironment):
             except xode.node.AncestorNotFoundError:
                 body = None;
                 geom = node.getODEObject()
-                geom.name = node.name
+                geom.name = node.getName()
                 self.body_geom.append((body, geom))
+        
+        # special cases for joints: universal, fixed, amotor
         elif isinstance(node, xode.joint.Joint):
             joint = node.getODEObject()
+            
             if type(joint) == ode.UniversalJoint:
                 # insert an additional AMotor joint to read the angles from and to add torques
-                amotor = ode.AMotor(self.world)
-                amotor.attach(joint.getBody(0), joint.getBody(1))
-
-                amotor.setNumAxes(3)
-                amotor.setAxis(0, 0, joint.getAxis2())
-                amotor.setAxis(2, 0, joint.getAxis1())
-                amotor.setMode(ode.AMotorEuler)
-
-                xode_amotor = xode.joint.Joint(None, node.getParent())
-                xode_amotor.setODEObject(amotor)
-                # node.getParent().addChild(xode_amotor)
-
+                # amotor = ode.AMotor(self.world)
+                # amotor.attach(joint.getBody(0), joint.getBody(1))
+                # amotor.setNumAxes(3)
+                # amotor.setAxis(0, 0, joint.getAxis2())
+                # amotor.setAxis(2, 0, joint.getAxis1())
+                # amotor.setMode(ode.AMotorEuler)
+                # xode_amotor = xode.joint.Joint(node.getName() + '[amotor]', node.getParent())
+                # xode_amotor.setODEObject(amotor)
+                # node.getParent().addChild(xode_amotor, None)
+                pass
             if type(joint) == ode.AMotor:
                 # do the euler angle calculations automatically (ref. ode manual)
                 joint.setMode(ode.AMotorEuler)
+                
             if type(joint) == ode.FixedJoint:
                 # prevent fixed joints from bouncing to center of first body
                 joint.setFixed()
@@ -314,11 +315,15 @@ class ODEEnvironment(GraphicalEnvironment):
         for c in node.getChildren():
             self._parseBodies(c)
 
+    def excludeSensors(self, exclist):
+        self.excludesensors.extend(exclist)
+        
     def getSensors(self):
         """ returns combined sensor data """
         output = []
         for s in self.sensors:
-            output.extend(s.getValues())
+            if not s.name in self.excludesensors:
+                output.extend(s.getValues())
         return output
     
     def getSensorNames(self):
@@ -333,12 +338,14 @@ class ODEEnvironment(GraphicalEnvironment):
         except ValueError:
             warnings.warn('sensor ' + name + ' is not in sensor list.')
             return []
+        
+        return self.sensors[idx].getValues()
             
-        startIdx = 0
-        for i in range(idx):
-            startIdx += self.sensors[i].getNumValues()
-        endIdx = startIdx + self.sensors[idx].getNumValues()
-        return self.getSensors()[startIdx:endIdx]        
+        # startIdx = 0
+        # for i in range(idx):
+        #     startIdx += self.sensors[i].getNumValues()
+        # endIdx = startIdx + self.sensors[idx].getNumValues()
+        # return self.getSensors()[startIdx:endIdx]        
         
     def getActionLength(self):
         num = 0
@@ -393,7 +400,7 @@ class ODEEnvironment(GraphicalEnvironment):
             c.setSoftCFM(0.00005)
             c.setSlip1(0.02)
             c.setSlip2(0.02)
-            c.setMu(10.0)
+            c.setMu(8.0) # 10
             j = ode.ContactJoint(self.world, self.contactgroup, c)
             j.name = None
             j.attach(geom1.getBody(), geom2.getBody())
@@ -437,6 +444,23 @@ class ODEEnvironment(GraphicalEnvironment):
         """ keyboard call-back function. """
         if self.specialkeyfunc(c, x, y):
             return
+        
+        # use numbers and shift-numbers (english keyb.) to manipulate single joints
+        shiftnum = {'!':'1', '@':'2', '#':'3', '$':'4', '%':'5', '^':'6', '&':'7', '*':'8', '(':'9'}
+        
+        if c in shiftnum.values():
+            rvec = [0] * self.getActionLength()
+            if int(c)-1 < len(rvec):
+                rvec[int(c)-1] = 2000
+            self.performAction(rvec)
+        
+        if c in shiftnum.keys():
+            c = shiftnum[c]
+            rvec = [0] * self.getActionLength()
+            if int(c)-1 < len(rvec):
+                rvec[int(c)-1] = -2000
+            self.performAction(rvec)
+            
         if c=='s':
             self.renderer.setCaptureScreen(not self.renderer.getCaptureScreen())
             print "Screen Capture: " + (self.renderer.getCaptureScreen() and "on" or "off")
@@ -447,23 +471,24 @@ class ODEEnvironment(GraphicalEnvironment):
             self.drop_object()
         if c in ['x', 'q']:
             sys.exit()
-        if c == 'j':
-            print self.getSensors()
         if c == 'r':
             rvec = [random.random()*20.0-10.0 for x in range(self.getActionLength())]
             self.performAction(rvec)
+        if c == 'v':
+            if self.hasRenderer():
+                self.getRenderer().mouseView = not self.getRenderer().mouseView
         if c == 'f':
             # add force in positive y direction to all objects
             for o in [x[0] for x in self.body_geom]:
                 if o is not None:
-                    o.addForce((0, 0, -100))
+                    o.addForce((0, 3000, 0))
         if c == 'z':
             # add same torque to all joints
-            rvec = [3] * self.getActionLength()
+            rvec = [3000] * self.getActionLength()
             self.performAction(rvec)
         if c == 'a':
             # add same torque to all joints
-            rvec = [-3] * self.getActionLength()
+            rvec = [-3000] * self.getActionLength()
             self.performAction(rvec)
         if c =='g':
             # get current state
@@ -484,6 +509,7 @@ class ODEEnvironment(GraphicalEnvironment):
     #--- helper functions ---#
     def _print_help(self):
         """ prints out the keyboard shortcuts. """
+        print "v   -> toggle view with mouse on/off"
         print "s   -> toggle screen capture on/off"
         print "d   -> drop an object"
         print "f   -> lift all objects"
@@ -525,7 +551,6 @@ if __name__ == '__main__' :
     
     w.getRenderer().setFrameRate(30) 
     w.getRenderer().start()
-    print "action vector length: ", w.getActionLength()
     
     # start simulating the world
     while True:

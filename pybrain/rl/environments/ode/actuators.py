@@ -92,14 +92,14 @@ class JointActuator(Actuator):
                 for i in range(3-num):
                     torques.append(0)
                 (t1, t2, t3) = torques
-                j.addTorques(t1*10, t2*10, t3*10)
+                j.addTorques(t1, t2, t3)
             elif type(j) == ode.HingeJoint:
                 # hinge joints have only one axis to add torque to
                 j.addTorque(action[0])
                 action = action[1:]
             elif type(j) == ode.Hinge2Joint:
                 # hinge2 joints can receive 2 torques for their 2 axes
-                t1, t2 = action[0:1]
+                t1, t2 = action[0:2]
                 action = action[2:]
                 j.addTorques(t1, t2)
             elif type(j) == ode.SliderJoint:

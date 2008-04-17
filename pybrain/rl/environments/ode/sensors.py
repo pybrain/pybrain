@@ -158,6 +158,27 @@ class DistToPointSensor(Sensor):
             return 0
         self.setValues([norm(odeObj.getPosRelPoint(self._point))])
 
+class BodyDistanceSensor(Sensor):
+    ''' This sensor takes two body names and returns the current distance between them. '''
+
+    def __init__(self, bodyName1, bodyName2, name='BodyDistanceSensor'):
+        Sensor.__init__(self, name, 0)
+        # initialize one return value
+        self.setNumValues(1)
+        self._values = [0]
+        self._bodyName1 = bodyName1
+        self._bodyName2 = bodyName2
+
+    def _update(self):
+        try:
+            odeObj1 = self._world.getXODERoot().namedChild(self._bodyName1).getODEObject()
+            odeObj2 = self._world.getXODERoot().namedChild(self._bodyName2).getODEObject()
+        except KeyError:
+            # the given object name is not found. output warning and return distance 0.
+            warnings.warn("One of the objects '", self._bodyName1, self._bodyName2, "' was not found.")
+            return 0
+        self.setValues([norm(odeObj1.getPosRelPoint(odeObj2.getPosition()))])
+
 
 class BodyPositionSensor(Sensor):
     ''' This sensor parses the xode root node for all bodies and returns the positions in x, y, z
