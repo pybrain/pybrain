@@ -7,7 +7,36 @@ from neuronlayer import NeuronLayer
 class GaussianLayer(NeuronLayer):
     """ A layer implementing a gaussian interpretation of the input. The mean is the input, 
         the sigmas are stored in the module parameters. """
-
+    
+    def __init__(self, dim, name=None):
+        NeuronLayer.__init__(self, dim, name)
+        # initialize sigmas to 0
+        self.initParams(dim, stdParams = 0)
+        # if autoalpha is set to True, alpha_sigma = alpha_mu = alpha*sigma^2
+        self.autoalpha = False
+        self.enabled = True
+    
+    def setSigma(self, sigma):
+        """ wrapper method to set the sigmas (the parameters of the module) to a certain value. """
+        assert len(sigma) == self.indim
+        self.params *= 0
+        self.params += sigma
+    
+    def _forwardImplementation(self, inbuf, outbuf):
+        if not self.enabled:
+            outbuf[:] = inbuf
+        else:
+            outbuf[:] = random.normal(inbuf, self.expln(self.params))
+        
+    def _backwardImplementation(self, outerr, inerr, outbuf, inbuf):
+        expln_params = self.expln(self.params)
+        self.derivs += ((outbuf - inbuf)**2 - expln_params**2) / expln_params * self.explnPrime(self.params)
+        inerr[:] = (outbuf - inbuf)
+        
+        if not self.autoalpha:
+            inerr /= expln_params**2
+            self.derivs /= expln_params**2
+    
     def expln(self, x):
         """ This function ensures that the values of the array are always positive. It is 
             ln(x+1)+1 for x=>0 and exp(x) for x<0. """
@@ -31,29 +60,3 @@ class GaussianLayer(NeuronLayer):
                 # linear function for x>=0
                 return 1.0/(val+1.0)
         return array(map(f, x))
-    
-    
-    def __init__(self, dim, name=None):
-        NeuronLayer.__init__(self, dim, name)
-        # initialize sigmas to 0
-        self.initParams(dim, stdParams = 0)
-        # if autoalpha is set to True, alpha_sigma = alpha_mu = alpha*sigma^2
-        self.autoalpha = False
-    
-    def setSigma(self, sigma):
-        """ wrapper method to set the sigmas (the parameters of the module) to a certain value. """
-        assert len(sigma) == self.indim
-        self.params *= 0
-        self.params += sigma
-    
-    def _forwardImplementation(self, inbuf, outbuf):
-        outbuf[:] = random.normal(inbuf, self.expln(self.params))
-        
-    def _backwardImplementation(self, outerr, inerr, outbuf, inbuf):
-        expln_params = self.expln(self.params)
-        self.derivs += ((outbuf - inbuf)**2 - expln_params**2) / expln_params * self.explnPrime(self.params)
-        inerr[:] = (outbuf - inbuf)
-        
-        if not self.autoalpha:
-            inerr /= expln_params**2
-            self.derivs /= expln_params**2
