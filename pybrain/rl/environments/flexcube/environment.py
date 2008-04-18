@@ -12,7 +12,7 @@ class FlexCubeEnvironment(GraphicalEnvironment):
     # initialize base class
     GraphicalEnvironment.__init__(self)
     self.actLen=12
-    self.mySensors=sensors.Sensors(["EdgesReal"])  #"EdgesTarget", ,"EdgeSumReal", "VerticesMinHight", "Smell""VerticesContact",, "Target" "DistToOrigin",
+    self.mySensors=sensors.Sensors(["EdgesReal"])
     self.dists=array([20.0, sqrt(2.0)*20, sqrt(3.0)*20])
     self.gravVect=array([0.0,-100.0,0.0])
     self.centerOfGrav=zeros((1,3),float)
@@ -21,7 +21,7 @@ class FlexCubeEnvironment(GraphicalEnvironment):
     self.SpringM = ones((8,8),float)
     self.d=60.0
     self.dt=0.02
-    self.startHight=11.0
+    self.startHight=10.0
     self.dumping=0.4
     self.fraktMin=0.7
     self.fraktMax=1.3
@@ -33,12 +33,9 @@ class FlexCubeEnvironment(GraphicalEnvironment):
     self.act(array([20.0]*12))
     self.euler()
     self.realtime=realtime
-    #self.mySensors.updateSensor(self.pos, self.vel, self.action)
     if renderer:
         self.setRenderInterface(FlexCubeRenderInterface())
         self.getRenderInterface().updateData(self.pos, self.centerOfGrav)
-        #self.setRenderer(FlexCubeRenderer())
-        #self.getRenderer().updateData(self.pos, self.centerOfGrav)
 
   def setEdges(self):
     self.edges=zeros((12,2), int)
@@ -76,7 +73,6 @@ class FlexCubeEnvironment(GraphicalEnvironment):
                       
   def setTarget(self, target):
     if self.hasRenderInterface(): 
-      #if self.getRenderer().isAlive():
         self.getRenderInterface().setTarget(target)    
     
   def performAction(self, action):
@@ -116,9 +112,10 @@ class FlexCubeEnvironment(GraphicalEnvironment):
 
       #Forces to Velos
       #spring vectors normalized to 1 times the actual force from deformation
-      vel = self.difM/distM #.reshape(64,1)
+      vel = self.difM/distM
       vel *= disM*self.d*self.dt
       idx2 = arange(8)
+
       #TODO: arggggg!!!!!
       for i in range(8):
           self.vel[i]+=vel[idx2+i*8,:].sum(axis=0)

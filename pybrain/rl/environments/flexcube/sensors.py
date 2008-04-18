@@ -68,7 +68,7 @@ class VerticesContact(defaultSensor):
 class VerticesMinHight(defaultSensor):
   def getSensor(self):
     self.sensorOutput=["VerticesMinHight", 1]
-    self.sensorOutput.append(min(self.pos[:][1]))
+    self.sensorOutput.append(array([min(self.pos[:,1])]))
     return self.sensorOutput
 
 class DistToOrigin(defaultSensor):

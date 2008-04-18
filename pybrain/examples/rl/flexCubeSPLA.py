@@ -51,7 +51,7 @@ for runs in range(numbExp):
     # create environment
     env = FlexCubeEnvironment(True, True) #set True for OpenGL output, True for realtime calculation while clients are watching
     # create task
-    task = WalkTask(env)
+    task = JumpTask(env)
     # create controller network
     net = buildNetwork(len(task.getObservation()), 10, env.actLen, outclass=TanhLayer)
     # create agent with controller and learner
@@ -65,11 +65,6 @@ for runs in range(numbExp):
     experiment = EpisodicExperiment(task, agent)
     prnts=1 #frequency of console output
     epis=5000000/batch/prnts
-    #Renderer options (relevant only if env is set up with OpenGL)
-    if env.hasRenderInterface():
-        print "Randerer Set"
-        #env.getRenderer().fps=25 #for comps with no 3d chip
-        #env.getRenderer()._render()  
     
     #actual roll outs
     for updates in range(epis):

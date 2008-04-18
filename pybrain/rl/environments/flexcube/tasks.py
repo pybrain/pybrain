@@ -1,9 +1,8 @@
 import random, math, os
 from time import * 
 from pybrain.rl.tasks import EpisodicTask
-from scipy import ones, array, c_, r_
+from scipy import ones, array, c_, r_, sin
 import sensors
-
         
 class NoRewardTask(EpisodicTask):
     ''' just a basic task, that doesn't return a reward '''
@@ -23,7 +22,7 @@ class NoRewardTask(EpisodicTask):
         for i in range(self.outDim):
             self.action.append(self.env.dists[0])        
         self.dif=(self.env.fraktMax-self.env.fraktMin)*self.env.dists[0]
-        self.maxSpeed=self.dif/100.0 
+        self.maxSpeed=self.dif/30.0 
         self.picCount=0
     
     def incStep(self):
@@ -53,6 +52,8 @@ class NoRewardTask(EpisodicTask):
         """ a filtered mapping towards performAction of the underlying environment. """                
         # scaling
         self.incStep()
+        #action=array([sin(float(self.epiStep)/5.0)]*12)
+        
         action=(action+1.0)/2.0*self.dif+self.env.fraktMin*self.env.dists[0]
         actLen=len(action)
         for i in range(actLen):
@@ -157,4 +158,35 @@ class TargetTask(WalkDirectionTask):
             self.env.reset()
             self.env.mySensors.sensors[3].targetList=[array([-56.6,0.0,56.6])]
             if self.env.hasRenderer(): self.env.getRenderer().target=self.env.mySensors.sensors[3].targetList[0]
+        return (self.epiStep>=self.epiLen)
+
+class JumpTask(NoRewardTask):
+    def __init__(self, env):
+        NoRewardTask.__init__(self, env)
+        self.rewardSensor=["VerticesMinHight"]
+        self.obsSensors=["EdgesTarget","EdgesReal","VerticesContact"]    
+        self.inDim=len(self.getObservation())     
+        self.plotString=["World Interactions", "Distance", "Reward on Walking Task"]
+        self.env.mySensors=sensors.Sensors(self.obsSensors+self.rewardSensor)  
+        self.epiLen=500
+        self.maxReward=0.0
+        self.maxSpeed=self.dif/15.0
+        
+    def getReward(self):
+        if self.epiStep<self.epiLen: 
+            if self.rawReward > self.maxReward: self.maxReward = self.rawReward
+            self.reward[0]=0.0
+        else: self.reward[0]=self.maxReward
+        return self.reward[0]
+
+    def reset(self):
+        self.reward[0]=0.0   
+        self.rawReward=0.0
+        self.maxReward=0.0
+        self.env.reset()
+        self.action=[self.env.dists[0]]*self.outDim
+        self.epiStep=0
+        EpisodicTask.reset(self)
+
+    def isFinished(self):
         return (self.epiStep>=self.epiLen)
