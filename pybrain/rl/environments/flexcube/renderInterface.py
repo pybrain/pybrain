@@ -78,5 +78,6 @@ class FlexCubeRenderInterface(object):
         for i in self.UDPOutSockList:
             i.sendto(sendString, self.addrList[count])
             count+=1
+      sleep(0.02)
       self.updateLock.release()
       self.updateDone=True

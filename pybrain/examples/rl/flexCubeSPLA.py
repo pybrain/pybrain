@@ -49,7 +49,7 @@ def saveWeights(filename, w):
 numbExp=1 #number of experiments
 for runs in range(numbExp):
     # create environment
-    env = FlexCubeEnvironment(True) #set True for OpenGL output
+    env = FlexCubeEnvironment(True, True) #set True for OpenGL output, True for realtime calculation while clients are watching
     # create task
     task = WalkTask(env)
     # create controller network
@@ -64,7 +64,7 @@ for runs in range(numbExp):
     #create experiment
     experiment = EpisodicExperiment(task, agent)
     prnts=1 #frequency of console output
-    epis=5000/batch/prnts
+    epis=5000000/batch/prnts
     #Renderer options (relevant only if env is set up with OpenGL)
     if env.hasRenderInterface():
         print "Randerer Set"

@@ -8,7 +8,7 @@ from scipy import ones, zeros, array, clip, arange, sqrt
 from time import sleep
 
 class FlexCubeEnvironment(GraphicalEnvironment):
-  def __init__(self, renderer=True):
+  def __init__(self, renderer=True, realtime=False):
     # initialize base class
     GraphicalEnvironment.__init__(self)
     self.actLen=12
@@ -32,6 +32,7 @@ class FlexCubeEnvironment(GraphicalEnvironment):
     self.setEdges()
     self.act(array([20.0]*12))
     self.euler()
+    self.realtime=realtime
     #self.mySensors.updateSensor(self.pos, self.vel, self.action)
     if renderer:
         self.setRenderInterface(FlexCubeRenderInterface())
@@ -87,6 +88,7 @@ class FlexCubeEnvironment(GraphicalEnvironment):
     if self.hasRenderInterface(): 
       if self.getRenderInterface().updateDone:
           self.getRenderInterface().updateData(self.pos, self.centerOfGrav)
+          if self.getRenderInterface().clients>0 and self.realtime: sleep(0.02)
       
   def getSensors(self):
     self.mySensors.updateSensor(self.pos, self.vel, self.distM, self.centerOfGrav, self.action)   

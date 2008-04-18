@@ -36,6 +36,7 @@ class FlexCubeRenderer(object):
       self.savePics=False
       self.drawCounter=0
       self.fps=25
+      self.dt=1.0/float(self.fps)
 
       #UDP Sttings
       self.host = servIP
@@ -230,14 +231,12 @@ class FlexCubeRenderer(object):
     glutSwapBuffers()    
     
   def drawIdleScene(self):
-    if self.drawCounter==100/self.fps:
-        self.listen()
-        self.drawCounter=0
-        self.drawScene()
-        if self.savePics:
-            if self.picCount/4==float(self.picCount)/4.0: self.saveTo("./screenshots2/image"+repr(10000+self.picCount)+".jpg")
-        self.picCount+=1
-    self.drawCounter+=1
+      self.listen()
+      self.drawScene()
+      if self.savePics:
+          self.saveTo("./screenshots2/image"+repr(10000+self.picCount)+".jpg")
+          self.picCount+=1
+      sleep(self.dt)
       
   def resizeScene(self, width, height):
     '''Needed if window size changes.'''
