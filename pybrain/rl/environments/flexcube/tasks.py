@@ -114,6 +114,12 @@ class WalkTask(NoRewardTask):
     def isFinished(self):
         return (self.epiStep>=self.epiLen)
 
+class RollingUpTask(WalkTask):
+    def __init__(self, env):
+        WalkTask.__init__(self, env)
+        self.env.startHight=200.0
+        self.env.reset()
+
 class WalkDirectionTask(WalkTask):
     def __init__(self, env):
         NoRewardTask.__init__(self, env)

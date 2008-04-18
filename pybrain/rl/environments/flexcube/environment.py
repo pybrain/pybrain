@@ -21,7 +21,7 @@ class FlexCubeEnvironment(GraphicalEnvironment):
     self.SpringM = ones((8,8),float)
     self.d=60.0
     self.dt=0.02
-    self.startHight=40.0
+    self.startHight=11.0
     self.dumping=0.4
     self.fraktMin=0.7
     self.fraktMax=1.3
