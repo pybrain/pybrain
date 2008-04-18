@@ -9,7 +9,7 @@ class Actuator(Named):
         
     def __init__(self, name, numValues):
         self._numValues = numValues
-        self.setName(name)
+        self.name = name
         self._world = None
 
     def _update(self, action):

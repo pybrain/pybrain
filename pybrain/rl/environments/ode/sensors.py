@@ -19,7 +19,7 @@ class Sensor(Named):
         
     def __init__(self, name, numValues):
         self._numValues = numValues
-        self.setName(name)
+        self.name = name
         self._values = [0] * self._numValues
         self._world = None
 
