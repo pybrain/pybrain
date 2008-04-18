@@ -24,14 +24,16 @@ class MultilinePlotter:
         (0.968627451, 0.505882353, 0.749019608),\
         (0.6, 0.6, 0.6)]
     
-    def __init__(self, maxLines = 1, **kwargs):
+    def __init__(self, maxLines = 1, autoscale = 0.0, **kwargs):
         """
-    @param maxID: Number of Plots to draw and so max ID.
+    @param maxLines: Number of Plots to draw and so max ID.
+    @param autoscale: If set to a factor > 1, axes are automatically expanded whenever out-range data points are added
     @var indexList: The x-component of the data points
     @var DataList: The y-component of the data points"""
         self.indexList = []  
         self.dataList = []
         self.Lines = []
+        self.autoscale = autoscale
         pylab.clf()
         self.Axes = pylab.axes(**kwargs)
         self.nbLines = 0
@@ -145,8 +147,25 @@ class MultilinePlotter:
         """ Updates the current plot, if necessary """
         if not self.replot: 
             return
+        xr = list(self.Axes.get_xlim())
+        yr = list(self.Axes.get_ylim())
         for i in range(self.nbLines):
             self.Lines[i].set_data(self.indexList[i], self.dataList[i])
+            if self.autoscale > 1.0:
+                if self.indexList[i][0] < xr[0]:
+                    xr[0] = self.indexList[i][0]
+                ymn =  min(self.dataList[i])
+                if ymn < yr[0]:
+                    yr[0] = ymn
+                while self.indexList[i][-1] > xr[1]:
+                    xr[1] = (xr[1]-xr[0])*self.autoscale + xr[0]
+                ymx = max(self.dataList[i])
+                while ymx > yr[1]:
+                    yr[1] = (yr[1]-yr[0])*self.autoscale + yr[0]
+        if self.autoscale > 1.0:
+            self.Axes.set_xlim( tuple(xr) )
+            self.Axes.set_ylim( tuple(yr) )
+            self.Axes.draw()
         pylab.draw_if_interactive()
         self.replot = False
 
