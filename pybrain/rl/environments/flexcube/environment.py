@@ -88,7 +88,8 @@ class FlexCubeEnvironment(GraphicalEnvironment):
     if self.hasRenderInterface(): 
       if self.getRenderInterface().updateDone:
           self.getRenderInterface().updateData(self.pos, self.centerOfGrav)
-          if self.getRenderInterface().clients>0 and self.realtime: sleep(0.02)
+      if self.getRenderInterface().clients>0 and self.realtime: 
+          sleep(self.dt)
       
   def getSensors(self):
     self.mySensors.updateSensor(self.pos, self.vel, self.distM, self.centerOfGrav, self.action)   
