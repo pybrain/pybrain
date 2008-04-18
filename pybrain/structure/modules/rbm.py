@@ -6,7 +6,11 @@ __author__ = ('Christian Osendorfer, osendorf@in.tum.de;'
               'Justin S Bayer, bayerj@in.tum.de')
 
 
-from pybrain.structure import Network
+import itertools
+
+from pybrain.structure.modules import BiasUnit, SigmoidLayer, LinearLayer
+from pybrain.structure.connections import FullConnection
+from pybrain.structure.networks import Network
 
 class Rbm(Network):
 
@@ -15,12 +19,16 @@ class Rbm(Network):
         self.visibledim = visibledim
         self.hiddendim = hiddendim
         bias = BiasUnit()
-        ll = LinearLayer(visibledim))
-        sl = SigmoidLayer(hiddendim))
-        self.addInputModule(ll)
-        self.addOutputModule(sl)
-        self.addConnection(FullConnection(ll, sl))
-        self.addConnection(FullConnection(bias, sl))
+        
+        self.visibleLayer = LinearLayer(visibledim)
+        self.hidddenLayer = SigmoidLayer(hiddendim)
+        self.fullConnection = FullConnection(ll, sl, self.connNames.next())
+        self.biasConnection = FullConnection(bias, sl)
+        
+        self.addInputModule(self.visibleLayer)
+        self.addOutputModule(self.hiddenLayer)
+        self.addConnection(self.fullConnection)
+        self.addConnection(self.biasConnection)
 
     def _getWeights(self):
         return self.connections[0].params
@@ -29,4 +37,12 @@ class Rbm(Network):
         self.connections[0].params[:] = val
     
     weights = property(_getWeights, _setWeights)
+    
+    def _getBiasWeights(self):
+        return self.connections[1].params
+        
+    def _setBiasWeights(self, value):
+        self.connections[1].paramse = value
+        
+    biasWeights = property(_getBiasWeights, _setBiasWeights)
 

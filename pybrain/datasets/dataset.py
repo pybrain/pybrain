@@ -325,7 +325,7 @@ class DataSet(object):
         
     def _dumpDict(self):
         return dict((k, v) for k, v in self.__dict__.items() 
-                    if type(v) != types.FunctionType)
+                    if type(v) is types.FunctionType)
         
     def copy(self):
         """ deep copy. """
@@ -345,7 +345,7 @@ class DataSet(object):
         full_batches, rest = divmod(len(self), n)
         number_of_batches = full_batches if rest == 0 else full_batches + 1
         
-        # We make on iterator for the startindexes ...
+        # We make one iterator for the startindexes ...
         startindexes = (i * n for i in xrange(number_of_batches))
         # ... and one for the stop indexes
         stopindexes = (((i + 1) * n) for i in xrange(number_of_batches - 1))
@@ -362,7 +362,7 @@ class DataSet(object):
         for start, stop in indexes:
             yield self.data[label][start:stop]
 
-    def randomBatches(self, label, n0):
+    def randomBatches(self, label, n):
         """Like .batches(), but the order is random."""
         permutation = shuffle(range(len(self)))
         return self.batches(label, n, permutation)
