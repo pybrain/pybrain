@@ -35,6 +35,14 @@ class PolicyGradientAgent(LearningAgent):
         self.history.addField('loglh', self.module.paramdim)
         self.history.link.append('loglh')
         self.loglh = None
+    
+    def enableLearning(self):
+        LearningAgent.enableLearning(self)
+        self.explorationlayer.enabled = True
+    
+    def disableLearning(self):
+        LearningAgent.disableLearning(self)
+        self.explorationlayer.enabled = False
         
     def setSigma(self, sigma):
         self.explorationlayer.setSigma(sigma)
