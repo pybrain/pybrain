@@ -8,6 +8,9 @@ class GradientDescent(object):
     def __init__(self):
         # learning rate
         self.alpha = 0.1
+        
+        # alpha decay (1.0 = disabled)
+        self.alphadecay = 1.0
     
         # rprop parameters
         self.rprop = False
@@ -52,6 +55,7 @@ class GradientDescent(object):
         else:
             # update parameters (including momentum)
             self.momentumvector += self.alpha * gradient_arr
+            self.alpha *= self.alphadecay
         
         # return the new values
         self.values += self.momentumvector
