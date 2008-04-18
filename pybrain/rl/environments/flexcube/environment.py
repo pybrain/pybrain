@@ -14,14 +14,14 @@ class FlexCubeEnvironment(GraphicalEnvironment):
     self.actLen=12
     self.mySensors=sensors.Sensors(["EdgesReal"])  #"EdgesTarget", ,"EdgeSumReal", "VerticesMinHight", "Smell""VerticesContact",, "Target" "DistToOrigin",
     self.dists=array([20.0, sqrt(2.0)*20, sqrt(3.0)*20])
-    self.gravVect=array([0.0,-2.0,0.0])
+    self.gravVect=array([0.0,-40.0,0.0])
     self.centerOfGrav=zeros((1,3),float)
     self.pos=ones((8,3),float)
     self.vel=zeros((8,3),float)
     self.SpringM = ones((8,8),float)
-    self.d=10.0
+    self.d=30.0
     self.dt=0.02
-    self.startHight=11.0
+    self.startHight=41.0
     self.dumping=0.2
     self.fraktMin=0.7
     self.fraktMax=1.3
