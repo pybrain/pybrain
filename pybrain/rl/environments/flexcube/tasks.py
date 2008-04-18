@@ -170,7 +170,7 @@ class JumpTask(NoRewardTask):
         self.env.mySensors=sensors.Sensors(self.obsSensors+self.rewardSensor)  
         self.epiLen=500
         self.maxReward=0.0
-        self.maxSpeed=self.dif/15.0
+        self.maxSpeed=self.dif/10.0
         
     def getReward(self):
         if self.epiStep<self.epiLen: 
