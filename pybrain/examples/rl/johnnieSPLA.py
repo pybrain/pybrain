@@ -35,7 +35,7 @@ def saveWeights(filename, w):
 numbExp=1
 for runs in range(numbExp):
     # create environment
-    env = JohnnieEnvironment(True) #True for OpenGL output
+    env = JohnnieEnvironment(False) #True for OpenGL output
     # create task
     task = StandingTask(env) #Other tasks available are StandingTask and JumpingTask
     # create controller network

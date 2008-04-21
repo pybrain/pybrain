@@ -49,10 +49,10 @@ class StandingTask(JohnnieTask):
     def __init__(self, env):
         JohnnieTask.__init__(self, env)
         #add task spezific sensors, TODO build attitude sensors
-        self.env.addSensor(SpecificBodyPositionSensor(['footLeft']))
-        self.env.addSensor(SpecificBodyPositionSensor(['footRight']))
-        self.env.addSensor(SpecificBodyPositionSensor(['palm']))
-        self.env.addSensor(SpecificBodyPositionSensor(['head']))
+        self.env.addSensor(SpecificBodyPositionSensor(['footLeft'], "footLPos"))
+        self.env.addSensor(SpecificBodyPositionSensor(['footRight'], "footRPos"))
+        self.env.addSensor(SpecificBodyPositionSensor(['palm'], "bodyPos"))
+        self.env.addSensor(SpecificBodyPositionSensor(['head'], "headPos"))
 
         #we changed sensors so we need to update environments sensorLength variable
         self.env.obsLen=len(self.env.getSensors())
@@ -64,7 +64,7 @@ class StandingTask(JohnnieTask):
         
     def getReward(self):
         # calculate reward and return reward
-        reward=self.env.getSensorByName('SpecificBodyPositionSensor8')[1]/float(self.epiLen) #reward is hight of head
+        reward=self.env.getSensorByName('headPos')[1]/float(self.epiLen) #reward is hight of head
         if reward>4.0: reward=4.0 #to prevent jumping reward can't get bigger than head position while standing absolut upright
         return reward
 
