@@ -72,9 +72,12 @@ class CartPoleEnvironment(GraphicalEnvironment):
         u = theta_
         sin_theta = sin(theta)
         cos_theta = cos(theta)
-        u_ = (self.g*sin_theta*(self.mc+self.mp) - (F + self.mp*self.l*theta**2*sin_theta) * cos_theta) / (4/3*self.l*(self.mc+self.mp) - self.mp*self.l*cos_theta**2)
+        mp = self.mp
+        mc = self.mc
+        l = self.l
+        u_ = (self.g*sin_theta*(mc+mp) - (F + mp*l*theta**2*sin_theta) * cos_theta) / (4/3*l*(mc+mp) - mp*l*cos_theta**2)
         v = s_
-        v_ = (F - self.mp*self.l * (u_*cos_theta - (s_**2 * sin_theta))) / (self.mc+self.mp)     
+        v_ = (F - mp*l * (u_*cos_theta - (s_**2 * sin_theta))) / (mc+mp)     
         return (u, u_, v, v_)   
     
     def getPoleAngles(self):
