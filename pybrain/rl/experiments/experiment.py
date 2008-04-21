@@ -23,4 +23,6 @@ class Experiment(object):
         self.stepid += 1
         self.agent.integrateObservation(self.task.getObservation())
         self.task.performAction(self.agent.getAction())
-        self.agent.giveReward(self.task.getReward())
+        reward = self.task.getReward()
+        self.agent.giveReward(reward)
+        return reward
