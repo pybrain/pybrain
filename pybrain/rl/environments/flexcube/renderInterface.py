@@ -43,11 +43,13 @@ class FlexCubeRenderInterface(object):
 
       if self.clients<1:
         #listen for client
-        self.UDPInSock.settimeout(None)        
+        self.UDPInSock.settimeout(None)    
+        print "listening on port 21561"    
         self.cIP.append(self.UDPInSock.recv(self.buf))
         self.addrList.append((self.cIP[0], self.outPort))
         self.UDPOutSockList.append(socket.socket(socket.AF_INET,socket.SOCK_DGRAM))
         self.clients+=1
+        print "client", self.cIP[0], "connected"
       else:  
         self.UDPInSock.settimeout(2)
         try:
@@ -63,6 +65,7 @@ class FlexCubeRenderInterface(object):
               self.UDPOutSockList.append(socket.socket(socket.AF_INET,socket.SOCK_DGRAM))
               self.clients+=1    
         except:
+          print "Client disconnected"
           self.clients=0
           self.cIP=[]
           self.addrList=[]
@@ -78,6 +81,7 @@ class FlexCubeRenderInterface(object):
         for i in self.UDPOutSockList:
             i.sendto(sendString, self.addrList[count])
             count+=1
+
       sleep(0.02)
       self.updateLock.release()
       self.updateDone=True

@@ -124,7 +124,7 @@ class FlexCubeEnvironment(GraphicalEnvironment):
       self.vel+=self.gravVect*self.dt
 
       #Dumping
-      self.vel*=(1.0-self.dumping*self.dt)
+      self.vel-= self.vel*self.dumping*self.dt 
 
       #velos to positions
       self.pos+=self.dt*self.vel

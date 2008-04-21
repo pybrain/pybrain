@@ -1,7 +1,7 @@
 import random, math, os
 from time import * 
 from pybrain.rl.tasks import EpisodicTask
-from scipy import ones, array, c_, r_, sin
+from scipy import ones, array, c_, r_, sin, clip
 import sensors
         
 class NoRewardTask(EpisodicTask):
@@ -31,7 +31,7 @@ class NoRewardTask(EpisodicTask):
 
     def getReward(self):
         # calculate reward and return self.reward
-        self.reward[0]=self.rawReward
+        self.reward[0]=self.rawReward-self.getPain()
         return self.reward[:]
 
     def getObservation(self):
@@ -45,8 +45,13 @@ class NoRewardTask(EpisodicTask):
               output=r_[output, momSense]
           if i[0]==self.rewardSensor[0]:
             self.rawReward=i[2][0]
-        
-        return output[:]       
+          if i[0]=="EdgesReal":
+            self.EdgeL=momSense.copy()
+        return output[:]  
+
+    def getPain(self):
+        self.EdgeL=clip(self.EdgeL, 1.0, 4.0)
+        return ((self.EdgeL-1.0)**2).sum(axis=0)          
     
     def performAction(self, action):
         """ a filtered mapping towards performAction of the underlying environment. """                
@@ -75,7 +80,7 @@ class GrowTask(NoRewardTask):
         self.env.mySensors=sensors.Sensors(self.obsSensors+self.rewardSensor)  
         
     def getReward(self):
-        self.reward[0]=self.rawReward
+        self.reward[0]=self.rawReward-self.getPain()
         return self.reward[0]
 
     def reset(self):
@@ -100,8 +105,8 @@ class WalkTask(NoRewardTask):
         self.epiLen=2000
         
     def getReward(self):
-        if self.epiStep<self.epiLen: self.reward[0]=0.0
-        else: self.reward[0]=self.rawReward
+        if self.epiStep<self.epiLen: self.reward[0]=-self.getPain()
+        else: self.reward[0]=self.rawReward-self.getPain()
         return self.reward[0]
 
     def reset(self):
@@ -134,8 +139,8 @@ class WalkDirectionTask(WalkTask):
         self.epiLen=2000
 
     def getReward(self):
-        if self.epiStep<self.epiLen: self.reward[0]=0.0
-        else: self.reward[0]=(80.0-self.rawReward)
+        if self.epiStep<self.epiLen: self.reward[0]=-self.getPain()
+        else: self.reward[0]=(80.0-self.rawReward)-self.getPain()
         return self.reward[0]
 
 class TargetTask(WalkDirectionTask):
@@ -145,8 +150,8 @@ class TargetTask(WalkDirectionTask):
 
     def getReward(self):
         if self.epiStep==self.epiLen/3 or self.epiStep==2*self.epiLen/3 or self.epiStep==self.epiLen: 
-            self.reward[0]=(80.0-self.rawReward) 
-        else: self.reward[0]=0.0
+            self.reward[0]=(80.0-self.rawReward)-self.getPain()
+        else: self.reward[0]=-self.getPain()
         return self.reward[0]
 
     def isFinished(self):
@@ -171,12 +176,12 @@ class JumpTask(NoRewardTask):
         self.epiLen=500
         self.maxReward=0.0
         self.maxSpeed=self.dif/10.0
-        
+
     def getReward(self):
         if self.epiStep<self.epiLen: 
             if self.rawReward > self.maxReward: self.maxReward = self.rawReward
-            self.reward[0]=0.0
-        else: self.reward[0]=self.maxReward
+            self.reward[0]=-self.getPain()
+        else: self.reward[0]=self.maxReward-self.getPain()
         return self.reward[0]
 
     def reset(self):

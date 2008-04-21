@@ -51,9 +51,9 @@ for runs in range(numbExp):
     # create environment
     env = FlexCubeEnvironment(True, True) #set True for OpenGL output, True for realtime calculation while clients are watching
     # create task
-    task = JumpTask(env)
+    task = WalkTask(env)
     # create controller network
-    net = buildNetwork(len(task.getObservation()), 10, env.actLen, outclass=TanhLayer)
+    net = buildNetwork(len(task.getObservation()), 2, env.actLen, outclass=TanhLayer)
     # create agent with controller and learner
     agent = FiniteDifferenceAgent(net, SPLA())
     # learning options

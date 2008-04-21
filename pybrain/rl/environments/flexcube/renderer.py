@@ -60,8 +60,11 @@ class FlexCubeRenderer(object):
       self.UDPInSock.settimeout(10)
       try:
         data = self.UDPInSock.recv(buf)
-        data = string.split(str(data), " ")
-        self.parse(data)
+        try:
+          data = string.split(str(data), " ")
+          self.parse(data)
+        except:
+          print "Unsupportet data format recived from", self.outAddr, "!"
       except:
         print "Server has quit!"
         # Try to recreate sockets
