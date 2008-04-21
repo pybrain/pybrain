@@ -41,7 +41,7 @@ class JointActuator(Actuator):
         if isinstance(node, xode.joint.Joint):
             # append joints to joint vector
             joint = node.getODEObject()
-            joint.name = node.name
+            joint.name = node.getName()
             self._joints.append(joint)
         # recursive call for children
         for c in node.getChildren():

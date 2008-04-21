@@ -60,7 +60,7 @@ class JointSensor(Sensor):
         if isinstance(node, xode.joint.Joint):
             # append joints to joint vector
             joint = node.getODEObject()
-            joint.name = node.name
+            joint.name = node.getName()
             self._joints.append(joint)
         # recursive call for children
         for c in node.getChildren():
@@ -193,7 +193,7 @@ class BodyPositionSensor(Sensor):
         if isinstance(node, xode.body.Body):
             # append bodies to body vector
             body = node.getODEObject()
-            body.name = node.name
+            body.name = node.getName()
             self._bodies.append(body)
         # recursive call for children
         for c in node.getChildren():
