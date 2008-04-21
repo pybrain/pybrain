@@ -40,7 +40,7 @@ def testBalancing(env):
 def testOtherBalancing():
     markov = False
     t = CartPoleTask(numPoles = 2, markov = markov, extraObservations = True)
-    net = buildNetwork(t.getOutDim(), 3, t.getInDim(), bias = False)#, hiddenclass = LSTMLayer)
+    net = buildNetwork(t.getOutDim(), 4, t.getInDim(), bias = False)#, hiddenclass = LSTMLayer)
     if not markov:
         # add recurrent connections in the pomdp case
         net.addRecurrentConnection(FullConnection(net['hidden0'], net['hidden0'], name = 'rec'))
@@ -55,7 +55,7 @@ def testOtherBalancing():
         
     #E = CMAES(f, silent = False, maxEvals = 50000)
     global E
-    E = FEM(f, maxEvals = 2000, batchsize = 100)
+    E = FEM(f, maxEvals = 2000)
     if profiling:
         from pybrain.tests.helpers import sortedProfiling
         sortedProfiling('E.optimize()')
