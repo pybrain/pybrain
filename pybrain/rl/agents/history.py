@@ -15,6 +15,7 @@ class HistoryAgent(Agent):
         self.outdim = outdim
                 
         # create history dataset
+        self.remember = True
         self.history = ReinforcementDataSet(indim, outdim)
 
         # initialize temporary variables
@@ -35,6 +36,12 @@ class HistoryAgent(Agent):
         assert self.lastaction == None
         # implement getAction in subclass and set self.lastaction
         
+    def enableHistory(self):
+        self.remember = True
+        
+    def disableHistory(self):
+        self.remember = False
+   
     def giveReward(self, r):
         """ stores observation, action and reward in the history dataset (STEP 3) """
         # step 3: assume that state and action have been set
@@ -42,7 +49,8 @@ class HistoryAgent(Agent):
         assert self.lastaction != None
 
         # store state, action and reward in dataset
-        self.history.addSample(self.lastobs, self.lastaction, r)
+        if self.remember:
+            self.history.addSample(self.lastobs, self.lastaction, r)
 
         self.lastobs = None
         self.lastaction = None
