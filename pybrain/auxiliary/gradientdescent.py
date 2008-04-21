@@ -16,6 +16,7 @@ class GradientDescent(object):
         self.rprop = False
         self.deltamax = 5.0
         self.deltamin = 0.01
+        self.deltanull = 0.1
         self.etaplus = 1.2
         self.etaminus = 0.5
         self.lastgradient = None
@@ -28,37 +29,45 @@ class GradientDescent(object):
         self.values = deepcopy(values)
         self.momentumvector = zeros(len(values))
         self.lastgradient = zeros(len(values))
-        self.rprop_theta = self.lastgradient + 0.1        
+        self.rprop_theta = self.lastgradient + self.deltanull      
     
     def __call__(self, gradient):            
         # check if gradient has correct dimensionality, then make array
         assert len(gradient) == len(self.values)
         gradient_arr = asarray(gradient)
         
-        # update momentum vector (momentum = 0 clears it)
-        self.momentumvector *= self.momentum
-        
         if self.rprop:
-            # update parameters (including momentum) 
-            self.momentumvector += sign(gradient_arr) * self.rprop_theta
+            rprop_theta = self.rprop_theta
+            
+            # update parameters 
+            self.values += sign(gradient_arr) * rprop_theta
 
-            # update rprop meta parameter
-            self.rprop_theta[(self.lastgradient * gradient_arr) > 0] *= self.etaplus
-            self.rprop_theta[(self.lastgradient * gradient_arr) < 0] *= self.etaminus
+            # update rprop meta parameters
+            dirSwitch = self.lastgradient * gradient_arr
+            rprop_theta[dirSwitch > 0] *= self.etaplus
+            idx =  dirSwitch < 0
+            rprop_theta[idx] *= self.etaminus
+            gradient_arr[idx] = 0
 
             # upper and lower bound for both matrices
-            self.rprop_theta = self.rprop_theta.clip(min=self.deltamin, max=self.deltamax)
+            rprop_theta = rprop_theta.clip(min=self.deltamin, max=self.deltamax)
 
             # save current gradients to compare with in next time step
             self.lastgradient = gradient_arr.copy()
+            
+            self.rprop_theta = rprop_theta
         
         else:
+            # update momentum vector (momentum = 0 clears it)
+            self.momentumvector *= self.momentum
+        
             # update parameters (including momentum)
             self.momentumvector += self.alpha * gradient_arr
             self.alpha *= self.alphadecay
         
-        # return the new values
-        self.values += self.momentumvector
+            # update parameters 
+            self.values += self.momentumvector
+            
         return self.values
 
     descent = __call__
