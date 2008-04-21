@@ -3,7 +3,7 @@ __author__ = 'Thomas Rueckstiess, ruecksti@in.tum.de'
 from matplotlib.mlab import rk4 
 from math import sin, cos
 import time
-from scipy import random
+from scipy import random, eye, matrix
 
 from pybrain.rl.environments.graphical import GraphicalEnvironment
 
@@ -95,5 +95,46 @@ class CartPoleEnvironment(GraphicalEnvironment):
         return 4
     
 
+class CartPoleLinEnvironment(CartPoleEnvironment):
+    """ This is a linearized implementation of the cart-pole system, as described in 
+    Peters J, Vijayakumar S, Schaal S (2003) Reinforcement learning for humanoid robotics.
+    Polelength is fixed, the order of sensors has been changed to the above."""
 
+    tau = 1./60.   # sec
+
+    def __init__(self, **kwargs):
+        CartPoleEnvironment.__init__(self,**kwargs)
+        nu = 13.2 #  sec^-2
+        tau = self.tau
         
+        # linearized movement equations
+        self.A = matrix(eye(4))
+        self.A[0,1] = tau
+        self.A[2,3] = tau
+        self.A[1,0] = nu*tau
+        self.b = matrix([0.0, nu*tau/9.80665, 0.0, tau])
+        
+        
+    def step(self):
+        self.sensors = random.normal(loc=self.sensors*self.A + self.action*self.b, scale=0.001).flatten()
+        if self.hasRenderer():
+            self.getRenderer().updateData(self.sensors)
+            if self.delay: 
+                time.sleep(self.tau)    
+                        
+    def reset(self):
+        """ re-initializes the environment, setting the cart back in a random position.
+        """
+        self.sensors = random.normal(scale=0.1,size=4)
+
+    def getSensors(self):
+        return self.sensors.flatten()
+
+    def getPoleAngles(self):
+        """ auxiliary access to just the pole angle(s), to be used by BalanceTask """
+        return [self.sensors[0]]
+        
+    def getCartPosition(self):
+        """ auxiliary access to just the cart position, to be used by BalanceTask """
+        return self.sensors[2]
+    

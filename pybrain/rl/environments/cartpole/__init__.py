@@ -4,9 +4,9 @@ try:
 except ImportError:
     raise ImportError('This environment needs the matplotlib library installed.')
 
-from cartpole import CartPoleEnvironment
+from cartpole import CartPoleEnvironment, CartPoleLinEnvironment
 from renderer import CartPoleRenderer
-from balancetask import BalanceTask, EasyBalanceTask, JustBalanceTask
+from balancetask import BalanceTask, EasyBalanceTask, JustBalanceTask, LinearizedBalanceTask
 from doublepole import DoublePoleEnvironment
 from nonmarkovpole import NonMarkovPoleEnvironment
 from nonmarkovdoublepole import NonMarkovDoublePoleEnvironment

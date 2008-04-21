@@ -3,7 +3,7 @@ __author__ = 'Thomas Rueckstiess and Tom Schaul'
 
 from pybrain.rl.tasks import EpisodicTask
 from cartpole import CartPoleEnvironment
-from scipy import pi
+from scipy import pi, dot, array
 
 class BalanceTask(EpisodicTask):
 
@@ -27,6 +27,7 @@ class BalanceTask(EpisodicTask):
             else:
                 self.sensor_limits.append((-pi, pi))
         
+        self.sensor_limits = [None]*4
         # actor between -10 and 10 Newton
         self.actor_limits = [(-10, 10)]
         
@@ -93,4 +94,27 @@ class EasyBalanceTask(BalanceTask):
             reward = -2 * (self.N - self.t)
         else: 
             reward = -abs(s)/2
-        return reward       
+        return reward   
+
+class LinearizedBalanceTask(BalanceTask):
+    """ Here we follow the setup in
+    Peters J, Vijayakumar S, Schaal S (2003) Reinforcement learning for humanoid robotics.
+    TODO: This stuff is not yet compatible to any other cartpole environment. """
+
+    Q = array([12., 0.25, 1.25, 1.0])
+    
+    def getReward(self):
+        return dot(self.env.sensors**2, self.Q) + self.env.action[0]**2*0.01
+    
+    def isFinished(self):
+        
+        if abs(self.env.getPoleAngles()[0]) > 0.5235988:  # pi/6
+            # pole has fallen
+            return True
+        elif abs(self.env.getCartPosition()) > 1.5:
+            # cart is out of it's border conditions
+            return True
+        elif self.t >= self.N:
+            # maximal timesteps
+            return True
+        return False
