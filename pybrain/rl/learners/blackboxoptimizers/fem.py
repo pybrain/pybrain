@@ -44,6 +44,7 @@ class FEM(BlackBoxOptimizer):
     maxupdate = 0.3
     elitist = False 
     superelitist = False
+    evalMus = True
     
     def __init__(self, evaluator, evaluable, **parameters):
         BlackBoxOptimizer.__init__(self, evaluator, evaluable, **parameters)
@@ -65,6 +66,7 @@ class FEM(BlackBoxOptimizer):
 
     def _batchLearn(self, maxSteps):
         self.allsamples = []
+        self.muevals = []
         
         if self.verbose:
             print
@@ -93,7 +95,7 @@ class FEM(BlackBoxOptimizer):
             
     def optimize(self, maxSteps):
         generation = 0
-        while len(self.allsamples) + self.batchsize <= maxSteps:
+        while len(self.allsamples) +len(self.muevals) + self.batchsize <= maxSteps:
             samples = []
             densities = zeros((self.batchsize, self.numberOfCenters))
             fitnesses = zeros(self.batchsize)
@@ -153,14 +155,28 @@ class FEM(BlackBoxOptimizer):
             self.alphas /= sum(self.alphas)
                 
             generation += 1
+            self.allsamples.extend(samples)
+            
+            if self.evalMus == True:
+                for m in self.mus:
+                    me = self.evaluator(m)
+                    if me > self.bestEvaluation:
+                        self.bestEvaluation, self.bestEvaluable = me, m
+                    self.muevals.append(me)
+                
             if self.verbose:
                 print 'gen: ', generation, 'max,min,avg: ',max(fitnesses), min(fitnesses), average(fitnesses)
+                if self.evalMus:
+                    print '    mu-fitness(es):', self.muevals[-len(self.mus):]
                 
             if max(fitnesses)> self.bestEvaluation:
                 bestindex = argmax(fitnesses)
                 self.bestEvaluation, self.bestEvaluable = fitnesses[bestindex], samples[bestindex]
             
             if max(fitnesses) >= self.desiredEvaluation:
+                break
+                
+            if len(self.allsamples)+len(self.muevals) >= maxSteps:
                 break
 
 
@@ -171,7 +187,7 @@ class FEM(BlackBoxOptimizer):
         fitnesses = zeros(self.batchsize)
         totalsamples = 0
 
-        while len(self.allsamples) + self.batchsize <= maxSteps:
+        while True:
             for k in range(self.batchsize):
                 chosenOne = drawIndex(self.alphas, True)
                 samples[k] = multivariate_normal(self.mus[chosenOne], self.unlawfulExploration * self.sigmas[chosenOne])
@@ -243,17 +259,35 @@ class FEM(BlackBoxOptimizer):
 
                     # nomalize alphas
                     self.alphas /= sum(self.alphas)
+                
+                if totalsamples >= maxSteps:
+                    break
 
             generation += 1
+            self.allsamples.extend(samples)
+            if self.evalMus == True:
+                for m in self.mus:
+                    me = self.evaluator(m)
+                    if me > self.bestEvaluation:
+                        self.bestEvaluation, self.bestEvaluable = me, m
+                    self.muevals.append(me)
+                    
             if self.verbose:
                 print 'gen: ', generation, 'max,min,avg: ',max(fitnesses), min(fitnesses), average(fitnesses)
+                if self.evalMus:
+                    print '    mu-fitness(es):', self.muevals[-len(self.mus):]
                 
+            
             if max(fitnesses)> self.bestEvaluation:
                 bestindex = argmax(fitnesses)
                 self.bestEvaluation, self.bestEvaluable = fitnesses[bestindex], samples[bestindex]
             
             if max(fitnesses) >= self.desiredEvaluation:
                 break
+            
+            if len(self.allsamples)+len(self.muevals) >= maxSteps:
+                break
+
             
     def multivariateNormalPdf(self, z, x, sigma):
         assert z.shape[1] == 1 and x.shape[1] == 1    
