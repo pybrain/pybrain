@@ -24,7 +24,7 @@ from pybrain.rl.tasks.pomdp import CheeseMaze
 # TODO: a simple clean interface for making noisy evaluators average their results
 
 
-def main(maxEvals = 10):
+def main(maxEvals = 500):
     if False:
         # simple function optimization
         thetask = SphereFunction(3)
@@ -69,7 +69,7 @@ def main(maxEvals = 10):
     # the same, using other algorithms
     print 'CMA', CMAES(thetask, thenet).learn(maxEvals), len(res)
     print 'NES', NaturalEvolutionStrategies(thetask, thenet).learn(maxEvals), len(res)
-    #print 'FEM', FEM(thetask, thenet).learn(maxEvals), len(res)
+    print 'FEM', FEM(thetask, thenet).learn(maxEvals), len(res)
     
     
     # ----  RL ----

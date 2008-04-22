@@ -45,8 +45,8 @@ class FEM(BlackBoxOptimizer):
     elitist = False 
     superelitist = False
     
-    def __init__(self, f, **args):
-        BlackBoxOptimizer.__init__(self, f, **args)
+    def __init__(self, evaluator, evaluable, **parameters):
+        BlackBoxOptimizer.__init__(self, evaluator, evaluable, **parameters)
         self.alphas = ones(self.numberOfCenters)/self.numberOfCenters
         self.mus = []
         self.sigmas = []
@@ -62,26 +62,38 @@ class FEM(BlackBoxOptimizer):
         for dummy in range(self.numberOfCenters):
             self.mus.append(rand(self.xdim) * (self.rangemaxs-self.rangemins) + self.rangemins)
             self.sigmas.append(dot(eye(self.xdim), self.initCovariances))
-            
-    def optimize(self):
+
+    def _batchLearn(self, maxSteps):
+        self.allsamples = []
+        
+        if self.verbose:
+            print
+            print "==================="        
+            print "Fitness Expectation Maximization"
+            print "==================="
+            if self.onlineLearning:
+                print 'ONLINE'
+            else:
+                print "OFFLINE"
+            print "batchsize:", self.batchsize
+            print "gini:", self.gini
+            print "unlawfulExploration:", self.unlawfulExploration
+            print "numberOfCenters:", self.numberOfCenters
+            print "giniPlusX:", self.giniPlusX
+            if self.onlineLearning: # CHECKME 
+                print "maxupdate", self.maxupdate
+                print "elitist", self.elitist
+                print "superelitist", self.superelitist
+            print
+        
         if self.onlineLearning:
-            self.optimizeOnline()
-            return
+            self.optimizeOnline(maxSteps)
+        else:
+            self.optimize(maxSteps)
+            
+    def optimize(self, maxSteps):
         generation = 0
-        
-        print
-        print "==================="        
-        print "Fitness Expectation Maximization"
-        print "==================="
-        print "OFFLINE"
-        print "batchsize:", self.batchsize
-        print "gini:", self.gini
-        print "unlawfulExploration:", self.unlawfulExploration
-        print "numberOfCenters:", self.numberOfCenters
-        print "giniPlusX:", self.giniPlusX
-        print
-        
-        while True:
+        while len(self.allsamples) + self.batchsize <= maxSteps:
             samples = []
             densities = zeros((self.batchsize, self.numberOfCenters))
             fitnesses = zeros(self.batchsize)
@@ -107,10 +119,7 @@ class FEM(BlackBoxOptimizer):
                                                                 reshape(self.mus[c], (self.xdim, 1)),
                                                                 self.sigmas[c])
 
-
-
-
-                fitnesses[k] = self.targetfun(samples[-1])
+                fitnesses[k] = self.evaluator(samples[-1])
             
             # determine (transformed) fitnesses
             transformedFitnesses = self.shapingFunction(fitnesses)
@@ -144,39 +153,25 @@ class FEM(BlackBoxOptimizer):
             self.alphas /= sum(self.alphas)
                 
             generation += 1
-            print 'gen: ', generation, 'min,max,avg: ',max(fitnesses), min(fitnesses), average(fitnesses)
-            #print 'alphas: ', self.alphas
-            #print 'mus:', self.mus
-            #print 'sigmas:', self.sigmas
+            if self.verbose:
+                print 'gen: ', generation, 'max,min,avg: ',max(fitnesses), min(fitnesses), average(fitnesses)
+                
+            if max(fitnesses)> self.bestEvaluation:
+                bestindex = argmax(fitnesses)
+                self.bestEvaluation, self.bestEvaluable = fitnesses[bestindex], samples[bestindex]
             
-            #print "det:", det(self.sigmas[0])
-    
+            if max(fitnesses) >= self.desiredEvaluation:
+                break
 
 
-    def optimizeOnline(self):
+    def optimizeOnline(self, maxSteps):
         generation = 0
-
-        print
-        print "==================="        
-        print "Fitness Expectation Maximization"
-        print "==================="
-        print "ONLINE"
-        print "batchsize:", self.batchsize
-        print "maxupdate", self.maxupdate
-        print "elitist", self.elitist
-        print "superelitist", self.superelitist
-        print "gini:", self.gini
-        print "unlawfulExploration:", self.unlawfulExploration
-        print "numberOfCenters:", self.numberOfCenters
-        print "giniPlusX:", self.giniPlusX
-        print
-
         samples = range(self.batchsize)
         densities = zeros((self.batchsize, self.numberOfCenters))
         fitnesses = zeros(self.batchsize)
         totalsamples = 0
 
-        while True:
+        while len(self.allsamples) + self.batchsize <= maxSteps:
             for k in range(self.batchsize):
                 chosenOne = drawIndex(self.alphas, True)
                 samples[k] = multivariate_normal(self.mus[chosenOne], self.unlawfulExploration * self.sigmas[chosenOne])
@@ -201,9 +196,7 @@ class FEM(BlackBoxOptimizer):
                                                                 self.sigmas[c])
 
 
-
-
-                fitnesses[k] = self.targetfun(samples[k])
+                fitnesses[k] = self.evaluator(samples[k])
                 if totalsamples == 1:
                     bestfitnessever = fitnesses[k]
                     bestsampleever = samples[k].copy()
@@ -252,18 +245,21 @@ class FEM(BlackBoxOptimizer):
                     self.alphas /= sum(self.alphas)
 
             generation += 1
-            print 'gen: ', generation, 'min,max,avg: ',max(fitnesses), min(fitnesses), average(fitnesses)
-            #print self.mus
-
-
-
-    
+            if self.verbose:
+                print 'gen: ', generation, 'max,min,avg: ',max(fitnesses), min(fitnesses), average(fitnesses)
+                
+            if max(fitnesses)> self.bestEvaluation:
+                bestindex = argmax(fitnesses)
+                self.bestEvaluation, self.bestEvaluable = fitnesses[bestindex], samples[bestindex]
+            
+            if max(fitnesses) >= self.desiredEvaluation:
+                break
+            
     def multivariateNormalPdf(self, z, x, sigma):
         assert z.shape[1] == 1 and x.shape[1] == 1    
         tmp = -0.5 * dot(dot((z-x).T, inv(sigma)), (z-x))[0,0]
         res = (1./power(2.0*pi,self.xdim/2.)) * (1./sqrt(det(sigma))) * exp(tmp)
-        return res   
-    
+        return res       
     
     def shapingFunction(self, R):
         #return self.exponentialRanking(R)#self.smoothSelectiveRanking(R)#self.bilinearRanking(R)#exp(self.tau * R)        
@@ -296,14 +292,12 @@ class FEM(BlackBoxOptimizer):
         ranks = self.rankedFitness(R)
         for i in range(len(ranks)):
             res[i] = exp((ranks[i]/(self.batchsize-1.0)) * self.temperature)
-        #print res
         return res
         
     def simpleRanking(self, R):
         res = self.rankedFitness(R) / (self.batchsize - 1.0)
         return res
-        
-
+    
     def normalizedRankedFitness(self, R):
         return array((R - R.mean())/sqrt(var(R))).flatten()
 
