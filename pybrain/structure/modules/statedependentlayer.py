@@ -54,12 +54,12 @@ class StateDependentLayer(NeuronLayer, ParameterContainer):
             # algorithm for one global sigma for all mu's
             expln_params = expln(self.params)
             sumxsquared = dot(self.state, self.state)
-            self.derivs += sum((outbuf - inbuf)**2 - expln_params**2 * sumxsquared) / expln_params * explnPrime(self.params)
+            self._derivs += sum((outbuf - inbuf)**2 - expln_params**2 * sumxsquared) / expln_params * explnPrime(self.params)
             inerr[:] = (outbuf - inbuf)
         
             if not self.autoalpha:
                 inerr /= expln_params**2 * sumxsquared
-                self.derivs /= expln_params**2 * sumxsquared
+                self._derivs /= expln_params**2 * sumxsquared
         else:
             # algorithm for seperate sigma for each mu
             expln_params = expln(self.params).reshape(len(outbuf), len(self.state))
@@ -69,10 +69,10 @@ class StateDependentLayer(NeuronLayer, ParameterContainer):
             for j in xrange(len(outbuf)):
                 sigma_subst2 = dot(self.state**2,expln_params[j,:]**2) 
                 for i in xrange(len(self.state)):
-                    self.derivs[idx] = ((outbuf[j] - inbuf[j])**2 - sigma_subst2) / sigma_subst2 * \
+                    self._derivs[idx] = ((outbuf[j] - inbuf[j])**2 - sigma_subst2) / sigma_subst2 * \
                         self.state[i]**2*expln_params[j,i]*explnPrime_params[j,i]
                     if self.autoalpha:
-                        self.derivs[idx] /= sigma_subst2
+                        self._derivs[idx] /= sigma_subst2
                     idx += 1
                 inerr[j] = (outbuf[j] - inbuf[j])
                 if not self.autoalpha:
