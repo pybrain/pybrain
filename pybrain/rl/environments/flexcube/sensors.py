@@ -1,4 +1,4 @@
-from scipy import sqrt, zeros, array, clip
+from scipy import sqrt, zeros, array, clip, sin
 
 class Sensors:
   def __init__(self, sensorList):
@@ -6,9 +6,9 @@ class Sensors:
     for i in sensorList:
       self.sensors.append(eval(i+"()"))
     
-  def updateSensor(self, pos, vel, dist, center, wEdges):
+  def updateSensor(self, pos, vel, dist, center, step, wEdges):
     for i in self.sensors:
-      i.updateSensor(pos, vel, dist, center, wEdges)
+      i.updateSensor(pos, vel, dist, center, step, wEdges)
 
   def getSensor(self):
     output=[]
@@ -31,11 +31,12 @@ class defaultSensor:
     self.targetList=[array([-80.0, 0.0, 0.0])]
     self.edges=array([1, 2, 4, 11, 13, 19, 22, 31, 37, 38, 47, 55])
 
-  def updateSensor(self, pos, vel, dist, center, wEdges):
+  def updateSensor(self, pos, vel, dist, center, step, wEdges):
     self.pos=pos.copy()
     self.dist=dist.copy()
     self.centerOfGrav=center.copy().reshape(3)
     self.centerOfGrav[1]=0.0
+    self.step=step
     self.wantedEdges=wEdges.copy()
 
   def getSensor(self):
@@ -50,7 +51,7 @@ class EdgesReal(defaultSensor):
 class EdgesSumReal(defaultSensor):
   def getSensor(self):
     self.sensorOutput=["EdgesSumReal", 1]
-    self.sensorOutput.append((self.dist[self.edges].reshape(12)).sum(axis=0)-240.0)
+    self.sensorOutput.append(array([(self.dist[self.edges].reshape(12)).sum(axis=0)-240.0]))
     return self.sensorOutput
 
 class EdgesTarget(defaultSensor):
@@ -101,3 +102,10 @@ class Target(defaultSensor):
         out[i+1]=sinA
     self.sensorOutput.append(out)
     return self.sensorOutput
+
+class Time(defaultSensor):
+  def getSensor(self):
+    self.sensorOutput=["Time", 5]
+    self.sensorOutput.append(array([sin(float(self.step)), sin(float(self.step)/2.0), sin(float(self.step)/4.0), sin(float(self.step)/8.0), sin(float(self.step)/16.0)])) 
+    return self.sensorOutput
+

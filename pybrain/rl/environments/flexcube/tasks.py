@@ -57,8 +57,6 @@ class NoRewardTask(EpisodicTask):
         """ a filtered mapping towards performAction of the underlying environment. """                
         # scaling
         self.incStep()
-        #action=array([sin(float(self.epiStep)/5.0)]*12)
-        
         action=(action+1.0)/2.0*self.dif+self.env.fraktMin*self.env.dists[0]
         actLen=len(action)
         for i in range(actLen):
@@ -98,7 +96,7 @@ class WalkTask(NoRewardTask):
     def __init__(self, env):
         NoRewardTask.__init__(self, env)
         self.rewardSensor=["DistToOrigin"]
-        self.obsSensors=["EdgesTarget","EdgesReal","VerticesContact"]    
+        self.obsSensors=["EdgesTarget","EdgesReal","VerticesContact","Time"]    
         self.inDim=len(self.getObservation())     
         self.plotString=["World Interactions", "Distance", "Reward on Walking Task"]
         self.env.mySensors=sensors.Sensors(self.obsSensors+self.rewardSensor)  
@@ -128,15 +126,14 @@ class RollingUpTask(WalkTask):
 
 class WalkDirectionTask(WalkTask):
     def __init__(self, env):
-        NoRewardTask.__init__(self, env)
+        WalkTask.__init__(self, env)
         self.rewardSensor=["Target"]
-        self.obsSensors=["EdgesTarget","EdgesReal","VerticesContact","Target"]    
+        self.obsSensors.append("Target")    
         self.inDim=len(self.getObservation())     
         self.plotString=["World Interactions", "Distance", "Reward on Target Approach Task"]
         self.env.mySensors=sensors.Sensors(self.obsSensors)
         self.env.mySensors.sensors[3].targetList=[array([-80.0,0.0,0.0])]
-        if self.env.hasRenderer(): self.env.getRenderer().target=self.env.mySensors.sensors[3].targetList[0]
-        self.epiLen=2000
+        if self.env.hasRenderInterface(): self.env.getRenderInterface().target=self.env.mySensors.sensors[3].targetList[0]
 
     def getReward(self):
         if self.epiStep<self.epiLen: self.reward[0]=-self.getPain()
@@ -158,11 +155,11 @@ class TargetTask(WalkDirectionTask):
         if self.epiStep==self.epiLen/3:
             self.env.reset()
             self.env.mySensors.sensors[3].targetList=[array([-56.6,0.0,-56.6])]
-            if self.env.hasRenderer(): self.env.getRenderer().target=self.env.mySensors.sensors[3].targetList[0]
+            if self.env.hasRenderInterface(): self.env.getRenderInterface().target=self.env.mySensors.sensors[3].targetList[0]
         if self.epiStep==2*self.epiLen/3:
             self.env.reset()
             self.env.mySensors.sensors[3].targetList=[array([-56.6,0.0,56.6])]
-            if self.env.hasRenderer(): self.env.getRenderer().target=self.env.mySensors.sensors[3].targetList[0]
+            if self.env.hasRenderInterface(): self.env.getRenderInterface().target=self.env.mySensors.sensors[3].targetList[0]
         return (self.epiStep>=self.epiLen)
 
 class JumpTask(NoRewardTask):

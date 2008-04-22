@@ -4,14 +4,12 @@ from OpenGL.GL import *
 from OpenGL.GLE import *
 from OpenGL.GLU import *
 import objects3D
-from time import *
-from scipy import ones, zeros, array, clip, arange, sqrt
-from socket import *
-import string
-
+from time import sleep
+from scipy import ones, array
+from pybrain.tools.networking.udpconnection import UDPClient
 
 class FlexCubeRenderer(object): 
-  def __init__(self, servIP, ownIP):
+  def __init__(self, servIP="127.0.0.1", ownIP="127.0.0.1", port="21560"):
       self.oldScreenValues = None
       self.view=0
       self.worldRadius = 400
@@ -35,68 +33,10 @@ class FlexCubeRenderer(object):
       self.points=ones((8,3),float)
       self.savePics=False
       self.drawCounter=0
-      self.fps=25
+      self.fps=50
       self.dt=1.0/float(self.fps)
 
-      #UDP Sttings
-      self.host = servIP
-      self.inPort = 21560
-      self.outPort = 21561
-      self.inAddr = (ownIP,self.inPort)
-      self.outAddr = (self.host,self.outPort)
-      self.ownIP=ownIP
-
-      # Create sockets
-      self.UDPOutSock = socket(AF_INET,SOCK_DGRAM)
-      self.UDPOutSock.sendto(ownIP,self.outAddr)
-      self.UDPInSock = socket(AF_INET,SOCK_DGRAM)
-      self.UDPInSock.bind(self.inAddr)
-
-
-  def listen(self):
-      # Receive messages
-      self.UDPOutSock.sendto(self.ownIP,self.outAddr)
-      buf=1024
-      self.UDPInSock.settimeout(10)
-      try:
-        data = self.UDPInSock.recv(buf)
-        try:
-          data = string.split(str(data), " ")
-          self.parse(data)
-        except:
-          print "Unsupportet data format recived from", self.outAddr, "!"
-      except:
-        print "Server has quit!"
-        # Try to recreate sockets
-        self.UDPOutSock = socket(AF_INET,SOCK_DGRAM)
-        self.UDPOutSock.sendto(self.ownIP,self.outAddr)
-        self.UDPInSock = socket(AF_INET,SOCK_DGRAM)
-        self.UDPInSock.bind(self.inAddr)
-
-  def parse(self, data):
-      i=0
-      j=0
-      c=0
-      p=False
-      while not p:
-          self.points[i][j]=eval(data[c])
-          c+=1
-          j+=1
-          if j==3:
-              j=0
-              i+=1
-          if i==8: 
-              i=0
-              p=True
-
-      p=False
-      while not p:
-          self.centerOfGrav[i]=eval(data[c])
-          c+=1
-          i+=1
-          if i==3: 
-              i=0
-              p=True
+      self.client=UDPClient(servIP, ownIP, port)
         
   def saveTo( self, filename, format="JPEG" ):
     """Save current buffer to filename in format"""
@@ -124,7 +64,16 @@ class FlexCubeRenderer(object):
     self.object = objects3D.Objects3D()
     self.quad = gluNewQuadric()
     glutMainLoop()
-    
+
+  def drawIdleScene(self):
+      try: [self.points, self.centerOfGrav]=self.client.listen([self.points, self.centerOfGrav])
+      except: pass
+      self.drawScene()
+      if self.savePics:
+          self.saveTo("./screenshots2/image"+repr(10000+self.picCount)+".jpg")
+          self.picCount+=1
+      sleep(self.dt)
+          
   def drawScene(self):
     ''' This methode describes the complete scene.'''
     # clear the buffer
@@ -138,9 +87,6 @@ class FlexCubeRenderer(object):
     glRotatef(self.lastx, 0.0, 1.0, 0.0)
     glRotatef(self.lasty, 1.0, 0.0, 0.0)      
     
-    # Calculates an rotation angle depending an a time factor
-    self.rotation=time() % 359
-
     #Objects
     #Target Ball
     glColor3f(1,0.25,0.25)
@@ -240,14 +186,6 @@ class FlexCubeRenderer(object):
     # swap the buffer
     glutSwapBuffers()    
     
-  def drawIdleScene(self):
-      self.listen()
-      self.drawScene()
-      if self.savePics:
-          self.saveTo("./screenshots2/image"+repr(10000+self.picCount)+".jpg")
-          self.picCount+=1
-      sleep(self.dt)
-      
   def resizeScene(self, width, height):
     '''Needed if window size changes.'''
     if height == 0:						# Prevent A Divide By Zero If The Window Is Too Small 
@@ -317,5 +255,6 @@ class FlexCubeRenderer(object):
     glutIdleFunc(pyWorld.drawIdleScene)
 
 if __name__ == '__main__':
-    r=FlexCubeRenderer(sys.argv[1], sys.argv[2])
+    s=sys.argv[1:]
+    r=FlexCubeRenderer(*s)
     r._render()

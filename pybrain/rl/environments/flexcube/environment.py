@@ -8,7 +8,7 @@ from scipy import ones, zeros, array, clip, arange, sqrt
 from time import sleep
 
 class FlexCubeEnvironment(GraphicalEnvironment):
-  def __init__(self, renderer=True, realtime=False):
+  def __init__(self, renderer=True, realtime=True, ip="127.0.0.1", port="21560"):
     # initialize base class
     GraphicalEnvironment.__init__(self)
     self.actLen=12
@@ -33,8 +33,9 @@ class FlexCubeEnvironment(GraphicalEnvironment):
     self.act(array([20.0]*12))
     self.euler()
     self.realtime=realtime
+    self.step=0
     if renderer:
-        self.setRenderInterface(FlexCubeRenderInterface())
+        self.setRenderInterface(FlexCubeRenderInterface(ip, port))
         self.getRenderInterface().updateData(self.pos, self.centerOfGrav)
 
   def setEdges(self):
@@ -69,7 +70,8 @@ class FlexCubeEnvironment(GraphicalEnvironment):
     self.difM = self.pos[idx0,:]-self.pos[idx1,:] #vectors from all points to all other points
     self.springM = sqrt((self.difM**2).sum(axis=1)).reshape(64,1)
     self.distM = self.springM.copy() #distance matrix
-    self.mySensors.updateSensor(self.pos, self.vel, self.distM, self.centerOfGrav, self.action)    
+    self.step=0
+    self.mySensors.updateSensor(self.pos, self.vel, self.distM, self.centerOfGrav, self.step, self.action)    
                       
   def setTarget(self, target):
     if self.hasRenderInterface(): 
@@ -80,15 +82,16 @@ class FlexCubeEnvironment(GraphicalEnvironment):
     self.action=action.copy()
     self.act(action)
     self.euler()
+    self.step+=1
     
     if self.hasRenderInterface(): 
       if self.getRenderInterface().updateDone:
           self.getRenderInterface().updateData(self.pos, self.centerOfGrav)
-      if self.getRenderInterface().clients>0 and self.realtime: 
+      if self.getRenderInterface().server.clients>0 and self.realtime: 
           sleep(self.dt)
       
   def getSensors(self):
-    self.mySensors.updateSensor(self.pos, self.vel, self.distM, self.centerOfGrav, self.action)   
+    self.mySensors.updateSensor(self.pos, self.vel, self.distM, self.centerOfGrav, self.step, self.action)   
     return self.mySensors.getSensor()[:]
 
   def normAct(self, s):

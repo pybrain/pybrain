@@ -49,9 +49,10 @@ def saveWeights(filename, w):
 numbExp=1 #number of experiments
 for runs in range(numbExp):
     # create environment
-    env = FlexCubeEnvironment(True, True) #set True for OpenGL output, True for realtime calculation while clients are watching
+    #Options: Bool(OpenGL), Bool(Realtime simu. while client is connected), ServerIP(default:localhost), Port(default:21560)
+    env = FlexCubeEnvironment() #True, True, "131.159.60.203", "21570"
     # create task
-    task = WalkTask(env)
+    task = GrowTask(env)
     # create controller network
     net = buildNetwork(len(task.getObservation()), 2, env.actLen, outclass=TanhLayer)
     # create agent with controller and learner
