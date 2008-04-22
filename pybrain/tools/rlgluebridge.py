@@ -321,7 +321,7 @@ class RlCompBenchmark(object):
     def saveStats(self, name, dataset):
         """Save the given dataset to a"""
         filename = os.path.join(self.benchmarkDir, name)
-        dataset.saveToFile(filename)
+        dataset.saveToFile(filename, arraysonly=True )
         logging.info("Saved statistics to %s" % filename)
     
 
