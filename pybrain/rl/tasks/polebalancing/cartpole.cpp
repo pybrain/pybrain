@@ -348,7 +348,7 @@ extern int trialFinished()
   if(outsideBounds())
     return 1;
   if(steps > 100000) {
-    cout << "SUCCESS in episode " << episodes << endl; 
+    //cout << "SUCCESS in episode " << episodes << endl; 
     return 1;
   }
   return 0;

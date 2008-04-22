@@ -4,14 +4,14 @@ from pybrain.rl.environments.functions import SphereFunction, RosenbrockFunction
 from pybrain.rl.learners import NaturalEvolutionStrategies, CMAES
 from pybrain.rl.environments.cartpole import DoublePoleEnvironment
 from pybrain.rl.environments.functions.episodicevaluators import CartPoleEvaluator
-from pybrain.tools.shortcuts import buildNetwork
+from pybrain import buildNetwork
 
 def testFunc():
     n =3
     #return SphereFunction(n, xopt = [0]*n)
     #return RosenbrockFunction(n, xopt = [0]*n)
     env = DoublePoleEnvironment()
-    n = buildNetwork(env.getOutDim(), 2, env.getInDim())
+    n = buildNetwork(env.outdim, 2, env.indim)
     #print n, n.outdim, n.indim
     f=  CartPoleEvaluator(n, env)
     f.desiredValue = 100000

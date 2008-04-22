@@ -21,7 +21,7 @@ class BalanceTask(EpisodicTask):
         
         # scale position and angle, don't scale velocities (unknown maximum)
         self.sensor_limits = [(-3, 3)]#, None, (-pi, pi), None]
-        for i in range(1,self.getOutDim()):
+        for i in range(1,self.outdim):
             if isinstance(self.env, NonMarkovPoleEnvironment) and i%2 == 0:
                 self.sensor_limits.append(None)
             else:

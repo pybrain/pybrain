@@ -1,10 +1,9 @@
-from pybrain import LSTMLayer, LinearLayer
-from pybrain.tools.shortcuts import buildNetwork
+from pybrain import LSTMLayer, LinearLayer, buildNetwork
 from pybrain.datasets import SequentialDataSet
 from pybrain.supervised import BackpropTrainer
 from pybrain.tests.helpers import sortedProfiling
 
-from scipy import zeros, ones, randn
+from scipy import randn
 
 seqlen = 10
 seqs = 1

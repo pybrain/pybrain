@@ -3,11 +3,10 @@ __author__ = 'Daan Wierstra and Tom Schaul'
 
 from scipy import zeros
 
-from pybrain.utilities import Named, abstractMethod, substitute
-from pybrain.structure.parametercontainer import ParameterContainer
+from pybrain.utilities import abstractMethod, substitute, Named
 
 
-class Module(ParameterContainer, Named):
+class Module(Named):
     """ A module has an input and an output buffer and does some processing 
         to produce the output from the input -- the "forward" method.
         Optionally it can have a "backward" method too, which processes a given output error 
@@ -21,11 +20,14 @@ class Module(ParameterContainer, Named):
     # a flag that marks modules that treat a sequence of samples NOT as independent
     sequential = False
     
-    def __init__(self, indim, outdim, name = None):
+    # a flag which at the same time provides info on how many trainable parameters the module might contain
+    paramdim = 0
+        
+    def __init__(self, indim, outdim, name = None, **args):
         """ @param indim: the input dimension 
             @param outdim: the output dimension
         """
-        self.name = name
+        self.setArgs(name = name, **args)
         self.time = 0
         self.seqlen = 0
         self.indim = indim
@@ -82,7 +84,7 @@ class Module(ParameterContainer, Named):
         self._backwardImplementation(self.outputerror[self.time], self.inputerror[self.time], 
                                      self.outputbuffer[self.time], self.inputbuffer[self.time])        
         
-    @substitute('pybrain.tools.pyrex._module.Modulereset')
+    @substitute('pybrain.pyrex._module.Modulereset')
     def reset(self):
         """ set all the buffers, past and present, to zero. """
         self.time = 0

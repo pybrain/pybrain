@@ -23,8 +23,7 @@ Try writing it to an xml file, reread it and determine if it looks the same:
 
 __author__ = 'Tom Schaul, tom@idsia.ch'
 
-from pybrain import Network, LinearLayer, FullConnection
-from pybrain.tools.shortcuts import buildNetwork
+from pybrain import Network, LinearLayer, FullConnection, buildNetwork
 from pybrain.tests import runModuleTestSuite
 
 

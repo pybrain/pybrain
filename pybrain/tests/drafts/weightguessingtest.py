@@ -3,8 +3,8 @@
 from scipy import rand
 
 from pybrain.examples.datasets import XORDataSet
-from pybrain.rl.evolvables.evolvable import Evolvable
-from pybrain.tools.shortcuts import buildNetwork
+from pybrain.structure.evolvables.evolvable import Evolvable
+from pybrain import buildNetwork
 from pybrain.rl.learners.searchprocesses.randomsearch import RandomSearch
 from pybrain.rl.learners.searchprocesses.hillclimber import HillClimber
 

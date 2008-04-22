@@ -5,7 +5,7 @@ from pybrain.structure.parametercontainer import ParameterContainer
 from pybrain.tools.functions import sigmoid, sigmoidPrime, tanhPrime
 
 
-class LSTMRTRLBlock(Module):
+class LSTMRTRLBlock(Module, ParameterContainer):
     """ long short-term memory implemented with RTRL; incoming connections
         and recurrent connections are included within this block! """
 
@@ -37,12 +37,14 @@ class LSTMRTRLBlock(Module):
         
         Module.__init__(self, indim, outdim, name)
         if self.peep:
-            self.initParams(nrNeurons*3 + 8*indim*nrNeurons)
+            ParameterContainer.__init__(self, nrNeurons*3 + 8*indim*nrNeurons)
             self.Sin_peep = zeros((0,nrNeurons))
             self.Sforget_peep = zeros((0,nrNeurons))
             self.Scell_peep = zeros((0,nrNeurons))
         else:
-            self.initParams(8*dim*nrNeurons)
+            ParameterContainer.__init__(self, 8*dim*nrNeurons)
+        self._setParameters(self.params)
+        self._setDerivatives(self.derivs)
             
         # transfer functions and their derivatives
         self.f = sigmoid
@@ -82,12 +84,7 @@ class LSTMRTRLBlock(Module):
         if self.peep:
             self.ingatePeepDerivs = self.derivs[8*indim*nrNeurons:8*indim*nrNeurons+nrNeurons]
             self.forgetgatePeepDerivs = self.derivs[8*indim*nrNeurons+nrNeurons:8*indim*nrNeurons+nrNeurons*2]
-            self.outgatePeepDerivs = self.derivs[8*indim*nrNeurons+nrNeurons*2:]
-        
-    def initParams(self, nrParameters, stdParams = 1.):
-        ParameterContainer.initParams(self, nrParameters, stdParams)
-        self._setParameters(self.params)
-        self._setDerivatives(self.derivs)
+            self.outgatePeepDerivs = self.derivs[8*indim*nrNeurons+nrNeurons*2:]        
                         
     def _growBuffers(self):
         Module._growBuffers(self)

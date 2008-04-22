@@ -2,7 +2,7 @@ from pyrex_header cimport ndarray, import_array
 import_array()
 
 def FullConnection_forwardImplementation(self, ndarray inbuf, ndarray outbuf):
-    # replaces: outbuf += dot(reshape(self.getParameters(), (self.outdim, self.indim)), inbuf)
+    # replaces: outbuf += dot(reshape(self.params, (self.outdim, self.indim)), inbuf)
     cdef ndarray params
     cdef double * paramp 
     cdef double * inbufp 
@@ -12,7 +12,7 @@ def FullConnection_forwardImplementation(self, ndarray inbuf, ndarray outbuf):
     cdef int outdim
     cdef int indim
     cdef int buf_len 
-    params = self.getParameters()
+    params = self.params
     paramp = <double*> params.data
     outbufp = <double*> outbuf.data
     indim = self.indim
@@ -27,8 +27,8 @@ def FullConnection_forwardImplementation(self, ndarray inbuf, ndarray outbuf):
         
 def FullConnection_backwardImplementation(self, ndarray outerr, ndarray inerr, ndarray inbuf):
     # Replace: 
-    #          inerr += dot(reshape(self.getParameters(), (self.outdim, self.indim)).T, outerr)
-    #          ds = self.getDerivatives()
+    #          inerr += dot(reshape(self.params, (self.outdim, self.indim)).T, outerr)
+    #          ds = self.derivs
     #          ds += outer(inbuf, outerr).T.flatten()
     cdef ndarray params
     cdef ndarray derivs
@@ -45,7 +45,7 @@ def FullConnection_backwardImplementation(self, ndarray outerr, ndarray inerr, n
     indim = self.indim
     outdim = self.outdim
 
-    params = self.getParameters()
+    params = self.params
     paramp = <double*> params.data
     outerrp = <double*> outerr.data    
     for co from 0 <= co < outdim:
@@ -56,7 +56,7 @@ def FullConnection_backwardImplementation(self, ndarray outerr, ndarray inerr, n
             paramp = paramp + 1
         outerrp = outerrp + 1
 
-    derivs = self.getDerivatives()
+    derivs = self.derivs
     derivsp = <double*> derivs.data
     outerrp = <double*> outerr.data    
     for co from 0 <= co < outdim:

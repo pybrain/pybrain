@@ -1,10 +1,14 @@
 __author__ = 'Thomas Rueckstiess, ruecksti@in.tum.de'
 
+
 from policygradient import PolicyGradientLearner
-from scipy import ones, dot, ravel, mean, where
+from scipy import ones, dot
 from scipy.linalg import pinv
 
+
 class ENAC(PolicyGradientLearner):
+    """ Episodic Natural Actor-Critic"""
+    
     def __init__(self):
         PolicyGradientLearner.__init__(self)
         

@@ -7,6 +7,8 @@ from nonmarkovpole import NonMarkovPoleEnvironment
 class NonMarkovDoublePoleEnvironment(DoublePoleEnvironment, NonMarkovPoleEnvironment):
     """ DoublePoleEnvironment which does not give access to the derivatives. """
     
+    outdim = 3
+    
     def getSensors(self):
         """ returns the state one step (dt) ahead in the future. stores the state in
             self.sensors because it is needed for the next calculation. The sensor return 
@@ -24,5 +26,4 @@ class NonMarkovDoublePoleEnvironment(DoublePoleEnvironment, NonMarkovPoleEnviron
         """ auxiliary access to just the cart position, to be used by BalanceTask """
         return self.sensors[2]
             
-    def getOutDim(self):
-        return 3
+    

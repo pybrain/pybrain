@@ -45,8 +45,8 @@ class RPropMinusTrainer(BackpropTrainer):
 
     def updateWeights(self):
         """ Update network weights and step width parameters """
-        gradient = self.module.getDerivatives()
-        w = self.module.getParameters() 
+        gradient = self.module.derivs
+        w = self.module.params
 
         # update weights
         w += sign(gradient) * self.delta

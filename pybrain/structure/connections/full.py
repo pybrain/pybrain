@@ -4,24 +4,25 @@ from scipy import reshape, dot, outer
 
 from connection import Connection
 from pybrain.utilities import substitute
+from pybrain.structure.parametercontainer import ParameterContainer
 
         
-class FullConnection(Connection):
+class FullConnection(Connection, ParameterContainer):
     """ a connection which fully connects every element from the first module's output buffer
     to the second module's input buffer """
     
     def __init__(self, *args, **kwargs):
         Connection.__init__(self, *args, **kwargs)
-        self.initParams(self.indim*self.outdim)
+        ParameterContainer.__init__(self, self.indim*self.outdim)
     
-    @substitute('pybrain.tools.pyrex._full.FullConnection_forwardImplementation')
+    @substitute('pybrain.pyrex._full.FullConnection_forwardImplementation')
     def _forwardImplementation(self, inbuf, outbuf):
-        outbuf += dot(reshape(self.getParameters(), (self.outdim, self.indim)), inbuf)
+        outbuf += dot(reshape(self.params, (self.outdim, self.indim)), inbuf)
     
-    @substitute('pybrain.tools.pyrex._full.FullConnection_backwardImplementation')
+    @substitute('pybrain.pyrex._full.FullConnection_backwardImplementation')
     def _backwardImplementation(self, outerr, inerr, inbuf):
-        inerr += dot(reshape(self.getParameters(), (self.outdim, self.indim)).T, outerr)
-        ds = self.getDerivatives()
+        inerr += dot(reshape(self.params, (self.outdim, self.indim)).T, outerr)
+        ds = self.derivs
         ds += outer(inbuf, outerr).T.flatten()                
         
     def whichBuffers(self, paramIndex):

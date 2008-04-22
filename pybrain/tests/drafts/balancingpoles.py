@@ -8,7 +8,7 @@ from pybrain.rl.environments.functions import OppositeFunction
 from pybrain import FullConnection
 from pybrain.rl.learners.blackboxoptimizers.fem import FEM
 from pybrain.rl.learners import CMAES
-from pybrain.tools.shortcuts import buildSimpleNetwork, buildNetwork
+from pybrain import buildNetwork
 from pybrain.rl.tasks.polebalancing import CartPoleTask
 from pybrain.structure.modules.lstm import LSTMLayer
 from scipy import ravel
@@ -19,7 +19,7 @@ def testBalancing(env):
         hidden = 4
     else:
         hidden = 1            
-    m = buildSimpleNetwork(env.getOutDim(), hidden, env.getInDim(), True)
+    m = buildNetwork(env.outdim, hidden, env.indim)
     if isinstance(env, NonMarkovPoleEnvironment):
         # add recurrent connections in the pomdp case
         m.addRecurrentConnection(FullConnection(m['h'], m['h'], name = 'rec'))
@@ -40,7 +40,7 @@ def testBalancing(env):
 def testOtherBalancing():
     markov = False
     t = CartPoleTask(numPoles = 2, markov = markov, extraObservations = True)
-    net = buildNetwork(t.getOutDim(), 4, t.getInDim(), bias = False)#, hiddenclass = LSTMLayer)
+    net = buildNetwork(t.outdim, 4, t.indim, bias = False)#, hiddenclass = LSTMLayer)
     if not markov:
         # add recurrent connections in the pomdp case
         net.addRecurrentConnection(FullConnection(net['hidden0'], net['hidden0'], name = 'rec'))

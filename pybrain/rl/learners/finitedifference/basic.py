@@ -25,9 +25,8 @@ class FDBasic(FDLearner):
         self.epsilon *= self.gamma
         self.ds.append('deltas', deltas)
         # change the parameters in module (params is a pointer!)
-        
-        params = self.module.getParameters()
-        params = self.original + deltas
+        params = self.module.params
+        params[:] = self.original + deltas
 
     def learn(self):
         """ calls the gradient calculation function and executes a step in direction

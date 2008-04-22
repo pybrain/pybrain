@@ -6,11 +6,11 @@ from pybrain.rl.environments.functions.episodicevaluators import CartPoleEvaluat
 from pybrain.rl.environments.functions import OppositeFunction
 from pybrain.rl.learners import CMAES
 from pybrain.rl.learners.blackboxoptimizers.evolution.limag import LiMaG
-from pybrain.tools.shortcuts import buildSimpleNetwork
+from pybrain import buildNetwork
 
 
 def testLimag():
-    m = buildSimpleNetwork(4, 1, 1, True)
+    m = buildNetwork(4, 1, 1)
     f = CartPoleEvaluator(m)
     f.desiredValue = 500
     E = LiMaG(f)
@@ -20,7 +20,7 @@ def testLimag():
     
     
 def testCMA():
-    m = buildSimpleNetwork(4, 1, 1, True)
+    m = buildNetwork(4, 1, 1)
     f = OppositeFunction(CartPoleEvaluator(m))
     f.desiredValue = -500
     E = CMAES(f, silent = False)

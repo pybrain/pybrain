@@ -11,10 +11,10 @@ def testExperiment():
     T.getReward = lambda: 0
     
     # a simple agent
-    A = FlatNetworkAgent(F.getOutDim(), F.getInDim())
+    A = FlatNetworkAgent(F.outdim, F.indim)
     
     # the function needs afirst observation
-    initobs = [0]*F.getOutDim()
+    initobs = [0]*F.outdim
     F.performAction(initobs)
     
     #connect them up

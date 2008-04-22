@@ -10,14 +10,13 @@ from scipy import rand, randn
 from random import shuffle
 
 from pybrain.rl.tasks.polebalancing import CartPoleTask
-from pybrain.tools.shortcuts import buildNetwork
-from pybrain import FullConnection
+from pybrain import buildNetwork, FullConnection
 from nesexperiments import pickleDumpDict
 from pybrain.rl.environments.functions.episodicevaluators.episodicevaluator import EpisodicEvaluator
 from pybrain.rl.learners.blackboxoptimizers import CMAES
 from pybrain.rl.environments.functions.function import OppositeFunction
 from pybrain.rl.learners.searchprocesses.es import ES
-from pybrain.rl.evolvables.evolvable import Evolvable
+from pybrain.structure.evolvables.evolvable import Evolvable
 from pybrain.rl.learners.searchprocesses import MemeticHillClimber, HillClimber
 from pybrain.rl.evolvables import MaskedParameters
 from pybrain.rl.learners.searchprocesses.memeticcmaclimber import MemeticCMAClimber
@@ -42,7 +41,7 @@ shuffling = True
 networks = []
 for h in [3,6]:
     for b in [True, False]:
-        net = buildNetwork(thetask.getOutDim(), h, thetask.getInDim(), bias = b)
+        net = buildNetwork(thetask.outdim, h, thetask.indim, bias = b)
         net.addRecurrentConnection(FullConnection(net['hidden0'], net['hidden0'], name = 'rec'))
         net.sortModules()
         net.name = 'net'+str(h)+str(b)
@@ -83,7 +82,7 @@ def randomWeights(t, n, desired, maxEvals, verbose = False):
     all = []
     for i in range(maxEvals):
         x = -weightRange + 2* weightRange * rand(n.paramdim)
-        fit = e.controlledExecute(x)
+        fit = e(x)
         all.append((x, fit))
         if fit > best:
             best = fit

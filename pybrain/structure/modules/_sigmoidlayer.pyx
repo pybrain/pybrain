@@ -1,5 +1,5 @@
 from pyrex_header cimport ndarray, import_array
-from pybrain.tools.pyrex.pyrex_shared import sigmoid
+from pybrain.pyrex.pyrex_shared import sigmoid
 import_array()
 
 

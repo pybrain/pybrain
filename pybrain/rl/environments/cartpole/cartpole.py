@@ -16,6 +16,9 @@ class CartPoleEnvironment(GraphicalEnvironment):
         Runge-Kutta method.
     """       
     
+    indim = 1
+    outdim = 4
+    
     # some physical constants
     g = 9.81
     l = 0.5
@@ -88,11 +91,6 @@ class CartPoleEnvironment(GraphicalEnvironment):
         """ auxiliary access to just the cart position, to be used by BalanceTask """
         return self.sensors[2]
 
-    def getInDim(self):
-        return 1
-        
-    def getOutDim(self):
-        return 4
     
 
 class CartPoleLinEnvironment(CartPoleEnvironment):

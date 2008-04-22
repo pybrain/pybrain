@@ -1,0 +1,95 @@
+__author__ = 'Tom Schaul, tom@idsia.ch'
+
+from scipy import zeros, randn, ones
+from random import random, sample, gauss
+
+from topology import TopologyEvolvable
+
+
+class MaskedParameters(TopologyEvolvable):
+    """ A module with a binary mask that can disable (=zero) parameters.
+    If no maximum is set, the mask can potentially have all parameters enabled. 
+    The maxComplexity represents the number of allowed enabled parameters. """
+    
+    maskFlipProbability = 0.05
+    mutationStdev = 0.1    
+    
+    # number of bits in the mask that can be maximally on at once (None = all)
+    maxComplexity = None
+    
+    def __init__(self, pcontainer, **args):
+        TopologyEvolvable.__init__(self, pcontainer, **args)
+        if self.maxComplexity == None:
+            self.maxComplexity = self.pcontainer.paramdim
+            self.mask = ones(self.pcontainer.paramdim, dtype=bool)
+        else:
+            self.mask = zeros(self.pcontainer.paramdim, dtype=bool)
+            for i in sample(range(self.pcontainer.paramdim), self.maxComplexity):
+                self.mask[i] = True
+        self.maskableParams = self.pcontainer.params.copy()
+        self._applyMask()
+           
+    def _applyMask(self):
+        """ apply the mask to the module. """
+        self.pcontainer._params[:] = self.mask*self.maskableParams
+        
+    @property
+    def paramdim(self):
+        return sum(self.mask)
+    
+    @property
+    def params(self):
+        """ returns an array with only the unmasked parameters """    
+        x = zeros(self.paramdim)
+        paramcount = 0
+        for i in range(len(self.maskableParams)):
+            if self.mask[i] == True:
+                x[paramcount] = self.maskableParams[i] 
+                paramcount += 1
+        return x
+    
+    def _setParameters(self, x):
+        """ sets only the unmasked parameters """
+        paramcount = 0
+        for i in range(len(self.maskableParams)):
+            if self.mask[i] == True:
+                self.maskableParams[i] = x[paramcount]
+                paramcount += 1
+        self._applyMask()
+        
+    def randomize(self, **args):
+        """ an initial, random mask (with random params) 
+        with as many parameters enabled as allowed"""
+        self.mask = zeros(self.pcontainer.paramdim, dtype=bool)
+        for i in sample(range(self.pcontainer.paramdim), self.maxComplexity):
+            self.mask[i] = True
+        self.maskableParams = randn(self.pcontainer.paramdim)*self.stdParams
+        self._applyMask()    
+    
+    def topologyMutate(self):
+        """ flips some bits on the mask 
+        (but do not exceed the maximum of enabled parameters). """
+        for i in range(self.pcontainer.paramdim):
+            if random() < self.maskFlipProbability:
+                self.mask[i] = not self.mask[i]
+        tooMany = sum(self.mask) - self.maxComplexity
+        for i in range(tooMany):
+            while True:
+                ind = int(random()*self.pcontainer.paramdim)
+                if self.mask[ind]:
+                    self.mask[ind] = False
+                    break
+        if sum(self.mask) == 0:
+            # CHECKME: minimum of one needs to be on 
+            ind = int(random()*self.pcontainer.paramdim)
+            self.mask[ind] = True
+            
+        self._applyMask()                     
+    
+    def mutate(self):
+        """ add some gaussian noise to all parameters."""
+        # CHECKME: could this be partly outsourced to the pcontainer directly?
+        for i in range(self.pcontainer.paramdim):
+            self.maskableParams[i] += gauss(0, self.mutationStdev)
+        self._applyMask()
+            

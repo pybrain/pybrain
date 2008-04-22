@@ -12,7 +12,7 @@ class IdentityConnection(Connection):
         Connection.__init__(self, *args, **kwargs)
         assert self.indim == self.outdim
         
-    @substitute('pybrain.tools.pyrex._identity.IdentityConnection_forwardImplementation')
+    @substitute('pybrain.pyrex._identity.IdentityConnection_forwardImplementation')
     def _forwardImplementation(self, inbuf, outbuf):
         outbuf += inbuf
         

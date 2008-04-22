@@ -1,7 +1,9 @@
 __author__ = 'Tom Schaul, tom@idsia.ch'
 
+from scipy import ndarray
+
 from pybrain.rl.tasks import EpisodicTask
-from pybrain.utilities import Named
+from pybrain.utilities import Named, drawIndex
 
 
 class POMDPTask(EpisodicTask, Named):
@@ -28,10 +30,12 @@ class POMDPTask(EpisodicTask, Named):
         self.setArgs(**args)
         self.steps = 0
         
-    def getInDim(self):
+    @property
+    def indim(self):
         return self.actions
     
-    def getOutDim(self):
+    @property
+    def outdim(self):
         return self.observations
     
     def reset(self):
@@ -44,5 +48,9 @@ class POMDPTask(EpisodicTask, Named):
         return False
     
     def performAction(self, action):
+        """ POMDP tasks, as they have discrete actions, can me used by providing either an index,
+        or an array with a 1-in-n coding (which can be stochastic). """
+        if type(action) == ndarray:
+            action = drawIndex(action, tolerant = True)
         self.steps += 1
         EpisodicTask.performAction(self, action)

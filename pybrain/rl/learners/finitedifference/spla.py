@@ -23,10 +23,10 @@ class SPLA(FDLearner):
     def setModule(self, module):
         """Sets and initializes all module settings"""
         FDLearner.setModule(self, module)
-        self.original = zeros(self.module.getParameters().shape) #Stores the parameter set
-        self.sigList=ones(self.module.getParameters().shape) #Stores the list of standard deviations (sigmas)
+        self.original = zeros(self.module.params.shape) #Stores the parameter set
+        self.sigList=ones(self.module.params.shape) #Stores the list of standard deviations (sigmas)
         self.initSigmas()
-        self.deltas=zeros(self.module.getParameters().shape) #the parameter difference vector for exploration
+        self.deltas=zeros(self.module.params.shape) #the parameter difference vector for exploration
         self.module._setParameters(self.original) #initializes the module parameter set to zeros
         self.gd.init(self.original)
 

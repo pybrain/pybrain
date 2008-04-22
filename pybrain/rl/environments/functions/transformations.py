@@ -1,10 +1,9 @@
 __author__ = 'Tom Schaul, tom@idsia.ch'
 
 from scipy import rand, dot
-from scipy.linalg import orth
+from scipy.linalg import orth, norm
 
 from function import FunctionEnvironment
-from pybrain.utilities import norm
 
     
 class OppositeFunction(FunctionEnvironment):

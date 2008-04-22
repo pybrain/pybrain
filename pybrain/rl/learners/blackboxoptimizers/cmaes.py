@@ -1,8 +1,8 @@
 __author__ = 'Tom Schaul, tom@idsia.ch'
 
-from numpy import floor, log, eye, zeros, array, sqrt, dot, sum, mat
-from numpy import exp, triu, diag, matrix, power
-from numpy.linalg import eig
+from numpy import floor, log, eye, zeros, array, sqrt, sum, mat
+from numpy import exp, triu, diag, matrix, power, ravel
+from numpy.linalg import eig, norm
 from numpy.random import randn
 
 from blackboxoptimizer import BlackBoxOptimizer
@@ -14,15 +14,12 @@ class CMAES(BlackBoxOptimizer):
     This code is a close transcription of the provided matlab code.
     """
     
-    plotsymbol = 'o'
-    silent = True
+    minimize = True
+    stopPrecision = 1e-6
     
-    def optimize(self):    
-        assert self.minimize == True
-        if self.tfun != None: 
-            self.tfun.reset()
+    def _batchLearn(self, maxSteps = None):    
         N = self.xdim
-        strfitnessfct = self.targetfun
+        strfitnessfct = self.evaluator
         xmean = mat(self.x0).reshape(self.xdim, 1)
 
         sigma = 0.5         # coordinate wise standard deviation (step size)
@@ -58,7 +55,7 @@ class CMAES(BlackBoxOptimizer):
         counteval = 0 # the next 40 lines contain the 20 lines of interesting code 
         arfitness = mat(zeros((lambd,1)))
         arx = mat(zeros((N,lambd)))    
-        while counteval < self.maxEvals:
+        while counteval+lambd <= maxSteps:
         
             # Generate and evaluate lambda offspring
             arz = mat(randn(N,lambd))     # array of normally distributed mutation vectors
@@ -83,7 +80,7 @@ class CMAES(BlackBoxOptimizer):
                  + (1-hsig) * cc*(2-cc) * C)
                  + ccov * (1-1/mucov)            # plus rank mu update 
                    * (B*D*arz[:,arindex[0:mu]])
-                   *  diag(flat(weights)) * (B*D*arz[:,arindex[0:mu]]).T)               
+                   *  diag(ravel(weights)) * (B*D*arz[:,arindex[0:mu]]).T)               
         
             # Adapt step size sigma
             sigma = sigma * exp((cs/damps)*(norm(ps)/chiN - 1))             # Eq. (5)
@@ -94,26 +91,25 @@ class CMAES(BlackBoxOptimizer):
             # iteration, where alpha is e.g. between 0.1 and 10 
             C=triu(C)+triu(C,1).T # enforce symmetry
             Ev, B = eig(C)          # eigen decomposition, B==normalized eigenvectors
-            D = diag(flat(sqrt(Ev))) # D contains standard deviations now
+            D = diag(ravel(sqrt(Ev))) # D contains standard deviations now
             
-            if not self.silent:
+            if self.verbose:
                 print counteval, ': ', arfitness[0]
             
             # Break, if fitness is good enough
-            if arfitness[0] <= self.stopPrecision:
+            if arfitness[0] <= self.desiredEvaluation:
+                break
+            # or convergence is reached
+            if abs((arfitness[0]-arfitness[-1])/arfitness[0]+arfitness[-1]) <= self.stopPrecision:
                 break
             
-        return arx[:, arindex[1]]
+            self.bestEvaluable = ravel(array(arx[:, arindex[0]]))
+            self.bestEvaluation = arfitness[0]
     
-def norm(x):
-    return sqrt(dot(flat(x),flat(x)))
-
-def flat(m):
-    return array(m).flatten(1)
 
 def sorti(vect):
     """ sort, but also return the indices-changes """
-    tmp = sorted(map(lambda (x,y): (y,x), enumerate(flat(vect))))
+    tmp = sorted(map(lambda (x,y): (y,x), enumerate(ravel(vect))))
     res1 = map(lambda x: x[0], tmp)
     res2 = map(lambda x: int(x[1]), tmp)
     return res1, res2

@@ -9,7 +9,7 @@ from pybrain.tools.functions import sigmoid, sigmoidPrime, tanhPrime
 from pybrain.structure.moduleslice import ModuleSlice
 
 
-class MDLSTMLayer(NeuronLayer):
+class MDLSTMLayer(NeuronLayer, ParameterContainer):
     """ multi-dimensional long short-term memory cell layer 
     @attention: this module has to be used with care: it's last <size> input and outputs are reserved
     for transmitting internal states on flattened recursive multi-dim networks, and so int's connections 
@@ -21,6 +21,7 @@ class MDLSTMLayer(NeuronLayer):
     
     def __init__(self, dim, dimensions = 1, peepholes = False, name = None):
         self.setArgs(dim = dim, peepholes = peepholes, dimensions = dimensions)
+                
         
         # internal buffers:
         self.ingate = zeros((0,dim))
@@ -36,8 +37,11 @@ class MDLSTMLayer(NeuronLayer):
         self.stateError = zeros((0,dim))
         
         Module.__init__(self, (3+2*dimensions)*dim, dim*2, name)
+        
         if self.peepholes:
-            self.initParams(dim*(2+dimensions))
+            ParameterContainer.__init__(self, dim*(2+dimensions))
+            self._setParameters(self.params)
+            self._setDerivatives(self.derivs)        
             
         # transfer functions and their derivatives
         self.f = sigmoid
@@ -60,11 +64,6 @@ class MDLSTMLayer(NeuronLayer):
         self.ingatePeepDerivs = self.derivs[:size]
         self.forgetgatePeepDerivs = self.derivs[size:size*(1+self.dimensions)]
         self.outgatePeepDerivs = self.derivs[size*(1+self.dimensions):]        
-        
-    def initParams(self, dim, stdParams = 1.):
-        ParameterContainer.initParams(self, dim, stdParams)
-        self._setParameters(self.params)
-        self._setDerivatives(self.derivs)
         
     def _growBuffers(self):
         """ increase the buffer sizes. """

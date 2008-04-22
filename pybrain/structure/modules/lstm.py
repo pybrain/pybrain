@@ -8,7 +8,7 @@ from pybrain.structure.parametercontainer import ParameterContainer
 from pybrain.tools.functions import sigmoid, sigmoidPrime, tanhPrime
 
 
-class LSTMLayer(NeuronLayer):
+class LSTMLayer(NeuronLayer, ParameterContainer):
     """ long short-term memory cell layer """
 
     sequential = True
@@ -16,6 +16,7 @@ class LSTMLayer(NeuronLayer):
 
     def __init__(self, dim, peepholes = False, name = None):
         self.setArgs(dim = dim, peepholes = peepholes)
+        
         # internal buffers:
         self.ingate = zeros((0,dim))
         self.outgate = zeros((0,dim))
@@ -31,8 +32,10 @@ class LSTMLayer(NeuronLayer):
         
         Module.__init__(self, 4*dim, dim, name)
         if self.peepholes:
-            self.initParams(dim*3)
-            
+            ParameterContainer.__init__(self, dim*3)
+            self._setParameters(self.params)
+            self._setDerivatives(self.derivs)
+                    
         # transfer functions and their derivatives
         self.f = sigmoid
         self.fprime = sigmoidPrime
@@ -54,11 +57,6 @@ class LSTMLayer(NeuronLayer):
         self.ingatePeepDerivs = self.derivs[:dim]
         self.forgetgatePeepDerivs = self.derivs[dim:dim*2]
         self.outgatePeepDerivs = self.derivs[dim*2:]
-        
-    def initParams(self, dim, stdParams = 1.):
-        ParameterContainer.initParams(self, dim, stdParams)
-        self._setParameters(self.params)
-        self._setDerivatives(self.derivs)
                         
     def _growBuffers(self):
         Module._growBuffers(self)

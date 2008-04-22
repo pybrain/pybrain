@@ -8,9 +8,15 @@ from blackboxoptimizer import BlackBoxOptimizer
 class NelderMead(BlackBoxOptimizer):
     """ do the optimization using a simple wrapper for scipy's fmin """
     
-    plotsymbol = '+'
+    # acceptable relative error in the evaluator for convergence.
+    stopPrecision = 1e-6
     
-    def optimize(self):    
-        if self.tfun != None: 
-            self.tfun.reset()
-        return fmin(func = self.targetfun, x0 = self.x0, ftol = self.stopPrecision)
+    minimize = True
+        
+    def _batchLearn(self, maxSteps = None):
+        """ The only stopping crtiterion (apart form limiting the evaluations) is
+        to set the desired function precision. """
+        self.bestEvaluable = fmin(func = self.evaluator, x0 = self.x0, ftol = self.stopPrecision, 
+                                  maxfun = maxSteps, disp = self.verbose)
+        self.bestEvaluation = self.evaluator(self.bestEvaluable)
+        return self.bestEvaluable, self.bestEvaluation

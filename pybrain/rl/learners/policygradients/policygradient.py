@@ -1,11 +1,11 @@
 __author__ = 'Thomas Rueckstiess, ruecksti@in.tum.de'
 
-from pybrain.rl.learners import Learner
+from pybrain.rl.learners.rllearner import RLLearner
 from pybrain.utilities import abstractMethod
 from pybrain.auxiliary import GradientDescent
-from scipy import ravel, zeros, sign, clip
+from scipy import ravel, clip
 
-class PolicyGradientLearner(Learner):
+class PolicyGradientLearner(RLLearner):
     """ The PolicyGradientLearner takes a ReinforcementDataSet which has been extended with the log likelihood
         of each parameter for each time step. It additionally takes a Module which has been extended with
         a gaussian layer on top. It then changes the weights of both the gaussian layer and the rest of the
@@ -17,7 +17,7 @@ class PolicyGradientLearner(Learner):
     def setAlpha(self, alpha):
         """ pass the alpha value through to the gradient descent object """
         self.gd.alpha = alpha
-        print "patching through to gd"
+        #print "patching through to gd"
     
     def getAlpha(self, alpha):
         return self.gd.alpha
@@ -25,8 +25,8 @@ class PolicyGradientLearner(Learner):
     alpha = property(getAlpha, setAlpha)
         
     def setModule(self, module):
-        Learner.setModule(self, module)
-        self.gd.init(module.getParameters())      
+        RLLearner.setModule(self, module)
+        self.gd.init(module.params)      
         
     def learn(self):
         """ calls the gradient calculation function and executes a step in direction

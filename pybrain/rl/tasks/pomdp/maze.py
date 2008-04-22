@@ -22,6 +22,10 @@ class MazeTask(POMDPTask):
     stochObs = 0
     stochAction = 0
     
+    @property
+    def noisy(self):
+        return self.stochObs > 0
+    
     def __init__(self, **args):
         self.setArgs(**args)
         Task.__init__(self, self.mazeclass(self.topology, self.goal, initPos = self.initPos, 

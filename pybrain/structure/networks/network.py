@@ -3,21 +3,21 @@ from __future__ import with_statement
 __author__ = 'Daan Wierstra and Tom Schaul'
 
 import cPickle
-from scipy import zeros, size
+from scipy import size
 
 from pybrain.structure.moduleslice import ModuleSlice
 from pybrain.structure.modules.module import Module
 from pybrain.structure.parametercontainer import ParameterContainer
-from pybrain.utilities import combineLists, substitute
+from pybrain.utilities import combineLists
 from pybrain.structure.connections.shared import SharedConnection
+from pybrain.structure.evolvables.evolvable import Evolvable
 
-
-class Network(Module):
+class Network(Module, ParameterContainer):
     """ A network is linking different modules with connections. """
 
     def __init__(self, name = None, **args):
+        ParameterContainer.__init__(self, **args)
         self.name = name
-        self.setArgs(**args)
         # a sorted list of modules
         self.modules = []
         # the connections are stored in a dictionnary:  the key is the module where the
@@ -135,6 +135,7 @@ class Network(Module):
             index += x.paramdim
         
     def _forwardImplementation(self, inbuf, outbuf):
+        assert self.sorted
         index = 0
         t = self.time
         for m in self.inmodules:
@@ -156,6 +157,7 @@ class Network(Module):
             index += m.outdim
         
     def _backwardImplementation(self, outerr, inerr, outbuf, inbuf):
+        assert self.sorted
         index = 0
         t = self.time
         for m in self.outmodules:
@@ -232,9 +234,8 @@ class Network(Module):
             
             
         # create a single array with all parameters
-        tmp = map(lambda pc: pc.getParameters(), self._containerIterator())
-        self.paramdim = sum(map(size, tmp))
-        self.params = zeros(self.paramdim)
+        tmp = map(lambda pc: pc.params, self._containerIterator())
+        ParameterContainer.__init__(self, sum(map(size, tmp)))
         # TODO: speed-optimize, maybe
         index = 0
         for x in tmp:
@@ -243,8 +244,8 @@ class Network(Module):
         self._setParameters(self.params)
         
         # same thing for derivatives
-        tmp = map(lambda pc: pc.getDerivatives(), self._containerIterator())
-        self.derivs = zeros(self.paramdim)
+        tmp = map(lambda pc: pc.derivs, self._containerIterator())
+        self.resetDerivatives()
         index = 0
         for x in tmp:
             self.derivs[index:index+size(x)] = x
@@ -262,14 +263,20 @@ class Network(Module):
         # initialize the network buffers
         Module.__init__(self, self.indim, self.outdim, name = self.name)
         self.sorted = True
-
-    def initParams(self, stdParams = 1.):
-        ParameterContainer.initParams(self, self.paramdim, stdParams)
-        # pass params and derivs down to each single module in network
-        self._setParameters(self.params)
-        self._setDerivatives(self.derivs)  
         
     def saveToFile(self, filename, protocol=0):
         """Save the current dataset to the given filename."""
         with file(filename, 'w+') as fp:
             cPickle.dump(self, fp, protocol=protocol)
+            
+    def _resetBuffers(self):
+        Module._resetBuffers(self)
+        for m in self.modules:
+            m._resetBuffers()        
+    
+    def copy(self, keepBuffers = False):
+        if not keepBuffers:
+            self._resetBuffers()
+        cp = Evolvable.copy(self)
+        cp._setParameters(self.params.copy())
+        return cp

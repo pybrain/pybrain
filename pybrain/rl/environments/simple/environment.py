@@ -9,6 +9,8 @@ class SimpleEnvironment(GraphicalEnvironment):
     def __init__(self, dim=1):
         GraphicalEnvironment.__init__(self)
         self.dim = dim
+        self.indim = dim
+        self.outdim = dim
         self.noise = None
         # if dim == 1:
             # self.setRenderer(SimpleRenderer())
@@ -48,9 +50,5 @@ class SimpleEnvironment(GraphicalEnvironment):
 
         self.action = zeros(self.dim, float)
         self.updated = True
-        
-    def getOutDim(self):
-        return self.dim
     
-    def getInDim(self):
-        return self.dim
+    

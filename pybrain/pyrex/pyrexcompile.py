@@ -24,9 +24,9 @@ elif platform.system() == 'Windows':
     sys.argv.append('mingw32') 
     
 
-files = {'../../structure/modules': ['_linearlayer', '_module', '_sigmoidlayer'],
-         '../../structure/connections': ['_identity', '_connection', '_full'],
-         '../../structure/networks': ['_network', ],
+files = {'../structure/modules': ['_linearlayer', '_module', '_sigmoidlayer'],
+         '../structure/connections': ['_identity', '_connection', '_full'],
+         '../structure/networks': ['_network', ],
          '.': ['pyrex_shared'],
          }
 

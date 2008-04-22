@@ -48,8 +48,8 @@ def compareImplementations():
     # incomplete: l2 = LSTMLayer2(dim, peep)
     l3 = LSTMLayer3(dim, peep)
     if peep:
-        l1._setParameters(l3.getParameters())
-        #l2._setParameters(l3.getParameters())
+        l1._setParameters(l3.params)
+        #l2._setParameters(l3.params)
     steps = 3
     for dummy in range(steps):
         r = rand(4*dim)

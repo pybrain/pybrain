@@ -57,19 +57,16 @@ class PolicyGradientAgent(LearningAgent):
         # update parameters for learner
         self.learner.setModule(self.module)
     
-    def getSigma(self):
-        return self.explorationlayer.params 
-    
     def getAction(self):
         """ calls the LearningAgent getAction method. Additionally, executes a backward pass in the module
             and stores all the derivatives in the dataset. """
         HistoryAgent.getAction(self)
         self.lastaction = self.module.activate(self.lastobs).copy()
         self.module.backward()
-        self.loglh = self.module.getDerivatives().copy()
+        self.loglh = self.module.derivs.copy()
         
         self.module.time += 1 
-        d = self.module.getDerivatives()
+        d = self.module.derivs
         d *= 0
         self.module.reset()
         return self.lastaction

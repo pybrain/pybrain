@@ -73,9 +73,12 @@ class Task(object):
             
         return result 
     
-    def getOutDim(self):
-        return self.env.getOutDim()
+    @property
+    def indim(self):
+        return self.env.indim
     
-    def getInDim(self):
-        return self.env.getInDim()
+    @property
+    def outdim(self):
+        return self.env.outdim
+    
     

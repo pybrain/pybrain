@@ -114,10 +114,10 @@ class NetworkWrapper(object):
             cell_weights = []
             for c in connections:
                 cell_weights += [
-                    c.getParameters()[ cell_idx + 0 * dim ],
-                    c.getParameters()[ cell_idx + 1 * dim ],
-                    c.getParameters()[ cell_idx + 2 * dim ],
-                    c.getParameters()[ cell_idx + 3 * dim ] ]
+                    c.params[ cell_idx + 0 * dim ],
+                    c.params[ cell_idx + 1 * dim ],
+                    c.params[ cell_idx + 2 * dim ],
+                    c.params[ cell_idx + 3 * dim ] ]
 
             layer_weights.append( cell_weights )
         return layer_weights
@@ -139,7 +139,7 @@ class NetworkWrapper(object):
         for cell_idx in range(dim):
             cell_weights = weights.pop(0)
             for c in connections:
-                params = c.getParameters()
+                params = c.params
                 params[cell_idx + 0 * dim] = cell_weights.pop(0)
                 params[cell_idx + 1 * dim] = cell_weights.pop(0)
                 params[cell_idx + 2 * dim] = cell_weights.pop(0)
@@ -154,14 +154,14 @@ class NetworkWrapper(object):
         """ Sets the weight matrix of the output layer's input connection.
         """
         c = self.getOutputConnection()
-        p = c.getParameters()
+        p = c.params
         p[:] = W.flatten()
 
     def getOutputWeightMatrix(self):
         """ Sets the weight matrix of the output layer's input connection.
         """
         c = self.getOutputConnection()
-        p = c.getParameters()
+        p = c.params
         return reshape( p, (c.outdim, c.indim) )
 
 

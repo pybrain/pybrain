@@ -11,6 +11,9 @@ class SimpleraceEnvironment(Environment):
     lastStepCurrentWp = [0, 0]
     lastStepNextWp = [0, 0]
     
+    indim = 2
+    outdim = 7
+    
     def __init__(self, host = "127.0.0.1", port = 6524):
         self.theSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.theSocket.connect((host, port))
@@ -98,15 +101,8 @@ class SimpleraceEnvironment(Environment):
         self.secondCarScore = 0
         self.lastStepCurrentWp = [0, 0]
         self.lastStepNextWp = [0, 0]
-        self.sensors = zeros(self.getOutDim())
-        self.waitOne = False
-        
-    
-    def getInDim(self):
-        return 2
-    
-    def getOutDim(self):
-        return 7
+        self.sensors = zeros(self.outdim)
+        self.waitOne = False  
     
     def euclideanDistance(self, firstPoint, secondPoint):
         return sqrt ((firstPoint[0] - secondPoint[0])**2 + (firstPoint[1] - secondPoint[1])**2)

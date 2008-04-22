@@ -59,9 +59,9 @@ class RWR(Learner):
         self.tau = 1.
         
         # prepare the datasets to be used
-        self.weightedDs = ImportanceDataSet(self.task.getOutDim(), self.task.getInDim())
-        self.rawDs = ReinforcementDataSet(self.task.getOutDim(), self.task.getInDim())
-        self.valueDs = SequentialDataSet(self.task.getOutDim(), 1)
+        self.weightedDs = ImportanceDataSet(self.task.outdim, self.task.indim)
+        self.rawDs = ReinforcementDataSet(self.task.outdim, self.task.indim)
+        self.valueDs = SequentialDataSet(self.task.outdim, 1)
         
         # prepare the supervised trainers
         self.bp = BackpropTrainer(self.net, self.weightedDs, self.learningRate, 

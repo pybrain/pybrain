@@ -1,17 +1,17 @@
 __author__ = 'Daan Wierstra and Tom Schaul'
 
-from pybrain.structure.parametercontainer import ParameterContainer
-from pybrain.utilities import Named, abstractMethod
+from pybrain.utilities import abstractMethod, Named
 from pybrain.structure.moduleslice import ModuleSlice
 
 
-class Connection(ParameterContainer, Named):
+class Connection(Named):
     """ a connection links 2 modules, more precisely: the output of the first module
     to the input of the second. It can potentially transform the information on the way. 
     It also transmits errors backwards between the same modules. """
     
     inmod = None
     outmod = None
+    paramdim = 0
     
     def __init__(self, inmod, outmod, name = None,
                  inSliceFrom = 0, inSliceTo = None, outSliceFrom = 0, outSliceTo = None):
@@ -41,7 +41,6 @@ class Connection(ParameterContainer, Named):
             self.inSliceTo += inmod.outOffset
         else:
             self.inmod = inmod
-        self.setArgs(inmod = self.inmod)
         
         if isinstance(outmod, ModuleSlice):
             self.outmod = outmod.base
@@ -49,12 +48,12 @@ class Connection(ParameterContainer, Named):
             self.outSliceTo += outmod.inOffset
         else:
             self.outmod = outmod
-        self.setArgs(outmod = self.outmod)
-                    
+            
         self.indim = self.inSliceTo - self.inSliceFrom 
         self.outdim = self.outSliceTo - self.outSliceFrom 
         
         # arguments for for xml
+        self.setArgs(inmod = self.inmod, outmod = self.outmod)
         if self.inSliceFrom > 0:
             self.setArgs(inSliceFrom = self.inSliceFrom)
         if self.outSliceFrom > 0:

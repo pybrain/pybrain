@@ -17,10 +17,10 @@ class FitnessPlotter:
         """ @param precision: how many steps along every dimension """        
         if isinstance(f, FunctionEnvironment):
             assert f.xdim == 2
-            self.f = lambda x,y: f.controlledExecute(array([x,y]))            
+            self.f = lambda x,y: f(array([x,y]))            
         elif isclass(f) and issubclass(f, FunctionEnvironment):    
             tmp = f(2)
-            self.f = lambda x,y: tmp.controlledExecute(array([x,y]))
+            self.f = lambda x,y: tmp(array([x,y]))
         else:
             self.f = f
             

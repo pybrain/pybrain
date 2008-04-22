@@ -12,8 +12,7 @@ from nesexperiments import pickleDumpDict, pickleReadDict
 
 def buildNet(inn, hidden, outn):
     """ lstm network with direct connections to the output layer (which is a softmax). """
-    from pybrain import FullConnection, SoftmaxLayer, LSTMLayer
-    from pybrain.tools.shortcuts import buildNetwork
+    from pybrain import FullConnection, SoftmaxLayer, LSTMLayer, buildNetwork
     
     N = buildNetwork(inn, hidden, outn, 
                      hiddenclass = LSTMLayer, outclass = SoftmaxLayer)
@@ -95,7 +94,7 @@ class RwrExperiment(Named):
         if self.greedyRuns == None:
             self.greedyRuns = self.batchSize/2
         self.task.maxSteps = self.maxSteps
-        self.net = buildNet(self.task.getOutDim(), self.hidden, self.task.getInDim())
+        self.net = buildNet(self.task.outdim, self.hidden, self.task.indim)
         self.settings = {'learningRate': self.learningRate, 
                          'momentum': self.momentum, 
                          'maxEpochs': self.maxEpochs,
@@ -105,7 +104,7 @@ class RwrExperiment(Named):
                          'continueEpochs': self.continueEpochs,
                          }
         if self.useValueFunction:
-            self.vnet = buildNet(self.task.getOutDim(), self.hidden, 1)
+            self.vnet = buildNet(self.task.outdim, self.hidden, 1)
             self.settings['valueLearningRate'] = self.valueLearningRate
             self.settings['valueMomentum'] = self.valueMomentum
             #self.settings['valueTrainEpochs'] = self.valueTrainEpochs

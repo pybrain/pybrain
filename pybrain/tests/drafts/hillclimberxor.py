@@ -1,7 +1,7 @@
 __author__ = 'Tom Schaul, tom@idsia.ch'
 
 from pybrain.rl.evolvables import PrecisionBoundParameters
-from pybrain.tools.shortcuts import buildNetwork
+from pybrain import buildNetwork
 from pybrain.rl.learners.searchprocesses import HillClimber
 
 from pybrain.examples.datasets import XORDataSet

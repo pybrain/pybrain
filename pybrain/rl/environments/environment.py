@@ -8,6 +8,11 @@ class Environment:
         We can perform actions, and access (partial) observations. 
     """       
 
+    #the number of action values the environment accepts
+    indim = 0
+    # the number of sensor values the environment produces
+    outdim = 0
+    
     def getSensors(self):
         """ the currently visible state of the world (the observation may be 
             stochastic - repeated calls returning different values)
@@ -28,11 +33,4 @@ class Environment:
         """ Most environments will implement this optional method that allows for reinitialization. 
         """
         
-    def getInDim(self):
-        """ the number of action values the environment accepts """
-        abstractMethod()
-
-    def getOutDim(self):
-        """ the number of sensor values the environment produces """
-        abstractMethod()
-
+    

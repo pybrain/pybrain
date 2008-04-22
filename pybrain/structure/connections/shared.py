@@ -2,7 +2,6 @@ __author__ = 'Tom Schaul, tom@idsia.ch'
 
 from pybrain.structure.parametercontainer import ParameterContainer
 from connection import Connection
-from pybrain.utilities import Named
 from full import FullConnection
 
 
@@ -11,16 +10,16 @@ class OwnershipViolation(Exception):
         SharedConnection, instead of its mother. """
 
 
-class MotherConnection(ParameterContainer, Named):
+class MotherConnection(ParameterContainer):
     """ The container for the shared parameters of connections (just a container with a constructor, actually). """
     
+    hasDerivatives = True
     nbparams = None
     
-    # TODO: maybe all sibling connections should register themselves here?
-    def __init__(self, nbparams, std = 1., name = None):
-        self.name = name
-        self.setArgs(nbparams = nbparams)
-        self.initParams(nbparams, std)
+    def __init__(self, nbparams, **args):
+        assert nbparams > 0
+        ParameterContainer.__init__(self, nbparams, **args)
+        self.setArgs(nbparams = self.paramdim)
             
 
 class SharedConnection(Connection):
@@ -37,11 +36,11 @@ class SharedConnection(Connection):
         self.paramdim = self.mother.paramdim
             
     def initParams(self, *args): raise OwnershipViolation
-    def getParameters(self): return self.mother.getParameters()
-    def _setParameters(self, *args): raise OwnershipViolation    
-    def getDerivatives(self): return self.mother.getDerivatives()
-    def _setDerivatives(self, *args): raise OwnershipViolation
-    def resetDerivatives(self): raise OwnershipViolation
+    @property
+    def params(self): return self.mother.params
+    
+    @property
+    def derivs(self): return self.mother.derivs
     
     def _getName(self):
         return self.mother.name if self._name is None else self._name

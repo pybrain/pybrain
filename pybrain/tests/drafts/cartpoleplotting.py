@@ -6,7 +6,7 @@ from scipy import array, reshape
 
 from nesexperiments import pickleReadDict
 
-filedir = '../temp/cartpole/'
+filedir = '../temp/cartpole2/'
 allfiles = os.listdir(filedir)
 alldata = {}
 for f in allfiles:

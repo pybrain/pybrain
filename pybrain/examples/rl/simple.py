@@ -10,7 +10,7 @@
 # change the 'plotting' flag to False
 #########################################################################
 
-from pybrain.tools.shortcuts import buildNetwork
+from pybrain import buildNetwork
 from pybrain.rl.environments.simple import SimpleEnvironment, MinimizeTask
 from pybrain.rl.agents import PolicyGradientAgent
 from pybrain.rl.learners import ENAC
@@ -52,7 +52,7 @@ for updates in range(1000):
     # training step
     experiment.doEpisodes(10)
     agent.learn()
-    print "parameters:", agent.module.getParameters()
+    print "parameters:", agent.module.params
 
     # append mean reward to sr array
     ret = []
@@ -61,7 +61,7 @@ for updates in range(1000):
         ret.append( sum(reward, 0).item() )
 
     plots[updates, 0] = mean(ret)
-    plots[updates, 1:] = agent.module.getParameters()
+    plots[updates, 1:] = agent.module.params
 
     print "\nmean return %f\n" % (mean(ret))    
     if plotting and updates > 1:

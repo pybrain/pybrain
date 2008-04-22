@@ -18,6 +18,10 @@ class CartPoleTask(EpisodicTask):
     """ A Python wrapper of the standard C implentation of the pole-balancing task, directly using the 
     reference code of Faustino Gomez. """
     
+    indim = 1
+    
+    desiredValue = 100000
+    
     __single = None
     def __init__(self, numPoles = 1, markov = True, verbose = False, extraObservations = False):
         """ @extraObservations: if this flag is true, the observations include the cartesian coordinates 
@@ -32,6 +36,21 @@ class CartPoleTask(EpisodicTask):
         self.verbose = verbose
         self.extraObs = extraObservations
         self.reset()
+        
+    def __str__(self):
+        s = 'Cart-Pole-Balancing-Task, '
+        if self.markov:
+            s += 'markovian'
+        else:
+            s += 'non-markovian'
+        s+= ', with '
+        if self.numPoles == 1:
+            s += 'a single pole'
+        else:
+            s += str(self.numPoles)+' poles'
+        if self.extraObs:
+            s += ' and additional observations (cartesian coordinates of tip of pole(s))'
+        return s
 
     def reset(self):
         if self.verbose:
@@ -39,16 +58,14 @@ class CartPoleTask(EpisodicTask):
         self.cumreward = 0     
         impl.res()        
 
-    def getOutDim(self):
+    @property
+    def outdim(self):
         res = 1+self.numPoles
         if self.markov:
             res *= 2
         if self.extraObs:
             res += 2*self.numPoles
         return res
-        
-    def getInDim(self):
-        return 1
 
     def getReward(self):
         r = 1.+impl.getR()
@@ -67,7 +84,7 @@ class CartPoleTask(EpisodicTask):
             print 'obs', obs
         if self.extraObs:
             cartpos = obs[-1]
-            obs.resize(self.getOutDim())
+            obs.resize(self.outdim)
             if self.markov:
                 angle1 = obs[1]
             else:
@@ -95,7 +112,7 @@ if __name__ == '__main__':
     from pybrain.rl import EpisodicExperiment
     from pybrain.rl.agents import FlatNetworkAgent
     x = CartPoleTask()
-    a = FlatNetworkAgent(x.getOutDim(), x.getInDim())
+    a = FlatNetworkAgent(x.outdim, x.indim)
     e = EpisodicExperiment(x, a)
     e.doEpisodes(2)
     

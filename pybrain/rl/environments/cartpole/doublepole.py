@@ -6,7 +6,10 @@ from pybrain.rl.environments import Environment
 
 class DoublePoleEnvironment(Environment):
     """ two poles to be balanced from the same cart. """
-    
+
+    indim = 1
+    ooutdim = 6
+
     def __init__(self):
         self.p1 = CartPoleEnvironment()
         self.p2 = CartPoleEnvironment()
@@ -48,8 +51,3 @@ class DoublePoleEnvironment(Environment):
         """ auxiliary access to just the pole angle(s), to be used by BalanceTask """
         return [self.sensors[0], self.sensors[2]]   
         
-    def getInDim(self):
-        return 1
-        
-    def getOutDim(self):
-        return 6

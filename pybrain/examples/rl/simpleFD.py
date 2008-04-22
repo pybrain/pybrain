@@ -58,7 +58,7 @@ for updates in range(1000):
     rew=mean(ret)
     base=0.9*base+0.1*rew
     if rew>best: best=rew
-    print "Parameters:", agent.module.getParameters(), "Epsilon: ", agent.learner.epsilon, "Best: ", best, "Base: ", base, "Reward %f\n" % rew    
+    print "Parameters:", agent.module.params, "Epsilon: ", agent.learner.epsilon, "Best: ", best, "Base: ", base, "Reward %f\n" % rew    
     agent.enableLearning()
     agent.reset()
 

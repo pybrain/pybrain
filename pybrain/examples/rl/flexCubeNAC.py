@@ -50,7 +50,7 @@ for updates in range(1000):
     for i in range(5):
         experiment.doEpisodes(10)
         agent.learn()
-        print "parameters:", agent.module.getParameters()
+        print "parameters:", agent.module.params
         agent.reset()
         
     # learning step

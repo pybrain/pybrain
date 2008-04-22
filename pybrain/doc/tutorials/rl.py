@@ -13,7 +13,7 @@ what they do.
 But first of all, we need to import the RL components from pybrain:
 """ 
 from pybrain.rl import *
-from pybrain.tools.shortcuts import buildNetwork
+from pybrain import buildNetwork
 
 """
 The Environment is the world, in which the agent acts. It receives input

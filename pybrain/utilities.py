@@ -10,7 +10,7 @@ from math import sqrt
 from random import random, choice
 from string import split
 
-from scipy import dot, where, array
+from scipy import where, array
 
 
 def abstractMethod():
@@ -181,8 +181,32 @@ def memoize(func):
             cache[args, kwargs_set] = result
         return result
     return inner
-        
-        
+
+
+def storeCallResults(obj):
+    """Pseudo-decorate an object to store all evaluations of the function in the returned list."""
+    results = []    
+    oldcall = obj.__class__.__call__
+    def newcall(*args, **kwargs):
+        result = oldcall(*args, **kwargs)
+        results.append(result)
+        return result
+    obj.__class__.__call__ = newcall
+    return results
+
+
+def multiEvaluate(repeat):
+    """Decorate a function to evaluate repeatedly with the same arguments, and return the average result """
+    def decorator(func):
+        def inner(*args, **kwargs):
+            result = 0.
+            for dummy in range(repeat):
+                result += func(*args, **kwargs)
+            return result / repeat
+        return inner
+    return decorator
+    
+            
 def _import(name):
     """Return module from a package.
 
@@ -248,12 +272,12 @@ def lookupSubstitute(func):
     # The following does not work, since we cannot retrieve the methods 
     # classname during class initialization. Functions are not yet instance 
     # methods at that point.
-    if type(func) is types.MethodType:
-        func_name = func.im_class.__name__ + "_" + func_name
-    import_path = func.__module__.split(".") + [func.__name__]
-    target_path = import_path[:-2] + ["_" + import_path[-2], import_path[-1]]
-    target = ".".join(target_path)
-    return substitute(target)(func)
+    #if type(func) is types.MethodType:
+    #    func_name = func.im_class.__name__ + "_" + func_name
+    #import_path = func.__module__.split(".") + [func.__name__]
+    #target_path = import_path[:-2] + ["_" + import_path[-2], import_path[-1]]
+    #target = ".".join(target_path)
+    #return substitute(target)(func)
         
         
 # tools for binary Gray code manipulation:
@@ -286,11 +310,6 @@ def asBinary(i):
             return asBinary(i>>1)+'0'
     else:
         return str(i)    
-    
-# TODO: use norm from scipy.linalg package instead? (tr)    
-def norm(x):
-    """ the norm of a vector """
-    return sqrt(dot(x,x))
 
 
 def canonicClassString(x):
@@ -300,4 +319,5 @@ def canonicClassString(x):
     else:
         return repr(x.__class__)
     
-
+    
+    

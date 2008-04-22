@@ -54,8 +54,8 @@ class BackpropTrainer(Trainer):
         
     def updateWeights(self):
         self.momentumvector *= self.momentum
-        self.momentumvector += self.lr * self.module.getDerivatives()
-        p = self.module.getParameters() 
+        self.momentumvector += self.lr * self.module.derivs
+        p = self.module.params
         p += self.momentumvector
         
     def _calcDerivs(self, seq):

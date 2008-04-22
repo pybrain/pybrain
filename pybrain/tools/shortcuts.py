@@ -1,8 +1,6 @@
 __author__ = 'Tom Schaul and Thomas Rueckstiess'
 
 
-import logging
-
 from itertools import chain
 
 from pybrain.structure.networks import Network
@@ -116,35 +114,3 @@ def _buildNetwork(*layers, **options):
     net.sortModules()
     return net
     
-
-def buildSimpleNetwork(innodes, hiddennodes, outnodes, bias = True, componentclass = SigmoidLayer):
-    """ an ad-hoc construction of a 1-hidden-layer network """
-    logging.warning("Deprecated: Use pybrain.shortcuts.buildNetwork instead")
-    n = Network()
-    n.addInputModule(LinearLayer(innodes, name = 'in'))
-    if bias:
-        n.addModule(BiasUnit(name = 'bias'))
-    n.addModule(componentclass(hiddennodes, name = 'h'))
-    n.addOutputModule(LinearLayer(outnodes, name = 'out'))
-    n.addConnection(FullConnection(n['in'], n['h']))
-    n.addConnection(FullConnection(n['h'], n['out']))
-    if bias:
-        n.addConnection(FullConnection(n['bias'], n['h']))
-        n.addConnection(FullConnection(n['bias'], n['out']))
-    n.sortModules()
-    return n
-
-
-def buildFlatNetwork(innodes, outnodes, bias = True):
-    """ an ad-hoc construction of a 1-hidden-layer network """
-    logging.warning("Deprecated: Use pybrain.shortcuts.buildNetwork instead")
-    n = Network()
-    n.addInputModule(LinearLayer(innodes, name = 'in'))
-    if bias:
-        n.addModule(BiasUnit(name = 'bias'))
-    n.addOutputModule(LinearLayer(outnodes, name = 'out'))
-    n.addConnection(FullConnection(n['in'], n['out']))
-    if bias:
-        n.addConnection(FullConnection(n['bias'], n['out']))
-    n.sortModules()
-    return n

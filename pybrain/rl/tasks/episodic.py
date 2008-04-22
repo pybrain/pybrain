@@ -2,8 +2,13 @@ __author__ = 'Tom Schaul, tom@idsia.ch'
 
 from pybrain.utilities import abstractMethod
 from task import Task
+from pybrain.rl.agents.agent import Agent
+from pybrain.structure.modules.module import Module
+from pybrain.rl.evaluator import Evaluator
+from pybrain.rl.experiments.episodic import EpisodicExperiment
 
-class EpisodicTask(Task):
+
+class EpisodicTask(Task, Evaluator):
     """ A task that consists of independent episodes. """
 
     # tracking cumulative reward
@@ -33,15 +38,17 @@ class EpisodicTask(Task):
         """ the accumulated reward since the start of the episode """
         return self.cumreward
         
-    def evaluateModule(self, module, averageOver = 1):
-        """ Evaluate the interactions of a module with a task for one episode
-        and return the total reward.
-        (potentially average over a number of episodes). """
-        res = 0.
-        for dummy in range(averageOver):
+    def __call__(self, module):
+        """ An episodic task can be used as an evaluation function of a module that produces actions 
+        from observations, or as an evaluator of an agent. """
+        if isinstance(module, Module):
             module.reset()
             self.reset()
             while not self.isFinished():
                 self.performAction(module.activate(self.getObservation()))
-            res += self.getTotalReward()
-        return res/averageOver
+            return self.getTotalReward()
+        elif isinstance(module, Agent):
+            EpisodicExperiment(self, module).doEpisodes(1)
+            return self.getTotalReward()
+        else:
+            raise NotImplementedError('Missing implementation for '+module.__class__.__name__+' evaluation')

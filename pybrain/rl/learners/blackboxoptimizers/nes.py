@@ -81,23 +81,21 @@ class NaturalEvolutionStrategies(BlackBoxOptimizer):
     
     # --- execution parameters ---
     maxgens = 1e5 # maximal nb of generations 
-    verbose = False
     plotsymbol = '-'
-    silent = False
-    returnall = False # return all xs and sigmas
+    silent = True
+    returnall = False
+    
     
     minimize = False
     
     
-    def __init__(self, f, **parameters):
-        BlackBoxOptimizer.__init__(self, f, **parameters)
+    def __init__(self, evaluator, evaluable, **parameters):
+        BlackBoxOptimizer.__init__(self, evaluator, evaluable, **parameters)
         n = self.xdim        
         
         # internal executution variables
         self.generation = 0  # current generation
         self.fevals = 0      # nb of evaluations
-        self.verybestfit = None # best fitness achieved
-        self.verybestx = None   # with this x
         
         # determine batch size
         minlambd = 1 + self.mu*(1+n+n*n)
@@ -161,10 +159,8 @@ class NaturalEvolutionStrategies(BlackBoxOptimizer):
                 self.allsigmas.append(self.sigma[i].copy())
                 self.allxs.append(self.x[i].copy())
         
-    def optimize(self):  
-        #assert self.minimize == False
-        if self.tfun != None: self.tfun.reset()
-        while self.generation < self.maxgens:
+    def _batchLearn(self, maxSteps = None):  
+        while self.generation < self.maxgens and self.fevals + self.lambd <= maxSteps:
             detbefore = det(self.sigma[0])
             #xc = self.x[0].copy()
             #sc = self.sigma[0].copy()
@@ -186,8 +182,6 @@ class NaturalEvolutionStrategies(BlackBoxOptimizer):
             #if detb > 1.0:
             #    print self.sigma[0]
             self.generation += 1
-            if self.fevals + self.lambd > self.maxEvals:
-                break
             if not self.checkStability():
                 break
             if self.verbose:
@@ -215,8 +209,6 @@ class NaturalEvolutionStrategies(BlackBoxOptimizer):
             #self.sigma[0] = mat(diag(diag(self.sigma[0])))
             #self.factorSigma[0] = mat(diag(diag(self.factorSigma[0])))
             #print self.sigma[0]
-            #print -self.verybestfit, self.stopPrecision
-            #if -self.verybestfit < self.stopPrecision:
             if self.stoppingCriterion():
                 break
             if self.returnall:
@@ -227,14 +219,10 @@ class NaturalEvolutionStrategies(BlackBoxOptimizer):
         
         if not self.silent:
             print self.fevals, 'evaluations.'    
-            print 'Best overall fitness found', self.verybestfit      
-        if self.returnall:
-            return self.verybestx, self.allxs, self.allsigmas
-        else:   
-            return self.verybestx
+            print 'Best overall fitness found', self.bestEvaluation      
         
     def stoppingCriterion(self):
-        return self.verybestfit >= self.stopPrecision
+        return self.bestEvaluation >= self.desiredEvaluation
     
     def oneGeneration(self, update = True):
         """ execute one generation of the algorithm """
@@ -525,13 +513,12 @@ class NaturalEvolutionStrategies(BlackBoxOptimizer):
             
     def evaluateAt(self, z):        
         """ evaluate the function """
-        res = self.targetfun(array(z).flatten())
-        if self.minimize:
-            res = -res
+        z = array(z).flatten()
+        res = self.evaluator(z)
         self.fevals += 1
-        if self.verybestfit == None or res > self.verybestfit:
-            self.verybestfit = res
-            self.verybestx = z  
+        if res > self.bestEvaluation:
+            self.bestEvaluation = res
+            self.bestEvaluable = z  
         return res      
                
     def percentageBetter(self):

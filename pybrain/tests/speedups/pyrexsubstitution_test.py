@@ -1,8 +1,7 @@
 __author__ = 'Tom Schaul, tom@idsia.ch'
 
-from pybrain.tools.shortcuts import buildNetwork
-from pybrain import LinearLayer
-from pybrain.tools.pyrex._linearlayer import LinearLayer_forwardImplementation
+from pybrain import buildNetwork, LinearLayer
+from pybrain.pyrex._linearlayer import LinearLayer_forwardImplementation
 
 N = buildNetwork(2,3,4)
  
