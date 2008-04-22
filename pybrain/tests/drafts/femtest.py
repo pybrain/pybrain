@@ -3,6 +3,8 @@
 __author__ = 'Daan Wierstra and Tom Schaul'
 
 from scipy import randn, log10, array
+
+from pybrain.tools.shortcuts import buildNetwork
 from pybrain.utilities import storeCallResults
 from pybrain.rl.learners import CMAES, FEM
 from pybrain.rl.tasks.polebalancing import CartPoleTask
@@ -10,13 +12,19 @@ from pybrain.rl.environments.functions import SphereFunction, RosenbrockFunction
 from pybrain.tests.helpers import sortedProfiling
 import pylab
 
-dim = 15
-basef = RosenbrockFunction(dim)
+if True:
+    f = CartPoleTask(2, markov = False)
+    x0 = buildNetwork(f.outdim, 3, f.indim, bias = False)
 
-f = TranslateFunction(RotateFunction(basef))
+else:
+    dim = 15
+    basef = RosenbrockFunction(dim)
+    f = TranslateFunction(RotateFunction(basef))
+    x0 = randn(dim)
+
 res = storeCallResults(f)
 
-ff = FEM(f, randn(dim), 
+ff = FEM(f, x0, 
          batchsize = 100, 
          onlineLearning = True,
          gini = 0.02,
@@ -26,7 +34,7 @@ ff = FEM(f, randn(dim),
          elitist = False,
          superelitist = False,
          verbose = True,
-         maxEvaluations = 2000,
+         maxEvaluations = 20000,
          )
 
 
