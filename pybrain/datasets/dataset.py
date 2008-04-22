@@ -291,19 +291,23 @@ class DataSet(object):
             self.data[k] = zeros(shape)
             self.endmarker[k] = 0
 
-    def saveToFile(self, filename, protocol=0):
+    def saveToFile(self, filename, **kwargs):
         """Save the current dataset to the given filename."""
         fp = file(filename, 'w+')
-        self._saveToFileLike(fp, protocol=protocol)
+        self._saveToFileLike(fp, **kwargs)
         fp.close()
             
-    def _saveToFileLike(self, flo, protocol=0):
+    def _saveToFileLike(self, flo, protocol=0, arraysonly=False ):
         """Save the current dataset into the given file like object."""
-        package = {
-            'initial': self._initialValues(),
-            'dict': self._dumpDict(),
-        }
-        cPickle.dump(package, flo, protocol=protocol)
+        if arraysonly:
+            # failsave version
+            cPickle.dump(self.data, flo, protocol=protocol)
+        else:
+            package = {
+                'initial': self._initialValues(),
+                'dict': self._dumpDict(),
+            }
+            cPickle.dump(package, flo, protocol=protocol)
 
     @classmethod
     def loadFromFile(cls, filename):
