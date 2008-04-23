@@ -231,28 +231,29 @@ class FEM(BlackBoxOptimizer):
 
     def optimizeOnline(self, maxSteps):
         generation = 0
-        print
-        print "==================="        
-        print "Fitness Expectation Maximization"
-        print "==================="
-        print "ONLINE"
-        print "batchsize:", self.batchsize
-        print "maxupdate", self.maxupdate
-        print "elitist", self.elitist
-        print "superelitist", self.superelitist
-        if self.ranking == 'smooth':
-            print 'SMOOTH GINI RANKING'
-            print "giniPlusX:", self.giniPlusX
-            print "gini:", self.gini
-        if self.ranking == 'exponential':
-            print 'EXPONENTIAL RANKING temperature', self.temperature
-        if self.ranking == 'top':
-            print 'TOP SELECTION', self.topselection
-        if self.ranking == 'toplinear':
-            print 'TOPLINEAR SELECTION', self.topselection
-        print "unlawfulExploration:", self.unlawfulExploration
-        print "numberOfCenters:", self.numberOfCenters
-        print
+        if self.verbose:
+            print
+            print "==================="        
+            print "Fitness Expectation Maximization"
+            print "==================="
+            print "ONLINE"
+            print "batchsize:", self.batchsize
+            print "maxupdate", self.maxupdate
+            print "elitist", self.elitist
+            print "superelitist", self.superelitist
+            if self.ranking == 'smooth':
+                print 'SMOOTH GINI RANKING'
+                print "giniPlusX:", self.giniPlusX
+                print "gini:", self.gini
+            if self.ranking == 'exponential':
+                print 'EXPONENTIAL RANKING temperature', self.temperature
+            if self.ranking == 'top':
+                print 'TOP SELECTION', self.topselection
+            if self.ranking == 'toplinear':
+                print 'TOPLINEAR SELECTION', self.topselection
+            print "unlawfulExploration:", self.unlawfulExploration
+            print "numberOfCenters:", self.numberOfCenters
+            print
 
 
         samples = range(self.batchsize)
