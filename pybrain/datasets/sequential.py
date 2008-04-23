@@ -186,11 +186,11 @@ class SequentialDataSet(SupervisedDataSet):
             res += totalError/ponderation    
         return res/averageOver
    
-    def saveToFile(self, filename, protocol=0):
+    def saveToFile(self, filename, protocol=0, **kwargs):
         """Save the current dataset to the given filename."""
-        basefile, ext = splitext(fname)
+        basefile, ext = splitext(filename)
         if ext != 'nc':
-            SupervisedDataSet.saveToFile(self, filename, protocol)
+            SupervisedDataSet.saveToFile(self, filename, protocol=protocol, **kwargs)
         else:
             # save as a netCDF dataset (--> Alex Graves nn console)
             # FIXME: Only for classification data!
