@@ -159,7 +159,7 @@ class FEM(BlackBoxOptimizer):
                 #                                                reshape(self.mus[c], (self.xdim, 1)),
                 #                                                self.sigmas[c])
 
-                fitnesses[k] = self.targetfun(samples[k])
+                fitnesses[k] = self.evluator(samples[k])
                 #print "L",fitnesses[k],
 
 
