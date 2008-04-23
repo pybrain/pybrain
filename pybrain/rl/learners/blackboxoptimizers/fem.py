@@ -1,9 +1,9 @@
 __author__ = 'Daan Wierstra and Tom Schaul'
 
-from scipy import pi, power, exp, sqrt, dot, rand, ones, eye, zeros, outer, reshape, var
+from scipy import pi, power, exp, sqrt, dot, rand, ones, eye, zeros, outer, reshape, var, isnan, isfinite
 from scipy.linalg import inv, det, sqrtm, norm
-from numpy.random import multivariate_normal
-from numpy import array, size, multiply, average, argmax
+from numpy.random import multivariate_normal, random
+from numpy import array, size, multiply, average, argmax, sort
 
 from pybrain.utilities import drawIndex
 from blackboxoptimizer import BlackBoxOptimizer
@@ -33,17 +33,20 @@ class FEM(BlackBoxOptimizer):
     rangemins = None
     rangemaxs = None
     initCovariances = None
-    bilinearFactor = 20
-    gini = 0.15 #0.02
-    giniPlusX = 0.15  #0.15
+    bilinearFactor = 30
+    gini = 0.02 #0.02
+    giniPlusX = 0.2  #0.15
     giniScale = 5.0
-    unlawfulExploration = 1.0 #1.15
+    unlawfulExploration = 0.8 #1.15
     alternativeUpdates = False
     onlineLearning = True
-    temperature = 10.0
+    temperature = 7.0
     maxupdate = 0.3
-    elitist = False 
+    elitist = False
     superelitist = False
+    ranking = 'toplinear'
+    topselection = 5
+    onefifth = False
     evalMus = True
     
     def __init__(self, evaluator, evaluable, **parameters):
@@ -95,38 +98,83 @@ class FEM(BlackBoxOptimizer):
             
     def optimize(self, maxSteps):
         generation = 0
+        print
+        print "==================="        
+        print "Fitness Expectation Maximization"
+        print "==================="
+        print "OFFLINE"
+        print "batchsize:", self.batchsize
+        print "unlawfulExploration:", self.unlawfulExploration
+        print "numberOfCenters:", self.numberOfCenters
+        if self.ranking == 'smooth':
+            print 'SMOOTH GINI RANKING'
+            print "giniPlusX:", self.giniPlusX
+            print "gini:", self.gini
+        if self.ranking == 'exponential':
+            print 'EXPONENTIAL RANKING temperature', self.temperature
+        if self.ranking == 'top':
+            print 'TOP SELECTION', self.topselection
+        if self.ranking == 'toplinear':
+            print 'TOPLINEAR SELECTION', self.topselection
+        
         while len(self.allsamples) +len(self.muevals) + self.batchsize <= maxSteps:
-            samples = []
+            samples = range(self.batchsize)
             densities = zeros((self.batchsize, self.numberOfCenters))
             fitnesses = zeros(self.batchsize)
             for k in range(self.batchsize):
                 chosenOne = drawIndex(self.alphas, True)
-                samples.append(multivariate_normal(self.mus[chosenOne], self.unlawfulExploration * self.sigmas[chosenOne]))
-            
+                #self.sigmas[0] = eye(self.xdim)
+                samples[k] = multivariate_normal(self.mus[chosenOne], self.unlawfulExploration * self.sigmas[chosenOne]).copy()
+                
                 # attribute weightings to all samples
                 for c in range(self.numberOfCenters):
-                    densities[k, c] = self.alphas[c] * self.multivariateNormalPdf(reshape(samples[-1], (self.xdim, 1)), 
-                                                                 reshape(self.mus[c], (self.xdim, 1)), 
-                                                                 self.sigmas[c])
+                    densities[k, c] = self.alphas[c] * self.multivariateNormalPdf(samples[k], self.mus[c], self.sigmas[c])
+                      
+                densities[k,0] = 1.0
+                if False in isfinite(densities):
+                    pass
+                    print "nu al nonfinite", k, densities[k,0]
+                    #densities[k,0] = 0.0
+                    #print self.sigmas[0]
+                    #print "10 RNDM PNTS"
+                    #for i in range(10):
+                    #    print self.multivariateNormalPdf(multivariate_normal(self.mus[0], self.sigmas[0]), self.mus[0], self.sigmas[0]),
+                else: pass#print "nog niet",k, densities[k,0]
+
+                #for i in range(5):
+                #    print self.multivariateNormalPdf(multivariate_normal(self.mus[0], self.sigmas[0]), self.mus[0],
+
                 # sample-wise normalization
                 densities[k,:] /= sum(densities[k,:])
                 
                 
+                
                 # importance sampling for unlawfulexploration
-                for c in range(self.numberOfCenters):
-                    densities[k, c] *= self.multivariateNormalPdf(reshape(samples[k], (self.xdim, 1)), 
-                                                                reshape(self.mus[c], (self.xdim, 1)), 
-                                                                self.unlawfulExploration * self.sigmas[c]) / \
-                                       self.multivariateNormalPdf(reshape(samples[k], (self.xdim, 1)), 
-                                                                reshape(self.mus[c], (self.xdim, 1)),
-                                                                self.sigmas[c])
+                #if self.unlawfulExploration != 1.0:
+                #    for c in range(self.numberOfCenters):
+                #        densities[k, c] *= self.multivariateNormalPdf(reshape(samples[k], (self.xdim, 1)), 
+                #                                                reshape(self.mus[c], (self.xdim, 1)), 
+                #                                                self.unlawfulExploration * self.sigmas[c]) / \
+                #                       self.multivariateNormalPdf(reshape(samples[k], (self.xdim, 1)), 
+                #                                                reshape(self.mus[c], (self.xdim, 1)),
+                #                                                self.sigmas[c])
 
-                fitnesses[k] = self.evaluator(samples[-1])
-            
+                fitnesses[k] = self.targetfun(samples[k])
+                #print "L",fitnesses[k],
+
+
+            if False and False in isfinite(densities):
+                print "sigmas"
+                print self.sigmas[0]
+                print "10 RNDM PNTS"
+                for i in range(10):
+                    print self.multivariateNormalPdf(multivariate_normal(self.mus[0], self.sigmas[0]), self.mus[0], self.sigmas[0]),
+
+                            
             # determine (transformed) fitnesses
             transformedFitnesses = self.shapingFunction(fitnesses)
             
-            weightings = multiply(outer(transformedFitnesses, ones(self.numberOfCenters)), densities)
+            weightings = outer(transformedFitnesses, ones(self.numberOfCenters))#multiply(outer(transformedFitnesses, ones(self.numberOfCenters)), densities)
                 
             for c in range(self.numberOfCenters):
                 # update alpha
@@ -182,15 +230,44 @@ class FEM(BlackBoxOptimizer):
 
     def optimizeOnline(self, maxSteps):
         generation = 0
+        print
+        print "==================="        
+        print "Fitness Expectation Maximization"
+        print "==================="
+        print "ONLINE"
+        print "batchsize:", self.batchsize
+        print "maxupdate", self.maxupdate
+        print "elitist", self.elitist
+        print "superelitist", self.superelitist
+        if self.ranking == 'smooth':
+            print 'SMOOTH GINI RANKING'
+            print "giniPlusX:", self.giniPlusX
+            print "gini:", self.gini
+        if self.ranking == 'exponential':
+            print 'EXPONENTIAL RANKING temperature', self.temperature
+        if self.ranking == 'top':
+            print 'TOP SELECTION', self.topselection
+        if self.ranking == 'toplinear':
+            print 'TOPLINEAR SELECTION', self.topselection
+        print "unlawfulExploration:", self.unlawfulExploration
+        print "numberOfCenters:", self.numberOfCenters
+        print
+
+
         samples = range(self.batchsize)
         densities = zeros((self.batchsize, self.numberOfCenters))
         fitnesses = zeros(self.batchsize)
         totalsamples = 0
+        
+        better = 0
+        worse = 0
 
         while True:
             for k in range(self.batchsize):
                 chosenOne = drawIndex(self.alphas, True)
                 samples[k] = multivariate_normal(self.mus[chosenOne], self.unlawfulExploration * self.sigmas[chosenOne])
+                
+                #samples[k] = multivariate_normal(self.mus[chosenOne], self.unlawfulExploration * self.sigmas[chosenOne])
                 totalsamples += 1
 
                 # attribute weightings to all samples
@@ -213,31 +290,43 @@ class FEM(BlackBoxOptimizer):
 
 
                 fitnesses[k] = self.evaluator(samples[k])
+                if self.onefifth:
+                    mufitness = self.targetfun(self.mus[0])
+                
+                    if fitnesses[k] < mufitness:
+                        worse += 1
+                    else:
+                        better += 1
+                #print "L",fitnesses[k],
+                
                 if totalsamples == 1:
                     bestfitnessever = fitnesses[k]
                     bestsampleever = samples[k].copy()
-                if fitnesses[k] > bestfitnessever:
+                if fitnesses[k] >= bestfitnessever:
                     bestfitnessever = fitnesses[k]
                     bestsampleever = samples[k].copy()
+                    #print "new best at", fitnesses[k]
 
                 # determine (transformed) fitnesses
                 transformedFitnesses = self.shapingFunction(fitnesses)
+                
                 transformedFitnesses /= max(transformedFitnesses)
+                #print sort(transformedFitnesses)
 
-                weightings = multiply(outer(transformedFitnesses, ones(self.numberOfCenters)), densities)
-                weightings = self.maxupdate * weightings / sum(weightings)
+                weightings = outer(transformedFitnesses, ones(self.numberOfCenters))#multiply(outer(transformedFitnesses, ones(self.numberOfCenters)), densities)
+                weightings = self.maxupdate * weightings / max(weightings)
 
-                if generation == 0 and totalsamples == self.batchsize:
-                    self.mus[0] = bestsampleever.copy()
+                #if generation == 0 and totalsamples == self.batchsize:
+                #    self.mus[0] = bestsampleever.copy()
                 if generation >= 1:
                     for c in range(self.numberOfCenters):
-                        lr = weightings[k,c]
+                        lr = self.maxupdate * weightings[k,c]
                                             
                         self.alphas[c] = (1.0-lr)*self.alphas[c] + lr
                         
                         #update mu
                         newMu = zeros(self.xdim)
-                        newMu = (1.0-weightings[k,c]) * self.mus[c] + weightings[k,c] * samples[k]
+                        newMu = (1.0-self.maxupdate*weightings[k,c]) * self.mus[c] + self.maxupdate*weightings[k,c] * samples[k]
                         
                         # in case of batch-elitism
                         if self.elitist:
@@ -249,21 +338,44 @@ class FEM(BlackBoxOptimizer):
                         if self.superelitist:
                             newMu = bestsampleever.copy()
                             
-                        self.mus[c] = newMu
+                        
 
                         #update sigma
                         newSigma = zeros((self.xdim, self.xdim))
                         dif = -self.mus[c]+samples[k]
-                        newSigma = (1.0-lr) * self.sigmas[c] + lr * outer(dif, dif) 
-                        self.sigmas[c] = newSigma 
+                        newSigma = (1.0-lr) * self.sigmas[c] + 1.000 * lr * outer(dif, dif) 
+                        if True in isnan(newSigma):# or fitnesses[k] == bestfitnessever:
+                            #print "NAN", lr, samples[k], self.mus[c]
+                            #print newSigma
+                            pass
+                        else: 
+                            self.sigmas[c] = newSigma 
+
+
+                        self.mus[c] = newMu
+                            
 
                     # nomalize alphas
                     self.alphas /= sum(self.alphas)
+                    
+                    if self.onefifth:
+                        if worse + better >= 50:
+                            if worse > 10*better:
+                                self.sigmas[0] *= 1.0
+                                #print "-", worse, better
+                            else:
+                                self.sigmas[0] *= 1.0
+                                #print "+", worse, better
+                            better = 0
+                            worse = 0
+
                 
                 if totalsamples >= maxSteps:
                     break
 
+
             generation += 1
+
             self.allsamples.extend(samples)
             if self.evalMus == True:
                 for m in self.mus:
@@ -289,16 +401,41 @@ class FEM(BlackBoxOptimizer):
                 break
 
             
-    def multivariateNormalPdf(self, z, x, sigma):
+    def multivariateNormalPdf(self, z_, x_, sigma):
+        z = z_.reshape(z_.size, 1)
+        x = x_.reshape(x_.size, 1)
         assert z.shape[1] == 1 and x.shape[1] == 1    
         tmp = -0.5 * dot(dot((z-x).T, inv(sigma)), (z-x))[0,0]
         res = (1./power(2.0*pi,self.xdim/2.)) * (1./sqrt(det(sigma))) * exp(tmp)
         return res       
     
     def shapingFunction(self, R):
-        #return self.exponentialRanking(R)#self.smoothSelectiveRanking(R)#self.bilinearRanking(R)#exp(self.tau * R)        
-        return self.smoothSelectiveRanking(R)#self.bilinearRanking(R)#exp(self.tau * R)        
-        #return self.simpleRanking(R)
+        if self.ranking =='exponential':
+            return self.exponentialRanking(R)#self.smoothSelectiveRanking(R)#self.bilinearRanking(R)#exp(self.tau * R)        
+        if self.ranking == 'smooth':
+            return self.smoothSelectiveRanking(R)#
+        if self.ranking == 'parabolic':
+            return self.parabolicRanking(R)
+        if self.ranking == 'sigmoid':
+            return self.sigmoidRanking(R)
+        if self.ranking == 'proportionate':
+            return self.proportionateRanking(R)
+        if self.ranking == 'top':
+            return self.topRanking(R)
+        if self.ranking == 'toplinear':
+            return self.topLinearRanking(R)
+
+        print "WRONG RANKING"
+        #return self.bilinearRanking(R)#exp(self.tau * R)        
+        res = zeros(self.batchsize)
+        for i in range(self.batchsize):
+            res[i] = R[i] - min(R)
+        cutpoint = sort(res)[self.batchsize/2]
+        #for i in range(self.batchsize):
+        #    if res[i] < cutpoint:
+        #        res[i] = 0.0
+        return res
+        return self.simpleRanking(R)
     
     def updateTau(self, R, U):
         self.tau = sum(U)/dot((R - self.task.minReward), U)
@@ -327,6 +464,62 @@ class FEM(BlackBoxOptimizer):
         for i in range(len(ranks)):
             res[i] = exp((ranks[i]/(self.batchsize-1.0)) * self.temperature)
         return res
+
+    def proportionateRanking(self, R):
+        res = zeros(self.batchsize)
+        ranks = zeros(self.batchsize)
+        minval = min(R)
+        maxval = max(R)
+        dist = maxval - minval
+        #print "MINVAL", minval, maxval, dist
+        for i in range(self.batchsize):
+            ranks[i] = (R[i] - minval)/float(dist)
+            if R[i] == maxval:
+                ranks[i] += dist
+            res[i] = ranks[i]#exp((ranks[i]) * self.temperature)
+        #print res
+        #return self.smoothSelectiveRanking(res)
+        return res
+
+    def parabolicRanking(self, R):
+        res = zeros(self.batchsize)
+        ranks = self.rankedFitness(R)
+        for i in range(len(ranks)):
+            res[i] = 1.0 - (ranks[i]/(self.batchsize-1.0)-1.0)*(ranks[i]/(self.batchsize-1.0)-1.0)
+        return res
+
+    def sigmoidRanking(self, R):
+        res = zeros(self.batchsize)
+        ranks = self.rankedFitness(R) / (self.batchsize+1.0)
+        for i in range(len(ranks)):
+            res[i] =  1.0/(1.0+exp(-35.0*(ranks[i]-0.8))) # 1.0/(1.0-exp(-3.0*(x-0.5)))
+        return res
+        
+    def topRanking(self, R):
+        res = zeros(self.batchsize)
+        ranks = self.rankedFitness(R)
+        for i in range(len(ranks)):
+            if ranks[i] >= self.batchsize - 1 - self.topselection:
+                res[i] = 1.0#ranks[i] - (self.batchsize - 1.0 - self.topselection)#1.0
+            else:
+                res[i] = 0.0
+            if ranks[i] == self.batchsize - 1:
+                res[i] += 0.0
+        return res
+        
+
+    def topLinearRanking(self, R):
+        res = zeros(self.batchsize)
+        ranks = self.rankedFitness(R)
+        for i in range(len(ranks)):
+            if ranks[i] >= self.batchsize - 1 - self.topselection:
+                res[i] = ranks[i] - (self.batchsize - 1.0 - self.topselection)#1.0
+            else:
+                res[i] = 0.0
+            if ranks[i] == self.batchsize - 1:
+                res[i] += 0.0
+        return res
+
         
     def simpleRanking(self, R):
         res = self.rankedFitness(R) / (self.batchsize - 1.0)

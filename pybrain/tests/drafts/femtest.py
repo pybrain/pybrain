@@ -12,7 +12,11 @@ from pybrain.rl.environments.functions import SphereFunction, RosenbrockFunction
 from pybrain.tests.helpers import sortedProfiling
 import pylab
 
-if True:
+
+
+
+
+if False:
     f = CartPoleTask(2, markov = False)
     x0 = buildNetwork(f.outdim, 3, f.indim, bias = False)
 
@@ -24,18 +28,21 @@ else:
 
 res = storeCallResults(f)
 
-ff = FEM(f, x0, 
-         batchsize = 100, 
-         onlineLearning = True,
-         gini = 0.02,
-         giniPlusX = 0.15,
-         unlawfulExploration = 1.0,
-         maxupdate = 0.1,
-         elitist = False,
-         superelitist = False,
-         verbose = True,
-         maxEvaluations = 20000,
-         )
+ff = FEM(f, x0,
+        batchsize = 100, 
+        onlineLearning = True,
+        gini = 0.02,
+        giniPlusX = 0.15,
+        unlawfulExploration = 1.0,
+        maxupdate = 0.1,
+        elitist = False,
+        superelitist = False,
+        ranking = 'sigmoid',
+        temperature = 10.0,
+        topselection = 10,
+        verbose = True,
+        maxEvaluations = 20000,
+        )
 
 
 print ff.learn(), len(res)
@@ -43,3 +50,6 @@ if True:
     #pylab.plot(log10(-array(res)))
     pylab.plot(log10(-array(ff.muevals)))
     pylab.show()
+
+#E = CMAES(OppositeFunction(f), silent=False)
+#print E.optimize()
