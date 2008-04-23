@@ -50,11 +50,11 @@ numbExp=1 #number of experiments
 for runs in range(numbExp):
     # create environment
     #Options: Bool(OpenGL), Bool(Realtime simu. while client is connected), ServerIP(default:localhost), Port(default:21560)
-    env = FlexCubeEnvironment() #True, True, "131.159.60.203", "21570"
+    env = FlexCubeEnvironment()
     # create task
     task = WalkTask(env)
     # create controller network
-    net = buildNetwork(len(task.getObservation()), 2, env.actLen, outclass=TanhLayer)
+    net = buildNetwork(len(task.getObservation()), 4, env.actLen, outclass=TanhLayer)
     # create agent with controller and learner
     agent = FiniteDifferenceAgent(net, SPLA())
     # learning options

@@ -35,7 +35,8 @@ def saveWeights(filename, w):
 numbExp=1
 for runs in range(numbExp):
     # create environment
-    env = JohnnieEnvironment(False) #True for OpenGL output
+    #Options: Bool(OpenGL), Bool(Realtime simu. while client is connected), ServerIP(default:localhost), Port(default:21560)
+    env = JohnnieEnvironment() #True for OpenGL output
     # create task
     task = StandingTask(env) #Other tasks available are StandingTask and JumpingTask
     # create controller network
