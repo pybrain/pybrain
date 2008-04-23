@@ -24,6 +24,8 @@ class GoNorthwardTask(EpisodicTask):
         
         # actions:              thrust,       rudder       
         self.actor_limits = [(-1.0,+2.0), (-90.0,+90.0)]
+        # scale reward over episode, such that max. return = 100
+        self.rewardscale = 100./maxsteps/self.sensor_limits[2][1]
         
     def reset(self):
         EpisodicTask.reset(self)
@@ -41,7 +43,7 @@ class GoNorthwardTask(EpisodicTask):
         
     def getReward(self):
         if abs(self.env.getHeading())<5.: 
-            return self.env.getSpeed()
+            return self.env.getSpeed() * self.rewardscale
         else:        
             return 0
         
