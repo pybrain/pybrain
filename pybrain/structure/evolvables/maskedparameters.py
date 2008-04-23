@@ -1,7 +1,7 @@
 __author__ = 'Tom Schaul, tom@idsia.ch'
 
-from scipy import zeros, randn, ones
-from random import random, sample, gauss
+from scipy import zeros, randn
+from random import random, sample, gauss, choice
 
 from topology import TopologyEvolvable
 
@@ -15,17 +15,18 @@ class MaskedParameters(TopologyEvolvable):
     mutationStdev = 0.1    
     
     # number of bits in the mask that can be maximally on at once (None = all)
+    # Note: there must always be at least one on
     maxComplexity = None
+    
+    # probability of mask bits being on in a random mask (subject to the constraint above)
+    maskOnProbability = 0.5
+    
     
     def __init__(self, pcontainer, **args):
         TopologyEvolvable.__init__(self, pcontainer, **args)
         if self.maxComplexity == None:
             self.maxComplexity = self.pcontainer.paramdim
-            self.mask = ones(self.pcontainer.paramdim, dtype=bool)
-        else:
-            self.mask = zeros(self.pcontainer.paramdim, dtype=bool)
-            for i in sample(range(self.pcontainer.paramdim), self.maxComplexity):
-                self.mask[i] = True
+        self.randomize()
         self.maskableParams = self.pcontainer.params.copy()
         self._applyMask()
            
@@ -61,8 +62,15 @@ class MaskedParameters(TopologyEvolvable):
         """ an initial, random mask (with random params) 
         with as many parameters enabled as allowed"""
         self.mask = zeros(self.pcontainer.paramdim, dtype=bool)
-        for i in sample(range(self.pcontainer.paramdim), self.maxComplexity):
-            self.mask[i] = True
+        onbits = []
+        for i in range(self.pcontainer.paramdim):
+            if random() > self.maskOnProbability:
+                self.mask[i] = True
+                onbits.append(i)
+        over = len(onbits) - self.maxComplexity
+        if over > 0:
+            for i in sample(onbits, over):
+                self.mask[i] = False
         self.maskableParams = randn(self.pcontainer.paramdim)*self.stdParams
         self._applyMask()    
     
