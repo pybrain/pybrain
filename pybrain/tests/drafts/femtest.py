@@ -16,7 +16,7 @@ import pylab
 
 
 
-if False:
+if True:
     f = CartPoleTask(2, markov = False)
     x0 = buildNetwork(f.outdim, 3, f.indim, bias = False)
 
@@ -29,17 +29,17 @@ else:
 res = storeCallResults(f)
 
 ff = FEM(f, x0,
-        batchsize = 100, 
+        batchsize = 25, 
         onlineLearning = True,
         gini = 0.02,
         giniPlusX = 0.15,
-        unlawfulExploration = 1.0,
+        unlawfulExploration = 2.0,
         maxupdate = 0.1,
         elitist = False,
         superelitist = False,
-        ranking = 'sigmoid',
+        ranking = 'toplinear',
         temperature = 10.0,
-        topselection = 10,
+        topselection = 25,
         verbose = True,
         maxEvaluations = 20000,
         )

@@ -37,14 +37,14 @@ class FEM(BlackBoxOptimizer):
     gini = 0.02 #0.02
     giniPlusX = 0.2  #0.15
     giniScale = 5.0
-    unlawfulExploration = 0.8 #1.15
+    unlawfulExploration = 1.0 #1.15
     alternativeUpdates = False
     onlineLearning = True
     temperature = 7.0
-    maxupdate = 0.3
+    maxupdate = 0.5
     elitist = False
     superelitist = False
-    ranking = 'toplinear'
+    ranking = 'top'
     topselection = 5
     onefifth = False
     evalMus = True
@@ -159,7 +159,8 @@ class FEM(BlackBoxOptimizer):
                 #                                                reshape(self.mus[c], (self.xdim, 1)),
                 #                                                self.sigmas[c])
 
-                fitnesses[k] = self.evluator(samples[k])
+                fitnesses[k] = self.evaluator(samples[k])
+
                 #print "L",fitnesses[k],
 
 
@@ -314,7 +315,7 @@ class FEM(BlackBoxOptimizer):
                 #print sort(transformedFitnesses)
 
                 weightings = outer(transformedFitnesses, ones(self.numberOfCenters))#multiply(outer(transformedFitnesses, ones(self.numberOfCenters)), densities)
-                weightings = self.maxupdate * weightings / max(weightings)
+                weightings = weightings / max(weightings)
 
                 #if generation == 0 and totalsamples == self.batchsize:
                 #    self.mus[0] = bestsampleever.copy()
@@ -343,7 +344,7 @@ class FEM(BlackBoxOptimizer):
                         #update sigma
                         newSigma = zeros((self.xdim, self.xdim))
                         dif = -self.mus[c]+samples[k]
-                        newSigma = (1.0-lr) * self.sigmas[c] + 1.000 * lr * outer(dif, dif) 
+                        newSigma = (1.0-lr) * self.sigmas[c] + lr * outer(dif, dif) 
                         if True in isnan(newSigma):# or fitnesses[k] == bestfitnessever:
                             #print "NAN", lr, samples[k], self.mus[c]
                             #print newSigma
