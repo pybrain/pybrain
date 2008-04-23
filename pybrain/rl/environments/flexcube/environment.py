@@ -73,10 +73,6 @@ class FlexCubeEnvironment(GraphicalEnvironment):
     self.step=0
     self.mySensors.updateSensor(self.pos, self.vel, self.distM, self.centerOfGrav, self.step, self.action)    
                       
-  def setTarget(self, target):
-    if self.hasRenderInterface(): 
-        self.getRenderInterface().setTarget(target)    
-    
   def performAction(self, action):
     action=self.normAct(action)
     self.action=action.copy()

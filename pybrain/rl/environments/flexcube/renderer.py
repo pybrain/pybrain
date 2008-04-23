@@ -27,7 +27,7 @@ class FlexCubeRenderer(object):
       self.calcPhysics=0
       self.newPic=1
       self.picCount=0
-      self.target=[80.0,0.0,0.0]
+      self.target=array([80.0,0.0,0.0])
       
       self.centerOfGrav=array([0.0,-2.0,0.0])
       self.points=ones((8,3),float)
@@ -50,13 +50,6 @@ class FlexCubeRenderer(object):
     print 'Saved image to ', filename
     return image
 
-  def setTarget(self, target):
-    self.target=target[:]
-    
-  def updateData(self, pos, sensors):
-    self.points=pos.copy()
-    self.centerOfGrav=sensors.copy()
-    
   def _render(self):
     # Call init: Parameter(Window Position -> x, y, height, width)
     self.init_GL(self,300,300,800,600)
@@ -66,7 +59,7 @@ class FlexCubeRenderer(object):
     glutMainLoop()
 
   def drawIdleScene(self):
-      try: [self.points, self.centerOfGrav]=self.client.listen([self.points, self.centerOfGrav])
+      try: [self.points, self.centerOfGrav, self.target]=self.client.listen([self.points, self.centerOfGrav, self.target])
       except: pass
       self.drawScene()
       if self.savePics:

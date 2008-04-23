@@ -134,11 +134,17 @@ class WalkDirectionTask(WalkTask):
         self.env.mySensors=sensors.Sensors(self.obsSensors)
         self.env.mySensors.sensors[3].targetList=[array([-80.0,0.0,0.0])]
         if self.env.hasRenderInterface(): self.env.getRenderInterface().target=self.env.mySensors.sensors[3].targetList[0]
+        print self.obsSensors
 
     def getReward(self):
         if self.epiStep<self.epiLen: self.reward[0]=-self.getPain()
         else: self.reward[0]=(80.0-self.rawReward)-self.getPain()
         return self.reward[0]
+
+    def reset(self):
+        WalkTask.reset(self)
+        self.env.mySensors.sensors[3].targetList=[array([-80.0,0.0,0.0])]
+        if self.env.hasRenderInterface(): self.env.getRenderInterface().target=self.env.mySensors.sensors[3].targetList[0]
 
 class TargetTask(WalkDirectionTask):
     def __init__(self, env):
