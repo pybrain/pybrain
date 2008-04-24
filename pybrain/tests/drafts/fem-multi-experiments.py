@@ -5,6 +5,7 @@ from scipy import randn, rand
 
 from pybrain.utilities import storeCallResults
 from pybrain.rl.learners import FEM
+from pybrain.rl.learners.blackboxoptimizers.cmaes import CMAES
 from pybrain.rl.environments.functions import RotateFunction, TranslateFunction
 from pybrain.rl.environments.functions.multimodal import GriewankFunction
 from pybrain.rl.environments.functions.multimodal import AckleyFunction
@@ -13,9 +14,10 @@ from pybrain.rl.environments.functions.multimodal import WeierstrassFunction
 
 
 # storage tag for this batch
-tag = 'good-multi-'
+tag = 'ok-multi-'
 
-basefunctions = [GriewankFunction, AckleyFunction,RastriginFunction, WeierstrassFunction,
+basefunctions = [GriewankFunction, AckleyFunction, RastriginFunction, 
+                 WeierstrassFunction,
                  ]
 dim = 2
 
@@ -24,7 +26,7 @@ defaultargs = {'batchsize': 25,
                'ranking': 'toplinear',
                'topselection': 10,
                'maxupdate': 0.02,
-               'maxEvaluations': 5000,
+               'maxEvaluations': 10000,
                }
 
 
@@ -55,12 +57,13 @@ def runAll(repeat = 1):
                 start = time.time()
                 try:
                     l = FEM(f, x0, **args)
+                    #l = CMAES(f, x0, maxEvaluations = 10000)
                     best, bestfit = l.learn()
                 
                     used = time.time() - start
                     evals = len(res)
-                    print 'result', bestfit, 'in', evals, 'evalautions, using', used, 'seconds.'
-                    if bestfit > f.desiredValue:
+                    print 'result', bestfit, 'in', evals, 'evalautions, using', used, 'seconds.' # ,'(', max(res), ')'
+                    if max(res) > f.desiredValue:
                         print 'FOUND'
                         name += '-S'
                     else:
