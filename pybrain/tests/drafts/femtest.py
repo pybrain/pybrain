@@ -10,6 +10,7 @@ from pybrain.rl.learners import CMAES, FEM
 from pybrain.rl.tasks.polebalancing import CartPoleTask
 from pybrain.rl.environments.functions import SphereFunction, RosenbrockFunction, OppositeFunction, CigarFunction, RotateFunction, TranslateFunction
 from pybrain.tests.helpers import sortedProfiling
+from pybrain.structure.connections.full import FullConnection
 import pylab
 
 
@@ -19,6 +20,9 @@ import pylab
 if True:
     f = CartPoleTask(2, markov = False)
     x0 = buildNetwork(f.outdim, 3, f.indim, bias = False)
+    x0.addRecurrentConnection(FullConnection(x0['hidden0'], x0['hidden0'], name = 'rec'))
+    x0.sortModules()
+        
 
 else:
     dim = 15
@@ -31,17 +35,14 @@ res = storeCallResults(f)
 ff = FEM(f, x0,
         batchsize = 25, 
         onlineLearning = True,
-        gini = 0.02,
+        gini = 0.15,
         giniPlusX = 0.15,
-        unlawfulExploration = 2.0,
         maxupdate = 0.1,
         elitist = False,
-        superelitist = False,
-        ranking = 'toplinear',
-        temperature = 10.0,
-        topselection = 25,
+        superelitist = True,
+        ranking = 'smooth',
         verbose = True,
-        maxEvaluations = 20000,
+        maxEvaluations = 10000,
         )
 
 
