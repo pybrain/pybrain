@@ -328,7 +328,7 @@ class FEM(BlackBoxOptimizer):
                         
                         #update mu
                         newMu = zeros(self.xdim)
-                        newMu = (1.0-self.maxupdate*weightings[k,c]) * self.mus[c] + self.maxupdate*weightings[k,c] * samples[k]
+                        newMu = (1.0-lr) * self.mus[c] + lr * samples[k]
                         
                         # in case of batch-elitism
                         if self.elitist:
@@ -341,6 +341,7 @@ class FEM(BlackBoxOptimizer):
                             newMu = bestsampleever.copy()
                             
                         
+                        self.mus[c] = newMu
 
                         #update sigma
                         newSigma = zeros((self.xdim, self.xdim))
@@ -354,7 +355,6 @@ class FEM(BlackBoxOptimizer):
                             self.sigmas[c] = newSigma 
 
 
-                        self.mus[c] = newMu
                             
 
                     # nomalize alphas
@@ -387,9 +387,11 @@ class FEM(BlackBoxOptimizer):
                     self.muevals.append(me)
                     
             if self.verbose:
-                print 'gen: ', generation, 'max,min,avg: ',max(fitnesses), min(fitnesses), average(fitnesses)
+                mustring = ''
                 if self.evalMus:
-                    print '    mu-fitness(es):', self.muevals[-len(self.mus):]
+                    mustring = '    mu-fitness(es):' + str(self.muevals[-len(self.mus):])
+
+                print 'gen: ', generation, 'max,min,avg: ',max(fitnesses), min(fitnesses), average(fitnesses), mustring
                 
             
             if max(fitnesses)> self.bestEvaluation:

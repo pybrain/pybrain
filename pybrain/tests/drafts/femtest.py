@@ -17,34 +17,52 @@ import pylab
 
 
 
-if True:
+if False:
     f = CartPoleTask(2, markov = False)
     x0 = buildNetwork(f.outdim, 3, f.indim, bias = False)
     x0.addRecurrentConnection(FullConnection(x0['hidden0'], x0['hidden0'], name = 'rec'))
     x0.sortModules()
+    ff = FEM(f, x0,
+            batchsize = 25, 
+            onlineLearning = True,
+            gini = 0.15,
+            giniPlusX = 0.15,
+            maxupdate = 0.02,
+            elitist = False,
+            superelitist = True,
+            ranking = 'toplinear',
+            topselection = 10,
+            verbose = True,
+            maxEvaluations = 10000,
+            )
         
 
 else:
-    dim = 15
+    dim = 5
     basef = RosenbrockFunction(dim)
     f = TranslateFunction(RotateFunction(basef))
     x0 = randn(dim)
-
+    ff = FEM(f, x0,
+            batchsize = 25, 
+            onlineLearning = True,
+            gini = 0.02,
+            giniPlusX = 0.15,
+            maxupdate = 0.01,
+            elitist = False,
+            superelitist = False,
+            ranking = 'toplinear',
+            topselection = 10,
+            verbose = True,
+            maxEvaluations = 100000,
+            )
+            
+            
 res = storeCallResults(f)
 
-ff = FEM(f, x0,
-        batchsize = 25, 
-        onlineLearning = True,
-        gini = 0.15,
-        giniPlusX = 0.15,
-        maxupdate = 0.1,
-        elitist = False,
-        superelitist = True,
-        ranking = 'smooth',
-        verbose = True,
-        maxEvaluations = 10000,
-        )
 
+
+
+        
 
 print ff.learn(), len(res)
 if True:
