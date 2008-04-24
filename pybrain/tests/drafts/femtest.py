@@ -38,20 +38,21 @@ if False:
         
 
 else:
-    dim = 5
+    dim = 15
     basef = RosenbrockFunction(dim)
     f = TranslateFunction(RotateFunction(basef))
     x0 = randn(dim)
     ff = FEM(f, x0,
-            batchsize = 25, 
+            batchsize = 100, 
             onlineLearning = True,
             gini = 0.02,
             giniPlusX = 0.15,
-            maxupdate = 0.01,
+            maxupdate = 0.005,
             elitist = False,
-            superelitist = False,
+            superelitist = True,
             ranking = 'toplinear',
-            topselection = 10,
+            temperature = 10.0,
+            topselection = 50,
             verbose = True,
             maxEvaluations = 100000,
             )
