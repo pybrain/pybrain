@@ -6,7 +6,7 @@ import os
 from nesexperiments import pickleReadDict
 
 def readAllRunInfo():
-    filedir = '../temp/cartpole2/'
+    filedir = '../temp/cartpole3/'
     allfiles = os.listdir(filedir)
     alldata = {}
     for f in allfiles:

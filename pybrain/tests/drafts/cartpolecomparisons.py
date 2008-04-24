@@ -31,16 +31,16 @@ learners = [# previously done
             ('Random', WeightGuessing, {}),
             ('Climber', HillClimber, {}),
             ('CMA', CMAES, {}),
-            ('ES-50+50', ES, {}),
+            ('ES-50+50', ES, {}),            
             ('ES-5+5', ES, {'mu' : 5, 'lambada': 5}),
-            
             # failed/new
             ('Memetic', MemeticSearch, {'localSteps': 10}),
+            ('LongMemetic', MemeticSearch, {'localSteps': 100}),
             ('MemeticCMA', MemeticSearch, {'localSearch': CMAES, 'localSteps': 500}),
             ('RandomMasks', WeightMaskGuessing, {}),
-            ('InnerMemetic', InnerMemeticSearch, {'localSteps': 5}),
-            
+            ('LongInnerMemetic', InnerMemeticSearch, {'localSteps': 50}),
             # doomed
+            #('InnerMemetic', InnerMemeticSearch, {'localSteps': 5}),
             #('MemeticES-50+50', MemeticSearch, {'localSearch': ES, 'localSteps': 500}),
             #('MemeticES-5+5', MemeticSearch, {'localSearch': ES, 'localSearchArgs': {'mu': 5, 'lambada': 5}}),
             #('InnerMemeticES-5+5', InnerMemeticSearch, {'localSearch':ES, 
@@ -82,6 +82,7 @@ def runAll(maxEvals = 30000, repeat = 100):
                 del allfits[0:]
                 
                 start = time.time()
+                net.randomize()
                 best, bestfit = L(task, net, maxEvaluations = maxEvals, **args).learn()
                 t = time.time() - start
                 
