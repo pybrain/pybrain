@@ -1,4 +1,4 @@
-""" Script for (online) FEM experiments on continous benchmark functions """
+""" Script for (online) FEM experiments on continous unimodal benchmark functions """
 
 import time
 from scipy import randn, rand
@@ -7,20 +7,16 @@ from pybrain.utilities import storeCallResults
 from pybrain.rl.learners import FEM
 from pybrain.rl.environments.functions import SphereFunction, RosenbrockFunction, CigarFunction, RotateFunction, TranslateFunction
 from pybrain.rl.environments.functions.unimodal import SchwefelFunction
-from pybrain.rl.environments.functions.multimodal import GriewankFunction
-from pybrain.rl.environments.functions.multimodal import AckleyFunction
 from pybrain.rl.environments.functions.unimodal import TabletFunction
 from pybrain.rl.environments.functions.unimodal import DiffPowFunction
-from pybrain.rl.environments.functions.multimodal import RastriginFunction
-from pybrain.rl.environments.functions.multimodal import WeierstrassFunction
 from pybrain.rl.environments.functions.unimodal import ElliFunction
 
 
 # storage tag for this batch
 tag = 'good'
 
-basefunctions = [SphereFunction, CigarFunction, SchwefelFunction, TabletFunction, DiffPowFunction, ElliFunction,
-                 GriewankFunction, AckleyFunction,RastriginFunction, WeierstrassFunction,
+basefunctions = [SphereFunction, CigarFunction, SchwefelFunction, TabletFunction, 
+                 DiffPowFunction, ElliFunction, RosenbrockFunction
                  ]
 dims = [5, 15]
 
@@ -29,7 +25,6 @@ defaultargs = {'batchsize': 25,
                'ranking': 'toplinear',
                'topselection': 10,
                'maxupdate': 0.02,
-               #'verbose': True,
                }
 
 
@@ -39,6 +34,8 @@ particulars = {(SphereFunction, 5): {'maxupdate': 0.03},
                (SchwefelFunction, 5): {'maxupdate': 0.03},
                (CigarFunction, 5): {'maxupdate': 0.03},
                (TabletFunction, 5): {'maxupdate': 0.03},
+               (RosenbrockFunction, 5): {'maxupdate': 0.01, 'maxEvaluations':100000},
+               (RosenbrockFunction, 15): {'maxupdate': 0.005, 'maxEvaluations':0},
                }
 
 
@@ -53,14 +50,15 @@ def runAll(repeat = 1):
                 res = storeCallResults(f)
                 
                 args = defaultargs.copy()
-                if (basef, dim) in particulars:
-                    for k, val in particulars[(basef, dim)].items():
-                        args[k] = val
-                
                 if dim == 15:
                     args['maxEvaluations'] = 50000
                 else:
                     args['maxEvaluations'] = 30000
+                
+                if (basef, dim) in particulars:
+                    for k, val in particulars[(basef, dim)].items():
+                        args[k] = val
+                
                 
                 name = tag+'-'+basef.__name__+str(dim)
                 id = int(rand(1)*90000)+10000
