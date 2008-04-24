@@ -39,12 +39,12 @@ class Population:
         raise NotImplementedError()
 
     def setIndividualFitness(self, individual, fitness):
-        """ Should associate the fitness value to the specified individual. 
+        """ Should associate the fitness value to the specified individual.
         """
         raise NotImplementedError()
 
     def getIndividualFitness(self, individual):
-        """ Should return the associated fitness value of the specified individual. 
+        """ Should return the associated fitness value of the specified individual.
         """
         raise NotImplementedError()
 
@@ -57,7 +57,9 @@ class SimplePopulation(Population):
     """
     def __init__(self):
         self._individuals = set()
-        self._fitness = collections.defaultdict( lambda: 0. )
+#        self._fitness = collections.defaultdict( lambda: 0. )
+        self._fitness = collections.defaultdict( lambda: float('-inf') )
+#        self._fitness = {}
 
     def getIndividuals(self):
         return self._individuals.copy()
@@ -79,7 +81,7 @@ class SimplePopulation(Population):
         self._fitness[individual] = fitness
 
     def getIndividualFitness(self, individual):
-        assert self._fitness.has_key(individual)
+#        assert self._fitness.has_key(individual)
         return self._fitness[individual]
 
 
@@ -91,13 +93,33 @@ class SimplePopulation(Population):
         """ Returns the fitness dictionary """
         return copy( self._fitness )
 
-    def getBestNIndividuals(self, n):
-        """ Returns the n individuals with the highest fitness ranking """
+    def getMaxFitness(self):
+        """ Returns the maximal fitness value """
+        return self.getIndividualFitness(self.getBestIndividuals(1))
+
+
+
+    def getBestIndividuals(self, n):
+        """ Returns n individuals with the highest fitness ranking.
+            If n is greater than the number of individuals inside the population
+            all individuals are returned.
+        """
         return set( self.getSortedIndividualList()[:n] )
 
-    def getWorstNIndividuals(self, n):
-        """ Returns the n individuals with the lowest fitness ranking """
+    def getWorstIndividuals(self, n):
+        """ Returns the n individuals with the lowest fitness ranking.
+            If n is greater than the number of individuals inside the population
+            all individuals are returned.
+        """
         return set( self.getSortedIndividualList()[-n:] )
+
+    def removeWorstIndividuals(self, n):
+        """ Removes the n individuals with the lowest fitness ranking.
+            If n is greater than the number of individuals inside the population
+            all individuals are removed.
+        """
+        inds = self.getWorstIndividuals(n)
+        self.removeIndividuals(inds)
 
 
     def getSortedIndividualList(self):

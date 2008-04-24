@@ -33,14 +33,24 @@ class EvolinoIndividual(Individual):
         return copy(self._sub_individuals)
 
 
+    def getId(self):
+        id_ = []
+        for i in self._sub_individuals:
+            id_.append(i.id)
+        return tuple(id_)
+
+
 class EvolinoSubIndividual(Individual):
     """ The sub-individual class of evolino
     """
+    _next_id = 0
     def __init__(self, genome):
         """ @param genome: Any kind of nested iteratable container containing
                            floats as leafs
         """
         self.setGenome(genome)
+        self.id = EvolinoSubIndividual._next_id
+        EvolinoSubIndividual._next_id += 1
 
     def getGenome(self):
         """ Returns the genome. """

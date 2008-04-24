@@ -2,12 +2,12 @@
 __author__ = 'Michael Isik'
 
 
+from module import Module
 import collections
-import numpy
-from numpy import array, where, zeros, empty
-
 from module import Module
 from pybrain.structure.modules.svm import SVM, KT, Dumpable, vectorizeX
+import numpy
+from numpy import array, where
 
 
 class AbstractMCSVM(Module,Dumpable):

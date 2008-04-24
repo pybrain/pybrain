@@ -19,70 +19,94 @@ class EvolinoPopulation(Population):
         On initialization, a prototype individual must be supplied. Its genome
         should be a list of chromosomes. A chromosome should be a list of floats.
 
-        A subpopulation of size sub_population_size is created for each of these
+        A subpopulation of size subPopulationSize is created for each of these
         chromosomes.
     """
-    def __init__(self, individual, sub_population_size=20, weight_randomizer=Randomization(-0.1,0.1), **kwargs):
+    def __init__(self, individual, subPopulationSize, nCombinations, valueInitializer=Randomization(-0.1,0.1), **kwargs):
         """ @param individual: A prototype individual which is used to determine
                                the structure of the genome.
-            @param sub_population_size: integer describing the size of the subpopulations
+            @param subPopulationSize: integer describing the size of the subpopulations
         """
         Population.__init__(self)
 
-        self._sub_populations = []
-        self._sub_population_size = sub_population_size
-        self._n_combinations      = 1
-        self._verbosity=0
-        self.setArgs(**kwargs)
+        self._subPopulations = []
+
+        # set default values for arguments
+#        self.subPopulationSize = subPopulationSize
+#        self.valueInitializer = Randomization(-0.1,0.1),
+        self.nCombinations = nCombinations
+        self.verbosity=0
+
+        # set the passed arguments
+        for key, val in kwargs.iteritems():
+            getattr(self, key)
+            setattr(self, key, val)
+#        self.setArgs(**kwargs)
+
+
+
         genome = individual.getGenome()
         for chromosome in genome:
-#            print
-#            print "=== creating sub population for chrom:", chromosome
-            self._sub_populations.append( EvolinoSubPopulation(chromosome, self._sub_population_size, weight_randomizer) )
+#            valueInitializer._minval-=0.07 # zzzzzttttt
+#            valueInitializer._maxval-=0.07 # zzzzzttttt
+            self._subPopulations.append(
+                EvolinoSubPopulation(chromosome, subPopulationSize, valueInitializer) )
 
-    def setArgs(self,**kwargs):
-        for key, value in kwargs.items():
-#            if key in ('nc', 'n_combinations'):
-#                self._n_combinations = value
-            if key in ("verbose", "verbosity", "ver", "v"):
-                self._verbosity = value
-            else:
-                pass
+#    def _initSubPopulations(self):
+#        for sp in self._subPopulations:
+#            sp.setArgs(subPopulationSize=self.subPopulationSize, valueInitializer=self.valueInitializer)
+
+
+
+
+#    def setArgs(self, **kwargs):
+#        for key, val in kwargs.iteritems():
+#            getattr(self, key)
+#            setattr(self, key, val)
+
+#    def setArgs(self,**kwargs):
+#        for key, value in kwargs.items():
+##            if key in ('nc', 'nCombinations'):
+##                self._nCombinations = value
+#            if key in ("verbose", "verbosity", "ver", "v"):
+#                self.verbosity = value
+#            else:
+#                pass
 
     def getIndividuals(self):
         """ Returns a set of individuals of type EvolinoIndividual. The individuals
             are generated on the fly. Note that each subpopulation has the same size.
-            So the number of resulting EvolinoIndividuals is sub_population_size,
+            So the number of resulting EvolinoIndividuals is subPopulationSize,
             since each chromosome of each subpopulation will be assembled once.
 
             The subpopulation container is a sequence with strict order. This
-            sequence is iterated sub_population_size times. In each iteration
+            sequence is iterated subPopulationSize times. In each iteration
             one random EvolinoSubIndividual is taken from each sub population.
             After each iteration the resulting sequence of sub individuals
             is supplied to the constructor of a new EvolinoIndividual.
             All EvolinoIndividuals are collected in a set, which is finally returned.
         """
-        assert len(self._sub_populations)
+        assert len(self._subPopulations)
 
         individuals = set()
 
-#        for i in range(self._n_combinations):
-        sub_individuals_list = [ list(sp.getIndividuals()) for sp in self._sub_populations ]
+        for i in range(self.nCombinations):
+            subIndividualsList = [ list(sp.getIndividuals()) for sp in self._subPopulations ]
 
-        individuals_n = len(sub_individuals_list[0])
+            nIndividuals = len(subIndividualsList[0])
 
-        for j in range(individuals_n):
-            sub_individual_combination = []
-            for sub_individuals in sub_individuals_list:
-                sub_individual = sub_individuals.pop( randrange( len( sub_individuals ) ) )
-                sub_individual_combination.append( sub_individual )
-            individuals.add( EvolinoIndividual(sub_individual_combination) )
+            for j in range(nIndividuals):
+                subIndividualCombination = []
+                for subIndividuals in subIndividualsList:
+                    sub_individual = subIndividuals.pop( randrange( len( subIndividuals ) ) )
+                    subIndividualCombination.append( sub_individual )
+                individuals.add( EvolinoIndividual(subIndividualCombination) )
 
         return individuals
 
     def getSubPopulations(self):
         """ Returns a shallow copy of the list of subpopulation. """
-        return copy( self._sub_populations )
+        return copy( self._subPopulations )
 
 
 
@@ -93,14 +117,23 @@ class EvolinoPopulation(Population):
             The fitness is added to the previous value of the subindividual.
             To reset these values use clearFitness().
         """
-        sub_individuals = individual.getSubIndividuals()
-        for i,sp in enumerate(self._sub_populations):
-            sp.addIndividualFitness( sub_individuals[i], fitness )
+        subIndividuals = individual.getSubIndividuals()
+        for i,sp in enumerate(self._subPopulations):
+            sp.addIndividualFitness( subIndividuals[i], fitness ) # zzzzztttttttttt das original
+
+
+
+#        for i,sp in enumerate(self._subPopulations):   # zzzzzzzzzzzztttttttt versuch
+#            sub_individual = subIndividuals[i]
+##            sp.setIndividualFitness( sub_individual, fitness )
+#            old_fitness = sp.getIndividualFitness( sub_individual )
+#            if old_fitness < fitness:
+#                sp.setIndividualFitness( sub_individual, fitness )
 
 
     def clearFitness(self):
         """ Clears all fitness values of all subpopulations. """
-        for sp in self._sub_populations:
+        for sp in self._subPopulations:
             sp.clearFitness()
 
 
@@ -113,32 +146,82 @@ class EvolinoSubPopulation(SimplePopulation):
 
         On initialization, a prototype individual is created from the prototype
         chromosome. This individual is then cloned and added so that the
-        population exists of max_individuals_n individuals.
+        population exists of maxNIndividuals individuals.
 
         The genomes of these clones are then randomized by the Randomization
         operator.
     """
-    def __init__(self, chromosome, max_individuals_n, weight_randomizer=Randomization(-0.1,0.1) ):
+    def __init__(self, chromosome, maxNIndividuals, valueInitializer=Randomization(-0.1,0.1), **kwargs):
         """ @param chromosome: The prototype chromosome
-            @param max_individuals_n: The maximum allowed number of individuals
+            @param maxNIndividuals: The maximum allowed number of individuals
         """
         SimplePopulation.__init__(self)
-        self._max_individuals_n = max_individuals_n
 
-        prototype = EvolinoSubIndividual(chromosome)
-        for i in range(self._max_individuals_n):
-            self.addIndividual(prototype.copy())
-        weight_randomizer.apply(self)
+        self._prototype = EvolinoSubIndividual(chromosome)
 
-    def getMaxIndividualsN(self):
+        self._maxNIndividuals  = maxNIndividuals
+        self._valueInitializer = valueInitializer
+
+
+#        self.maxNIndividuals = maxNIndividuals
+#        self.maxNIndividuals  = property(self._getMaxNIndividuals, self._setMaxNIndividuals)
+#        self.valueInitializer = property(self._getValueInitializer, self._setValueInitializer)
+
+        self.setArgs(**kwargs)
+
+
+#        self._initPopulation()
+
+        for i in range(maxNIndividuals):
+            self.addIndividual(self._prototype.copy())
+        self._valueInitializer.apply(self)
+
+
+    def setArgs(self, **kwargs):
+        for key, val in kwargs.iteritems():
+            getattr(self, key)
+            setattr(self, key, val)
+
+
+    def getMaxNIndividuals(self):
         """ Returns the maximum allowed number of individuals """
-        return self._max_individuals_n
+        return self._maxNIndividuals
 
     def addIndividualFitness(self, individual, fitness):
         """ Add fitness to the individual's fitness value.
             @param fitness: a float value denoting the fitness
         """
         self._fitness[individual] += fitness
+
+#    def _setMaxNIndividuals(self, value):
+#        self._maxNIndividuals = value
+#        self._initPopulation()
+
+#    def _getMaxNIndividuals(self):
+#        return self._maxNIndividuals
+
+
+#    def _setValueInitializer(self, value):
+#        self._valueInitializer = value
+#        self._initPopulation()
+
+#    def _getValueInitializer(self):
+#        return self._valueInitializer
+
+
+
+# ============================================== playground
+
+
+class EvolinoPopulation2(EvolinoPopulation):
+    def setIndividualFitness(self, individual, fitness):
+        subIndividuals = individual.getSubIndividuals()
+        for i,sp in enumerate(self._subPopulations):   # zzzzzzzzzzzztttttttt versuch
+            sub_individual = subIndividuals[i]
+#            sp.setIndividualFitness( sub_individual, fitness )
+            old_fitness = sp.getIndividualFitness( sub_individual )
+            if old_fitness < fitness:
+                sp.setIndividualFitness( sub_individual, fitness )
 
 
 

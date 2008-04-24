@@ -121,12 +121,15 @@ class Randomization(SimpleGenomeManipulation):
         self._maxval = maxval
 
     def apply(self, population):
+        self._uniform_variate = UniformVariate(self._minval,self._maxval)
         for individual in population.getIndividuals():
-            self._uniform_variate = UniformVariate(self._minval,self._maxval)
             self._manipulateGenome(individual.getGenome())
 
     def _manipulateValue(self, value):
         """ See SimpleGenomeManipulation._manipulateValue() for more information """
         return self._uniform_variate.getSample()
+
+
+
 
 

@@ -6,7 +6,7 @@ from pybrain.rl.learners.blackboxoptimizers.evolution.variate    import CauchyVa
 from pybrain.rl.learners.blackboxoptimizers.evolution.population import SimplePopulation
 from pybrain.tools.validation import Validator, ModuleValidator
 
-from numpy import zeros, empty, array, dot
+from numpy import zeros, empty, array, dot, append, concatenate
 from scipy.linalg import pinv2
 from copy import deepcopy
 
@@ -21,51 +21,63 @@ class EvolinoEvaluation(Filter):
         A NetworkWrapper containing the test network must be supplied,
         in order to run tests on the individuals.
     """
-    def __init__(self, network_wrapper, dataset, **kwargs):
+    def __init__(self, evolino_network, dataset, **kwargs):
         """ @param network_wrapper: an instance of NetworkWrapper()
             @param dataset: the evaluation dataset
             @param kwargs: See setArgs() method documentation
         """
         Filter.__init__(self)
-        self._verbosity = 0
-        self.setArgs( net=network_wrapper, ds=dataset )
-        self._evalfunc = None
-        self.setArgs( **kwargs )
+        self.max_fitness = float('-inf')
+        self.verbosity = 0
+        self.network = evolino_network
+        self.dataset = dataset
+        self.evalfunc = None
+        self.wtvRatio = array([1,1,1], float)
+#        self.setArgs( **kwargs )
+
+        for key, val in kwargs.iteritems():
+            getattr(self, key)
+            setattr(self, key, val)
 
 
-    def setArgs(self,**kwargs):
-        """ @param **kwargs:
-                net      : set the network wrapper
-                ds       : set the evaluation dataset
-                evalfunc : Evaluation function. Will be called with a module
-                           and a dataset. Should return the modules fitness value
-                           on the dataset.
-                v        : set verbosity
-        """
-        for key, value in kwargs.items():
-            if key in ("net"):
-                self._network_wrapper = value
-            elif key in ("ds", 'data', 'dataset'):
-                self._dataset = value
-            elif key in ("evalfunc"):
-                self._evalfunc = value
-            elif key in ("verbose", "verbosity", "ver", "v"):
-                self._verbosity = value
-            else:
-                pass
+
+
+#    def setArgs(self,**kwargs):
+#        """ @param **kwargs:
+#                net      : set the network wrapper
+#                ds       : set the evaluation dataset
+#                evalfunc : Evaluation function. Will be called with a module
+#                           and a dataset. Should return the modules fitness value
+#                           on the dataset.
+#                v        : set verbosity
+#        """
+#        for key, value in kwargs.items():
+#            if key in ("net"):
+#                self._network = value
+#            elif key in ("ds", 'data', 'dataset'):
+#                self._dataset = value
+#            elif key in ("evalfunc"):
+#                self._evalfunc = value
+#            elif key in ("verbose", "verbosity", "ver", "v"):
+#                self.verbosity = value
+#            else:
+#                pass
 
     def apply(self, population):
         """ Evaluate each individual, and store fitness into EvolinoPopulation.
             Also calculate and set the weight matrix W of the full connection
             between the last hidden layer and the output layer.
         """
-        net_wrap = self._network_wrapper
-        net      = net_wrap.network
-        dataset = self._dataset
+        net = self.network
+        dataset = self.dataset
         population.clearFitness()
         best_individual = None
         best_W = None
         best_fitness = float('-inf')
+        ratio = array(self.wtvRatio,float) / sum(self.wtvRatio)
+#        print data_length, training_start, validation_start; exit()
+
+
         # iterate all individuals. Note, that these individuals are created on the fly
         for individual in population.getIndividuals():
             # calculate phi, which is a list of raw outputs of the net
@@ -74,73 +86,66 @@ class EvolinoEvaluation(Filter):
             phi = []
             T   = []
             # load the individual's genome into the weights of the net
-            net_wrap.setGenome( individual.getGenome() )
+            net.setGenome( individual.getGenome() )
+#            collected_phi    = array([])
+#            collected_target = array([])
+            collected_phi    = None
+            collected_target = None
             # iterate through all sequences
             for i in range(dataset.getNumSequences()):
-                # process next sequence
                 seq = dataset.getSequence(i)
-                backprojection = zeros(dataset.outdim)
+                input  = seq[0]
+                target = seq[1]
+
+                training_start   = int(   ratio[0]              * len(input) )
+                validation_start = int( ( ratio[0] + ratio[1] ) * len(input) )
+
+                washout_input     = input  [                  : training_start   ]
+                washout_target    = target [                  : training_start   ]
+                training_input    = input  [ training_start   : validation_start ]
+                training_target   = target [ training_start   : validation_start ]
+                validation_input  = input  [ validation_start :                  ]
+                validation_target = target [ validation_start :                  ]
+
+
+                # reset
                 net.reset()
-                for j in range(len(seq[0])):
-                    input  = seq[0][j]
-                    target = seq[1][j]
-                    # backproject the target of the last iteration
-                    net_wrap.injectBackproject(backprojection)
-                    net.activate(input)
-                    raw_out = net_wrap._getRawOutput()
 
-                    phi.append( raw_out )
-                    T.append( target)
-                    backprojection = target
+                # washout
+                net._washout(washout_input, washout_target)
 
 
+                # collect training data
+                phi = net._washout(training_input, training_target)
+                if collected_phi is not None:
+                    collected_phi = append( collected_phi, phi, axis=0 )
+                else:
+                    collected_phi = phi
 
-            # === calculate weight matrix W
-            # The output Y of the whole network is calculated by: W*phi
-            # Recall, that phi is the matrix containing the outputs of the
-            # last hidden layer. Each column will contain the output of one sample.
-
-            # W is the weight matrix of the full connection between
-            # the last hidden and the output layer.
-            # Each row inside W will contain the input weights of a neuron
-            # of the output layer.
-
-            # We want the output of the whole network to be mostly like T,
-            # so we want to solve W * phi = T ,
-            # which can also be written as W = T * phi^-1 .
-            # It's unlikely that an inverse of phi exists, so we use the
-            # Moore-Penrose pseudo-inverse which minimizes the summed squared error
-
-            # from now on, each column inside phi is the raw output of a sample
-            phi      = array(phi).T
-            # calculate the pseudo inverse of phi
-            phi_pinv = pinv2(phi)
-            # from now on, each column inside T is the target of a sample
-            T        = array(T).T
-            W        = dot(T, phi_pinv)
-# zzzztttt           net_wrap.setOutputWeightMatrix(W)
-            net_wrap.setOutputWeightMatrix(W)
+                if collected_target is not None:
+                    collected_target = append( collected_target, training_target, axis=0 )
+                else:
+                    collected_target = training_target
 
 
-            # calculate Y with new weight matrix W
-            Y = dot( W, phi ).T
 
+            # calculate and set the weight matrix
+            collected_phi = collected_phi.T
+#            print collected_phi ; exit()
+            phi_pinv = pinv2(collected_phi)
+            collected_target = collected_target.T
+            W                = dot(collected_target, phi_pinv)
+            net.setOutputWeightMatrix(W)
 
-#            Y_dummy = dot(net.getOutputWeightMatrix(),phi).T
+            input, output, target = net.calculateOutput( dataset, (ratio[0]+ratio[1], ratio[2]) )
+
 
             # calculate fitness, which is the negative MSE
-            importance = None
-            if dataset.data.has_key('importance'):
-                importance = dataset.getField('importance')
-            if self._evalfunc is not None:
-                fitness = self._evalfunc(net, dataset)
-            else:
-#                fitness = - Validator.MSE(Y,T.T,importance)
-                fitness = - ModuleValidator.MSE(net, dataset)
+            fitness = - Validator.MSE(output,target)
 
             # set the individual fitness
-            if self._verbosity > 1:
-                print "Calculated fitness for individual", id(individual), " is ", fitness
+            if self.verbosity > 1:
+                print "Calculated fitness for individual", individual.getId(), " is ", fitness
             population.setIndividualFitness(individual, fitness)
 
             if best_fitness < fitness:
@@ -148,11 +153,17 @@ class EvolinoEvaluation(Filter):
                 best_genome  = deepcopy(individual.getGenome())
                 best_W       = deepcopy(W)
 
-        net_wrap.setGenome( best_genome )
-        net_wrap.setOutputWeightMatrix(best_W)
+        net.reset()
+        net.setGenome( best_genome )
+        net.setOutputWeightMatrix(best_W)
 
-#        fitness = - ModuleValidator.MSE(net, dataset)
-#        print "AAAAA WINNER FITNESS", fitness
+
+        # store fitness maximum to use it for triggering burst mutation
+#        if self.max_fitness < best_fitness:
+        self.max_fitness = best_fitness
+
+
+
 
 
 class EvolinoSelection(Filter):
@@ -176,7 +187,7 @@ class EvolinoSelection(Filter):
 class EvolinoReproduction(Filter):
     """ Evolino's reproduction operator """
     def __init__(self, **kwargs):
-        """ @param **kwargs: will be forwarded tho the EvolinoSubReproduction constructor
+        """ @param **kwargs: will be forwarded to the EvolinoSubReproduction constructor
         """
         Filter.__init__(self)
         self._kwargs = kwargs
@@ -190,6 +201,28 @@ class EvolinoReproduction(Filter):
         sps = population.getSubPopulations()
         reproduction = EvolinoSubReproduction(**self._kwargs)
         for sp in sps:
+            reproduction.apply(sp)
+
+
+class EvolinoBurstMutation(Filter):
+    """ The burst mutation operator for evolino """
+    def __init__(self, **kwargs):
+        """ @param **kwargs: will be forwarded to the EvolinoSubReproduction constructor
+        """
+        Filter.__init__(self)
+        self._kwargs = kwargs
+
+    def apply(self, population):
+        """ Keeps just the best fitting individual of each subpopulation.
+            All other individuals are erased. After that, the kept best fitting
+            individuals will be used for reproduction, in order to refill the
+            sub-populations.
+        """
+        sps = population.getSubPopulations()
+        for sp in sps:
+            n_toremove = sp.getIndividualsN()-1
+            sp.removeWorstIndividuals(n_toremove)
+            reproduction = EvolinoSubReproduction(**self._kwargs)
             reproduction.apply(sp)
 
 
@@ -209,8 +242,9 @@ class EvolinoSubSelection(Filter):
         """
         n = population.getIndividualsN()
 
-        worst = population.getWorstNIndividuals(n/4)
-        population.removeIndividuals(worst)
+        population.removeWorstIndividuals(n/4)
+#        worst = population.getWorstIndividuals(n/4)
+#        population.removeIndividuals(worst)
 
 
 
@@ -223,50 +257,63 @@ class EvolinoSubReproduction(Filter):
         """ @param kwargs: See setArgs() method documentation
         """
         Filter.__init__(self)
-        self._mutation_variate = None
-        self._sub_population_mutation = EvolinoSubMutation()
+        self.mutationVariate = None
         self.mutation = EvolinoSubMutation()
-        self._verbosity=0
-        self.setArgs(**kwargs)
+#        self.mutation = EvolinoSubMutation()
+        self.verbosity=0
+        for key, val in kwargs.iteritems():
+            getattr(self, key)
+            setattr(self, key, val)
 
+        if self.mutationVariate is not None:
+            self.mutation.mutationVariate = self.mutationVariate
 
-    def setArgs(self,**kwargs):
-        """ @param **kwargs:
-                mutation  : set the mutation object
-                mv        : set an alternative mutation variate
-                verbosity : set verbosity
-        """
-        for key, value in kwargs.items():
-            if key in ('mutation'):
-                self._sub_population_mutation = value
-            elif key in ('mv', 'mutation-variate'):
-                self._sub_population_mutation.setArgs(mv=value)
-            elif key in ("verbose", "verbosity", "ver", "v"):
-                self._verbosity = value
-            else:
-                pass
+#    def setArgs(self,**kwargs):
+#        """ @param **kwargs:
+#                mutation  : set the mutation object
+#                mv        : set an alternative mutation variate
+#                verbosity : set verbosity
+#        """
+#        for key, value in kwargs.items():
+#            if key in ('mutation'):
+#                self.mutation = value
+#            elif key in ('mv', 'mutation-variate'):
+#                self.mutation.setArgs(mv=value)
+#            elif key in ("verbose", "verbosity", "ver", "v"):
+#                self.verbosity = value
+#            else:
+#                pass
 
     def apply(self, population):
         """ First determines the number of individuals to be created.
             Then clones the fittest individuals (=parents), mutates these clones
             and adds them to the population.
         """
-        max_n     = population.getMaxIndividualsN()
+        max_n     = population.getMaxNIndividuals()
         n         = population.getIndividualsN()
         freespace = max_n - n
 
-        best = population.getBestNIndividuals(freespace)
+        best = population.getBestIndividuals(freespace)
         children=set()
-        for parent in best:
-            children.add( parent.copy() )
-
+        while True:
+            for parent in best:
+                children.add( parent.copy() )
+                if len(children)>=freespace: break
+            if len(children)>=freespace: break
 
         dummy_population = SimplePopulation()
         dummy_population.addIndividuals(children)
-        self._sub_population_mutation.apply(dummy_population)
+        self.mutation.apply(dummy_population)
         population.addIndividuals(dummy_population.getIndividuals())
 
-        inds = population.getSortedIndividualList()
+        assert population.getMaxNIndividuals() == population.getIndividualsN()
+
+#        inds = population.getSortedIndividualList()
+
+
+
+
+
 
 
 class EvolinoSubMutation(SimpleMutation):
@@ -274,9 +321,115 @@ class EvolinoSubMutation(SimpleMutation):
         Like SimpleMutation, except, that CauchyVariate is used by default.
     """
     def __init__(self, **kwargs):
-        self._mutation_variate = CauchyVariate()
-        self._mutation_variate.alpha = 0.1
+        self.mutationVariate = CauchyVariate()
+        self.mutationVariate.alpha = 0.1
         SimpleMutation.__init__(self, **kwargs)
+
+
+
+
+
+
+# ================================================================= playground zzzz
+
+
+
+import collections
+
+class EvolinoReproduction2(EvolinoReproduction):
+    def __init__(self,**kwargs):
+        EvolinoReproduction.__init__(self,**kwargs)
+        self._sub_reproduction_map = collections.defaultdict(
+            lambda: EvolinoSubReproduction2(**self._kwargs) )
+
+
+
+    def apply(self, population):
+        sps = population.getSubPopulations()
+#        reproduction = EvolinoSubReproduction2(**self._kwargs)
+#        for sp in sps:
+#            reproduction.apply(sp)
+
+        for sp in sps:
+            print "reproduction: ", id(self._sub_reproduction_map[sp])
+            self._sub_reproduction_map[sp].apply(sp)
+#            reproduction.apply(sp)
+
+
+
+class EvolinoSubReproduction2(EvolinoSubReproduction):
+    def __init__(self, **kwargs):
+        EvolinoSubReproduction.__init__(self)
+
+        self._best_individual = None
+        self._best_fitness = float('-inf')
+
+
+
+
+    def apply(self, population):
+        """ First determines the number of individuals to be created.
+            Then clones the fittest individuals (=parents), mutates these clones
+            and adds them to the population.
+        """
+        best_individual, = population.getBestIndividuals(1)
+
+
+
+#        print best_individual in population.getIndividuals();
+
+        best_fitness = population.getIndividualFitness(best_individual)
+        if self._best_fitness < best_fitness:
+            self._best_individual = best_individual
+            self._best_fitness = best_fitness
+#            population.addIndividual(self._best_individual.copy())
+#        population.addIndividual(self._best_individual.copy())
+#        print best
+#        exit()
+#        print "best individual: ", id(self._best_individual)
+
+
+#        print best_individual in population.getIndividuals();
+#        print self._best_individual is not None and  self._best_individual not in population.getIndividuals()
+        doaddbest = self._best_individual is not None and  self._best_individual not in population.getIndividuals()
+#        exit()
+
+        reserved_space = 0
+        if doaddbest: reserved_space = 1
+
+
+        max_n     = population.getMaxNIndividuals()
+        n         = population.getIndividualsN()
+        freespace = max_n - n - reserved_space
+
+        best = population.getBestIndividuals(freespace)
+        children=set()
+        while True:
+            for parent in best:
+                children.add( parent.copy() )
+                if len(children)>=freespace: break
+            if len(children)>=freespace: break
+
+        dummy_population = SimplePopulation()
+        dummy_population.addIndividuals(children)
+        self.mutation.apply(dummy_population)
+        population.addIndividuals(dummy_population.getIndividuals())
+
+#        print "AAAA 1"
+        if doaddbest:
+#            print "AAAADDDD"
+#            print self._best_individual.id
+            population.addIndividual(self._best_individual)
+
+        for i in population.getIndividuals():
+            print i.id, " ",
+        print
+
+
+
+        assert population.getMaxNIndividuals() == population.getIndividualsN()
+
+#        inds = population.getSortedIndividualList()
 
 
 
