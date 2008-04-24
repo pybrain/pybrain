@@ -398,7 +398,7 @@ class FEM(BlackBoxOptimizer):
                 bestindex = argmax(fitnesses)
                 self.bestEvaluation, self.bestEvaluable = fitnesses[bestindex], samples[bestindex]
             
-            if max(fitnesses) >= self.desiredEvaluation:
+            if self.bestEvaluation >= self.desiredEvaluation:
                 break
             
             if len(self.allsamples)+len(self.muevals) >= maxSteps:
