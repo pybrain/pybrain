@@ -2,7 +2,6 @@ __author__ = 'Tom Schaul, tom@idsia.ch'
 
 from pybrain.structure.parametercontainer import ParameterContainer
 from pybrain.structure.modules.module import Module
-from pybrain import Network
 
 
 class CheaplyCopiable(ParameterContainer, Module):
@@ -49,4 +48,11 @@ class CheaplyCopiable(ParameterContainer, Module):
         self.__stored._params[:] = self._params
         return self.__stored.backActivate(*args, **kwargs)
     
-    
+    def randomize(self, *args, **kwargs):
+        ParameterContainer.randomize(self, *args, **kwargs)
+        self.__stored._params[:] = self._params
+        
+    def mutate(self, *args, **kwargs):
+        ParameterContainer.mutate(self, *args, **kwargs)
+        self.__stored._params[:] = self._params
+        

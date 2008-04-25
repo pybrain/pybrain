@@ -1,7 +1,4 @@
-""" A script for trying plenty of variations of networks/algorithms on the cart-pole balancing task 
-
-Short variation of cartpolecomarisons.py
-"""
+""" A script for trying plenty of variations of networks/algorithms on the cart-pole balancing task """
 
 __author__ = 'Tom Schaul, tom@idsia.ch'
 
@@ -16,6 +13,7 @@ from nesexperiments import pickleDumpDict
 from pybrain.rl.tasks.polebalancing import CartPoleTask
 from pybrain.rl.learners import CMAES, ES, HillClimber, WeightGuessing, WeightMaskGuessing
 from pybrain.rl.learners.meta import MemeticSearch, InnerMemeticSearch
+from pybrain.rl.learners.meta.inversememetic import InverseMemeticSearch
 
 
 # desired performance (cumulative reward of the task)
@@ -34,12 +32,13 @@ learners = [# previously done
             ('ES-50+50', ES, {}),            
             ('ES-5+5', ES, {'mu' : 5, 'lambada': 5}),
             # failed/new
-            ('Memetic', MemeticSearch, {'localSteps': 10}),
             ('LongMemetic', MemeticSearch, {'localSteps': 100}),
             ('MemeticCMA', MemeticSearch, {'localSearch': CMAES, 'localSteps': 500}),
             ('RandomMasks', WeightMaskGuessing, {}),
             ('LongInnerMemetic', InnerMemeticSearch, {'localSteps': 50}),
+            ('InverseMemetic', InverseMemeticSearch, {'localSteps': 50}),
             # doomed
+            #('Memetic', MemeticSearch, {'localSteps': 10}),
             #('InnerMemetic', InnerMemeticSearch, {'localSteps': 5}),
             #('MemeticES-50+50', MemeticSearch, {'localSearch': ES, 'localSteps': 500}),
             #('MemeticES-5+5', MemeticSearch, {'localSearch': ES, 'localSearchArgs': {'mu': 5, 'lambada': 5}}),

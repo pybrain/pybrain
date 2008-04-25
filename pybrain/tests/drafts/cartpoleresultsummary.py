@@ -1,6 +1,6 @@
 __author__ = 'Tom Schaul, tom@idsia.ch'
 
-from scipy import array, zeros
+from scipy import array, zeros, average
 import os
 
 from nesexperiments import pickleReadDict
@@ -29,6 +29,8 @@ def summarizeRunInfo(alldata):
         print 'Successful runs:', len(successes), '(', int(len(successes)/float(len(res))*1000)/10.0, '%)'
         if len(successes) > 0:
             print 'Average number of episodes until success (not considering failures):',  sum(map(len, successes))/float(len(successes))
+            for r in successes:
+                print len(r), 'f',r[0], 'l', r[-1], 'min', min(r), 'max', max(r), 'avg', average(array(r))
         if len(failures) > 0:
             print 'Average fitness (among failures):',  sum(map(max, failures))/float(len(failures))
         print
@@ -67,6 +69,6 @@ def plotBestAvgFitnessByEpisode(alldata):
 if __name__ == '__main__':
     info = readAllRunInfo()
     summarizeRunInfo(info)
-    plotBestAvgFitnessByEpisode(info)
+    #plotBestAvgFitnessByEpisode(info)
                 
                 

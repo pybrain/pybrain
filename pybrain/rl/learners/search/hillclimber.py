@@ -18,4 +18,5 @@ class HillClimber(Learner):
         tmpF = self.evaluator(cp)
         if tmpF >= self.bestEvaluation:
             self.bestEvaluable, self.bestEvaluation = cp, tmpF
+            
         
