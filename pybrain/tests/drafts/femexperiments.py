@@ -13,29 +13,29 @@ from pybrain.rl.environments.functions.unimodal import ElliFunction
 
 
 # storage tag for this batch
-tag = 'good'
+tag = 'we'
 
 basefunctions = [SphereFunction, CigarFunction, SchwefelFunction, TabletFunction, 
-                 DiffPowFunction, ElliFunction, RosenbrockFunction
+                 DiffPowFunction, ElliFunction, #RosenbrockFunction
                  ]
 dims = [5, 15]
 
-defaultargs = {'batchsize': 25,
+defaultargs = {'batchsize': 50,
                'onlineLearning': True,
                'ranking': 'toplinear',
-               'topselection': 10,
-               'maxupdate': 0.02,
+               'topselection': 15,
+               'maxupdate': 0.05,
                }
 
 
-particulars = {(SphereFunction, 5): {'maxupdate': 0.03},
-               (ElliFunction, 5): {'maxupdate': 0.03},
-               (DiffPowFunction, 5): {'maxupdate': 0.03},
-               (SchwefelFunction, 5): {'maxupdate': 0.03},
-               (CigarFunction, 5): {'maxupdate': 0.03},
-               (TabletFunction, 5): {'maxupdate': 0.03},
-               (RosenbrockFunction, 5): {'maxupdate': 0.01, 'maxEvaluations':100000},
-               (RosenbrockFunction, 15): {'maxupdate': 0.005, 'maxEvaluations':0},
+particulars = {(SphereFunction, 5): {'maxupdate': 0.1, 'topselection':5},
+               (ElliFunction, 5): {'maxupdate': 0.1, 'topselection':5},
+               (DiffPowFunction, 5): {'maxupdate': 0.1, 'topselection':5},
+               (SchwefelFunction, 5): {'maxupdate': 0.1, 'topselection':5},
+               (CigarFunction, 5): {'maxupdate': 0.1, 'topselection':5},
+               (TabletFunction, 5): {'maxupdate': 0.1, 'topselection':5},
+               #(RosenbrockFunction, 5): {'maxupdate': 0.01, 'maxEvaluations':100000},
+               #(RosenbrockFunction, 15): {'maxupdate': 0.005, 'maxEvaluations':0},
                }
 
 
