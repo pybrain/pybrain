@@ -1,7 +1,7 @@
 __author__ = 'Daan Wierstra and Tom Schaul'
 
 from scipy import pi, power, exp, sqrt, dot, rand, ones, eye, zeros, outer, reshape, var, isnan, isfinite
-from scipy.linalg import inv, det, sqrtm, norm
+from scipy.linalg import inv, det, sqrtm, norm, eigvals
 from numpy.random import multivariate_normal, random
 from numpy import array, size, multiply, average, argmax, sort
 
@@ -353,6 +353,11 @@ class FEM(BlackBoxOptimizer):
                             pass
                         else: 
                             self.sigmas[c] = newSigma 
+                            
+                        #minallowedeigval = 0.0001
+                        #mineigval = min(eigvals(newSigma))
+                        #if mineigval < minallowedeigval:
+                        #    self.sigmas[c] *= minallowedeigval / mineigval
 
 
                             
