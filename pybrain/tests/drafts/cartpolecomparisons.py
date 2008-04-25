@@ -12,7 +12,7 @@ from pybrain.structure.evolvables.cheaplycopiable import CheaplyCopiable
 from nesexperiments import pickleDumpDict
 from pybrain.rl.tasks.polebalancing import CartPoleTask
 from pybrain.rl.learners import CMAES, ES, HillClimber, WeightGuessing, WeightMaskGuessing
-from pybrain.rl.learners.meta import MemeticSearch, InnerMemeticSearch
+from pybrain.rl.learners.meta import MemeticSearch, InnerMemeticSearch, InnerInverseMemeticSearch
 from pybrain.rl.learners.meta.inversememetic import InverseMemeticSearch
 
 
@@ -36,7 +36,9 @@ learners = [# previously done
             ('MemeticCMA', MemeticSearch, {'localSearch': CMAES, 'localSteps': 500}),
             ('RandomMasks', WeightMaskGuessing, {}),
             ('LongInnerMemetic', InnerMemeticSearch, {'localSteps': 50}),
-            ('InverseMemetic', InverseMemeticSearch, {'localSteps': 50}),
+            ('ShortInverseMemetic', InverseMemeticSearch, {'localSteps': 10}),
+            ('LongInverseMemetic', InverseMemeticSearch, {'localSteps': 100}),
+            ('InnerInverseMemetic', InnerInverseMemeticSearch, {'localSteps': 5}),
             # doomed
             #('Memetic', MemeticSearch, {'localSteps': 10}),
             #('InnerMemetic', InnerMemeticSearch, {'localSteps': 5}),
@@ -47,7 +49,7 @@ learners = [# previously done
             ]
         
     
-def runAll(maxEvals = 30000, repeat = 100):
+def runAll(maxEvals = 30000, repeat = 1000):
     for u in range(repeat*3):
         
         # tasks: non-markov double pole balancing for 100000 iterations - fixed starting conditions        
@@ -89,7 +91,7 @@ def runAll(maxEvals = 30000, repeat = 100):
                 
                 # storage
                 best._resetBuffers()
-                pickleDumpDict('../temp/cartpole3/'+name+'--'+str(id), 
+                pickleDumpDict('../temp/cartpole4/'+name+'--'+str(id), 
                                {'net': best, 'allfits': allfits, 'time': t})
                 
             except Exception, e:
