@@ -9,9 +9,10 @@ from nesexperiments import pickleReadDict
 
 
 if __name__ == '__main__':
-    
+    i = 0
     res = pickleReadDict('../temp/fem/dim15results-b')
-    for k, val in res.items():
+    plotsymbols = ['-']#, ':', '-.', '-.', '-', ':']
+    for k, val in sorted(res.items()):
         allmuevals = filter(lambda x: max(x) > -1e-10, val[2])
         print k, len(val[2]), len(allmuevals)
         if len(allmuevals):
@@ -21,13 +22,13 @@ if __name__ == '__main__':
             for me in allmuevals:
                 tmp = array(me)
                 merged[:size(tmp)] -= tmp
-                avgover[:size(tmp)] += 1
+                avgover +=1 #[:size(tmp)] += 1
             merged /= avgover
-            merged.clip(max = 1e10, min = 1e-10)
+            merged = merged.clip(min = 1e-10, max = 1e20)
             x = array(range(maxlen))*25
             pylab.semilogy()
-            pylab.plot(x, merged, label = k)
-        
+            pylab.plot(x, merged, plotsymbols[i], label = k[:-9])
+        i = (i+1) % len(plotsymbols)
     pylab.ylabel('fitness')
     pylab.xlabel('number of evaluations')
     pylab.legend()
