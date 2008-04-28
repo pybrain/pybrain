@@ -27,7 +27,7 @@ if __name__ == '__main__':
             merged = merged.clip(min = 1e-10, max = 1e20)
             x = array(range(maxlen))*25
             pylab.semilogy()
-            pylab.plot(x, merged, plotsymbols[i], label = k[:-9])
+            pylab.plot(x, merged, plotsymbols[i], label = k[:-10])
         i = (i+1) % len(plotsymbols)
     pylab.ylabel('fitness')
     pylab.xlabel('number of evaluations')
