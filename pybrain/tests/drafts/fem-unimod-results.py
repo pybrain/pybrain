@@ -8,7 +8,7 @@ from scipy import array, average, var, sqrt, zeros, size
 
 from nesexperiments import pickleReadDict, pickleDumpDict
 
-def readTaggedFiles(tag, selective = None, verbose = False):
+def readTaggedFiles(tag, selective = None, verbose = True):
     filedir = '../temp/fem/'
     allfiles = os.listdir(filedir)
     alldata = {}
@@ -38,17 +38,18 @@ def readTaggedFiles(tag, selective = None, verbose = False):
                 else:
                     print 'not soved. Best:', max(allfits), 'number of evals:', len(allfits)
             
+            
     return alldata
 
 if __name__ == '__main__':
-    tag = 'we'
+    tag = 'good'
     print 'tag:', tag
-    d = readTaggedFiles(tag, ['SphereFunction5',
-                              'CigarFunction5',
-                              'SchwefelFunction5',
-                              'TabletFunction5',
-                              'DiffPowFunction5',
-                              'ElliFunction5',
+    d = readTaggedFiles(tag, ['SphereFunction15',
+                              'CigarFunction15',
+                              'SchwefelFunction15',
+                              'TabletFunction15',
+                              'DiffPowFunction15',
+                              'ElliFunction15',
                               ])
     res = {}
     for k, val in sorted(d.items()):
@@ -74,17 +75,17 @@ if __name__ == '__main__':
                 merged[:size(tmp)] += tmp
             merged /= len(allmuevals)
             merged.clip(min = - 1e10, max = -1e-10)
-            x = array(range(maxlen))*50
+            x = array(range(maxlen))*25
             pylab.semilogy()
             pylab.plot(x, -merged, label = k)
     
             
-    pickleDumpDict('../temp/fem/dim5results', res)
+    pickleDumpDict('../temp/fem/dim15results-b', res)
     
     print 'written'
     
     if True:
-        pylab.ylabel('-fitness')
+        pylab.ylabel('fitness')
         pylab.xlabel('number of evaluations')
         pylab.legend()
         pylab.show()
