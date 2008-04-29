@@ -1,8 +1,7 @@
 __author__ = 'Thomas Rueckstiess, ruecksti@in.tum.de'
 
 from learning import LearningAgent
-from pybrain.rl.learners.finitedifference.basic import FDBasic
-from scipy import random, zeros
+
 
 class FiniteDifferenceAgent(LearningAgent):
     """ FiniteDifferenceAgent is a learning agent, that perturbs the parameters
