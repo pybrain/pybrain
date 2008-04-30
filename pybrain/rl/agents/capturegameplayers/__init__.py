@@ -1,0 +1,3 @@
+from randomplayer import RandomCapturePlayer
+from killing import KillingPlayer
+from nonsuicide import NonSuicidePlayer
