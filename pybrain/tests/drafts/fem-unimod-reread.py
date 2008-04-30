@@ -3,7 +3,7 @@
 __author__ = 'Tom Schaul, tom@idsia.ch'
 
 import pylab    
-from scipy import array, zeros, size, log, exp
+from scipy import array, zeros, size
 
 from nesexperiments import pickleReadDict
 

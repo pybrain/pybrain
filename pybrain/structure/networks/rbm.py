@@ -6,8 +6,6 @@ __author__ = ('Christian Osendorfer, osendorf@in.tum.de;'
               'Justin S Bayer, bayerj@in.tum.de')
 
 
-import itertools
-
 from pybrain.structure.modules import BiasUnit, SigmoidLayer, LinearLayer
 from pybrain.structure.connections import FullConnection
 from pybrain.structure.networks import Network
@@ -22,13 +20,15 @@ class Rbm(Network):
         
         self.visibleLayer = LinearLayer(visibledim)
         self.hidddenLayer = SigmoidLayer(hiddendim)
-        self.fullConnection = FullConnection(ll, sl, self.connNames.next())
-        self.biasConnection = FullConnection(bias, sl)
+        self.fullConnection = FullConnection(self.visibleLayer, self.hidddenLayer, self.connNames.next())
+        self.biasConnection = FullConnection(bias, self.hidddenLayer)
         
         self.addInputModule(self.visibleLayer)
         self.addOutputModule(self.hiddenLayer)
+        self.addModule(bias)
         self.addConnection(self.fullConnection)
         self.addConnection(self.biasConnection)
+        self.sortModules()
 
     def _getWeights(self):
         return self.connections[0].params
