@@ -2,36 +2,22 @@
 
 __author__ = 'Tom Schaul, tom@idsia.ch'
 
-import pylab    
-from scipy import array, zeros, size
+from scipy import array
 
 from nesexperiments import pickleReadDict
+from pybrain.tools.plotting import plotFitnessProgession
 
+#fname, cut, bsize = 'dim15results-b', 10, 50
+fname, cut, bsize = 'dim5results', 9, 25
 
 if __name__ == '__main__':
-    i = 0
-    res = pickleReadDict('../temp/fem/dim15results-b')
-    plotsymbols = ['-']#, ':', '-.', '-.', '-', ':']
-    for k, val in sorted(res.items()):
-        allmuevals = filter(lambda x: max(x) > -1e-10, val[2])
-        print k, len(val[2]), len(allmuevals)
-        if len(allmuevals):
-            maxlen = max(map(len, allmuevals))
-            merged = zeros(maxlen)
-            avgover = zeros(maxlen)
-            for me in allmuevals:
-                tmp = array(me)
-                merged[:size(tmp)] -= tmp
-                avgover +=1 #[:size(tmp)] += 1
-            merged /= avgover
-            merged = merged.clip(min = 1e-10, max = 1e20)
-            x = array(range(maxlen))*25
-            pylab.semilogy()
-            pylab.plot(x, merged, plotsymbols[i], label = k[:-10])
-        i = (i+1) % len(plotsymbols)
-    pylab.ylabel('fitness')
-    pylab.xlabel('number of evaluations')
-    pylab.legend()
-    pylab.show()
-    
-   
+    folder = '../temp/fem/' 
+    readin = pickleReadDict(folder+fname)
+    onlymuEvals = {}
+    for k, val in readin.items():
+        onlymuEvals[k[:-cut]] = map(lambda x: -array(x), val[2])
+    plotFitnessProgession(onlymuEvals, batchsize = bsize, 
+                          #onlysuccessful = False,
+                          #varyplotsymbols = True,
+                          )
+ 
