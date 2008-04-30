@@ -5,7 +5,7 @@ from handling import XMLHandling
 
 # those imports are necessary for the eval() commands to find the right classes
 import pybrain
-try: import Tom
+try: import newversion
 except: pass
 
 

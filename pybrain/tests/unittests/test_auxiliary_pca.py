@@ -116,17 +116,14 @@ Tests for probabilistic PCA
     >>> pc = pPca(data, 1)
     >>> x, y = pc[0, 0], pc[1, 0]
     >>> x / y
-    0.922...
+    0.92...
 
 """
 
 
 __author__ = 'Justin Bayer, bayerj@in.tum.de'
 
-
-from pybrain.auxiliary.pca import pPca
 from pybrain.tests import runModuleTestSuite
-
 
 if __name__ == "__main__":
     runModuleTestSuite(__import__('__main__'))

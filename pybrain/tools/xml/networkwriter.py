@@ -98,7 +98,7 @@ class NetworkWriter(XMLHandling):
             if val != None:
                 tmp = self.newChild(node, name)
                 if isclass(val):
-                    s = str(val)
+                    s = canonicClassString(val)
                 else:
                     s = getattr(val, 'name', repr(val))
                 tmp.setAttribute('val', s)
