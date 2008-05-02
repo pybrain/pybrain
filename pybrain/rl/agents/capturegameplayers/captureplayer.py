@@ -1,6 +1,7 @@
 __author__ = 'Tom Schaul, tom@idsia.ch'
 
 from pybrain.rl import Agent
+from pybrain.rl.environments.twoplayergames import CaptureGame
 
 
 class CapturePlayer(Agent):
@@ -8,8 +9,9 @@ class CapturePlayer(Agent):
     (playerid, position)
     playerid is self.color, by convention. 
     It generally also has access to the game object. """
-    def __init__(self, game, color):
+    def __init__(self, game, color = CaptureGame.BLACK, **args):
         self.game = game
         self.color = color
+        self.setArgs(**args)
     
     

@@ -40,8 +40,18 @@ class CaptureGame(TwoPlayerGame):
         self.groups = {}
         # how many liberties does each group have
         self.liberties = {}
+    
+    @property
+    def indim(self):
+        return self.size**2
+    
+    @property
+    def outdim(self):
+        return 2*self.size**2
         
     def getBoardArray(self):
+        """ an array with thow boolean values per position, indicating 
+        'white stone present' and 'black stone present' respectively. """
         a = zeros(2*(self.size**2))
         for i, p in enumerate(self._iterPos()):
             if self.b[p] == self.WHITE:

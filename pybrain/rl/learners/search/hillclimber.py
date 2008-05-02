@@ -16,6 +16,8 @@ class HillClimber(Learner):
         cp = self.bestEvaluable.copy()
         cp.mutate()
         tmpF = self.evaluator(cp)
+        if self.verbose:
+            print self.steps, ':', self.bestEvaluation, 'new:', tmpF
         if tmpF >= self.bestEvaluation:
             self.bestEvaluable, self.bestEvaluation = cp, tmpF
             

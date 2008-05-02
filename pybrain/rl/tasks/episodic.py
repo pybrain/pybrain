@@ -52,3 +52,4 @@ class EpisodicTask(Task, Evaluator):
             return self.getTotalReward()
         else:
             raise NotImplementedError('Missing implementation for '+module.__class__.__name__+' evaluation')
+        

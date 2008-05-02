@@ -1,0 +1,1 @@
+from capturetask import CaptureGameTask

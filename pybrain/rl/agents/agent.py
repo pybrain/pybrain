@@ -1,6 +1,6 @@
-from pybrain.utilities import abstractMethod
+from pybrain.utilities import abstractMethod, Named
 
-class Agent(object):
+class Agent(Named):
     """ An agent is an entity capable of producing actions, based on previous observations.
         Generally it will also learn from experience. It can interact directly with a Task. 
     """
@@ -24,4 +24,8 @@ class Agent(object):
             @param r: reward, if C{r} is positive, punishment if C{r} is negative
             @type r: double            
         """             
+        pass
+    
+    def newEpisode(self):
+        """ Informing the agent that a new episode has started. """
         pass

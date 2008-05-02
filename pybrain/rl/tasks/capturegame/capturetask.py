@@ -1,36 +1,56 @@
 __author__ = 'Tom Schaul, tom@idsia.ch'
 
-from scipy import sqrt
-
-from pybrain.rl import EpisodicTask, EpisodicExperiment, LearningAgent
-from pybrain.utilities import confidenceIntervalSize
+from pybrain.rl import EpisodicTask
+from pybrain.utilities import  Named
 from pybrain.rl.environments.twoplayergames import CaptureGame
-from pybrain.rl.agents.capturegameplayers import RandomCapturePlayer, NonSuicidePlayer
+from pybrain.rl.agents.capturegameplayers import RandomCapturePlayer, ModuleDecidingPlayer
+from pybrain.rl.agents.capturegameplayers.captureplayer import CapturePlayer
+from pybrain.structure.modules.module import Module
 
 
-class CaptureGameTask(EpisodicTask):
+class CaptureGameTask(EpisodicTask, Named):
+    """  """
     
-    def __init__(self, size, scoretoreward = 1, suicide = True, opponentstart = False):        
+    # first game, opponent is black
+    opponentStart = True
+    
+    # on subsequent games, starting players are alternating
+    alternateStarting = False    
+    
+    # numerical reward value attributed to winning
+    winnerReward = 1.
+    
+    # average over some games for evaluations
+    averageOverGames = 10
+    
+    def __init__(self, size, opponent = None, **args):        
         EpisodicTask.__init__(self, CaptureGame(size))
-        self.scoretoreward = scoretoreward
-        if opponentstart:
-            oppcolor = CaptureGame.BLACK
-        else:
-            oppcolor = CaptureGame.WHITE
-            
-        if suicide:
-            self.opponent = RandomCapturePlayer(self.env, oppcolor)
-        else:
-            self.opponent = NonSuicidePlayer(self.env, oppcolor)
-        
+        self.setArgs(**args)
+        if opponent == None:
+            opponent = RandomCapturePlayer(self.env)
+        if not self.opponentStart:
+            opponent.color = CaptureGame.WHITE
+        self.opponent = opponent
         self.reset()
                     
+    def reset(self):
+        self.switched = False
+        EpisodicTask.reset(self)   
+        if self.opponent.color == CaptureGame.BLACK:     
+            # first move by opponent
+            EpisodicTask.performAction(self, self.opponent.getAction())
+    
     def isFinished(self):
-        return self.env.gameOver()
+        res = self.env.gameOver()
+        if res and self.alternateStarting and not self.switched:
+            # alternate starting player
+            self.opponent.color *= -1       
+            self.switched = True     
+        return res
     
     def getReward(self):
         if self.isFinished():
-            return - self.opponent.color * self.env.winner * self.scoretoreward
+            return - self.opponent.color * self.env.winner * self.winnerReward
         else:
             return 0
         
@@ -38,43 +58,20 @@ class CaptureGameTask(EpisodicTask):
         EpisodicTask.performAction(self, action)
         if not self.isFinished():
             EpisodicTask.performAction(self, self.opponent.getAction())
-                
-    def reset(self):
-        EpisodicTask.reset(self)   
-        if self.opponent.color == CaptureGame.BLACK:     
-            # first move by opponent
-            EpisodicTask.performAction(self, self.opponent.getAction())
             
-    def alternateStarting(self, agent):
-        tmp = self.opponent.color
-        self.opponent.color = agent.color                
-        agent.color = tmp
+    def __call__(self, x):
+        """ If a module is given, wrap it into a ModuleDecidingAgent before evaluating it. 
+        Also, if applicable, average the result over multiple games. """
+        if isinstance(x, Module):
+            agent = ModuleDecidingPlayer(x, self.env, greedySelection = True)
+        elif isinstance(x, CapturePlayer):
+            agent = x
+        else:
+            raise NotImplementedError('Missing implementation for '+x.__class__.__name__+' evaluation')
+        res = 0
+        for dummy in range(self.averageOverGames):
+            agent.color = -self.opponent.color
+            res += EpisodicTask.__call__(self, agent)
+        return res / float(self.averageOverGames)
         
-    def getPerformance(self, agent, precision = 0.1, maxruns = None):
-        """ this task measures the percentage of games won against its opponent. """
-        sum = 0.
-        wins = 0.
-        confintervalsize = 1.    
-        if isinstance(agent, LearningAgent):
-            agent.disableTraining()  
-        while confintervalsize > precision:
-            sum += 1            
-            self.alternateStarting(agent)                
-            self.reset()
-            # do one game:
-            E = EpisodicExperiment(self, agent)
-            E.doEpisodes()
-            if self.env.winner == agent.color:
-                wins += 1
-            if sum > 2/precision:
-                stdev = sqrt(wins*(sum-wins)/(sum*(sum-1)))                
-                confintervalsize = confidenceIntervalSize(stdev, sum)   
-                if maxruns != None and maxruns <= sum:
-                    break
-        if isinstance(agent, LearningAgent):
-            agent.enableTraining()          
-            agent.newEpisode()
-        mu = wins/sum              
-        # round to something corresponding to the precision        
-        mu = float(int(mu*(5/precision)))/(5/precision)
-        return mu, stdev, sum, confintervalsize
+        
