@@ -1,6 +1,7 @@
 __author__ = 'Tom Schaul, tom@idsia.ch'
 
 from pybrain.rl import EpisodicTask
+from inspect import isclass
 from pybrain.utilities import  Named
 from pybrain.rl.environments.twoplayergames import CaptureGame
 from pybrain.rl.agents.capturegameplayers import RandomCapturePlayer, ModuleDecidingPlayer
@@ -28,6 +29,9 @@ class CaptureGameTask(EpisodicTask, Named):
         self.setArgs(**args)
         if opponent == None:
             opponent = RandomCapturePlayer(self.env)
+        elif isclass(opponent):
+            # assume the agent can be initialized without arguments then.
+            opponent = opponent(self.env)
         if not self.opponentStart:
             opponent.color = CaptureGame.WHITE
         self.opponent = opponent

@@ -1,0 +1,1 @@
+from capturegame import CaptureGameNetwork
