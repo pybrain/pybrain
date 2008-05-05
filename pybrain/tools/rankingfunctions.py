@@ -94,8 +94,9 @@ class TopSelection(RankingFunction):
     def __call__(self, R):
         res = zeros(len(R))
         ranks = rankedFitness(R)
+        cutoff = len(R) * (1.-self.topFraction)
         for i in range(len(R)):
-            if ranks[i] >= len(R) * (1-self.topFraction):
+            if ranks[i] >= cutoff:
                 res[i] = 1.0
             else:
                 res[i] = 0.0
@@ -111,7 +112,7 @@ class TopLinearRanking(TopSelection):
     def __call__(self, R):
         res = zeros(len(R))
         ranks = rankedFitness(R)
-        cutoff = len(R) * (1-self.topFraction)
+        cutoff = len(R) * (1.-self.topFraction)
         for i in range(len(R)):
             if ranks[i] >= cutoff:
                 res[i] = ranks[i] - cutoff

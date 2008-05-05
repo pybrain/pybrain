@@ -1,5 +1,7 @@
 """ Script for (online) FEM experiments on continous unimodal benchmark functions """
 
+__author__ = 'Tom Schaul, tom@idsia.ch'
+
 import time
 from scipy import randn, rand
 
@@ -10,10 +12,11 @@ from pybrain.rl.environments.functions.unimodal import SchwefelFunction
 from pybrain.rl.environments.functions.unimodal import TabletFunction
 from pybrain.rl.environments.functions.unimodal import DiffPowFunction
 from pybrain.rl.environments.functions.unimodal import ElliFunction
+from pybrain.tools.rankingfunctions import TopLinearRanking
 
 
 # storage tag for this batch
-tag = 'we'
+tag = 'new'
 
 basefunctions = [SphereFunction, CigarFunction, SchwefelFunction, TabletFunction, 
                  DiffPowFunction, ElliFunction, #RosenbrockFunction
@@ -22,18 +25,23 @@ dims = [5, 15]
 
 defaultargs = {'batchsize': 50,
                'onlineLearning': True,
-               'ranking': 'toplinear',
-               'topselection': 15,
-               'maxupdate': 0.05,
+               'rankingFunction': TopLinearRanking(topFraction = 0.3),
+               'forgetFactor': 0.05,
                }
 
 
-particulars = {(SphereFunction, 5): {'maxupdate': 0.1, 'topselection':5},
-               (ElliFunction, 5): {'maxupdate': 0.1, 'topselection':5},
-               (DiffPowFunction, 5): {'maxupdate': 0.1, 'topselection':5},
-               (SchwefelFunction, 5): {'maxupdate': 0.1, 'topselection':5},
-               (CigarFunction, 5): {'maxupdate': 0.1, 'topselection':5},
-               (TabletFunction, 5): {'maxupdate': 0.1, 'topselection':5},
+particulars = {(SphereFunction, 5): {'rankingFunction': TopLinearRanking(topFraction = 0.1),
+                                     'forgetFactor': 0.1,},
+               (ElliFunction, 5): {'rankingFunction': TopLinearRanking(topFraction = 0.1),
+                                     'forgetFactor': 0.1,},
+               (DiffPowFunction, 5): {'rankingFunction': TopLinearRanking(topFraction = 0.1),
+                                     'forgetFactor': 0.1,},
+               (SchwefelFunction, 5): {'rankingFunction': TopLinearRanking(topFraction = 0.1),
+                                     'forgetFactor': 0.1,},
+               (CigarFunction, 5): {'rankingFunction': TopLinearRanking(topFraction = 0.1),
+                                     'forgetFactor': 0.1,},
+               (TabletFunction, 5): {'rankingFunction': TopLinearRanking(topFraction = 0.1),
+                                     'forgetFactor': 0.1,},
                #(RosenbrockFunction, 5): {'maxupdate': 0.01, 'maxEvaluations':100000},
                #(RosenbrockFunction, 15): {'maxupdate': 0.005, 'maxEvaluations':0},
                }

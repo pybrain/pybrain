@@ -28,7 +28,7 @@ if True:
              onlineLearning = True,
              forgetFactor = 0.05,
              elitist = True,
-             rankingFunction = TopLinearRanking(topFraction = 5),
+             rankingFunction = TopLinearRanking(topFraction = 0.1),
              verbose = True,
              maxEvaluations = 10000,
              )

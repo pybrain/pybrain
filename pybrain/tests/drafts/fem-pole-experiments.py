@@ -1,5 +1,7 @@
 """ Script for (online) FEM experiments on pole-balancing """
 
+__author__ = 'Tom Schaul, tom@idsia.ch'
+
 import time
 from scipy import rand
 
@@ -8,20 +10,18 @@ from pybrain.rl.learners import FEM
 from pybrain.rl.tasks.polebalancing.cartpoleenv import CartPoleTask
 from pybrain.tools.shortcuts import buildNetwork
 from pybrain.structure.connections.full import FullConnection
-
+from pybrain.tools.rankingfunctions import TopLinearRanking
 
 
 # storage tag for this batch
-tag = 'wewe'
+tag = 'new-poles'
 
 args = {'batchsize': 50,
        'onlineLearning': True,
-       'ranking': 'toplinear',
-       'topselection': 5,
-       'maxupdate': 0.05,
-       'superelitist': True,
+       'forgetFactor': 0.05,
+       'rankingFunction': TopLinearRanking(topFraction = 0.1),
+       'elitist': True,
        'maxEvaluations': 10000,
-       #'verbose': True,
        }
 
 

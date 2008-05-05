@@ -1,5 +1,7 @@
 """ Script for (online) FEM experiments on continous multimodal benchmark functions """
 
+__author__ = 'Tom Schaul, tom@idsia.ch'
+
 import time
 from scipy import randn, rand
 
@@ -11,10 +13,11 @@ from pybrain.rl.environments.functions.multimodal import GriewankFunction
 from pybrain.rl.environments.functions.multimodal import AckleyFunction
 from pybrain.rl.environments.functions.multimodal import RastriginFunction
 from pybrain.rl.environments.functions.multimodal import WeierstrassFunction
+from pybrain.tools.rankingfunctions import TopLinearRanking
 
 
 # storage tag for this batch
-tag = 'ok-multi-'
+tag = 'new-multi-'
 
 basefunctions = [GriewankFunction, AckleyFunction, RastriginFunction, 
                  WeierstrassFunction,
@@ -23,10 +26,9 @@ dim = 2
 
 defaultargs = {'batchsize': 25,
                'onlineLearning': True,
-               'ranking': 'toplinear',
-               'topselection': 10,
-               'maxupdate': 0.02,
                'maxEvaluations': 10000,
+               'rankingFunction': TopLinearRanking(topFraction = 0.4),
+               'forgetFactor': 0.02,
                }
 
 
