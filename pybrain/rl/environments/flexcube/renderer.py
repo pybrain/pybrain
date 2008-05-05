@@ -1,4 +1,29 @@
 #@PydevCodeAnalysisIgnore
+#########################################################################
+# OpenGL viewer for the FlexCube Environment 
+#
+# The FlexCube Environment is a Mass-Spring-System composed of 8 mass points.
+# These resemble a cube with flexible edges.
+#
+# This viewer uses an UDP connection found in tools/networking/udpconnection.py
+#
+# The viewer recieves the position matrix of the 8 masspoints and the center of gravity.
+# With this information it renders a Glut based 3d visualization of teh FlexCube
+#
+# Options: 
+# - serverIP: The ip of the server to which the viewer should connect
+# - ownIP: The IP of the computer running the viewer
+# - port: The starting port (2 adjacent ports will be used)
+#
+# Saving the images is possible by setting self.savePics=True.
+# Changing the point and angle of view is possible by using the mouse 
+# while button 1 or 2 pressed.
+# 
+# Requirements: OpenGL, time, scipy and udpconnection.
+#
+# Author: Frank Sehnke, sehnke@in.tum.de
+#########################################################################
+
 from OpenGL.GLUT import *
 from OpenGL.GL import *
 from OpenGL.GLE import *
@@ -9,6 +34,7 @@ from scipy import ones, array
 from pybrain.tools.networking.udpconnection import UDPClient
 
 class FlexCubeRenderer(object): 
+  #Options: ServerIP(default:localhost), OwnIP(default:localhost), Port(default:21560)
   def __init__(self, servIP="127.0.0.1", ownIP="127.0.0.1", port="21560"):
       self.oldScreenValues = None
       self.view=0
@@ -37,9 +63,9 @@ class FlexCubeRenderer(object):
       self.dt=1.0/float(self.fps)
 
       self.client=UDPClient(servIP, ownIP, port)
-        
+  
+  # If self.savePics=True this method saves the produced images      
   def saveTo( self, filename, format="JPEG" ):
-    """Save current buffer to filename in format"""
     import Image # get PIL's functionality...
     width, height = 800,600
     glPixelStorei(GL_PACK_ALIGNMENT, 1)
@@ -50,22 +76,24 @@ class FlexCubeRenderer(object):
     print 'Saved image to ', filename
     return image
 
+  # the render method containing the Glut mainloop
   def _render(self):
     # Call init: Parameter(Window Position -> x, y, height, width)
-    self.init_GL(self,300,300,800,600)
-    
+    self.init_GL(self,300,300,800,600)    
     self.object = objects3D.Objects3D()
     self.quad = gluNewQuadric()
     glutMainLoop()
 
+  # The Glut idle function
   def drawIdleScene(self):
+      #recive data from server and update the points of the cube
       try: [self.points, self.centerOfGrav, self.target]=self.client.listen([self.points, self.centerOfGrav, self.target])
       except: pass
       self.drawScene()
       if self.savePics:
-          self.saveTo("./screenshots2/image"+repr(10000+self.picCount)+".jpg")
+          self.saveTo("./screenshots/image_run_s180k_"+repr(10000+self.picCount)+".jpg")
           self.picCount+=1
-      sleep(self.dt)
+      else: sleep(self.dt)
           
   def drawScene(self):
     ''' This methode describes the complete scene.'''
@@ -76,9 +104,11 @@ class FlexCubeRenderer(object):
     glLoadIdentity()
     
     # Point of view
-    glTranslatef(-self.centerOfGrav[0], -self.centerOfGrav[1], -self.centerOfGrav[2]-self.lastz)
     glRotatef(self.lastx, 0.0, 1.0, 0.0)
     glRotatef(self.lasty, 1.0, 0.0, 0.0)      
+    #glRotatef(15, 0.0, 0.0, 1.0)      
+    # direction of view is aimed to the center of gravity of the cube
+    glTranslatef(-self.centerOfGrav[0], -self.centerOfGrav[1]-50.0, -self.centerOfGrav[2]-self.lastz)
     
     #Objects
     #Target Ball
@@ -159,7 +189,7 @@ class FlexCubeRenderer(object):
     glutSolidSphere(1.5, 8,8)
     glPopMatrix()
               	
-    # Frank   
+    # Cube    
     glEnable (GL_BLEND)
     glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
     
@@ -171,6 +201,7 @@ class FlexCubeRenderer(object):
     glEnable (GL_BLEND)
     glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
     
+    # Cubes shadow
     glColor4f(0,0,0,0.5)
     glPushMatrix()
     self.object.drawShadow(self.points, self.centerOfGrav)
@@ -181,17 +212,17 @@ class FlexCubeRenderer(object):
     
   def resizeScene(self, width, height):
     '''Needed if window size changes.'''
-    if height == 0:						# Prevent A Divide By Zero If The Window Is Too Small 
+    if height == 0: # Prevent A Divide By Zero If The Window Is Too Small 
       height = 1
 
-    glViewport(0, 0, width, height)		# Reset The Current Viewport And Perspective Transformation
+    glViewport(0, 0, width, height) # Reset The Current Viewport And Perspective Transformation
     glMatrixMode(GL_PROJECTION)
     glLoadIdentity()
     gluPerspective(45.0, float(width)/float(height), 0.1, 700.0)
     glMatrixMode(GL_MODELVIEW)
 
   def activeMouse(self, x, y):
-    '''Returns mouse coordinates while any mouse button is pressed.'''
+    #Returns mouse coordinates while any mouse button is pressed.
     # store the mouse coordinate
     if self.mouseButton == GLUT_LEFT_BUTTON:
       self.lastx = x - self.xOffset
@@ -206,7 +237,7 @@ class FlexCubeRenderer(object):
     pass
     
   def completeMouse(self, button, state, x, y):
-    '''Returns mouse coordinates and which button was pressed resp. released.'''
+    #Returns mouse coordinates and which button was pressed resp. released.
     self.mouseButton = button
     if state == GLUT_DOWN:
       self.xOffset = x - self.lastx
@@ -215,7 +246,7 @@ class FlexCubeRenderer(object):
     # redisplay
     glutPostRedisplay()
     
-  '''Initialise an OpenGL windows with the origin at x, y and size of height, width.'''
+  #Initialise an OpenGL windows with the origin at x, y and size of height, width.
   def init_GL(self, pyWorld, x, y, height, width):
     # initialize GLUT 
     glutInit([])
