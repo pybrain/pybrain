@@ -23,6 +23,8 @@
 # - TargetTask, like the previous task but with several target points
 # 
 # Requirements: scipy for the environment and the learner.
+#
+# Author: Frank Sehnke, sehnke@in.tum.de
 #########################################################################
 
 from pybrain.structure.modules.tanhlayer import TanhLayer
@@ -53,9 +55,9 @@ for runs in range(numbExp):
     #Options: Bool(OpenGL), Bool(Realtime simu. while client is connected), ServerIP(default:localhost), Port(default:21560)
     env = FlexCubeEnvironment()
     # create task
-    task = WalkTask(env)
+    task = WalkDirectionTask(env)
     # create controller network
-    net = buildNetwork(len(task.getObservation()), 4, env.actLen, outclass=TanhLayer)
+    net = buildNetwork(len(task.getObservation()), 10, env.actLen, outclass=TanhLayer)
     # create agent with controller and learner
     agent = FiniteDifferenceAgent(net, SPLA())
     # learning options
@@ -75,7 +77,6 @@ for runs in range(numbExp):
             agent.learn() #learn from the gather experience
             agent.reset() #reset agent and environment
         #print out related data
-        print "Step: ", runs, "/", (updates+1)*batch*prnts, "Best: ", agent.learner.best, "Base: ", agent.learner.baseline, "Reward: ", agent.learner.reward   
-        print ""
-        #if updates/100 == float(updates)/100.0:
-        #    saveWeights("walk.wgt", agent.learner.original)        
+        print "Step: ", runs, "/", (updates+1)*batch*prnts, "Best: ", agent.learner.best, 
+        print "Base: ", agent.learner.baseline, "Reward: ", agent.learner.reward 
+        if updates/100 == float(updates)/100.0: saveWeights("direction.wgt", agent.learner.original)  
