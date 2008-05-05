@@ -24,6 +24,8 @@ class CaptureGameTask(EpisodicTask, Named):
     # average over some games for evaluations
     averageOverGames = 10
     
+    noisy = True
+    
     def __init__(self, size, opponent = None, **args):        
         EpisodicTask.__init__(self, CaptureGame(size))
         self.setArgs(**args)

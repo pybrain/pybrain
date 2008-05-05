@@ -1,4 +1,5 @@
 """ Simple script to do individual tests on FEM """
+from pybrain.tools.rankingfunctions import TopLinearRanking
 
 __author__ = 'Daan Wierstra and Tom Schaul'
 
@@ -19,22 +20,18 @@ import pylab
 
 if True:
     f = CartPoleTask(2, markov = False)
-    x0 = buildNetwork(f.outdim, 3, f.indim, bias = False)
-    x0.addRecurrentConnection(FullConnection(x0['hidden0'], x0['hidden0'], name = 'rec'))
-    x0.sortModules()
-    ff = FEM(f, x0,
-            batchsize = 50, 
-            onlineLearning = True,
-            gini = 0.15,
-            giniPlusX = 0.15,
-            maxupdate = 0.05,
-            elitist = False,
-            superelitist = True,
-            ranking = 'toplinear',
-            topselection = 5,
-            verbose = True,
-            maxEvaluations = 10000,
-            )
+    net = buildNetwork(f.outdim, 3, f.indim, bias = False)
+    net.addRecurrentConnection(FullConnection(net['hidden0'], net['hidden0'], name = 'rec'))
+    net.sortModules()
+    ff = FEM(f, net,
+             batchsize = 50, 
+             onlineLearning = True,
+             forgetFactor = 0.05,
+             elitist = True,
+             rankingFunction = TopLinearRanking(topFraction = 5),
+             verbose = True,
+             maxEvaluations = 10000,
+             )
         
 
 else:

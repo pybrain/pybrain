@@ -26,6 +26,8 @@ class BlackBoxOptimizer(Learner):
     
     wrappingEvaluable = None
     
+    noisyEvaluator = False
+    
     def __init__(self, evaluator, evaluable, **args):
         Learner.__init__(self, evaluator, evaluable, **args)
         
@@ -50,7 +52,7 @@ class BlackBoxOptimizer(Learner):
             
         # the first guess at the solution (it must be an array)
         assert type(self.x0) == ndarray
-        
+        self.noisyEvaluator = evaluator.noisy
         self.xdim = size(self.x0)
         
     def learn(self, maxSteps = None):
