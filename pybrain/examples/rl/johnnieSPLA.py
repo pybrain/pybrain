@@ -15,7 +15,7 @@ from pybrain.tools.shortcuts import *
 from pybrain.rl.environments.ode import *
 from pybrain.rl.environments.ode.tasks import *
 
-from pybrain.rl.agents import FiniteDifferenceAgent
+from pybrain.rl.agents.finitedifference import FiniteDifferenceAgent
 from pybrain.rl.learners import *
 from pybrain.rl.experiments import EpisodicExperiment
 from scipy import array, mean, random

@@ -13,7 +13,7 @@
 from pybrain import *
 from pybrain.tools.shortcuts import *
 from pybrain.rl.environments.cartpole import *
-from pybrain.rl.agents import FiniteDifferenceAgent
+from pybrain.rl.agents.finitedifference import FiniteDifferenceAgent
 from pybrain.rl.learners import *
 from pybrain.rl.experiments import EpisodicExperiment
 from scipy import array, mean, random
