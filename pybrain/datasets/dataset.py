@@ -300,7 +300,9 @@ class DataSet(object):
     def _saveToFileLike(self, flo, protocol=0, arraysonly=False ):
         """Save the current dataset into the given file like object."""
         if arraysonly:
-            # failsave version
+            # failsave version; but need to crop arrays to the correct length
+            for key in self.data.keys():
+                self.data[key] = self.data[key][0:self.endmarker[key],:]
             cPickle.dump(self.data, flo, protocol=protocol)
         else:
             package = {
