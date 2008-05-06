@@ -91,7 +91,7 @@ class FlexCubeRenderer(object):
       except: pass
       self.drawScene()
       if self.savePics:
-          self.saveTo("./screenshots/image_run_s180k_"+repr(10000+self.picCount)+".jpg")
+          self.saveTo("./screenshots/image_jump"+repr(10000+self.picCount)+".jpg")
           self.picCount+=1
       else: sleep(self.dt)
           

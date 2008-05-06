@@ -146,7 +146,7 @@ class WalkDirectionTask(WalkTask):
 
     def getReward(self):
         if self.epiStep<self.epiLen: 
-            if self.rawReward<0.03: self.reward[0]=(0.03-self.rawReward)*3.0-self.getPain()
+            if self.rawReward<0.5: self.reward[0]=(0.5-self.rawReward)*1.0-self.getPain()
             else: self.reward[0]=-self.getPain()
         else: self.reward[0]=clip(160.0*(1.0-self.rawReward), 0.0, 160.0)-self.getPain()
         return self.reward[0]
@@ -156,7 +156,7 @@ class WalkDirectionTask(WalkTask):
         self.env.mySensors.sensors[4].targetList=[array([160.0,0.0,0.0])]
         if self.env.hasRenderInterface(): self.env.getRenderInterface().target=self.env.mySensors.sensors[4].targetList[0]
 
-#Aim is to minimize distance to a variable target point
+#Aim is to minimize distance to a variable target p<aoint
 class TargetTask(WalkDirectionTask):
     def __init__(self, env):
         WalkDirectionTask.__init__(self, env)
