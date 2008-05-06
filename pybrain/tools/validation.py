@@ -208,10 +208,8 @@ class ModuleValidator(object):
         for seq in dataset._provideSequences():
             module.reset()
             for i in xrange(len(seq)):
-                sample = seq[i]
-                input  = sample[0]
-                output = module.activate(input)
-                outputs.append(array(output))
+                output = module.activate(seq[i][0])
+                outputs.append(output.copy())
         outputs = array(outputs)
         return outputs
 
@@ -357,6 +355,7 @@ def testOnSequenceData(module, dataset):
 
     # determine last indices of the sequences inside dataset
     ends = SequenceHelper.getSequenceEnds(dataset)
+    ##format = "%d"*len(ends)
     summed_output  = zeros(dataset.outdim)
     # class_output and class_target will store class labels instead of
     # one-of-many values
@@ -371,9 +370,13 @@ def testOnSequenceData(module, dataset):
             # convert summed_output and target to class labels
             class_output.append( argmax(summed_output) )
             class_target.append( argmax(target[j]) )
+
             # reset the summed_output to zeros
             summed_output = zeros(dataset.outdim)
 
+    ##print format % tuple(class_output)
+    ##print format % tuple(class_target)
+    
     class_output = array(class_output)
     class_target = array(class_target)
 #    print class_target
