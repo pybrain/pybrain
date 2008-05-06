@@ -320,4 +320,43 @@ def canonicClassString(x):
         return repr(x.__class__)
     
     
+def decrementAny(tup):
+    """ the closest tuples to tup: decrementing by 1 along any dimension. 
+    Never go into negatives though. """
+    res = []
+    for i, x in enumerate(tup):
+        if x > 0:
+            res.append(tuple(list(tup[:i])+[x-1]+list(tup[i+1:])))
+    return res
     
+    
+def reachable(stepFunction, start, destinations):
+    """ determine the subset of destinations that can be reached from a set of starting positions,
+    while using stepFunction (which produces a list of neighbor states) to navigate. 
+    Use breadth-first search. """
+    if len(start) == 0:
+        return {}
+    
+    # dict with distances to destinations
+    res = {}
+    for s in start:
+        if s in destinations:
+            res[s] = 0
+            start.remove(s)
+    
+    # do one step
+    new = set()
+    for s in start:
+        new.update(stepFunction(s))
+    for s in new.copy():
+        if s in destinations:
+            res[s] = 1
+            new.remove(s)
+    
+    # recursively do the rest
+    deeper = reachable(stepFunction, new, destinations)
+    
+    # adjust distances
+    for k, val in deeper.items():
+        res[k] = val+1
+    return res

@@ -56,3 +56,8 @@ class CheaplyCopiable(ParameterContainer, Module):
         ParameterContainer.mutate(self, *args, **kwargs)
         self.__stored._params[:] = self._params
         
+    def getBase(self):
+        self.__stored._params[:] = self._params
+        return self.__stored
+        
+        

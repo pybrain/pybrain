@@ -1,5 +1,5 @@
 """
-Build a CaptureGameNetwork
+Build a CaptureGameNetwork with LSTM cells
 
     >>> from pybrain.structure.networks.custom import CaptureGameNetwork
     >>> from pybrain import MDLSTMLayer
@@ -23,7 +23,7 @@ Check some of the connections dimensionalities
     >>> print c2.indim, c2.outdim
     1 1
     >>> n.paramdim
-    26        
+    21        
 
 Try writing it to an xml file, reread it and determine if it looks the same:
     

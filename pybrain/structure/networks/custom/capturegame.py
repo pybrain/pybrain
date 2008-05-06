@@ -6,6 +6,7 @@ from pybrain import SharedFullConnection, MotherConnection, MDLSTMLayer, Identit
 from pybrain import ModuleMesh, LinearLayer, TanhLayer, SigmoidLayer
 from pybrain.structure.networks import BorderSwipingNetwork
 
+# TODO: incomplete implementation: missing clusters, combined outputs, etc.
 
 class CaptureGameNetwork(BorderSwipingNetwork):
     """ a custom-made swiping network for the Capture-Game.
@@ -37,7 +38,6 @@ class CaptureGameNetwork(BorderSwipingNetwork):
         @param clusteroverlap: by how much should the cluster overlap (default = 0)
         @param directlink: should connections from the input directly to the bottleneck be included?         
         """
-        self.predefined = {}   
         if 'size' in args:
             self.size = args['size']      
         args['dims'] = (self.size, self.size)  
@@ -110,4 +110,19 @@ class CaptureGameNetwork(BorderSwipingNetwork):
         name += '--'+str(int(random.random()*9e5+1e5))   
         # TODO: use hash of the weights.
         return name
+    
+    def resizedTo(self, newsize):
+        """ Produce a copy of the network, with a different size but with the same (shared) weights,
+        extrapolating on the borders as necessary. """
+        if newsize == self.size:
+            return self.copy()
+        else:
+            # copy the connections from the self.predefined dictionnary:
+            import copy
+            cdict = copy.deepcopy(self.predefined)
+            args = self.argdict.copy()
+            args['size'] = newsize
+            del args['rebuilt']
+            return CaptureGameNetwork(predefined = cdict, **args)
+    
     

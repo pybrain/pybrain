@@ -18,10 +18,11 @@ class SwipingNetwork(Network):
     # if all dimensions should be considered symmetric, their weights are shared
     symmetricdimensions = True
     
-    # dimesnions of the swiping grid
+    # dimensions of the swiping grid
     dims = None
         
     def __init__(self, inmesh = None, hiddenmesh = None, outmesh = None, predefined = {}, **args):
+        self.predefined = predefined
         Network.__init__(self, **args)
         
         # determine the dimensions 
@@ -33,8 +34,7 @@ class SwipingNetwork(Network):
         self.swipes = 2**len(self.dims)
                 
         if inmesh != None:
-            self._verifyDimensions(inmesh, hiddenmesh, outmesh)
-            self._buildSwipingStructure(inmesh, hiddenmesh, outmesh, predefined)
+            self._buildSwipingStructure(inmesh, hiddenmesh, outmesh)
             self.sortModules()
         
     def _verifyDimensions(self, inmesh, hiddenmesh, outmesh):    
@@ -45,13 +45,13 @@ class SwipingNetwork(Network):
         assert hiddenmesh.dims[-1] == self.swipes
         assert min(self.dims) > 1        
         
-    def _buildSwipingStructure(self, inmesh, hiddenmesh, outmesh, predefined):
+    def _buildSwipingStructure(self, inmesh, hiddenmesh, outmesh):
         """
         @param inmesh: a mesh of input units
         @param hiddenmesh: a mesh of hidden units
         @param outmesh: a mesh of output units
-        @param predefined: dictionnary with predefined weights for (some of) the motherconnections
         """
+        self._verifyDimensions(inmesh, hiddenmesh, outmesh)
         
         # add the modules
         for c in inmesh:
@@ -62,27 +62,27 @@ class SwipingNetwork(Network):
             self.addModule(c)
         
         # create the motherconnections if they are not provided
-        if 'inconn' not in predefined:
-            predefined['inconn'] = MotherConnection(inmesh.componentOutdim*hiddenmesh.componentIndim, name = 'inconn')
-        if 'outconn' not in predefined:
-            predefined['outconn'] = MotherConnection(outmesh.componentIndim*hiddenmesh.componentOutdim, name = 'outconn')
-        if 'hconns' not in predefined:
-            predefined['hconns'] = {}
+        if 'inconn' not in self.predefined:
+            self.predefined['inconn'] = MotherConnection(inmesh.componentOutdim*hiddenmesh.componentIndim, name = 'inconn')
+        if 'outconn' not in self.predefined:
+            self.predefined['outconn'] = MotherConnection(outmesh.componentIndim*hiddenmesh.componentOutdim, name = 'outconn')
+        if 'hconns' not in self.predefined:
+            self.predefined['hconns'] = {}
             for s in range(len(self.dims)):
                 if s > 0 and self.symmetricdimensions:
-                    predefined['hconns'][s] = predefined['hconns'][0]
+                    self.predefined['hconns'][s] = self.predefined['hconns'][0]
                 else:
-                    predefined['hconns'][s] = MotherConnection(hiddenmesh.componentIndim*hiddenmesh.componentOutdim, name = 'hconn'+str(s))
+                    self.predefined['hconns'][s] = MotherConnection(hiddenmesh.componentIndim*hiddenmesh.componentOutdim, name = 'hconn'+str(s))
         
         # establish the connections        
         for unit in self._iterateOverUnits():
             for swipe in range(self.swipes):
                 hunit = tuple(list(unit)+[swipe])
-                self.addConnection(SharedFullConnection(predefined['inconn'], inmesh[unit], hiddenmesh[hunit]))
-                self.addConnection(SharedFullConnection(predefined['outconn'], hiddenmesh[hunit], outmesh[unit]))
+                self.addConnection(SharedFullConnection(self.predefined['inconn'], inmesh[unit], hiddenmesh[hunit]))
+                self.addConnection(SharedFullConnection(self.predefined['outconn'], hiddenmesh[hunit], outmesh[unit]))
                 for dim, maxval in enumerate(self.dims):
                     # one swiping connection along every dimension
-                    hconn = predefined['hconns'][dim]
+                    hconn = self.predefined['hconns'][dim]
                     # determine where the swipe is coming from in this direction:
                     # swipe directions are towards higher coordinates on dim D if the swipe%(2**D) = 0
                     # and towards lower coordinates otherwise.
@@ -99,4 +99,17 @@ class SwipingNetwork(Network):
     def _iterateOverUnits(self):
         """ iterate over the coordinates defines by the ranges of self.dims. """
         return iterCombinations(self.dims)
-        
+    
+    def _printPredefined(self, dic = None, indent = 0):
+        """ print the weights of the Motherconnections in the self.predefined dictionnary (recursively)"""
+        if dic == None:
+            dic = self.predefined
+        for k, val in sorted(dic.items()):
+            print ' '*indent, k,
+            if isinstance(val, dict):
+                print ':'
+                self._printPredefined(val, indent+2)
+            elif isinstance(val, MotherConnection):
+                print val.params
+            else:
+                print val

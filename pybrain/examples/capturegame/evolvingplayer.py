@@ -12,9 +12,7 @@ from pybrain.rl.agents.capturegameplayers.killing import KillingPlayer
 
 # task settings: opponent, averaging to reduce noise, board size, etc.
 size = 5
-task = CaptureGameTask(size, averageOverGames = 40, 
-                       opponent = KillingPlayer, 
-                       opponentStart = False)
+task = CaptureGameTask(size, averageOverGames = 40, opponent = KillingPlayer)
 
 # keep track of evaluations for plotting
 res = storeCallResults(task)
@@ -26,13 +24,25 @@ if False:
 else:
     # specialized mdrnn variation
     from pybrain.structure.networks.custom.capturegame import CaptureGameNetwork
-    net = CaptureGameNetwork(size = size)
+    net = CaptureGameNetwork(size = size, hsize = 2)
     
 net = CheaplyCopiable(net)
 print net.name, 'has', net.paramdim, 'trainable parameters.'
 
 learner = ES(task, net, mu = 5, lambada = 5, verbose = True, noisy = True)
-learner.learn(500)
+newnet, f = learner.learn(50)
+
+# now, let's take the result, and compare it's performance on a larger game-baord (to the original one)
+newsize = 7
+bignew = newnet.getBase().resizedTo(newsize)
+bigold = net.getBase().resizedTo(newsize)
+
+print 'The rescaled network,', bignew.name, ', has', bignew.paramdim, 'trainable parameters.'
+
+newtask = CaptureGameTask(newsize, averageOverGames = 200, opponent = KillingPlayer)
+print 'Old net on big board score:', newtask(bigold)
+print 'New net on big board score:', newtask(bignew)
+
 
 # plot the progression
 import pylab
