@@ -39,9 +39,9 @@ from cPickle import load, dump
 # Method for loading a weight matrix and initialize the network
 def loadWeights(filename):
     filepointer = file(filename)
-    agent.learner.original = load(filepointer)
+    original = load(filepointer)
     filepointer.close()
-    agent.learner.gd.init(agent.learner.original)
+    return original
 
 # Method for saving the weight matrix    
 def saveWeights(filename, w):
@@ -49,6 +49,10 @@ def saveWeights(filename, w):
     dump(w, filepointer)
     filepointer.close()
 
+hiddenUnits = 4
+loadNet=False
+saveNet=True
+saveName="direction.wgt"
 numbExp=1 #number of experiments
 for runs in range(numbExp):
     # create environment
@@ -57,13 +61,21 @@ for runs in range(numbExp):
     # create task
     task = WalkDirectionTask(env)
     # create controller network
-    net = buildNetwork(len(task.getObservation()), 10, env.actLen, outclass=TanhLayer)
+    net = buildNetwork(len(task.getObservation()), hiddenUnits, env.actLen, outclass=TanhLayer)    
     # create agent with controller and learner
     agent = FiniteDifferenceAgent(net, SPLA())
     # learning options
     agent.learner.gd.alpha = 0.2 #step size of \mu adaption
     agent.learner.gdSig.alpha = 0.085 #step size of \sigma adaption
     agent.learner.gd.momentum = 0.0
+    
+    #Loading weights
+    if loadNet:
+        agent.learner.original=loadWeights("flexcube/jump.wgt")
+        agent.learner.gd.init(agent.learner.original)
+        agent.learner.epsilon=0.000001
+        agent.learner.initSigmas()
+
     batch=2 #number of samples per gradient estimate
     #create experiment
     experiment = EpisodicExperiment(task, agent)
@@ -79,4 +91,6 @@ for runs in range(numbExp):
         #print out related data
         print "Step: ", runs, "/", (updates+1)*batch*prnts, "Best: ", agent.learner.best, 
         print "Base: ", agent.learner.baseline, "Reward: ", agent.learner.reward 
-        if updates/100 == float(updates)/100.0: saveWeights("direction.wgt", agent.learner.original)  
+        #Saving weights
+        if saveNet:
+            if updates/100 == float(updates)/100.0: saveWeights(saveName, agent.learner.original)  
