@@ -3,7 +3,7 @@ __author__ = "Martin Felder, felder@in.tum.de"
 
 from numpy import zeros, where
 from numpy.random import randint
-from pybrain.datasets import SupervisedDataSet
+from pybrain.datasets import SupervisedDataSet, SequentialDataSet
 
 class ClassificationDataSet(SupervisedDataSet):
     """ Specialized data set for classification data. Classes are to be numbered from 0 to nb_classes-1. """
@@ -103,7 +103,7 @@ class ClassificationDataSet(SupervisedDataSet):
         except IndexError:
             print "error: classes not defined yet!" 
 
-    def _convertToOneOfMany(self, bounds=[-1,1]):
+    def _convertToOneOfMany(self, bounds=[0,1]):
         """ converts the target classes to a 1-of-k representation, retaining the old targets as a field 'class' """
         if self.outdim != 1:
             # we already have the correct representation (hopefully...)
@@ -135,6 +135,23 @@ class ClassificationDataSet(SupervisedDataSet):
             i = randint(len(idx), size=n-nVal)
             i = idx[i]
         
+class SequenceClassificationDataSet(SequentialDataSet, ClassificationDataSet):
+    
+    def __init__(self, inp, target, nb_classes=0, class_labels=None):
+        # FIXME: hard to keep nClasses synchronized if appendLinked() etc. is used.
+        SequentialDataSet.__init__(self, inp, target)
+        self.nClasses = nb_classes
+        if len(self) > 0:
+            # calculate class histogram, if we already have data
+            self.calculateStatistics()
+        self.convertField('target',int)
+        if class_labels is None:
+            self.class_labels = list(set(self.getField('target').flatten()))
+        else:
+            self.class_labels = class_labels
+        # copy classes (may be changed into other representation)
+        self.setField('class', self.getField('target') )
+
 if __name__ == "__main__":
     dataset = ClassificationDataSet(2,1, class_labels=['Urd','Verdandi','Skuld'])
     dataset.appendLinked( [ 0.1, 0.5 ]   , [0] )

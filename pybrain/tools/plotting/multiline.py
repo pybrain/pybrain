@@ -1,4 +1,4 @@
-# $Id: pbPlot.py 693 2008-01-06 20:54:17Z felder $
+# $Id$
 import os, pylab, math, imp
 from matplotlib.lines import Line2D
 
@@ -165,7 +165,8 @@ class MultilinePlotter:
         if self.autoscale > 1.0:
             self.Axes.set_xlim( tuple(xr) )
             self.Axes.set_ylim( tuple(yr) )
-            self.Axes.draw()
+            #self.Axes.draw()
+        #pylab.show()
         pylab.draw_if_interactive()
         self.replot = False
 
