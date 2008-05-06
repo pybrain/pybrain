@@ -59,7 +59,7 @@ class RPropMinusTrainer(BackpropTrainer):
         gradient[idx] = 0
         
         # limit growth and shrinkage of Deltas
-        self.delta.clip(self.deltamin, self.deltamax)
+        self.delta = self.delta.clip(self.deltamin, self.deltamax)
         
         # save stuff for next iteration
         self.prevgrad = gradient.copy()
