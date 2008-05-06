@@ -2,9 +2,9 @@ __author__ = 'Tom Schaul and Thomas Rueckstiess'
 
 
 from itertools import chain
-
+from sys import exit as errorexit
 from pybrain.structure.networks import Network
-from pybrain.structure.modules import BiasUnit, SigmoidLayer, LinearLayer
+from pybrain.structure.modules import BiasUnit, SigmoidLayer, LinearLayer, LSTMLayer
 from pybrain.structure.connections import FullConnection, IdentityConnection
 
 
@@ -21,9 +21,9 @@ def buildNetwork(*layers, **options):
             bias=True, hiddenclass=SigmoidLayer, outclass=LinearLayer, outputbias=True
     """
     # options
-    opt = { 'bias':True, 'hiddenclass':SigmoidLayer, 'outclass':LinearLayer, 'outputbias':True }
+    opt = { 'bias':True, 'hiddenclass':SigmoidLayer, 'outclass':LinearLayer, 'outputbias':True, 'peepholes':False }
     for key in options:
-        if key not in ['bias', 'hiddenclass', 'outclass', 'outputbias']:
+        if key not in opt.keys():
             raise NetworkError('buildNetwork unknown option: %s' % key)
         opt[key] = options[key]
     
@@ -57,6 +57,13 @@ def buildNetwork(*layers, **options):
         # network with hidden layer(s), connections from in to first hidden and last hidden to out
         n.addConnection(FullConnection(n['in'], n['hidden0']))
         n.addConnection(FullConnection(n['hidden%i' % (len(layers)-3)], n['out']))
+    
+    # recurrent connections
+    if issubclass(opt['hiddenclass'], LSTMLayer):
+        if len(layers)>3:
+            errorexit("LSTM networks with > 1 hidden layers are not supported!")
+        n.addRecurrentConnection(FullConnection(n['hidden0'], n['hidden0']))
+
     n.sortModules()
     return n
     
