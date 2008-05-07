@@ -40,6 +40,7 @@ class BlackBoxOptimizer(Learner):
                 return evaluator(self.wrappingEvaluable)
             self.evaluator = wrappedEvaluator
             self.x0 = evaluable.params.copy()
+            self.bestEvaluable = self.x0.copy()
         else:
             self.x0 = evaluable.copy()
             
