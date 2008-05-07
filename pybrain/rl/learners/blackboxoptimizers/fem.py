@@ -1,13 +1,13 @@
 __author__ = 'Daan Wierstra and Tom Schaul'
 
-from scipy import dot, rand, ones, eye, zeros, outer, isnan
+from scipy import dot, rand, ones, eye, zeros, outer, isnan, multiply, diag
 from numpy.random import multivariate_normal
 from numpy import average
 
 from pybrain.utilities import drawIndex
 from blackboxoptimizer import BlackBoxOptimizer
 from pybrain.tools.rankingfunctions import RankingFunction
-from pybrain.tools.functions import multivariateNormalPdf
+from pybrain.tools.functions import multivariateNormalPdf, multivariateCauchy
 
 
 
@@ -24,6 +24,7 @@ class FEM(BlackBoxOptimizer):
     elitist = False
     evalMus = True
     rankingFunction = RankingFunction()
+    useCauchy = False
     
     def __init__(self, evaluator, evaluable, **parameters):
         BlackBoxOptimizer.__init__(self, evaluator, evaluable, **parameters)
@@ -43,6 +44,8 @@ class FEM(BlackBoxOptimizer):
             # in the elitist case seperate evaluations are not necessary. 
             # CHECKME: maybe in the noisy case?
             self.evalMus = False
+            
+        assert not(self.useCauchy and self.numberOfCenters > 1)
             
         for dummy in range(self.numberOfCenters):
             self.mus.append(rand(self.xdim) * (self.rangemaxs-self.rangemins) + self.rangemins)
@@ -75,6 +78,11 @@ class FEM(BlackBoxOptimizer):
                 print "Forget-factor:", self.forgetFactor
             else:
                 print 'OFFLINE'
+            print 'Distribution:',
+            if self.useCauchy:
+                print 'Cauchy'
+            else:
+                print 'Gaussian'
             print "Batch-size:", self.batchsize
             print "Elitist:", self.elitist
             print 'Ranking function:', self.rankingFunction.name
@@ -89,13 +97,19 @@ class FEM(BlackBoxOptimizer):
                 
                 if self.onlineLearning and self.generation >= 1:
                     self._updateWeightings()
-                    self._updateGaussianParameters(k)
+                    if self.useCauchy:
+                        self._updateCauchyParameters(k)
+                    else:
+                        self._updateGaussianParameters(k)
                     
                 if self._stoppingCriterion(): break
                 
             if not self.onlineLearning:
                 self._updateWeightings()
-                self._batchUpdateGaussianParameters()
+                if self.useCauchy:
+                    self._batchUpdateCauchyParameters()                    
+                else:
+                    self._batchUpdateGaussianParameters()
             
                                 
             # evaluate the mu points seperately (for filtered progression values)
@@ -126,18 +140,23 @@ class FEM(BlackBoxOptimizer):
         
         # compute densities, and normalize
         densities = zeros(self.numberOfCenters)
-        for c in range(self.numberOfCenters):
-            densities[c] = self.alphas[c] * multivariateNormalPdf(sample, self.mus[c], self.sigmas[c])
-        densities /= sum(densities)
+        if self.numberOfCenters > 1:
+            for c in range(self.numberOfCenters):
+                densities[c] = self.alphas[c] * multivariateNormalPdf(sample, self.mus[c], self.sigmas[c])
+            densities /= sum(densities)
         
         return sample, fit, densities
 
     def _generateSample(self):
         """ generate a new sample from the current distribution. """
-        
-        # gaussian case:
-        chosenOne = drawIndex(self.alphas, True)
-        return multivariate_normal(self.mus[chosenOne], self.sigmas[chosenOne])
+        if self.useCauchy:
+            # Cauchy distribution
+            chosenOne = drawIndex(self.alphas, True)
+            return multivariateCauchy(self.mus[chosenOne], self.sigmas[chosenOne])
+        else:
+            # Normal distribution
+            chosenOne = drawIndex(self.alphas, True)
+            return multivariate_normal(self.mus[chosenOne], self.sigmas[chosenOne])
                     
     def _updateWeightings(self):
         """ update the weightings using transformed fitnesses """
@@ -146,11 +165,17 @@ class FEM(BlackBoxOptimizer):
         # force renormaliziation
         transformedfitnesses /= max(transformedfitnesses)
         
-        # CHECKME: using densities?
-        # self.weightings = multiply(outer(transformedfitnesses, ones(self.numberOfCenters)), self.densities)
-        self.weightings = outer(transformedfitnesses, ones(self.numberOfCenters))
-        self.weightings /= max(self.weightings)
-
+        if self.numberOfCenters > 1:    
+            self.weightings = multiply(outer(transformedfitnesses, ones(self.numberOfCenters)), self.densities)
+        else:
+            self.weightings = outer(transformedfitnesses, ones(self.numberOfCenters))
+        
+        for c in range(self.numberOfCenters):
+            if self.onlineLearning:            
+                self.weightings[:,c] /= max(self.weightings[:,c])
+            else:
+                self.weightings[:,c] /= sum(self.weightings[:,c])
+                
     
     def _updateGaussianParameters(self, sampleindex):
         """ update the mu(s), sigma(s) (and alphas), using the current weightings,
@@ -202,4 +227,67 @@ class FEM(BlackBoxOptimizer):
         # nomalize alphas
         self.alphas /= sum(self.alphas)
         
+        
+    def _batchUpdateCauchyParameters(self):
+        """ update the mu(s), sigma(s) (and alphas), using the current weightings """
+        for c in range(self.numberOfCenters):
+            self.alphas[c] = sum(self.weightings[:,c])
+            
+            newSigma = zeros((self.xdim, self.xdim))                
+            newMu = zeros(self.xdim)
+            for d in range(self.xdim):
+                tuplist = zip(map(lambda s: s[d], self.samples), self.weightings[:,c])
+                tuplist.sort()
+                cum = 0
+                quart = None
+                for elem, w in tuplist:
+                    cum += w
+                    if cum >= 0.25 and not quart:
+                        quart = elem
+                    if cum >= 0.75:
+                        threequart = elem
+                        break
+                newMu[d] = (quart + threequart)/2
+                newSigma[d,d] = threequart - newMu[d]
+                        
+            if self.elitist:
+                self.mus[c] = self.bestEvaluable.copy()
+            else:
+                self.mus[c] = newMu
+            self.sigmas[c] = newSigma 
+                    
+        # nomalize alphas
+        self.alphas /= sum(self.alphas)
+        
+    def _updateCauchyParameters(self, sampleindex):
+        """ update the mu(s), sigma(s) (and alphas), using the current weightings """
+        for c in range(self.numberOfCenters):
+            self.alphas[c] = sum(self.weightings[:,c])
+            
+            newSigma = zeros((self.xdim, self.xdim))                
+            newMu = zeros(self.xdim)
+            for d in range(self.xdim):
+                tuplist = zip(map(lambda s: s[d], self.samples), self.weightings[:,c])
+                tuplist.sort()
+                cum = 0
+                quart = None
+                for elem, w in tuplist:
+                    cum += w
+                    if cum >= 0.25 and not quart:
+                        quart = elem
+                    if cum >= 0.75:
+                        threequart = elem
+                        break
+                newMu[d] = (quart + threequart)/2
+                newSigma[d,d] = threequart - newMu[d]
+                        
+            lr = self.forgetFactor * self.weightings[sampleindex,c]
+            if self.elitist:
+                self.mus[c] = self.bestEvaluable.copy()
+            else:
+                self.mus[c] = (1-lr) * self.mus[c] + lr * newMu
+            self.sigmas[c] = (1-lr) * self.sigmas[c] + lr *newSigma 
+                    
+        # nomalize alphas
+        self.alphas /= sum(self.alphas)
         

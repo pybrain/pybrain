@@ -1,4 +1,4 @@
-from scipy import array, exp, tanh, clip, log, dot, sqrt, power, pi
+from scipy import array, exp, tanh, clip, log, dot, sqrt, power, pi, tan, diag, zeros, ones, rand, eye
 from scipy.linalg import inv, det
 
 
@@ -101,4 +101,12 @@ def multivariateNormalPdf(z, x, sigma):
     tmp = -0.5 * dot(dot((z-x), inv(sigma)), (z-x))
     res = (1./power(2.0*pi, len(z)/2.)) * (1./sqrt(det(sigma))) * exp(tmp)
     return res   
+
+def multivariateCauchy(mu, sigma, onlyDiagonal = True):
+    if not onlyDiagonal:
+        raise NotImplementedError()
+    dim = len(mu)
+    r = rand(dim)
+    coeffs = diag(sigma)
+    return coeffs*tan(pi*(r-0.5))+mu 
 

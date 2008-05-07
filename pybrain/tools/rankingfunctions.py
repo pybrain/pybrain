@@ -33,7 +33,7 @@ class RankingFunction(Named):
     def __call__(self, R):
         """ @param R: one-dimensional array containing fitnesses. """
         res = rankedFitness(R)
-        return res / max(res)
+        return res / float(max(res))
         
 
 class TournamentSelection(RankingFunction):
@@ -82,7 +82,7 @@ class ExponentialRanking(RankingFunction):
 
     def __call__(self, R):
         ranks = rankedFitness(R)
-        ranks /= (len(R)-1.0)
+        ranks = ranks / (len(R)-1.0)
         return exp(ranks * self.temperature)
         
     

@@ -1,9 +1,10 @@
 """ Simple script to do individual tests on FEM """
 from pybrain.tools.rankingfunctions import TopLinearRanking
+from pybrain.tools.rankingfunctions import ExponentialRanking
 
 __author__ = 'Daan Wierstra and Tom Schaul'
 
-from scipy import randn, log10, array
+from scipy import randn, log10, array, eye
 
 from pybrain.tools.shortcuts import buildNetwork
 from pybrain.utilities import storeCallResults
@@ -27,10 +28,13 @@ if True:
              batchsize = 50, 
              onlineLearning = True,
              forgetFactor = 0.05,
+             useCauchy = True,
              elitist = True,
-             rankingFunction = TopLinearRanking(topFraction = 0.1),
+             rankingFunction = TopLinearRanking(topFraction = 0.3),
+             #rankingFunction = ExponentialRanking(temperature = 10),
              verbose = True,
              maxEvaluations = 10000,
+             #initCovariances = eye(net.paramdim)*0.01
              )
         
 
