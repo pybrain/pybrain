@@ -296,7 +296,16 @@ class DataSet(object):
         fp = file(filename, 'w+')
         self._saveToFileLike(fp, **kwargs)
         fp.close()
-            
+    
+    @classmethod
+    def reconstruct(cls, filename ):
+        """ read an incomplete data set (option arraysonly) into the given one. """
+        # FIXME: Provisional! Should be replaced once saving full arrays is working.
+        obj = cls(1,1)
+        for key, val in cPickle.load(file(filename)).iteritems():
+            obj.setField(key, val)
+        return obj
+
     def _saveToFileLike(self, flo, protocol=0, arraysonly=False ):
         """Save the current dataset into the given file like object."""
         if arraysonly:
