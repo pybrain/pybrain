@@ -147,6 +147,9 @@ class SequentialDataSet(SupervisedDataSet):
             self.currentSeq = index-1
             # move sample marker to end of dataset
             self.index = self.getLength()
+            # if there was only 1 sequence left, re-initialize sequence index
+            if self.getLength() == 0:
+                self.clear()
         else: 
             # removed sequence was not last one (sequence_index exists)
             # move sequence marker to the new sequence at position 'index'
