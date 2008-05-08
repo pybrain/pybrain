@@ -1,3 +1,5 @@
+# TODO: currently this test only runs correctly in insolation.... !
+
 """
 Build a CaptureGameNetwork with LSTM cells
 

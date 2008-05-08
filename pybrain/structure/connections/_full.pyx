@@ -66,3 +66,16 @@ def FullConnection_backwardImplementation(self, ndarray outerr, ndarray inerr, n
             inbufp = inbufp + 1
             derivsp = derivsp + 1
         outerrp = outerrp + 1 
+        
+def FullConnectionforward(self, int time, desttime = None):
+    if desttime == None:
+        desttime = time
+    FullConnection_forwardImplementation(self, self.inmod.outputbuffer[time, self.inSliceFrom:self.inSliceTo],
+                                         self.outmod.inputbuffer[desttime, self.outSliceFrom:self.outSliceTo])
+
+def FullConnectionbackward(self, int time, desttime = None):
+    if desttime == None:
+        desttime = time
+    FullConnection_backwardImplementation(self, self.outmod.inputerror[desttime, self.outSliceFrom:self.outSliceTo],
+                                          self.inmod.outputerror[time, self.inSliceFrom:self.inSliceTo],
+                                          self.inmod.outputbuffer[time, self.inSliceFrom:self.inSliceTo])

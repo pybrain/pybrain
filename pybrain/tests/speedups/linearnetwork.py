@@ -6,10 +6,10 @@ import os
 
 
 # execute the forward-pass a number of times and return the time needed
-repeat = int(300)
+repeat = int(1500)
 profiling = True
 substitute = True
-backward = True
+backward = False
 
 
 if not substitute:

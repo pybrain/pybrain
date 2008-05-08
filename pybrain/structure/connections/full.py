@@ -30,3 +30,11 @@ class FullConnection(Connection, ParameterContainer):
         the output module's input buffer, for the given weight.  """
         return paramIndex % self.inmod.outdim, paramIndex / self.inmod.outdim
     
+    @substitute('pybrain.pyrex._full.FullConnectionforward')
+    def forward(self, time, desttime = None):
+        Connection.forward(self, time, desttime)
+    
+    @substitute('pybrain.pyrex._full.FullConnectionbackward')
+    def backward(self, time, desttime = None):
+        Connection.backward(self, time, desttime)
+    
