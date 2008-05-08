@@ -37,14 +37,14 @@ def convertSequenceToTimeWindows(DSseq, NewClass, winsize):
 
 if __name__ == "__main__":
     winsize = 5
-    pathtodata = '/maxdat/Data/Calogero/v1'
-    fname = "F1-3_V1-3_100Hz_norm.pkl"
-    print "loading file "+ join(pathtodata,fname) 
-    DSseq = SequenceClassificationDataSet.reconstruct( join(pathtodata,fname) )
-    DSseq.setField('input', DSseq['input'][:,3:])
+    pathtodata = '/maxdat/Data/Calogero/v1.1'
+    fname = "V1-4_333Hz_norm"
+    print "loading file "+ join(pathtodata,fname+'.pkl') 
+    DSseq = SequenceClassificationDataSet.reconstruct( join(pathtodata,fname+'.pkl') )
+    #DSseq.setField('input', DSseq['input'][:,3:])
     print "indim seq:", DSseq.indim
     print "winsize: ", winsize
     DSwin = convertSequenceToTimeWindows(DSseq, ClassificationDataSet, winsize)
-    DSwin.saveToFile(join(pathtodata,"V1-3_100Hz_norm_win5.pkl"), protocol=-1, arraysonly=True)
+    DSwin.saveToFile(join(pathtodata,fname+'_win%d.pkl'%winsize), protocol=-1, arraysonly=True)
     print "indim win:", DSwin.indim
    
