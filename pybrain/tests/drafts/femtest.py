@@ -30,7 +30,7 @@ if True:
              forgetFactor = 0.05,
              useCauchy = True,
              elitist = True,
-             rankingFunction = TopLinearRanking(topFraction = 0.3),
+             rankingFunction = TopLinearRanking(topFraction = 0.1),
              #rankingFunction = ExponentialRanking(temperature = 10),
              verbose = True,
              maxEvaluations = 10000,
@@ -68,7 +68,7 @@ res = storeCallResults(f)
         
 
 print ff.learn(), len(res)
-if True:
+if False:
     #pylab.plot(log10(-array(res)))
     pylab.plot(log10(-array(ff.muevals)))
     pylab.show()

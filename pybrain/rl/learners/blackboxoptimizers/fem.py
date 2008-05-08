@@ -10,7 +10,6 @@ from pybrain.tools.rankingfunctions import RankingFunction
 from pybrain.tools.functions import multivariateNormalPdf, multivariateCauchy
 
 
-
 class FEM(BlackBoxOptimizer):
     """ Fitness expectation-maximization"""
     
@@ -97,21 +96,14 @@ class FEM(BlackBoxOptimizer):
                 
                 if self.onlineLearning and self.generation >= 1:
                     self._updateWeightings()
-                    if self.useCauchy:
-                        self._updateCauchyParameters(k)
-                    else:
-                        self._updateGaussianParameters(k)
+                    self._updateParameters(k)
                     
                 if self._stoppingCriterion(): break
                 
             if not self.onlineLearning:
                 self._updateWeightings()
-                if self.useCauchy:
-                    self._batchUpdateCauchyParameters()                    
-                else:
-                    self._batchUpdateGaussianParameters()
-            
-                                
+                self._updateParameters()
+                                            
             # evaluate the mu points seperately (for filtered progression values)
             if self.evalMus:
                 for m in self.mus:
@@ -168,126 +160,93 @@ class FEM(BlackBoxOptimizer):
         if self.numberOfCenters > 1:    
             self.weightings = multiply(outer(transformedfitnesses, ones(self.numberOfCenters)), self.densities)
         else:
-            self.weightings = outer(transformedfitnesses, ones(self.numberOfCenters))
+            self.weightings = transformedfitnesses.reshape(self.batchsize, 1)
         
-        for c in range(self.numberOfCenters):
-            if self.onlineLearning:            
+        if self.onlineLearning:            
+            for c in range(self.numberOfCenters):
                 self.weightings[:,c] /= max(self.weightings[:,c])
-            else:
-                self.weightings[:,c] /= sum(self.weightings[:,c])
-                
+        else:
+            #CHECKME: inconsistency?
+            self.weightings /= sum(self.weightings)                
+        
+    def _cauchyUpdate(self, weightings):
+        """ computation of parameter updates if the distribution is Cauchy """
+        # make sure the weightings sum to 1
+        weightings  = weightings / sum(weightings)
+        newSigma = zeros((self.xdim, self.xdim))                
+        newMu = zeros(self.xdim)
+        for d in range(self.xdim):
+            # build a list of tuples of (value, weight)
+            tuplist = zip(map(lambda s: s[d], self.samples), weightings)
+            tuplist.sort()
+            # determine the values at the 1/4 and 3/4 points of cumulative weighting
+            cum = 0
+            quart = None
+            for elem, w in tuplist:
+                cum += w
+                if cum >= 0.25 and not quart:
+                    quart = elem
+                if cum >= 0.75:
+                    threequart = elem
+                    break
+            assert threequart != quart                    
+            newMu[d] = (quart + threequart)/2
+            newSigma[d,d] = threequart - newMu[d]
+        return newMu, newSigma
     
-    def _updateGaussianParameters(self, sampleindex):
-        """ update the mu(s), sigma(s) (and alphas), using the current weightings,
-        but only on the specified sample-index, using a forget rate. """
-        for c in range(self.numberOfCenters):
-            lr = self.forgetFactor * self.weightings[sampleindex,c]
-                                
-            self.alphas[c] = (1.0-lr) * self.alphas[c] + lr
+    def _gaussianUpdate(self, weightings, oldMu, indices):
+        """ computation of parameter updates if the distribution is gaussian """
+        newMu = zeros(self.xdim)
+        newSigma = zeros((self.xdim, self.xdim))
+        for i in indices:
+            newMu += weightings[i] * self.samples[i]
+        newMu /= sum(weightings)
             
+        for i in indices:
+            dif = self.samples[i]-oldMu
+            newSigma += weightings[i] * outer(dif, dif) 
+        newSigma /= sum(weightings)
+        return newMu, newSigma
+        
+    def _updateParameters(self, sampleIndex = None):
+        for c in range(self.numberOfCenters):
+            weightings = self.weightings[:,c]
+            if self.onlineLearning:
+                lr = self.forgetFactor * weightings[sampleIndex]
+                self.alphas[c] = (1.0-lr) * self.alphas[c] + lr            
+            else:
+                self.alphas[c] = sum(weightings)
+            
+            # determine the updates to the parameters, depending on the distribution used
+            if self.useCauchy:
+                newMu, newSigma = self._cauchyUpdate(weightings)
+            else:
+                # gaussian case
+                if self.onlineLearning:
+                    newMu, newSigma = self._gaussianUpdate(ones(self.batchsize), self.mus[c], [sampleIndex])
+                else:
+                    newMu, newSigma = self._gaussianUpdate(weightings, self.mu[c], range(self.batchsize))
+    
+            # update the mus
             if self.elitist:
                 self.mus[c] = self.bestEvaluable.copy()
             else:
-                self.mus[c] = (1.0-lr) * self.mus[c] + lr * self.samples[sampleindex]
-
-            dif = self.samples[sampleindex]-self.mus[c]
-            newSigma = (1.0-lr) * self.sigmas[c] + lr * outer(dif, dif) 
+                if self.onlineLearning:
+                    # use the forget-factor
+                    self.mus[c] = (1-lr) * self.mus[c] + lr * newMu
+                else:
+                    self.mus[c] = newMu
+            
+            # update the sigmas
             if True in isnan(newSigma):
                 print "NaNs! We'll ignore them."
             else: 
-                self.sigmas[c] = newSigma 
-                    
-        # nomalize alphas
-        self.alphas /= sum(self.alphas)
-        
-    def _batchUpdateGaussianParameters(self):
-        """ update the mu(s), sigma(s) (and alphas), using the current weightings """
-        for c in range(self.numberOfCenters):
-            self.alphas[c] = sum(self.weightings[:,c])
+                if self.onlineLearning:
+                    # use the forget-factor
+                    self.sigmas[c] = (1-lr) * self.sigmas[c] + lr * newSigma
+                else:
+                    self.sigmas[c] = newSigma 
             
-            if self.elitist:
-                self.mus[c] = self.bestEvaluable.copy()
-            else:
-                newMu = zeros(self.xdim)
-                for i in range(self.batchsize):
-                    newMu += self.weightings[i,c] * self.samples[i]
-                newMu /= sum(self.weightings[:,c])
-                self.mus[c] = newMu
-                
-            newSigma = zeros((self.xdim, self.xdim))
-            for i in range(self.batchsize):
-                dif = -self.mus[c]+self.samples[i]
-                newSigma += self.weightings[i,c] * outer(dif, dif) 
-            newSigma /= sum(self.weightings[:,c])
-            if True in isnan(newSigma):
-                print "NaNs! We'll ignore them."
-            else: 
-                self.sigmas[c] = newSigma 
-                    
         # nomalize alphas
         self.alphas /= sum(self.alphas)
-        
-        
-    def _batchUpdateCauchyParameters(self):
-        """ update the mu(s), sigma(s) (and alphas), using the current weightings """
-        for c in range(self.numberOfCenters):
-            self.alphas[c] = sum(self.weightings[:,c])
-            
-            newSigma = zeros((self.xdim, self.xdim))                
-            newMu = zeros(self.xdim)
-            for d in range(self.xdim):
-                tuplist = zip(map(lambda s: s[d], self.samples), self.weightings[:,c])
-                tuplist.sort()
-                cum = 0
-                quart = None
-                for elem, w in tuplist:
-                    cum += w
-                    if cum >= 0.25 and not quart:
-                        quart = elem
-                    if cum >= 0.75:
-                        threequart = elem
-                        break
-                newMu[d] = (quart + threequart)/2
-                newSigma[d,d] = threequart - newMu[d]
-                        
-            if self.elitist:
-                self.mus[c] = self.bestEvaluable.copy()
-            else:
-                self.mus[c] = newMu
-            self.sigmas[c] = newSigma 
-                    
-        # nomalize alphas
-        self.alphas /= sum(self.alphas)
-        
-    def _updateCauchyParameters(self, sampleindex):
-        """ update the mu(s), sigma(s) (and alphas), using the current weightings """
-        for c in range(self.numberOfCenters):
-            self.alphas[c] = sum(self.weightings[:,c])
-            
-            newSigma = zeros((self.xdim, self.xdim))                
-            newMu = zeros(self.xdim)
-            for d in range(self.xdim):
-                tuplist = zip(map(lambda s: s[d], self.samples), self.weightings[:,c])
-                tuplist.sort()
-                cum = 0
-                quart = None
-                for elem, w in tuplist:
-                    cum += w
-                    if cum >= 0.25 and not quart:
-                        quart = elem
-                    if cum >= 0.75:
-                        threequart = elem
-                        break
-                newMu[d] = (quart + threequart)/2
-                newSigma[d,d] = threequart - newMu[d]
-                        
-            lr = self.forgetFactor * self.weightings[sampleindex,c]
-            if self.elitist:
-                self.mus[c] = self.bestEvaluable.copy()
-            else:
-                self.mus[c] = (1-lr) * self.mus[c] + lr * newMu
-            self.sigmas[c] = (1-lr) * self.sigmas[c] + lr *newSigma 
-                    
-        # nomalize alphas
-        self.alphas /= sum(self.alphas)
-        
+    
