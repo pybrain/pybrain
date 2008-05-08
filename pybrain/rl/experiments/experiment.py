@@ -16,8 +16,8 @@ class Experiment(object):
         """
         start = self.stepid
         for dummy in range(number):
-            self._oneInteraction()
-        return self.stepid - start
+            reward = self._oneInteraction()
+        return reward
 
     def _oneInteraction(self):
         self.stepid += 1
