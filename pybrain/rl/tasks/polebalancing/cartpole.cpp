@@ -16,7 +16,7 @@ double state[6];
 int episodes;
 int totalIterations;
 int steps;
-
+int maxsteps;
 
 
 //////////////////////////////////////////////////////////////////////
@@ -55,7 +55,7 @@ static const double TAU         = 0.01;	  //seconds between state updates
 
 char modelfile[100];
 
-extern void initCartPole(int markov_, int numPoles_)	       
+extern void initCartPole(int markov_, int numPoles_, int maxsteps_)	       
 {
   poleangle = 4.0156035;
   longPoleAngle = poleangle * one_degree;
@@ -65,7 +65,8 @@ extern void initCartPole(int markov_, int numPoles_)
   noise = 0.0;
   markov = markov_;
   numPoles = numPoles_;
-
+  maxsteps = maxsteps_;
+  
   reset();
 
   episodes = 0;
@@ -347,7 +348,7 @@ extern int trialFinished()
 {
   if(outsideBounds())
     return 1;
-  if(steps > 100000) {
+  if(steps > maxsteps) {
     //cout << "SUCCESS in episode " << episodes << endl; 
     return 1;
   }

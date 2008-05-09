@@ -6,7 +6,7 @@ cdef extern from "stdlib.h":
     void free(void *)
     
 cdef extern from "cartpole.h":
-    cdef void initCartPole(int markov_, int numPoles_) 
+    cdef void initCartPole(int markov_, int numPoles_, int maxsteps_) 
     cdef void reset()
     cdef unsigned int getObservationDimension()
     cdef void getObservation(double * input)
@@ -50,8 +50,8 @@ def getObs():
 def res():
     reset()
 
-def init(int markov_, int numPoles_):
-    initCartPole(markov_, numPoles_)
+def init(int markov_, int numPoles_, int maxsteps_):
+    initCartPole(markov_, numPoles_, maxsteps_)
     
 def isFinished():
     return trialFinished()

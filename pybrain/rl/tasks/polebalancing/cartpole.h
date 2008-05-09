@@ -3,7 +3,7 @@
 
 // CHECKME: are those 'extern's necessary?
 
-extern void initCartPole(int markov_, int numPoles_);
+extern void initCartPole(int markov_, int numPoles_, int maxsteps_);
 extern void reset();
 extern unsigned int getObservationDimension();
 extern void echoParams();

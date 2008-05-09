@@ -26,19 +26,21 @@ class CartPoleTask(EpisodicTask):
     extraRandoms = 0
     
     __single = None
-    def __init__(self, numPoles = 1, markov = True, verbose = False, extraObservations = False, extraRandoms = 0):
+    def __init__(self, numPoles = 1, markov = True, verbose = False, 
+                 extraObservations = False, extraRandoms = 0, maxSteps = 100000):
         """ @extraObservations: if this flag is true, the observations include the cartesian coordinates 
         of the pole(s).
         """
         if self.__single != None:
             raise Exception('Singleton class - there is already an instance around', self.__single)
         self.__single = self
-        impl.init(markov, numPoles)
+        impl.init(markov, numPoles, maxSteps)
         self.markov = markov
         self.numPoles = numPoles
         self.verbose = verbose
         self.extraObservations = extraObservations
         self.extraRandoms = extraRandoms
+        self.desiredValue = maxSteps
         self.reset()
         
     def __str__(self):
