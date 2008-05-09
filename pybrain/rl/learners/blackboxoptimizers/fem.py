@@ -167,7 +167,7 @@ class FEM(BlackBoxOptimizer):
                 self.weightings[:,c] /= max(self.weightings[:,c])
         else:
             #CHECKME: inconsistency?
-            self.weightings /= sum(self.weightings)                
+            self.weightings /= sum(self.weightings)     
         
     def _cauchyUpdate(self, weightings):
         """ computation of parameter updates if the distribution is Cauchy """
@@ -194,18 +194,14 @@ class FEM(BlackBoxOptimizer):
             newSigma[d,d] = threequart - newMu[d]
         return newMu, newSigma
     
-    def _gaussianUpdate(self, weightings, oldMu, indices):
+    def _gaussianUpdate(self, weightings, indices, oldMu):
         """ computation of parameter updates if the distribution is gaussian """
         newMu = zeros(self.xdim)
         newSigma = zeros((self.xdim, self.xdim))
         for i in indices:
             newMu += weightings[i] * self.samples[i]
-        newMu /= sum(weightings)
-            
-        for i in indices:
             dif = self.samples[i]-oldMu
             newSigma += weightings[i] * outer(dif, dif) 
-        newSigma /= sum(weightings)
         return newMu, newSigma
         
     def _updateParameters(self, sampleIndex = None):
@@ -216,16 +212,19 @@ class FEM(BlackBoxOptimizer):
                 self.alphas[c] = (1.0-lr) * self.alphas[c] + lr            
             else:
                 self.alphas[c] = sum(weightings)
-            
+                
             # determine the updates to the parameters, depending on the distribution used
             if self.useCauchy:
                 newMu, newSigma = self._cauchyUpdate(weightings)
             else:
                 # gaussian case
                 if self.onlineLearning:
-                    newMu, newSigma = self._gaussianUpdate(ones(self.batchsize), self.mus[c], [sampleIndex])
+                    newMu, newSigma = self._gaussianUpdate(weightings, [sampleIndex], self.mus[c])
                 else:
-                    newMu, newSigma = self._gaussianUpdate(weightings, self.mu[c], range(self.batchsize))
+                    newMu, newSigma = self._gaussianUpdate(weightings, range(self.batchsize), self.mus[c],)
+                    # CHECKME: redundant!?
+                    #newMu /= sum(weightings)
+                    #newSigma /= sum(weightings)
     
             # update the mus
             if self.elitist:
@@ -233,7 +232,7 @@ class FEM(BlackBoxOptimizer):
             else:
                 if self.onlineLearning:
                     # use the forget-factor
-                    self.mus[c] = (1-lr) * self.mus[c] + lr * newMu
+                    self.mus[c] = (1-lr) * self.mus[c] + self.forgetFactor * newMu
                 else:
                     self.mus[c] = newMu
             
@@ -243,7 +242,7 @@ class FEM(BlackBoxOptimizer):
             else: 
                 if self.onlineLearning:
                     # use the forget-factor
-                    self.sigmas[c] = (1-lr) * self.sigmas[c] + lr * newSigma
+                    self.sigmas[c] = (1-lr) * self.sigmas[c] + self.forgetFactor * newSigma
                 else:
                     self.sigmas[c] = newSigma 
             

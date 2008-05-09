@@ -19,8 +19,8 @@ import pylab
 
 
 
-if True:
-    f = CartPoleTask(2, markov = False)
+if False:
+    f = CartPoleTask(2, markov = False, maxSteps = 1000)
     net = buildNetwork(f.outdim, 3, f.indim, bias = False)
     net.addRecurrentConnection(FullConnection(net['hidden0'], net['hidden0'], name = 'rec'))
     net.sortModules()
@@ -28,9 +28,9 @@ if True:
              batchsize = 50, 
              onlineLearning = True,
              forgetFactor = 0.05,
-             useCauchy = True,
+             #useCauchy = True,
              elitist = True,
-             rankingFunction = TopLinearRanking(topFraction = 0.1),
+             rankingFunction = TopLinearRanking(topFraction = 0.2),
              #rankingFunction = ExponentialRanking(temperature = 10),
              verbose = True,
              maxEvaluations = 10000,
@@ -39,22 +39,16 @@ if True:
         
 
 else:
-    dim = 15
+    dim = 5
     basef = SphereFunction(dim)
     f = TranslateFunction(RotateFunction(basef))
     x0 = randn(dim)
     ff = FEM(f, x0,
             batchsize = 50, 
-            onlineLearning = True,
-            gini = 0.15,
-            giniPlusX = 0.15,
-            maxupdate = 0.03,
+            onlineLearning = False,
+            forgetFactor = 0.03,
             elitist = False,
-            superelitist = False,
-            ranking = 'toplinear',
-            temperature = 10.0,
-            topselection = 7,
-            unlawfulExploration = 1.0,
+            rankingFunction = TopLinearRanking(topFraction = 0.5),
             verbose = True,
             maxEvaluations = 200000,
             )
