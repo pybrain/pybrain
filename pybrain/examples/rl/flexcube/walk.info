@@ -1,0 +1,3 @@
+The file walk.wgt is a weight matrix of a feed forward network with 4 hidden units learned as controller on the standard walk task.
+Load walk.wgt in flexCubeSPLA.py, set hiddenUnits to 4 and set epsilon to a very small number.
+The video http://www.pybrain.org/app/webroot/videos/flexcube/walk.avi shows the corresponding behavior.

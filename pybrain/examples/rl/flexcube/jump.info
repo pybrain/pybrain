@@ -1,0 +1,3 @@
+The file jump.wgt is a weight matrix of a feed forward network with 4 hidden units learned as controller on the standard jump task.
+Load jump.wgt in flexCubeSPLA.py, set hiddenUnits to 4 and set epsilon to a very small number.
+The video http://www.pybrain.org/app/webroot/videos/flexcube/jumpFull.avi shows the corresponding behavior.
