@@ -4,6 +4,10 @@ from math import sin, cos
 import time
 from scipy import random, eye, matrix, array
 from scipy import weave
+from pybrain.tools.networking.udpconnection import UDPServer
+import threading
+from pybrain.utilities import threaded
+from time import sleep
 
 from pybrain.rl.environments.graphical import GraphicalEnvironment
 
@@ -28,15 +32,19 @@ class ShipSteeringEnvironment(GraphicalEnvironment):
     I = 1000.      # rotational inertia of ship in unclear units
 
     
-    def __init__(self, numdir=1):
+    def __init__(self, render=True, ip="127.0.0.1", port="21580", numdir=1):
         GraphicalEnvironment.__init__(self)
 
         # initialize the environment (randomly)
-        self.reset()
         self.action = [0.0, 0.0]
         self.delay = False
         self.numdir = numdir  # number of directions in which ship starts
-        
+        self.render=render
+        if self.render:
+            self.updateDone=True
+            self.updateLock=threading.Lock()
+            self.server=UDPServer(ip, port)
+        self.reset()
         
     def step(self):
         """ integrate state using simple rectangle rule """
@@ -46,31 +54,6 @@ class ShipSteeringEnvironment(GraphicalEnvironment):
         ret = array([0.0,0.0,0.0])
         rnd = random.normal(0,1.0, size=3)
         
-        # weave code: dt, I and mass have been hard-coded in line v=..!
-        code = """  
-            #line 45 "shipsteer.py"
-            if (thrust < -1.0) { thrust = -1.0; }
-            else if (thrust > 2.0) thrust = 2.0;
-            if (rudder < -90.0) { rudder = -90.0; }
-            else if (rudder > 90.0) rudder = 90.0;
-            double drag = 5.*h + (rudder*rudder + rnd(0));
-            double force = 30.0*thrust - 2.0*v - 0.02*v*drag + rnd(1)*3.0;
-            v += force*4./1000.;
-            if (v < -10.0) { v = -10.0; }
-            else if (v > 40.0) v = 40.0;
-            double torque = -v*(rudder + h + 1.0*hdot + rnd(2)*10.);
-            double last_hdot = hdot;
-            hdot += torque / 1000.;
-            if (hdot < -180.0) { hdot = -180.0; }
-            else if (hdot > 180.0) hdot = 180.0;
-            h += (hdot + last_hdot) / 2.0;
-            if (h < -180.0) { h += 360.0; }
-            else if (h > 180.0) h -= 360.0;
-            ret(0) = h;
-            ret(1) = hdot;
-            ret(2) = v;
-            """
-        # original code
         thrust = min(max(thrust,-1),+2)
         rudder = min(max(rudder,-90),+90)
         drag = 5*h + (rudder**2 + rnd[0])
@@ -87,27 +70,17 @@ class ShipSteeringEnvironment(GraphicalEnvironment):
         elif h<-180.: 
             h += 360.
         self.sensors = (h,hdot,v)
-
-        #variables = 'thrust', 'rudder', 'h', 'hdot', 'v', 'ret', 'rnd'
-        
-        #weave.inline(
-            #code, 
-            #variables, 
-            #type_converters=weave.converters.blitz, 
-            #compiler='gcc')
-        #self.sensors = ret
-        
-        if self.hasRenderer():
-            self.getRenderer().updateData(self.sensors)
-            if self.delay: 
-                time.sleep(self.tau)    
                         
     def reset(self):
         """ re-initializes the environment, setting the ship to rest at a random orientation.
         """
         #               [h,                           hdot, v]
         self.sensors = [random.uniform(-30., 30.), 0.0, 0.0]
-
+        if self.render:
+            if self.server.clients > 0: 
+                # If there are clients send them reset signal
+                self.server.send(["r","r","r"])    
+                
     def getHeading(self):
         """ auxiliary access to just the heading, to be used by GoNorthwardTask """
         return self.sensors[0]
@@ -128,6 +101,25 @@ class ShipSteeringEnvironment(GraphicalEnvironment):
         """
         self.action = action
         self.step()
+        if self.render: 
+            if self.updateDone: 
+                self.updateRenderer()                    
+                if self.server.clients > 0:
+                    sleep(0.2)
+
+    @threaded()  
+    def updateRenderer(self):
+        self.updateDone=False      
+        if not self.updateLock.acquire(False): return
+      
+        # Listen for clients
+        self.server.listen()
+        if self.server.clients > 0: 
+            # If there are clients send them the new data
+            self.server.send(self.sensors)
+        sleep(0.02)
+        self.updateLock.release()
+        self.updateDone=True
 
     @property              
     def indim(self):
