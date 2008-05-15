@@ -12,6 +12,8 @@
 #                                                                                                           #
 # Requirements: sockets and scipy.                                                                          #
 # Example: FlexCubeEnvironment and FlexCubeRenderer (env sends data to renderer for OpenGL output)          #
+#                                                                                                           #
+# Author: Frank Sehnke, sehnke@in.tum.de                                                                    #
 #############################################################################################################
 
 import socket
@@ -36,6 +38,7 @@ class UDPServer(object):
         self.cIP=[]
         self.addrList=[]
         self.UDPOutSockList=[]
+        print "listening on port", self.inPort    
 
     # Adding a client to the list
     def addClient(self, cIP):
@@ -48,10 +51,11 @@ class UDPServer(object):
     # Listen for clients
     def listen(self):
         if self.clients<1:
-            print "listening on port", self.inPort    
-            self.UDPInSock.settimeout(None)    
-            cIP = self.UDPInSock.recv(self.buf)
-            self.addClient(cIP)
+            self.UDPInSock.settimeout(10)    
+            try: 
+                cIP = self.UDPInSock.recv(self.buf)
+                self.addClient(cIP)
+            except: pass
         else:  
             # At least one client has to send a sign of life during 2 seconds
             self.UDPInSock.settimeout(2)
@@ -70,6 +74,8 @@ class UDPServer(object):
                 self.cIP=[]
                 self.addrList=[]
                 self.UDPOutSockList=[]
+                print "listening on port", self.inPort    
+            
     
     # Sending the actual data too all clients
     def send(self, arrayList):         
