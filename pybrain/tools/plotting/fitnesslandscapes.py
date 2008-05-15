@@ -2,8 +2,8 @@
 
 __author__ = 'Tom Schaul, tom@idsia.ch'
 
-from scipy import zeros, r_, cos, sin, pi, array
-from scipy.linalg import sqrtm
+from scipy import zeros, r_, cos, sin, pi, array, dot, sqrt, diag
+from scipy.linalg import svd
 import pylab as p
 import matplotlib.axes3d as p3
 
@@ -82,11 +82,12 @@ class FitnessPlotter:
         ex = zeros(segments+1)
         ey = zeros(segments+1)
         if self.is3d:
-            ez = zeros(segments+1)            
-        sm = sqrtm(emat)
+            ez = zeros(segments+1)     
+        u,s,d = svd(emat)       
+        sm = dot(d, dot(diag(sqrt(s)), u))
         for i in range(segments+1):            
-            circlex = cos(2*pi*i/segments)
-            circley = sin(2*pi*i/segments)
+            circlex = cos((2*pi*i)/float(segments))
+            circley = sin((2*pi*i)/float(segments))
             ex[i] = center[0] + sm[0,0] * circlex + sm[0,1] * circley
             ey[i] = center[1] + sm[1,0] * circlex + sm[1,1] * circley
             if self.is3d:
