@@ -82,9 +82,9 @@ class NaturalEvolutionStrategies(BlackBoxOptimizer):
     # --- execution parameters ---
     maxgens = 1e5 # maximal nb of generations 
     plotsymbol = '-'
-    silent = True
+    verbose = False
+    veryverbose = False
     returnall = False
-    
     
     minimize = False
     
@@ -101,7 +101,7 @@ class NaturalEvolutionStrategies(BlackBoxOptimizer):
         minlambd = 1 + self.mu*(1+n+n*n)
         if not self.lambd:
             self.lambd = minlambd
-        if not self.silent and self.lambd < minlambd:
+        if self.verbose and self.lambd < minlambd:
             print "Warning! Underconstrained linear regression"
         
         if not self.lrSigma:
@@ -184,16 +184,16 @@ class NaturalEvolutionStrategies(BlackBoxOptimizer):
             self.generation += 1
             if not self.checkStability():
                 break
-            if self.verbose:
+            if self.veryverbose:
                 self.printCurrentValues()
-            if not self.silent:
+            if self.verbose:
                 print 'Generation', self.generation, '- fitness:', max(self.fx), 
-                if self.verbose:
+                if self.veryverbose:
                     detbefore, detafter
                 else:
                     print
             self.genfitnesses.append(max(self.fx))
-            if self.verbose:
+            if self.veryverbose:
                 print self.alpha
                 print [m.T for m in self.x]
             
@@ -217,7 +217,7 @@ class NaturalEvolutionStrategies(BlackBoxOptimizer):
                 self.allxs.append(array(self.x[0]).flatten())
                 self.allsigmas.append(self.sigma[0].copy())
         
-        if not self.silent:
+        if self.verbose:
             print self.fevals, 'evaluations.'    
             print 'Best overall fitness found', self.bestEvaluation      
         
