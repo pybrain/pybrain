@@ -3,6 +3,7 @@ __author__ = 'Tom Schaul, tom@idsia.ch'
 from scipy import array, dot, sqrt, sin, cos, diag, pi
 from numpy.random import randn, multivariate_normal
 from scipy.linalg import svd
+from pybrain.tools.functions import multivariateCauchy
 from pybrain.tools.plotting import FitnessPlotter
 
 angle = pi*0.7
@@ -26,6 +27,7 @@ def multivariate_normal2():
     return mu + dot(d, dot(sqrt(s)*randn(len(mu)), u)) + 1
      
 samples = map(lambda x: multivariate_normal2(), range(nb))
+#samples = map(lambda x: multivariateCauchy(mu, sigma, onlyDiagonal= True), range(nb))
 F.addSamples(samples, color = 'b')
 
 F.addCovEllipse(sigma, mu, color = 'y')

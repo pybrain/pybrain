@@ -1,5 +1,5 @@
 from scipy import array, exp, tanh, clip, log, dot, sqrt, power, pi, tan, diag, zeros, ones, rand, eye
-from scipy.linalg import inv, det
+from scipy.linalg import inv, det, svd
 
 
 def semilinear(x):
@@ -102,11 +102,16 @@ def multivariateNormalPdf(z, x, sigma):
     res = (1./power(2.0*pi, len(z)/2.)) * (1./sqrt(det(sigma))) * exp(tmp)
     return res   
 
+
 def multivariateCauchy(mu, sigma, onlyDiagonal = True):
     if not onlyDiagonal:
-        raise NotImplementedError()
-    dim = len(mu)
-    r = rand(dim)
-    coeffs = diag(sigma)
-    return coeffs*tan(pi*(r-0.5))+mu 
+        u, s, d = svd(sigma)
+        coeffs = sqrt(s)
+    else:
+        coeffs = diag(sigma)
+    r = rand(len(mu))
+    res = coeffs*tan(pi*(r-0.5))
+    if not onlyDiagonal:
+        res = dot(d, dot(res, u))
+    return res+mu 
 
