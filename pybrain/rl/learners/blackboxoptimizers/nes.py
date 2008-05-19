@@ -2,10 +2,11 @@ __author__ = 'Daan Wierstra and Tom Schaul'
 
 from blackboxoptimizer import BlackBoxOptimizer
 from numpy.random import randn, multivariate_normal
-from random import random, randint
-from scipy import ones, zeros, mat, eye, dot, argmax, average, array, size, exp, sign, power, sqrt, var, pi, log, reshape
+from scipy import ones, zeros, mat, eye, dot, argmax, average, array, exp, sign, sqrt, log, reshape, ravel
 from scipy.linalg import pinv2, norm, det, inv
-from pybrain.tools.functions import safeExp
+from pybrain.tools.functions import safeExp, multivariateNormalPdf
+from pybrain.tools.rankingfunctions import SmoothGiniRanking
+from pybrain.utilities import drawIndex
 
 # TODO: linear dependence of the logalphas in phi - problem???
 
@@ -59,11 +60,7 @@ class NaturalEvolutionStrategies(BlackBoxOptimizer):
     initSigmaRandCoeff = 0.01
     
     # fitness ranking/smoothing
-    ranking = None
-    gini = 0.1
-    giniPlusX = 1
-    giniScale = 5
-    bilinearFactor = 20
+    rankingFunction = SmoothGiniRanking()
     
     # RPROP
     rprop = False
@@ -106,7 +103,6 @@ class NaturalEvolutionStrategies(BlackBoxOptimizer):
         
         if not self.lrSigma:
             self.lrSigma = self.lr 
-            
             
         self.genfitnesses = []
                         
@@ -255,16 +251,17 @@ class NaturalEvolutionStrategies(BlackBoxOptimizer):
         self.blackmagic = self.lrMultiplier
         
         # produce the new update vector
+        tmp = self.rankingFunction(self.R)
         if not self.ridge:
-            self.w = pinv2(self.phi)*self.rankFitness()      
+            self.w = dot(pinv2(self.phi), tmp)
         else:
-            self.w = (self.phi.T * self.phi + self.ridgeconstant*eye(self.phi.shape[1])).I * self.phi.T * self.rankFitness() 
+            self.w = dot((self.phi.T * self.phi + self.ridgeconstant*eye(self.phi.shape[1])).I * self.phi.T, tmp)
             
         # one fifth rule comes in here:
         self.w[self.mu-1+self.mu*self.xdim:-1] *= self.lrMultiplier
         
         if self.lrPeters:
-            rvec = self.rankFitness()
+            rvec = self.rankingFunction(self.R)
             relR = array(rvec) - average(rvec)*ones((self.lambd,1))
             # phino is phi with no 1 at end
             phino = mat(ones((self.phi.shape[0], self.phi.shape[1] - 1)))
@@ -296,7 +293,7 @@ class NaturalEvolutionStrategies(BlackBoxOptimizer):
         # CHECKME: maybe do this for every sample?
         
         if self.lrPeters:
-            rvec = self.rankFitness()
+            rvec = self.rankingFunction(self.R)
             relR = array(rvec) - average(rvec)*ones((self.lambd,1))
             # phino is phi without the 1 at the end
             phino = mat(ones((self.phi.shape[0], self.phi.shape[1] - 1)))
@@ -329,7 +326,7 @@ class NaturalEvolutionStrategies(BlackBoxOptimizer):
         for k in range(self.lambd):
             self.oneSample(k)            
             
-            fitnesses = self.rankFitness()
+            fitnesses = self.rankingFunction(self.R)
             
             phino = self.phi.copy()
             # importance sampling
@@ -347,7 +344,7 @@ class NaturalEvolutionStrategies(BlackBoxOptimizer):
                 #print self.w[:,0]
                 #self.w = solve(phino,fitnesses)
             else:   
-                self.w = (self.phi.T * self.phi + self.ridgeconstant*eye(self.phi.shape[1])).I * self.phi.T * self.rankFitness() 
+                self.w = (self.phi.T * self.phi + self.ridgeconstant*eye(self.phi.shape[1])).I * self.phi.T * self.rankingFunction(self.R) 
                 
             # one fifth rule comes in here:
             self.w[self.mu+self.mu*self.xdim:-1] *= self.lrMultiplier
@@ -371,23 +368,22 @@ class NaturalEvolutionStrategies(BlackBoxOptimizer):
             thesum += exp(self.basealpha[i])
         for i in range(self.mu):
             self.alpha[i] = exp(self.basealpha[i])/thesum
-        choosem = self.chooseCenter()
+        choosem = drawIndex(self.alpha, tolerant = True)
         self.chosenCenter[k] = choosem
         z = mat(multivariate_normal(array(self.x[choosem]).flatten(), self.sigma[choosem])).T
         self.zs[k] = z
         self.R[k] = self.evaluateAt(z)
         # TODO make for all mu
         if self.importanceSampling:
-            self.rellhood[k] = self.multivariateNormalPdf(z, self.x[0], self.sigma[0])
+            self.rellhood[k] = multivariateNormalPdf(z, self.x[0], self.sigma[0])
         logderivbasealpha = zeros((self.mu, 1))
         logderivx = zeros((self.mu, self.xdim))
         logderivfactorsigma = zeros((self.mu, self.xdim, self.xdim))
         for m in range(self.mu):
             self.sigma[m] = dot(self.factorSigma[m].T,self.factorSigma[m])
             if self.mu > 1:
-                relresponsibility = (self.alpha[m] * self.multivariateNormalPdf(z, self.x[m], self.sigma[m]) / 
-                                 sum(map(lambda mm: self.alpha[mm]*self.multivariateNormalPdf(z, self.x[mm], self.sigma[mm]), range(self.mu))))
-                #print 'relres', relresponsibility
+                relresponsibility = (self.alpha[m] * multivariateNormalPdf(ravel(z), ravel(self.x[m]), self.sigma[m]) / 
+                                 sum(map(lambda mm: self.alpha[mm]*multivariateNormalPdf(ravel(z), ravel(self.x[mm]), self.sigma[mm]), range(self.mu))))
             else:
                 relresponsibility = 1.0
             if self.mu > 1:
@@ -426,7 +422,6 @@ class NaturalEvolutionStrategies(BlackBoxOptimizer):
         self.alpha = self.transformAlphas(self.basealpha)
         for i in range(self.mu):
             if self.alpha[i] < 0.05:
-                #print 'XXX before', self.basealpha, self.alpha
                 bestbase = max(self.alpha)
                 bestindex = argmax(self.alpha)
                 self.basealpha[i] = log((self.alpha[i] + bestbase)/2.0)
@@ -434,16 +429,13 @@ class NaturalEvolutionStrategies(BlackBoxOptimizer):
                 self.x[i] = self.x[bestindex].copy()
                 self.factorSigma[i] = self.factorSigma[bestindex] * 1.2
                 self.alpha = self.transformAlphas(self.basealpha)
-                #print 'XXX after', self.basealpha
                 
         offset = self.mu+schwupps+self.mu*n                
         for m in range(self.mu):
             deltax = mat(updatevector[self.mu+schwupps+m*n:self.mu+schwupps+(m+1)*n]).reshape(n, 1)            
             deltafactorsigma = mat(updatevector[offset+m*n*n:offset+(m+1)*n*n]).reshape(n,n) 
-            #self.triagularReshape(updatevector[offset+m*n*n:offset+(m+1)*n*n]) 
             self.x[m] = self.x[m]+deltax
             self.factorSigma[m] += deltafactorsigma
-            #self.factorSigma[m] = self.positivizeDiagonal(self.factorSigma[m])
             self.sigma[m] = dot(self.factorSigma[m].T,self.factorSigma[m])        
         
     def rpropUpdate(self, w):
@@ -476,41 +468,15 @@ class NaturalEvolutionStrategies(BlackBoxOptimizer):
                     else:
                         neww[i] = sign(self.wStored[self.generation][i]) * self.delta[self.generation][i]
             self.updateVariables(neww)              
-            
-    def rankFitness(self):
-        """ possibly produce a ranking or another transformation on the fitness values """
-        if self.ranking == 'linear':
-            return mat(self.rankedFitness(self.R)).T
-        elif self.ranking == 'normal':
-            return mat(self.normalizedRankedFitness(self.R)).T
-        elif self.ranking == 'smooth':
-            return mat(self.smoothSelectiveRanking(self.R)).T
-        elif self.ranking == 'bilinear':
-            return mat(self.bilinearRanking(self.R)).T
-        else:
-            return self.R       
-    
+
     def genInitSigmaFactor(self):
         """ depending on the algorithm settings, we start out with in identity matrix, or perturb it """
         if self.perturbedInitSigma:
             res = mat(eye(self.xdim)*self.initSigmaCoeff+randn(self.xdim, self.xdim)*self.initSigmaRandCoeff)            
         else:
             res = mat(eye(self.xdim)*self.initSigmaCoeff)
-        return res 
-            
+        return res   
 
-    def chooseCenter(self):
-        """ randomly draw an index, according to the probabilities in alpha """
-        x = random()
-        s = 0
-        for i, val in enumerate(self.alpha):
-            s += val
-            if x <= s: return i
-        print "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWW"
-        print self.alpha
-        print
-        return randint(0, self.mu - 1)
-            
     def evaluateAt(self, z):        
         """ evaluate the function """
         z = array(z).flatten()
@@ -539,7 +505,6 @@ class NaturalEvolutionStrategies(BlackBoxOptimizer):
         for m in range(self.mu):
             res[self.mu+schwupps+n*m:self.mu+schwupps+n*(m+1)] = x[m].flatten()
             # sigma contains redundant information because it is symetric
-            #tmp = self.getLowerTriagularValues(factorsigma[m])
             res[offset:offset+n*n] = factorsigma[m].flatten()
             offset += n*n
         return res
@@ -562,7 +527,7 @@ class NaturalEvolutionStrategies(BlackBoxOptimizer):
         # CHECKME: correct handling of multiple centers?
         s = 0
         for dummy in range(evals):
-            m = self.chooseCenter()
+            m = drawIndex(self.alpha, tolerant = True)
             z = mat(multivariate_normal(array(self.x[m]).flatten(), self.sigma[m])).T            
             s += norm(self.x[m] - z)
         return s/evals
@@ -583,48 +548,6 @@ class NaturalEvolutionStrategies(BlackBoxOptimizer):
         print 'W', self.w
         print 'Phi', self.phi                                        
         
-    def rankedFitness(self, R):
-        """ produce a linear ranking of the fitnesses in R. """        
-        l = sorted(list(enumerate(R)), cmp = lambda a,b: cmp(a[1],b[1]))
-        l = sorted(list(enumerate(l)), cmp = lambda a,b: cmp(a[1],b[1]))
-        return array(map(lambda (r, dummy): r, l))
-     
-    # TODO: put this outside
-    def smoothSelectiveRanking(self, R):
-        """ a smooth ranking function that gives more importance to examples with better fitness. """
-        def smoothup(x):
-            """ produces a mapping from [0,1] to [0,1], with a specific gini coefficient. """
-            return power(x, 2/self.gini-1)
-        ranks = self.rankedFitness(R)
-        res = zeros(self.lambd)
-        for i in range(len(ranks)):
-            res[i] = ranks[i]*self.giniPlusX + self.lambd*self.giniScale * smoothup(ranks[i]/float(self.lambd-1))
-        return res
-    
-    def normalizedRankedFitness(self, R):
-        return array((R - R.mean())/sqrt(var(R))).flatten()
-    
-    def bilinearRanking(self, R):
-        ranks = self.rankedFitness(R)
-        res = zeros(size(R))
-        transitionpoint = 4*len(ranks)/5
-        for i in range(len(ranks)):
-            if ranks[i] < transitionpoint:
-                res[i] = ranks[i]
-            else:
-                res[i] = ranks[i]+(ranks[i]-transitionpoint)*self.bilinearFactor
-        return res    
-    
-    def multivariateNormalPdf(self, z, x, sigma):
-        assert z.shape[1] == 1 and x.shape[1] == 1    
-        tmp = -0.5 * ((z-x).T * sigma.I * (z-x))[0,0]
-        # CHECKME: hacked explosion security - might be done smoothlier?
-        if tmp > 100:   
-            print "WRONG", tmp
-        res = power(2*pi,-self.xdim/2.) * (1/sqrt(det(sigma))) * exp(tmp)
-        #print res
-        return res    
-    
     def transformAlphas(self, base):
         #print 'base', base
         return safeExp(base)/sum(safeExp(base))
