@@ -8,7 +8,7 @@ from pybrain.structure.parametercontainer import ParameterContainer
 
 class StateDependentLayer(NeuronLayer, ParameterContainer):
     
-    def __init__(self, dim, module, name=None, onesigma=True):
+    def __init__(self, dim, module, name=None, onesigma=False):
         NeuronLayer.__init__(self, dim, name)
         self.exploration = zeros(dim, float)
         self.state = None
@@ -16,11 +16,11 @@ class StateDependentLayer(NeuronLayer, ParameterContainer):
         
         if self.onesigma:
             # one single parameter: sigma
-            ParameterContainer.__init__(self, 1, stdParams = 0)
+            ParameterContainer.__init__(self, 1)
         else:
             # sigmas for all parameters in the exploration module
-            ParameterContainer.__init__(self, module.paramdim, stdParams = 0)
-
+            ParameterContainer.__init__(self, module.paramdim)
+        
         # a module for the exploration
         assert module.outdim == dim
         self.module = module
@@ -31,12 +31,6 @@ class StateDependentLayer(NeuronLayer, ParameterContainer):
         self.state = asarray(state)
         self.exploration[:] = self.module.activate(self.state)
         self.module.reset()
-                
-    def setSigma(self, sigma):
-        """ wrapper method to set the sigmas (the parameters of the module) to a certain value. """
-        assert len(sigma) == self.paramdim
-        self.params *= 0
-        self.params += sigma
         
     def drawRandomWeights(self):
         self.module._setParameters(random.normal(0, expln(self.params), self.module.paramdim)) 
