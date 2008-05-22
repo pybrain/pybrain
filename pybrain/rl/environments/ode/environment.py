@@ -1,5 +1,5 @@
 import sys, time
-from scipy import sin, cos, pi, random
+from scipy import sin, cos, pi, random, asarray
 import ode, xode.parser, xode.body, xode.geom
 
 from pybrain.rl.environments.graphical import GraphicalEnvironment
@@ -324,7 +324,7 @@ class ODEEnvironment(GraphicalEnvironment):
         for s in self.sensors:
             if not s.name in self.excludesensors:
                 output.extend(s.getValues())
-        return output
+        return asarray(output)
     
     def getSensorNames(self):
         return [s.name for s in self.sensors]
