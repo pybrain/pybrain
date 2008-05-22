@@ -13,15 +13,18 @@ class GaussianProcess:
 
     def __init__(self, indim, start, stop, step):
         self.indim = indim
+        self.trainx = zeros((0, indim), float)
+        self.trainy = zeros((0), float)
+        self.noise = zeros((0), float)
         self.testx = self._buildGrid(start, stop, step)
-        self.theta = (1.0, 1.0)
         self.calculated = True
         self.pred_mean = zeros(len(self.testx))
         self.pred_cov = eye(len(self.testx))
     
     def _kernel(self, a, b):
         """ kernel function, here RBF kernel """
-        return self.theta[0]*exp(-0.5*norm(a-b, 2)**2/self.theta[1])
+        (l, sigma_f, sigma_n) = (0.3, 1.0, 0.1)
+        return sigma_f**2*exp(-1.0/(2*l**2)*norm(a-b, 2)**2+sigma_n*eye(self.indim))
 
     def _buildGrid(self, start, stop, step):
         """ returns a mgrid type of array for 'dim' dimensions """
@@ -42,7 +45,15 @@ class GaussianProcess:
          
         self.trainx = dataset.getField('input')
         self.trainy = ravel(dataset.getField('target'))
-        self.noise = array([0.00001]*len(self.trainx))
+        self.noise = array([0.1]*len(self.trainx))
+        print self.trainx, self.trainy
+        self.calculated = False
+        
+    def addSample(self, train, target):
+        self.trainx = r_[self.trainx, asarray([train])]
+        self.trainy = r_[self.trainy, asarray(target)]
+        self.noise = r_[self.noise, array([0.1])]
+
         self.calculated = False
         
     def _calculate(self):
@@ -64,23 +75,27 @@ class GaussianProcess:
         
         return self.pred_mean + random.multivariate_normal(zeros(len(self.testx)), self.pred_cov)
         
-    def plotCurves(self):
+    def plotCurves(self, showSamples=False):
         if not self.calculated:
             self._calculate()
         
         if self.indim == 1:
-            figure()
+            clf()
             hold(True)
-            # plot drawn curves (gray)
-            for i in range(50):
-                plot(self.testx, self.pred_mean + random.multivariate_normal(zeros(len(self.testx)), self.pred_cov), color='gray')
+            if showSamples:
+                # plot samples (gray)
+                for i in range(50):
+                    plot(self.testx, self.pred_mean + random.multivariate_normal(zeros(len(self.testx)), self.pred_cov), color='gray')
+            
+            # plot training set
+            plot(self.trainx, self.trainy, 'bx')
             # plot mean (black)
-            plot(self.testx, self.pred_mean, 'k', linewidth=2)
+            plot(self.testx, self.pred_mean, 'b', linewidth=1)
             # plot variance (semi-transp)
             fillx = r_[ravel(self.testx), ravel(self.testx[::-1])]
             filly = r_[self.pred_mean+2*diag(self.pred_cov), self.pred_mean[::-1]-2*diag(self.pred_cov)[::-1]]
-            fill(fillx, filly, facecolor='blue', edgecolor='white', alpha=0.3)
-            title('1D Gaussian Process with 50 samples, mean and variance')
+            fill(fillx, filly, facecolor='gray', edgecolor='white', alpha=0.3)
+            title('1D Gaussian Process with mean and variance')
             
         elif self.indim == 2:
             fig = figure()
