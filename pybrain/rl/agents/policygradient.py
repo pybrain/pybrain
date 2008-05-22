@@ -3,6 +3,7 @@ __author__ = 'Thomas Rueckstiess, ruecksti@in.tum.de'
 from learning import LearningAgent
 from history import HistoryAgent
 from pybrain.structure import GaussianLayer, IdentityConnection, Network
+import pdb
 
 # TODO: support for SoftMax output layers
 # TODO: support for more complex networks, which have more than a single output module
@@ -45,9 +46,9 @@ class PolicyGradientAgent(LearningAgent):
         self.explorationlayer.enabled = False
         
     def setSigma(self, sigma):
-        self.explorationlayer.setSigma(sigma)
-        # update parameters for learner
-        self.learner.setModule(self.module)
+        assert len(sigma) == self.explorationlayer.paramdim
+        # change the parameters of the exploration layer (owner is self.module)
+        self.explorationlayer._setParameters(sigma, self.module)
     
     def getSigma(self):
         return self.explorationlayer.params
@@ -61,6 +62,7 @@ class PolicyGradientAgent(LearningAgent):
         """ calls the LearningAgent getAction method. Additionally, executes a backward pass in the module
             and stores all the derivatives in the dataset. """
         HistoryAgent.getAction(self)
+        
         self.lastaction = self.module.activate(self.lastobs).copy()
         self.module.backward()
         self.loglh = self.module.derivs.copy()
