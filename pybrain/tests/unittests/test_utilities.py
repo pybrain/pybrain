@@ -75,12 +75,35 @@ Unhack Environment Variables
 Recover PYBRAIN_NO_SUBSTITUTE flag
 
     >>> if no_substitute: os.environ['PYBRAIN_NO_SUBSTITUTE'] = no_substitute
+   
+   
+Tests for Serializable
+======================
+
+    >>> from cStringIO import StringIO
+    >>> s = StringIO()
+    >>> p = P()
+    >>> p.x = 2
+    >>> p.saveToFileLike(s)
+    >>> s.seek(0)
+    >>> q = P.loadFromFileLike(s)
+    >>> q.x
+    2
     
 """
 
 
-from pybrain.utilities import substitute
+from pybrain.utilities import substitute, Serializable
 from pybrain.tests import runModuleTestSuite
+
+
+class P(Serializable): 
+    
+    def __getstate__(self): 
+        return {'x': self.x}
+
+    def __setstate__(self, dct): 
+        self.x = dct['x']
 
 
 if __name__ == "__main__":

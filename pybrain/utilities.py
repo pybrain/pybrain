@@ -1,5 +1,8 @@
+from __future__ import with_statement
+
 __author__ = 'Tom Schaul, tom@idsia.ch; Justin Bayer, bayerj@in.tum.de'
 
+import cPickle
 import logging
 import threading
 import types
@@ -90,6 +93,52 @@ class XMLBuildable(object):
         if not self.argdict:
             self.argdict = {}
         setAllArgs(self, argdict)
+        
+        
+class Serializable(object):
+    """Class that implements shortcuts to serialize an object.
+    
+    Serialization is done by various protocols. At the moment, only 'pickle' is
+    supported.
+    """
+    
+    def saveToFileLike(self, flo, protocol=None):
+        """Save the object to a given file like object with the given protocol.
+        """
+        protocol = 'pickle' if protocol is None else protocol
+        save = getattr(self, "save_%s" % protocol, None)
+        if save is None:
+            raise ValueError("Unknown protocol '%s'." % protocol)
+        save(flo)
+        
+    @classmethod
+    def loadFromFileLike(cls, flo, protocol=None):
+        """Load the object to a given file like object with the given protocol.
+        """
+        protocol = 'pickle' if protocol is None else protocol
+        load = getattr(cls, "load_%s" % protocol, None)
+        if load is None:
+            raise ValueError("Unknown protocol '%s'." % protocol)
+        return load(flo)
+        
+    def saveToFile(self, filename, protocol=None):
+        """Save the object to file given by filename."""
+        with file(filename) as fp:
+            self.saveToFileLike(fp, protocol)
+        
+    @classmethod
+    def loadFromFile(cls, filename, protocol=None):
+        """Return an instance of the class that is saved in the file with the
+        given filename in the specified protocol."""
+        with file(filename) as fp:
+            return self.loadFromFileLike(fp, protocol)
+    
+    def save_pickle(self, flo):
+        cPickle.dump(self, flo)
+        
+    @classmethod
+    def load_pickle(cls, flo):
+        return cPickle.load(flo)
         
 
 class Named(XMLBuildable):
