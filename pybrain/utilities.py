@@ -268,7 +268,10 @@ def _import(name):
     mod = __import__(name)
     components = name.split('.')
     for comp in components[1:]:
-        mod = getattr(mod, comp)
+        try:
+            mod = getattr(mod, comp)
+        except AttributeError:
+            raise ImportError("No module named %s" % mod)
     return mod
 
     
