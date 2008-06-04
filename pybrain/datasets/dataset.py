@@ -1,8 +1,10 @@
+# $Id$
+
 from __future__ import with_statement
 
 __author__ = 'Thomas Rueckstiess, ruecksti@in.tum.de'
-# $Id$
 
+import random
 import types
 import cPickle
 
@@ -379,7 +381,7 @@ class DataSet(object):
 
     def randomBatches(self, label, n):
         """Like .batches(), but the order is random."""
-        permutation = shuffle(range(len(self)))
+        permutation = random.shuffle(range(len(self)))
         return self.batches(label, n, permutation)
                       
         
