@@ -1,0 +1,14 @@
+:mod:`nearoptimal` -- Near Optimal Locality Sensitive Hashing
+=============================================================
+
+.. automodule:: pybrain.supervised.knn.lsh.nearoptimal
+
+.. autoclass:: MultiDimHash
+   :members: __init__, findBall, insert, knn
+   
+   
+.. seealso::
+
+   `Near-Optimal Hashing Algorithms for Approximate Nearest Neighbor in High Dimensions <http://web.mit.edu/andoni/www/papers/cSquared.pdf>`_
+      Paper that describes the algorithm used in this module by Alexandr Andoni
+      and Piotr Indyk, MIT.
