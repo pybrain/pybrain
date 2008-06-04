@@ -20,6 +20,8 @@ from scipy import weave
 
 
 class MultiDimHash(object):
+    """Class that represents a datastructure that enables nearest neighbours 
+    search and methods to do so."""
     
     # If the dimension of a dataset is bigger than this bound, the 
     # dimensionality will be reduced by a random projection into 24dimensional
@@ -35,7 +37,7 @@ class MultiDimHash(object):
         
     radius = property(_getRadius, _setRadius)
     
-    def __init__(self, dim, omega=4, prob=0.80):
+    def __init__(self, dim, omega=4, prob=0.8):
         """Create a hash for arrays of dimension dim.
         
         The hyperspace will be split into hypercubes with a sidelength of
