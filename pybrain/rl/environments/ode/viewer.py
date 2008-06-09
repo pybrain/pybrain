@@ -60,7 +60,7 @@ class ODEViewer(object):
         self.starttime = self.lasttime
 
         # initialize udp client
-        self.client=UDPClient(servIP="127.0.0.1", ownIP="127.0.0.1", port="21590")
+        self.client=UDPClient(servIP="127.0.0.1", ownIP="127.0.0.1", port="21590", buf="16384")
     
 
     def start(self):
@@ -89,7 +89,7 @@ class ODEViewer(object):
     
 
     
-    def updateData(self):
+    def updateData(self):        
         try: 
             self.message = self.client.listen()
         except: 
