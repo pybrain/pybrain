@@ -22,16 +22,19 @@ class ODEEnvironment(GraphicalEnvironment):
     # define a verbosity level for selective debug output (0=none)
     verbosity = 0
 
-    def __init__(self, render=True):
+    def __init__(self, renderer=True, realtime=True, ip="127.0.0.1", port="21590", buf='16384'):
         """ initializes the virtual world, variables, the frame rate and the callback functions."""
         print "ODEEnvironment -- based on Open Dynamics Engine."
         
         # initialize base class
         GraphicalEnvironment.__init__(self)
         
-        self.updateDone = True
-        self.updateLock = threading.Lock()
-        self.server = UDPServer('127.0.0.1', '21590', buf='16384')
+        if renderer:
+            self.updateDone = True
+            self.updateLock = threading.Lock()
+            self.server = UDPServer(ip, port, buf)
+        self.render=renderer
+        self.realtime=realtime
         
         # initialize attributes
         self.resetAttributes()
@@ -365,11 +368,11 @@ class ODEEnvironment(GraphicalEnvironment):
         
         for i in range(self.stepsPerAction):
             self.step()
-        
-        if self.updateDone: 
-            self.updateClients()                    
-            # if self.server.clients > 0:
-                # time.sleep(0.2)
+        if self.render:
+            if self.updateDone: 
+                self.updateClients()                    
+                #if self.server.clients > 0 and self.realtime:
+                #    time.sleep(self.dt)
 
     def getXODERoot(self):
         return self.root
