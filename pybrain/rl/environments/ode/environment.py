@@ -5,7 +5,9 @@ import ode, xode.parser, xode.body, xode.geom
 from pybrain.rl.environments.graphical import GraphicalEnvironment
 from tools.configgrab import ConfigGrabber
 import sensors, actuators
-from renderer import ODERenderer
+from pybrain.utilities import threaded
+import threading
+from pybrain.tools.networking.udpconnection import UDPServer
 
 class ODEEnvironment(GraphicalEnvironment):
     """
@@ -27,10 +29,9 @@ class ODEEnvironment(GraphicalEnvironment):
         # initialize base class
         GraphicalEnvironment.__init__(self)
         
-        # set renderer
-        if render:
-            self.setRenderer(ODERenderer())
-            self.getRenderer().setKeyboardCallback(self._keyfunc)
+        self.updateDone = True
+        self.updateLock = threading.Lock()
+        self.server = UDPServer('127.0.0.1', '21590')
         
         # initialize attributes
         self.resetAttributes()
@@ -363,6 +364,11 @@ class ODEEnvironment(GraphicalEnvironment):
         
         for i in range(self.stepsPerAction):
             self.step()
+        
+        if self.updateDone: 
+            self.updateClients()                    
+            # if self.server.clients > 0:
+                # time.sleep(0.2)
 
     def getXODERoot(self):
         return self.root
@@ -408,6 +414,67 @@ class ODEEnvironment(GraphicalEnvironment):
     def getCurrentStep(self):
         return self.stepCounter
     
+    @threaded()  
+    def updateClients(self):
+        self.updateDone = False      
+        if not self.updateLock.acquire(False): 
+            return
+        
+        # build message to send
+        message = []
+        for (body, geom) in self.body_geom:
+            item = {}
+            # real bodies (boxes, spheres, ...)
+            if body != None:
+                # transform (rotate, translate) body accordingly
+                item['position'] = body.getPosition()
+                item['rotation'] = body.getRotation()
+                
+                # switch different geom objects
+                if type(geom) == ode.GeomBox:
+                    # cube
+                    item['type'] = 'GeomBox'
+                    item['scale'] = geom.getLengths()
+                elif type(geom) == ode.GeomSphere:
+                    # sphere
+                    item['type'] = 'GeomSphere'
+                    item['radius'] = geom.getRadius()
+
+                elif type(geom) == ode.GeomCCylinder:
+                    # capped cylinder
+                    item['type'] = 'GeomCCylinder'
+                    item['radius'] = geom.getParams()[0]
+                    item['length'] = geom.getParams()[1] - 2*item['radius']
+
+                elif type(geom) == ode.GeomCylinder:
+                        # solid cylinder
+                        item['type'] = 'GeomCylinder'
+                        item['radius'] = geom.getParams()[0]
+                        item['length'] = geom.getParams()[1]         
+                else:
+                    # TODO: add other geoms here
+                    pass
+
+            else:
+                # no body found, then it must be a plane (we only draw planes)
+                if type(geom) == ode.GeomPlane:
+                    # plane
+                    item['type'] = 'GeomPlane'
+                    item['normal'] = geom.getParams()[0] # the normal vector to the plane
+                    item['distance'] = geom.getParams()[1] # the distance to the origin
+            
+            message.append(item)
+        
+        # Listen for clients
+        self.server.listen()
+        if self.server.clients > 0: 
+            # If there are clients send them the new data
+            self.server.send(message)
+        
+        time.sleep(0.02)
+        self.updateLock.release()
+        self.updateDone=True
+            
     def step(self):
         """ Here the ode physics is calculated by one step. """
 
@@ -419,84 +486,19 @@ class ODEEnvironment(GraphicalEnvironment):
         # Simulation step
         self.world.step(float(self.dt))
         # Remove all contact joints
-        self.contactgroup.empty() 
-
-        # update data for renderer if available
-        if self.hasRenderer():
-            self.getRenderer().updateData(self.body_geom)
-
-            # if capturing mode on, wait for renderer to save image
-            if self.renderer.getCaptureScreen():
-                self.renderer.waitScreenCapturing()
-                while self.renderer.isScreenCapturing():
-                    time.sleep(0.001)
-                    pass
+        self.contactgroup.empty()
             
         # update all sensors
         for s in self.sensors:
             s._update()
-            
+        
+        # update clients
+        self.updateClients()
+        
         # increase step counter
         self.stepCounter += 1
         return self.stepCounter
             
-    def _keyfunc (self, c, x, y):
-        """ keyboard call-back function. """
-        if self.specialkeyfunc(c, x, y):
-            return
-        
-        # use numbers and shift-numbers (english keyb.) to manipulate single joints
-        shiftnum = {'!':'1', '@':'2', '#':'3', '$':'4', '%':'5', '^':'6', '&':'7', '*':'8', '(':'9'}
-        
-        if c in shiftnum.values():
-            rvec = [0] * self.getActionLength()
-            if int(c)-1 < len(rvec):
-                rvec[int(c)-1] = 2000
-            self.performAction(rvec)
-        
-        if c in shiftnum.keys():
-            c = shiftnum[c]
-            rvec = [0] * self.getActionLength()
-            if int(c)-1 < len(rvec):
-                rvec[int(c)-1] = -2000
-            self.performAction(rvec)
-            
-        if c=='s':
-            self.renderer.setCaptureScreen(not self.renderer.getCaptureScreen())
-            print "Screen Capture: " + (self.renderer.getCaptureScreen() and "on" or "off")
-        # if c=='m':
-        #     self.mouseView = not self.mouseView
-        #     print "Mouse view mode: " + (self.mouseView and "on" or "off")
-        if c=='d':
-            self.drop_object()
-        if c in ['x', 'q']:
-            sys.exit()
-        if c == 'r':
-            rvec = [random.random()*20.0-10.0 for x in range(self.getActionLength())]
-            self.performAction(rvec)
-        if c == 'v':
-            if self.hasRenderer():
-                self.getRenderer().mouseView = not self.getRenderer().mouseView
-        if c == 'f':
-            # add force in positive y direction to all objects
-            for o in [x[0] for x in self.body_geom]:
-                if o is not None:
-                    o.addForce((0, 3000, 0))
-        if c == 'z':
-            # add same torque to all joints
-            rvec = [3000] * self.getActionLength()
-            self.performAction(rvec)
-        if c == 'a':
-            # add same torque to all joints
-            rvec = [-3000] * self.getActionLength()
-            self.performAction(rvec)
-        if c =='g':
-            # get current state
-            print self.getSensors()
-        if c =='n':
-            # get current state
-            self.reset()        
-
     def _printfunc (self):
         pass
         # print self.root.namedChild('palm').getODEObject().getPosition()
@@ -532,10 +534,10 @@ if __name__ == '__main__' :
     """
     little example on how to use the virtual world.
     Synopsis: python odeenvironment.py [modelname]
-    Parameters: modelname = base name of the xode file to use (default: crawler)
+    Parameters: modelname = base name of the xode file to use (default: johnnie)
     """
 
-    print "ODEEnvironment - test program"
+    print "ODEEnvironment -- test program"
     if len(sys.argv) > 1:
         modelName = sys.argv[1]
     else:
@@ -548,9 +550,6 @@ if __name__ == '__main__' :
     
     w.addSensor(sensors.JointSensor())
     w.addActuator(actuators.JointActuator())
-    
-    w.getRenderer().setFrameRate(30) 
-    w.getRenderer().start()
     
     # start simulating the world
     while True:
