@@ -16,7 +16,7 @@ from pybrain.tools.networking.udpconnection import UDPClient
 
 
 class ODEViewer(object):
-    def __init__(self):
+    def __init__(self, servIP="127.0.0.1", ownIP="127.0.0.1", port="21590", buf="16384"):
         
         # initialize the viewport size
         self.width = 800
@@ -60,7 +60,7 @@ class ODEViewer(object):
         self.starttime = self.lasttime
 
         # initialize udp client
-        self.client=UDPClient(servIP="127.0.0.1", ownIP="127.0.0.1", port="21590", buf="16384")
+        self.client=UDPClient(servIP, ownIP, port, buf)
     
 
     def start(self):
@@ -366,6 +366,7 @@ class ODEViewer(object):
 
 
 if __name__ == '__main__':
-    odeview = ODEViewer()
+    s=sys.argv[1:]
+    odeview = ODEViewer(*s)
     odeview.start()
     

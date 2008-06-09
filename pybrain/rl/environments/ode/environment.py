@@ -190,7 +190,6 @@ class ODEEnvironment(GraphicalEnvironment):
                 
         # load bodies and geoms for painting
         self.body_geom = [] 
-        print "huhu"
         self._parseBodies(self.root)
 
         if self.verbosity > 0:
@@ -371,8 +370,8 @@ class ODEEnvironment(GraphicalEnvironment):
         if self.render:
             if self.updateDone: 
                 self.updateClients()                    
-                #if self.server.clients > 0 and self.realtime:
-                #    time.sleep(self.dt)
+                if self.server.clients > 0 and self.realtime:
+                    time.sleep(self.dt)
 
     def getXODERoot(self):
         return self.root
@@ -474,7 +473,6 @@ class ODEEnvironment(GraphicalEnvironment):
         if self.server.clients > 0: 
             # If there are clients send them the new data
             self.server.send(message)
-        
         time.sleep(0.02)
         self.updateLock.release()
         self.updateDone=True
