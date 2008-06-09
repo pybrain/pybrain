@@ -1,5 +1,5 @@
 from pybrain.rl.environments.serverInterface import GraphicalEnvironment
-from renderInterface import JohnnieRenderInterface
+#from renderInterface import JohnnieRenderInterface
 from pybrain.rl.environments.ode import *
 import imp
 from scipy import array
