@@ -4,7 +4,7 @@
 # UDPServer waits till at least one client is connected.                                                    #
 # It then sends a list to the connected clients (can also be a list of scipy arrays!)                       #
 # There can connect several clients to the server but the same data is sent to all clients.                 #
-# Options for the cunstructor are the server IP and the starting port (2 adjacent ports will be used)       #
+# Options for the constructor are the server IP and the starting port (2 adjacent ports will be used)       #
 #                                                                                                           #
 # UDPClient trys to connect to a UDPServer till the connection is established.                              #
 # The client then recives data from the server and parses it into an list of the original shape.            #
@@ -26,7 +26,7 @@ class UDPServer(object):
         self.host = ip
         self.inPort = eval(port)+1
         self.outPort = eval(port)
-        self.buf = 1024
+        self.buf = 16384
         self.addr = (self.host,self.inPort)
 
         #Create socket and bind to address
@@ -95,25 +95,27 @@ class UDPClient(object):
         self.inAddr = (ownIP,self.inPort)
         self.outAddr = (self.host,self.outPort)
         self.ownIP=ownIP
-        self.buf=1024
+        self.buf=16384
 
         # Create sockets
         self.createSockets()
 
     # Listen for data from server
-    def listen(self, arrayList):
+    def listen(self, arrayList=None):
         # Send alive signal (own IP adress)
         self.UDPOutSock.sendto(self.ownIP,self.outAddr)
-        #If there is no data from Server for 10 seconds server is propably down
+        # if there is no data from Server for 10 seconds server is propably down
         self.UDPInSock.settimeout(10) 
         try:
             data = self.UDPInSock.recv(self.buf)
+
             try:              
               arrayList=eval(data)
               return arrayList
             except:
-              print "Unsupportet data format recived from", self.outAddr, "!"
+              print "Unsupported data format received from", self.outAddr, "!"
               return None
+    
         except:
             print "Server has quit!"
             return None
