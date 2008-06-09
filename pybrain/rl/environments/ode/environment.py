@@ -31,7 +31,7 @@ class ODEEnvironment(GraphicalEnvironment):
         
         self.updateDone = True
         self.updateLock = threading.Lock()
-        self.server = UDPServer('127.0.0.1', '21590')
+        self.server = UDPServer('127.0.0.1', '21590', buf='16384')
         
         # initialize attributes
         self.resetAttributes()
@@ -187,6 +187,7 @@ class ODEEnvironment(GraphicalEnvironment):
                 
         # load bodies and geoms for painting
         self.body_geom = [] 
+        print "huhu"
         self._parseBodies(self.root)
 
         if self.verbosity > 0:
@@ -553,5 +554,4 @@ if __name__ == '__main__' :
     
     # start simulating the world
     while True:
-        w.step() 
-    
+        w.step()     
