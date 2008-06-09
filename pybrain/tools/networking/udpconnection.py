@@ -21,7 +21,7 @@ from scipy import array
 
 # The server class
 class UDPServer(object):
-    def __init__(self, ip="127.0.0.1", port="21560", buf=1024):
+    def __init__(self, ip="127.0.0.1", port="21560", buf="1024"):
         #Socket settings
         self.host = ip
         self.inPort = eval(port)+1
@@ -87,7 +87,7 @@ class UDPServer(object):
 
 # The client class
 class UDPClient(object):
-    def __init__(self, servIP="127.0.0.1", ownIP="127.0.0.1", port="21560", buf=1024):
+    def __init__(self, servIP="127.0.0.1", ownIP="127.0.0.1", port="21560", buf="1024"):
         #UDP Sttings
         self.host = servIP
         self.inPort = eval(port)
