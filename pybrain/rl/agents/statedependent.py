@@ -1,10 +1,10 @@
 __author__ = 'Thomas Rueckstiess, ruecksti@in.tum.de'
 
+from scipy import ravel
 from learning import LearningAgent
 from policygradient import PolicyGradientAgent
 from pybrain.structure import StateDependentLayer, IdentityConnection
 from pybrain import buildNetwork
-
 
 class StateDependentAgent(PolicyGradientAgent):
     """ StateDependentAgent is a learning agent, that adds a GaussianLayer to its module and stores its
@@ -14,7 +14,7 @@ class StateDependentAgent(PolicyGradientAgent):
     def __init__(self, module, learner = None):
         LearningAgent.__init__(self, module, learner)
         
-        # exploration module
+        # exploration module (linear flat network)
         self.explorationmodule = buildNetwork(self.indim, self.outdim, bias=False)
         
         # state dependent exploration layer
@@ -34,13 +34,13 @@ class StateDependentAgent(PolicyGradientAgent):
         self.history.link.append('loglh')
         self.loglh = None
         
-        # if this flag is set, random weights are drawn after each reward, effecticly
-        # acting like the vanilla policy gradient alg.
+        # if this flag is set to True, random weights are drawn after each reward,
+        # effectively acting like the vanilla policy gradient alg.
         self.actaspg = False
 
     def newEpisode(self):
         LearningAgent.newEpisode(self)
-        self.explorationlayer.drawRandomWeights()        
+        self.explorationlayer.drawRandomWeights()
 
     def getAction(self):
         self.explorationlayer.setState(self.lastobs)
