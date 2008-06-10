@@ -494,9 +494,6 @@ class ODEEnvironment(GraphicalEnvironment):
         for s in self.sensors:
             s._update()
         
-        # update clients
-        self.updateClients()
-        
         # increase step counter
         self.stepCounter += 1
         return self.stepCounter
