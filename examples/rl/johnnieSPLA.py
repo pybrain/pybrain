@@ -57,7 +57,7 @@ numbExp=1 #number of experiments
 for runs in range(numbExp):
     # create environment
     #Options: Bool(OpenGL), Bool(Realtime simu. while client is connected), ServerIP(default:localhost), Port(default:21560)
-    env = JohnnieEnvironment() #
+    env = JohnnieEnvironment(True, True, "131.159.60.203") #
     # create task
     task = StandingTask(env)
     # create controller network

@@ -50,16 +50,16 @@ def saveWeights(filename, w):
     filepointer.close()
 
 hiddenUnits = 4
-loadNet=False
-saveNet=True
-saveName="direction.wgt"
+loadNet=True
+saveNet=False
+saveName="target4.wgt"
 numbExp=1 #number of experiments
 for runs in range(numbExp):
     # create environment
     #Options: Bool(OpenGL), Bool(Realtime simu. while client is connected), ServerIP(default:localhost), Port(default:21560)
-    env = FlexCubeEnvironment()
+    env = FlexCubeEnvironment(True, True, "131.159.60.203")
     # create task
-    task = WalkDirectionTask(env)
+    task = WalkTask(env)
     # create controller network
     net = buildNetwork(len(task.getObservation()), hiddenUnits, env.actLen, outclass=TanhLayer)    
     # create agent with controller and learner
@@ -71,9 +71,9 @@ for runs in range(numbExp):
     
     #Loading weights
     if loadNet:
-        agent.learner.original=loadWeights("flexcube/jump.wgt")
+        agent.learner.original=loadWeights("walk.wgt")
         agent.learner.gd.init(agent.learner.original)
-        agent.learner.epsilon=0.000001
+        agent.learner.epsilon=0.000000002
         agent.learner.initSigmas()
 
     batch=2 #number of samples per gradient estimate
