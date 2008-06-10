@@ -12,6 +12,7 @@ from matplotlib import axes3d as a3
 class GaussianProcess:
 
     def __init__(self, indim, start, stop, step):
+        self.mean = 0
         self.indim = indim
         self.trainx = zeros((0, indim), float)
         self.trainy = zeros((0), float)
@@ -20,10 +21,11 @@ class GaussianProcess:
         self.calculated = True
         self.pred_mean = zeros(len(self.testx))
         self.pred_cov = eye(len(self.testx))
+        self.autonoise = False
     
     def _kernel(self, a, b):
         """ kernel function, here RBF kernel """
-        (l, sigma_f, sigma_n) = (0.3, 1.0, 0.1)
+        (l, sigma_f, sigma_n) = (0.3, 6.0, 0.001)
         return sigma_f**2*exp(-1.0/(2*l**2)*norm(a-b, 2)**2+sigma_n*eye(self.indim))
 
     def _buildGrid(self, start, stop, step):
@@ -37,7 +39,14 @@ class GaussianProcess:
             for j in range(len(b)):
                 K[i,j] = self._kernel(a[i,:], b[j,:])
         return K
-            
+    
+    def reset(self):
+        self.trainx = zeros((0, self.indim), float)
+        self.trainy = zeros((0), float)
+        self.noise = zeros((0), float)
+        self.pred_mean = zeros(len(self.testx))
+        self.pred_cov = eye(len(self.testx))
+              
     def trainOnDataset(self, dataset):
         """ takes a SequentialDataSet with indim input dimension and scalar target """
         assert (dataset.getDimension('input') == self.indim)
@@ -45,14 +54,14 @@ class GaussianProcess:
          
         self.trainx = dataset.getField('input')
         self.trainy = ravel(dataset.getField('target'))
-        self.noise = array([0.1]*len(self.trainx))
-        print self.trainx, self.trainy
+        self.noise = array([0.01]*len(self.trainx))
+        # print self.trainx, self.trainy
         self.calculated = False
         
     def addSample(self, train, target):
         self.trainx = r_[self.trainx, asarray([train])]
         self.trainy = r_[self.trainy, asarray(target)]
-        self.noise = r_[self.noise, array([0.1])]
+        self.noise = r_[self.noise, array([0.001])]
 
         self.calculated = False
         
@@ -65,7 +74,29 @@ class GaussianProcess:
 
         # calculate predictive mean and covariance
         K = train_train + self.noise*eye(len(self.trainx))
-        self.pred_mean = dot(test_train, solve(K, self.trainy, sym_pos=True))
+        
+        if self.autonoise:
+            # calculate average neighboring distance for auto-noise
+            avgdist = 0
+            sort_trainx = sort(self.trainx)
+            for i,d in enumerate(sort_trainx):
+                if i == 0:
+                    continue
+                avgdist += d - sort_trainx[i-1]
+            avgdist /= len(sort_trainx)-1
+            print avgdist
+            # sort(self.trainx)
+        
+            # add auto-noise from neighbouring samples (not standard gp)  
+            for i in range(len(self.trainx)):
+                for j in range(len(self.trainx)):
+                    if norm(self.trainx[i] - self.trainx[j]) > avgdist:
+                        continue
+                
+                    d = norm(self.trainy[i] - self.trainy[j]) / (exp(norm(self.trainx[i] - self.trainx[j])))
+                    K[i,i] += d
+        
+        self.pred_mean = self.mean+dot(test_train, solve(K, self.trainy-self.mean, sym_pos=False))
         self.pred_cov = test_test - dot(test_train, dot(inv(K), train_test))
         self.calculated = True
     
@@ -74,7 +105,7 @@ class GaussianProcess:
             self._calculate()
         
         return self.pred_mean + random.multivariate_normal(zeros(len(self.testx)), self.pred_cov)
-        
+    
     def plotCurves(self, showSamples=False):
         if not self.calculated:
             self._calculate()
@@ -84,7 +115,7 @@ class GaussianProcess:
             hold(True)
             if showSamples:
                 # plot samples (gray)
-                for i in range(50):
+                for i in range(5):
                     plot(self.testx, self.pred_mean + random.multivariate_normal(zeros(len(self.testx)), self.pred_cov), color='gray')
             
             # plot training set
@@ -105,7 +136,7 @@ class GaussianProcess:
             ax.plot_wireframe(x, y, z, colors='gray')
         
         else: print "plotting only supported for indim=1 or indim=2."
-
+    
 
 if __name__ == '__main__':
     # --- example on how to use the GP in 1 dimension
