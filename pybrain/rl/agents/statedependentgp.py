@@ -1,6 +1,6 @@
 __author__ = 'Thomas Rueckstiess, ruecksti@in.tum.de'
 
-from scipy import ravel
+from scipy import ravel, diag, where, random
 from learning import LearningAgent
 from policygradient import PolicyGradientAgent
 from pybrain.structure import StateDependentLayer, IdentityConnection
@@ -43,18 +43,22 @@ class StateDependentAgent(PolicyGradientAgent):
 
         # gaussian process
         self.gp = GaussianProcess(1, -5, 5, 0.1)
+        self.gp.autonoise = True
+        self.gp.mean = -3
 
     def newEpisode(self):
         params = ravel(self.explorationlayer.module.params)
         target = ravel(sum(self.history.getSequence(self.history.getNumSequences()-1)[2]) / 500)
-                
-        LearningAgent.newEpisode(self)
-        self.explorationlayer.drawRandomWeights()
-
-        print "params: %f, target: %f" % (params, target)
         if target != 0.0:
             self.gp.addSample(params, target)
-            self.gp.plotCurves()
+            # self.gp.noise += 0.01
+            self.gp.plotCurves()                
+        LearningAgent.newEpisode(self)
+        
+        indices = where(diag(self.gp.pred_cov) == diag(self.gp.pred_cov).max())[0]
+        new_param = self.gp.testx[indices[random.randint(len(indices))]]
+        self.explorationlayer.module._setParameters([new_param])
+    
 
     def getAction(self):
         self.explorationlayer.setState(self.lastobs)
