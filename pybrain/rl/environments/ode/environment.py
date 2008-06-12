@@ -53,6 +53,7 @@ class ODEEnvironment(GraphicalEnvironment):
         self.contactgroup = ode.JointGroup()
          
         self.dt = 0.01
+        self.FricMu = 8.0
         self.stepsPerAction = 1
         self.stepCounter = 0
         
@@ -404,12 +405,12 @@ class ODEEnvironment(GraphicalEnvironment):
             p = c.getContactGeomParams()
             # parameters from Niko Wolf
             c.setBounce(0.2)
-            c.setBounceVel(0.05)
-            c.setSoftERP(0.6)
-            c.setSoftCFM(0.00005)
-            c.setSlip1(0.02)
-            c.setSlip2(0.02)
-            c.setMu(8.0) # 10
+            c.setBounceVel(0.05) #Set the minimum incoming velocity necessary for bounce
+            c.setSoftERP(0.6) #Set the contact normal "softness" parameter
+            c.setSoftCFM(0.00005) #Set the contact normal "softness" parameter
+            c.setSlip1(0.02) #Set the coefficient of force-dependent-slip (FDS) for friction direction 1
+            c.setSlip2(0.02) #Set the coefficient of force-dependent-slip (FDS) for friction direction 2
+            c.setMu(self.FricMu) #Set the Coulomb friction coefficient
             j = ode.ContactJoint(self.world, self.contactgroup, c)
             j.name = None
             j.attach(geom1.getBody(), geom2.getBody())
