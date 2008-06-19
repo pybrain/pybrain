@@ -14,8 +14,8 @@ class CheaplyCopiable(ParameterContainer, Module):
         self.name = module.name+'-COPY'
         
     def copy(self):
+        self.__stored._params[:] = self._params
         cp = CheaplyCopiable(self.__stored)
-        cp.__stored._params[:] = self._params
         return cp
             
     @property
