@@ -49,10 +49,11 @@ class TournamentSelection(RankingFunction):
             for dummy in range(self.tournamentSize-1):
                 randindex = i
                 while randindex == i:
-                    randindex = randint(len(R))
+                    randindex = randint(0, len(R)-1)
                 l.append(randindex)
             fits = map(lambda x: R[x], l)
             res[argmax(fits)] += 1
+        return res
                 
             
 class SmoothGiniRanking(RankingFunction):
