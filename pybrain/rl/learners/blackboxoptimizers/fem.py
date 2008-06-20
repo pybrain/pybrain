@@ -58,6 +58,7 @@ class FEM(BlackBoxOptimizer):
         self.generation = 0
         self.allsamples = []
         self.muevals = []
+        self.allsigmas =[]
         
     def _stoppingCriterion(self):
         if self.evalMus:
@@ -111,6 +112,8 @@ class FEM(BlackBoxOptimizer):
                     if me > self.bestEvaluation:
                         self.bestEvaluation, self.bestEvaluable = me, m
                     self.muevals.append(me)
+                    import copy
+                    self.allsigmas.append(copy.deepcopy(self.sigmas))
             else:
                 self.muevals.append(self.bestEvaluation)
                     
@@ -200,7 +203,8 @@ class FEM(BlackBoxOptimizer):
         newSigma = zeros((self.xdim, self.xdim))
         for i in indices:
             newMu += weightings[i] * self.samples[i]
-            dif = self.samples[i]-oldMu
+        for i in indices:
+            dif = self.samples[i]-newMu
             newSigma += weightings[i] * outer(dif, dif) 
         return newMu, newSigma
         
