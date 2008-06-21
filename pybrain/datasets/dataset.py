@@ -12,13 +12,13 @@ from itertools import chain
 
 from scipy import zeros, resize, ravel, asarray
 
-from pybrain.utilities import abstractMethod
+from pybrain.utilities import abstractMethod, Serializable
 
 class OutOfSyncError(Exception): pass
 class VectorFormatError(Exception): pass
 class NoLinkedFieldsError(Exception): pass
 
-class DataSet(object):
+class DataSet(Serializable):
     """ DataSet is a general base class for other data set classes (e.g. SupervisedDataSet, SequentialDataSet, ...).
         It consists of several fields. A field is a NumPy array with a label (a string) attached to it. Fields can
         be linked together, which means they must have the same length. """
@@ -336,13 +336,19 @@ class DataSet(object):
         obj = cls(*args, **kwargs)
         obj.__dict__.update(package['dict'])
         return obj
-        
-    def _initialValues(self):
-        abstractMethod()
-        
-    def _dumpDict(self):
-        return dict((k, v) for k, v in self.__dict__.items() 
-                    if type(v) is types.FunctionType)
+                    
+    def __reduce__(self):
+        def creator():
+            obj = self.__class__()
+            obj.vectorformat = self.vectorformat
+            return obj
+        args = tuple()
+        state = {
+            'data': self.data,
+            'link': self.link,
+            'endmarker': self.endmarker,
+        }
+        return creator, args, state, [], {}
         
     def copy(self):
         """ deep copy. """

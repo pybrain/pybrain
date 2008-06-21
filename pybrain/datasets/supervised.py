@@ -34,6 +34,12 @@ class SupervisedDataSet(DataSet):
         self.indim = self.getDimension('input')
         self.outdim = self.getDimension('target')
          
+    def __reduce__(self):
+        _, _, state, lst, dct = super(SupervisedDataSet, self).__reduce__()
+        creator = self.__class__
+        args = self.indim, self.outdim
+        return creator, args, state, [], {}
+        
     def addSample(self, inp, target):
         """ adds a new sample consisting of input, target.
             @param input: the input of the sample
@@ -96,11 +102,6 @@ class SupervisedDataSet(DataSet):
             module.reset()
             res += self.evaluateMSE(module.activate, **args)
         return res/averageOver
-        
-    def _initialValues(self):
-        args = self.data['input'].shape[0], self.data['target'].shape[0]
-        kwargs = {}
-        return args, kwargs
         
     def splitWithProportion(self, proportion = 0.5):
         """ produce two new datasets, each containing a part of the samples """

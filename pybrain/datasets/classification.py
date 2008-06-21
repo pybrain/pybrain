@@ -15,7 +15,7 @@ class ClassificationDataSet(SupervisedDataSet):
         if len(self) > 0:
             # calculate class histogram, if we already have data
             self.calculateStatistics()
-        self.convertField('target',int)
+        self.convertField('target', int)
         if class_labels is None:
             self.class_labels = list(set(self.getField('target').flatten()))
         else:
@@ -134,6 +134,13 @@ class ClassificationDataSet(SupervisedDataSet):
             idx = where(classes == cls)
             i = randint(len(idx), size=n-nVal)
             i = idx[i]
+            
+    def __reduce__(self):
+        _, _, state, lst, dct = super(ClassificationDataSet, self).__reduce__()
+        creator = self.__class__
+        args = self.indim, self.outdim, self.nClasses, self.class_labels
+        return creator, args, state, [], {}
+            
         
 class SequenceClassificationDataSet(SequentialDataSet, ClassificationDataSet):
     
@@ -151,6 +158,7 @@ class SequenceClassificationDataSet(SequentialDataSet, ClassificationDataSet):
             self.class_labels = class_labels
         # copy classes (may be changed into other representation)
         self.setField('class', self.getField('target') )
+
 
 if __name__ == "__main__":
     dataset = ClassificationDataSet(2,1, class_labels=['Urd','Verdandi','Skuld'])

@@ -2,7 +2,7 @@ from __future__ import with_statement
 
 __author__ = 'Tom Schaul, tom@idsia.ch; Justin Bayer, bayerj@in.tum.de'
 
-import cPickle
+import pickle
 import logging
 import threading
 import types
@@ -134,11 +134,11 @@ class Serializable(object):
             return self.loadFromFileLike(fp, protocol)
     
     def save_pickle(self, flo):
-        cPickle.dump(self, flo)
+        pickle.dump(self, flo)
         
     @classmethod
     def load_pickle(cls, flo):
-        return cPickle.load(flo)
+        return pickle.load(flo)
         
 
 class Named(XMLBuildable):

@@ -24,6 +24,8 @@ class ReinforcementDataSet(SequentialDataSet):
         self.addField('sequence_index', 1)
         self.append('sequence_index', 0)
         self.currentSeq = 0
+        self.statedim = statedim
+        self.actiondim = actiondim
     
     def addSample(self, state, action, reward):
         """ adds a new sample consisting of state, action, reward. 
@@ -38,7 +40,10 @@ class ReinforcementDataSet(SequentialDataSet):
             sums[n,:] = sum(self._getSequenceField(n,field), 0)       
         return sums
         
-    def _initialValues(self):
-        args = self.data['state'].shape[0], self.data['action'].shape[0]
-        kwargs = {}
-        return args, kwargs
+    def __reduce__(self):
+        # FIXME: This does actually not feel right: We have to use the DataSet
+        # method here, although we inherit from sequential dataset. 
+        _, _, state, lst, dct = DataSet.__reduce__(self)
+        creator = self.__class__
+        args = self.statedim, self.actiondim
+        return creator, args, state, [], {}
