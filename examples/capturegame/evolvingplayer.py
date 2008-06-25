@@ -8,7 +8,7 @@ from pybrain.structure.evolvables.cheaplycopiable import CheaplyCopiable
 from pybrain.rl.learners import ES
 from pybrain.utilities import storeCallResults
 from pybrain.rl.agents.capturegameplayers.killing import KillingPlayer
-
+from pybrain.structure.modules.mdlstm import MDLSTMLayer
 
 # task settings: opponent, averaging to reduce noise, board size, etc.
 size = 5
@@ -24,7 +24,7 @@ if False:
 else:
     # specialized mdrnn variation
     from pybrain.structure.networks.custom.capturegame import CaptureGameNetwork
-    net = CaptureGameNetwork(size = size, hsize = 2)
+    net = CaptureGameNetwork(size = size, hsize = 2, simpleborders = True, componentclass = MDLSTMLayer)
     
 net = CheaplyCopiable(net)
 print net.name, 'has', net.paramdim, 'trainable parameters.'

@@ -17,6 +17,10 @@ class BorderSwipingNetwork(SwipingNetwork):
     # if this flag is set, we extrapolate the values of unkown border connection weights
     # by initializing them to the closest match.
     extrapolateBorderValues = True
+        
+    # all border weights the same, except on corners?
+    simpleborders = False
+    
                     
     def __init__(self, inmesh = None, hiddenmesh = None, outmesh = None, **args):
         if inmesh != None:
@@ -30,34 +34,41 @@ class BorderSwipingNetwork(SwipingNetwork):
         self._buildSwipingStructure(inmesh, hiddenmesh, outmesh)
         self.addModule(BiasUnit(name = 'bias'))
         
-        # build the motherconnections for the borders
-        if not 'bordconns' in self.predefined:
-            self.predefined['bordconns'] = {}
-        for dim, maxval in enumerate(self.dims):
-            if dim > 0 and self.symmetricdimensions:
-                self.predefined['bordconns'][dim] = self.predefined['bordconns'][0]
-            elif dim not in self.predefined['bordconns']:
-                self.predefined['bordconns'][dim] = {}
-            tmp = self.predefined['bordconns'][dim].copy()
-            if len(self.dims) == 1 and () not in tmp:
-                tmp[()] = MotherConnection(hiddenmesh.componentIndim, name = 'bconn')
-            for t in iterCombinations(tupleRemoveItem(self.dims, dim)):                    
-                tc = self._canonicForm(t, dim)
-                if t == tc and t not in tmp:
-                    # the connections from the borders are symetrical, 
-                    # so we need seperate ones only up to the middle 
-                    tmp[t] = MotherConnection(hiddenmesh.componentIndim, name = 'bconn'+str(dim)+str(t))
-                    if self.extrapolateBorderValues:
-                        p = self._extrapolateBorderAt(t, self.predefined['bordconns'][dim])                        
-                        if p != None:
-                            tmp[t].params[:] = p
-            self.predefined['bordconns'][dim] = tmp
+        # build the motherconnections for the borders        
+        if self.simpleborders:
+            if not 'borderconn' in self.predefined:
+                self.predefined['borderconn'] = MotherConnection(hiddenmesh.componentIndim, name = 'bconn')
+        else:
+            if not 'bordconns' in self.predefined:
+                self.predefined['bordconns'] = {}        
+            for dim, maxval in enumerate(self.dims):
+                if dim > 0 and self.symmetricdimensions:
+                    self.predefined['bordconns'][dim] = self.predefined['bordconns'][0]
+                elif dim not in self.predefined['bordconns']:
+                    self.predefined['bordconns'][dim] = {}
+                tmp = self.predefined['bordconns'][dim].copy()
+                if len(self.dims) == 1 and () not in tmp:
+                    tmp[()] = MotherConnection(hiddenmesh.componentIndim, name = 'bconn')
+                for t in iterCombinations(tupleRemoveItem(self.dims, dim)):                    
+                    tc = self._canonicForm(t, dim)
+                    if t == tc and t not in tmp:
+                        # the connections from the borders are symetrical, 
+                        # so we need seperate ones only up to the middle 
+                        tmp[t] = MotherConnection(hiddenmesh.componentIndim, name = 'bconn'+str(dim)+str(t))
+                        if self.extrapolateBorderValues:
+                            p = self._extrapolateBorderAt(t, self.predefined['bordconns'][dim])                        
+                            if p != None:
+                                tmp[t].params[:] = p
+                self.predefined['bordconns'][dim] = tmp
                                         
         # link the bordering units to the bias, using the correct connection
         for dim, maxval in enumerate(self.dims):            
             for unit in self._iterateOverUnits():
-                tc = self._canonicForm(tupleRemoveItem(unit, dim), dim)                
-                bconn = self.predefined['bordconns'][dim][tc]
+                if self.simpleborders:
+                    bconn = self.predefined['borderconn']                     
+                else:
+                    tc = self._canonicForm(tupleRemoveItem(unit, dim), dim)                
+                    bconn = self.predefined['bordconns'][dim][tc]
                 hunits = []
                 if unit[dim] == 0:
                     for swipe in range(self.swipes):
@@ -93,4 +104,4 @@ class BorderSwipingNetwork(SwipingNetwork):
                 normalize += 1./dist
             params /= normalize
             return params
-        return None
+        return None 

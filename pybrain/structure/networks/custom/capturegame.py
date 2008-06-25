@@ -16,18 +16,19 @@ class CaptureGameNetwork(BorderSwipingNetwork):
     
     size = 5
     insize = 2
-    bnecksize = 1
-    combbnecksize = 1
     hsize = 5
     predefined = None
     directlink = False
     componentclass = TanhLayer
     peepholes = False
-    clusterssize = 1
-    clusteroverlap = 0
     outputs = 1
-    comboutputs = 0    
-    wtRange = 1
+    comboutputs = 0   
+    combinputs = 0
+    
+    #bnecksize = 1
+    #combbnecksize = 1
+    #clusterssize = 1
+    #clusteroverlap = 0
     
     # a flag purely for xml reading to avoid full reconstruction:            
     rebuilt = False
@@ -77,35 +78,48 @@ class CaptureGameNetwork(BorderSwipingNetwork):
                                                               outSliceFrom = self.hsize*(index), 
                                                               outSliceTo = self.hsize*(index+1)))
                         index += 1
+        # direct connections between input and output
         if self.directlink:
             self._buildDirectLink(inmesh, outmesh)
+            
+        # combined inputs
+        if self.combinputs > 0:
+            cin = LinearLayer(self.combinputs, name = 'globalin')
+            self.addInputModule(cin)
+            if 'globalinconn' not in self.predefined:
+                self.predefined['globalinconn'] = MotherConnection(cin.componentOutdim*hiddenmesh.componentIndim, 'globalinconn')
+            self._linkToAll(cin, hiddenmesh, self.predefined['globalinconn'])
         
     def _buildDirectLink(self, inmesh, outmesh):                
         if not 'directconn' in self.predefined:
             self.predefined['directconn'] = MotherConnection(inmesh.componentOutdim*outmesh.componentIndim, 'inconn')
         for unit in self._iterateOverUnits():
             self.addConnection(SharedFullConnection(self.predefined['directconn'], inmesh[unit], outmesh[unit]))
+            
+    def _linkToAll(self, inmod, mesh, conn):
+        for unit in self._iterateOverUnits():
+            self.addConnection(SharedFullConnection(conn, inmod, mesh[unit]))        
         
     def _generateName(self):
         """ generate a quasi unique name, using construction parameters """
         name = self.__class__.__name__
-        if self.size != 5:
-            name += '-s'+str(self.size)
+        #if self.size != 5:
+        name += '-s'+str(self.size)
         name += '-h'+str(self.hsize)
-        if self.bnecksize != 1:
-            name += '-bn'+str(self.bnecksize)
         if self.directlink:
             name += '-direct'
         if self.componentclass != TanhLayer:
             name += '-'+self.componentclass.__name__
         if self.outputs > 1:
             name += '-o'+str(self.outputs)
-        if self.comboutputs > 0:
-            name += '-combo'+str(self.comboutputs)
-        if self.combbnecksize > 0:
-            name += '-combbn'+str(self.combbnecksize)            
-        if self.clusterssize != 1:
-            name += '-cluster'+str(self.clusterssize)+'ov'+str(self.clusteroverlap)    
+        if self.combinputs > 0:
+            name += '-combin'+str(self.combinputs)
+        #if self.bnecksize != 1:
+        #    name += '-bn'+str(self.bnecksize)
+        #if self.combbnecksize > 0:
+        #    name += '-combbn'+str(self.combbnecksize)            
+        #if self.clusterssize != 1:
+        #    name += '-cluster'+str(self.clusterssize)+'ov'+str(self.clusteroverlap)    
         # add a 6-digit random number, for distinction:
         name += '--'+str(int(random.random()*9e5+1e5))   
         # TODO: use hash of the weights.
