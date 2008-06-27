@@ -1,0 +1,2741 @@
+<?xml version="1.0" ?>
+<PyBrain>
+	<Network class="pybrain.structure.networks.custom.capturegame.CaptureGameNetwork" name="CaptureGameNetwork-s5-h1--521415">
+		<RUNRES val="[-1.0, -1.0, -1.0, -1.0, -1.0, -0.94999999999999996, -1.0, -1.0, -1.0, -1.0, -1.0, -0.94999999999999996, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -0.94999999999999996, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -0.94999999999999996, -1.0, -0.90000000000000002, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -0.94999999999999996, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -0.94999999999999996, -1.0, -1.0, -0.94999999999999996, -0.94999999999999996, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -0.94999999999999996, -1.0, -1.0, -1.0, -0.94999999999999996, -1.0, -0.94999999999999996, -0.94999999999999996, -1.0, -1.0, -1.0, -1.0, -1.0, -0.90000000000000002, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -0.94999999999999996, -0.90000000000000002, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -0.94999999999999996, -1.0, -1.0, -1.0, -1.0, -0.94999999999999996, -1.0, -0.94999999999999996, -1.0, -1.0, -0.94999999999999996, -1.0, -0.84999999999999998, -1.0, -1.0, -0.94999999999999996, -1.0, -0.94999999999999996, -1.0, -1.0, -1.0, -1.0, -0.94999999999999996, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -0.94999999999999996, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -0.94999999999999996, -1.0, -0.94999999999999996, -0.94999999999999996, -1.0, -1.0, -0.94999999999999996, -1.0, -1.0, -1.0, -0.94999999999999996, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -0.94999999999999996, -1.0, -1.0, -1.0, -1.0, -0.94999999999999996, -1.0, -0.94999999999999996, -1.0, -1.0, -0.94999999999999996, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0]"/>
+		<name val="'CaptureGameNetwork-s5-h1--521415'"/>
+		<hsize val="1"/>
+		<dims val="(5, 5)"/>
+		<rebuilt val="True"/>
+		<simpleborders val="True"/>
+		<size val="5"/>
+		<Modules>
+			<LinearLayer class="pybrain.structure.modules.linearlayer.LinearLayer" inmodule="True" name="input">
+				<dim val="50"/>
+				<name val="'input'"/>
+			</LinearLayer>
+			<SigmoidLayer class="pybrain.structure.modules.sigmoidlayer.SigmoidLayer" name="output" outmodule="True">
+				<dim val="25"/>
+				<name val="'output'"/>
+			</SigmoidLayer>
+			<BiasUnit class="pybrain.structure.modules.biasunit.BiasUnit" name="bias">
+				<name val="'bias'"/>
+			</BiasUnit>
+			<TanhLayer class="pybrain.structure.modules.tanhlayer.TanhLayer" name="hidden(0, 0, 0)">
+				<dim val="1"/>
+			</TanhLayer>
+			<TanhLayer class="pybrain.structure.modules.tanhlayer.TanhLayer" name="hidden(0, 4, 2)">
+				<dim val="1"/>
+			</TanhLayer>
+			<TanhLayer class="pybrain.structure.modules.tanhlayer.TanhLayer" name="hidden(4, 0, 1)">
+				<dim val="1"/>
+			</TanhLayer>
+			<TanhLayer class="pybrain.structure.modules.tanhlayer.TanhLayer" name="hidden(4, 4, 3)">
+				<dim val="1"/>
+			</TanhLayer>
+			<TanhLayer class="pybrain.structure.modules.tanhlayer.TanhLayer" name="hidden(0, 1, 0)">
+				<dim val="1"/>
+			</TanhLayer>
+			<TanhLayer class="pybrain.structure.modules.tanhlayer.TanhLayer" name="hidden(1, 0, 0)">
+				<dim val="1"/>
+			</TanhLayer>
+			<TanhLayer class="pybrain.structure.modules.tanhlayer.TanhLayer" name="hidden(0, 3, 2)">
+				<dim val="1"/>
+			</TanhLayer>
+			<TanhLayer class="pybrain.structure.modules.tanhlayer.TanhLayer" name="hidden(1, 4, 2)">
+				<dim val="1"/>
+			</TanhLayer>
+			<TanhLayer class="pybrain.structure.modules.tanhlayer.TanhLayer" name="hidden(3, 0, 1)">
+				<dim val="1"/>
+			</TanhLayer>
+			<TanhLayer class="pybrain.structure.modules.tanhlayer.TanhLayer" name="hidden(4, 1, 1)">
+				<dim val="1"/>
+			</TanhLayer>
+			<TanhLayer class="pybrain.structure.modules.tanhlayer.TanhLayer" name="hidden(3, 4, 3)">
+				<dim val="1"/>
+			</TanhLayer>
+			<TanhLayer class="pybrain.structure.modules.tanhlayer.TanhLayer" name="hidden(4, 3, 3)">
+				<dim val="1"/>
+			</TanhLayer>
+			<TanhLayer class="pybrain.structure.modules.tanhlayer.TanhLayer" name="hidden(0, 2, 0)">
+				<dim val="1"/>
+			</TanhLayer>
+			<TanhLayer class="pybrain.structure.modules.tanhlayer.TanhLayer" name="hidden(1, 1, 0)">
+				<dim val="1"/>
+			</TanhLayer>
+			<TanhLayer class="pybrain.structure.modules.tanhlayer.TanhLayer" name="hidden(2, 0, 0)">
+				<dim val="1"/>
+			</TanhLayer>
+			<TanhLayer class="pybrain.structure.modules.tanhlayer.TanhLayer" name="hidden(0, 2, 2)">
+				<dim val="1"/>
+			</TanhLayer>
+			<TanhLayer class="pybrain.structure.modules.tanhlayer.TanhLayer" name="hidden(1, 3, 2)">
+				<dim val="1"/>
+			</TanhLayer>
+			<TanhLayer class="pybrain.structure.modules.tanhlayer.TanhLayer" name="hidden(2, 4, 2)">
+				<dim val="1"/>
+			</TanhLayer>
+			<TanhLayer class="pybrain.structure.modules.tanhlayer.TanhLayer" name="hidden(2, 0, 1)">
+				<dim val="1"/>
+			</TanhLayer>
+			<TanhLayer class="pybrain.structure.modules.tanhlayer.TanhLayer" name="hidden(3, 1, 1)">
+				<dim val="1"/>
+			</TanhLayer>
+			<TanhLayer class="pybrain.structure.modules.tanhlayer.TanhLayer" name="hidden(4, 2, 1)">
+				<dim val="1"/>
+			</TanhLayer>
+			<TanhLayer class="pybrain.structure.modules.tanhlayer.TanhLayer" name="hidden(2, 4, 3)">
+				<dim val="1"/>
+			</TanhLayer>
+			<TanhLayer class="pybrain.structure.modules.tanhlayer.TanhLayer" name="hidden(3, 3, 3)">
+				<dim val="1"/>
+			</TanhLayer>
+			<TanhLayer class="pybrain.structure.modules.tanhlayer.TanhLayer" name="hidden(4, 2, 3)">
+				<dim val="1"/>
+			</TanhLayer>
+			<TanhLayer class="pybrain.structure.modules.tanhlayer.TanhLayer" name="hidden(0, 3, 0)">
+				<dim val="1"/>
+			</TanhLayer>
+			<TanhLayer class="pybrain.structure.modules.tanhlayer.TanhLayer" name="hidden(1, 2, 0)">
+				<dim val="1"/>
+			</TanhLayer>
+			<TanhLayer class="pybrain.structure.modules.tanhlayer.TanhLayer" name="hidden(2, 1, 0)">
+				<dim val="1"/>
+			</TanhLayer>
+			<TanhLayer class="pybrain.structure.modules.tanhlayer.TanhLayer" name="hidden(3, 0, 0)">
+				<dim val="1"/>
+			</TanhLayer>
+			<TanhLayer class="pybrain.structure.modules.tanhlayer.TanhLayer" name="hidden(0, 1, 2)">
+				<dim val="1"/>
+			</TanhLayer>
+			<TanhLayer class="pybrain.structure.modules.tanhlayer.TanhLayer" name="hidden(1, 2, 2)">
+				<dim val="1"/>
+			</TanhLayer>
+			<TanhLayer class="pybrain.structure.modules.tanhlayer.TanhLayer" name="hidden(2, 3, 2)">
+				<dim val="1"/>
+			</TanhLayer>
+			<TanhLayer class="pybrain.structure.modules.tanhlayer.TanhLayer" name="hidden(3, 4, 2)">
+				<dim val="1"/>
+			</TanhLayer>
+			<TanhLayer class="pybrain.structure.modules.tanhlayer.TanhLayer" name="hidden(1, 0, 1)">
+				<dim val="1"/>
+			</TanhLayer>
+			<TanhLayer class="pybrain.structure.modules.tanhlayer.TanhLayer" name="hidden(2, 1, 1)">
+				<dim val="1"/>
+			</TanhLayer>
+			<TanhLayer class="pybrain.structure.modules.tanhlayer.TanhLayer" name="hidden(3, 2, 1)">
+				<dim val="1"/>
+			</TanhLayer>
+			<TanhLayer class="pybrain.structure.modules.tanhlayer.TanhLayer" name="hidden(4, 3, 1)">
+				<dim val="1"/>
+			</TanhLayer>
+			<TanhLayer class="pybrain.structure.modules.tanhlayer.TanhLayer" name="hidden(1, 4, 3)">
+				<dim val="1"/>
+			</TanhLayer>
+			<TanhLayer class="pybrain.structure.modules.tanhlayer.TanhLayer" name="hidden(2, 3, 3)">
+				<dim val="1"/>
+			</TanhLayer>
+			<TanhLayer class="pybrain.structure.modules.tanhlayer.TanhLayer" name="hidden(3, 2, 3)">
+				<dim val="1"/>
+			</TanhLayer>
+			<TanhLayer class="pybrain.structure.modules.tanhlayer.TanhLayer" name="hidden(4, 1, 3)">
+				<dim val="1"/>
+			</TanhLayer>
+			<TanhLayer class="pybrain.structure.modules.tanhlayer.TanhLayer" name="hidden(0, 4, 0)">
+				<dim val="1"/>
+			</TanhLayer>
+			<TanhLayer class="pybrain.structure.modules.tanhlayer.TanhLayer" name="hidden(1, 3, 0)">
+				<dim val="1"/>
+			</TanhLayer>
+			<TanhLayer class="pybrain.structure.modules.tanhlayer.TanhLayer" name="hidden(2, 2, 0)">
+				<dim val="1"/>
+			</TanhLayer>
+			<TanhLayer class="pybrain.structure.modules.tanhlayer.TanhLayer" name="hidden(3, 1, 0)">
+				<dim val="1"/>
+			</TanhLayer>
+			<TanhLayer class="pybrain.structure.modules.tanhlayer.TanhLayer" name="hidden(4, 0, 0)">
+				<dim val="1"/>
+			</TanhLayer>
+			<TanhLayer class="pybrain.structure.modules.tanhlayer.TanhLayer" name="hidden(0, 0, 2)">
+				<dim val="1"/>
+			</TanhLayer>
+			<TanhLayer class="pybrain.structure.modules.tanhlayer.TanhLayer" name="hidden(1, 1, 2)">
+				<dim val="1"/>
+			</TanhLayer>
+			<TanhLayer class="pybrain.structure.modules.tanhlayer.TanhLayer" name="hidden(2, 2, 2)">
+				<dim val="1"/>
+			</TanhLayer>
+			<TanhLayer class="pybrain.structure.modules.tanhlayer.TanhLayer" name="hidden(3, 3, 2)">
+				<dim val="1"/>
+			</TanhLayer>
+			<TanhLayer class="pybrain.structure.modules.tanhlayer.TanhLayer" name="hidden(4, 4, 2)">
+				<dim val="1"/>
+			</TanhLayer>
+			<TanhLayer class="pybrain.structure.modules.tanhlayer.TanhLayer" name="hidden(0, 0, 1)">
+				<dim val="1"/>
+			</TanhLayer>
+			<TanhLayer class="pybrain.structure.modules.tanhlayer.TanhLayer" name="hidden(1, 1, 1)">
+				<dim val="1"/>
+			</TanhLayer>
+			<TanhLayer class="pybrain.structure.modules.tanhlayer.TanhLayer" name="hidden(2, 2, 1)">
+				<dim val="1"/>
+			</TanhLayer>
+			<TanhLayer class="pybrain.structure.modules.tanhlayer.TanhLayer" name="hidden(3, 3, 1)">
+				<dim val="1"/>
+			</TanhLayer>
+			<TanhLayer class="pybrain.structure.modules.tanhlayer.TanhLayer" name="hidden(4, 4, 1)">
+				<dim val="1"/>
+			</TanhLayer>
+			<TanhLayer class="pybrain.structure.modules.tanhlayer.TanhLayer" name="hidden(0, 4, 3)">
+				<dim val="1"/>
+			</TanhLayer>
+			<TanhLayer class="pybrain.structure.modules.tanhlayer.TanhLayer" name="hidden(1, 3, 3)">
+				<dim val="1"/>
+			</TanhLayer>
+			<TanhLayer class="pybrain.structure.modules.tanhlayer.TanhLayer" name="hidden(2, 2, 3)">
+				<dim val="1"/>
+			</TanhLayer>
+			<TanhLayer class="pybrain.structure.modules.tanhlayer.TanhLayer" name="hidden(3, 1, 3)">
+				<dim val="1"/>
+			</TanhLayer>
+			<TanhLayer class="pybrain.structure.modules.tanhlayer.TanhLayer" name="hidden(4, 0, 3)">
+				<dim val="1"/>
+			</TanhLayer>
+			<TanhLayer class="pybrain.structure.modules.tanhlayer.TanhLayer" name="hidden(1, 4, 0)">
+				<dim val="1"/>
+			</TanhLayer>
+			<TanhLayer class="pybrain.structure.modules.tanhlayer.TanhLayer" name="hidden(2, 3, 0)">
+				<dim val="1"/>
+			</TanhLayer>
+			<TanhLayer class="pybrain.structure.modules.tanhlayer.TanhLayer" name="hidden(3, 2, 0)">
+				<dim val="1"/>
+			</TanhLayer>
+			<TanhLayer class="pybrain.structure.modules.tanhlayer.TanhLayer" name="hidden(4, 1, 0)">
+				<dim val="1"/>
+			</TanhLayer>
+			<TanhLayer class="pybrain.structure.modules.tanhlayer.TanhLayer" name="hidden(1, 0, 2)">
+				<dim val="1"/>
+			</TanhLayer>
+			<TanhLayer class="pybrain.structure.modules.tanhlayer.TanhLayer" name="hidden(2, 1, 2)">
+				<dim val="1"/>
+			</TanhLayer>
+			<TanhLayer class="pybrain.structure.modules.tanhlayer.TanhLayer" name="hidden(3, 2, 2)">
+				<dim val="1"/>
+			</TanhLayer>
+			<TanhLayer class="pybrain.structure.modules.tanhlayer.TanhLayer" name="hidden(4, 3, 2)">
+				<dim val="1"/>
+			</TanhLayer>
+			<TanhLayer class="pybrain.structure.modules.tanhlayer.TanhLayer" name="hidden(0, 1, 1)">
+				<dim val="1"/>
+			</TanhLayer>
+			<TanhLayer class="pybrain.structure.modules.tanhlayer.TanhLayer" name="hidden(1, 2, 1)">
+				<dim val="1"/>
+			</TanhLayer>
+			<TanhLayer class="pybrain.structure.modules.tanhlayer.TanhLayer" name="hidden(2, 3, 1)">
+				<dim val="1"/>
+			</TanhLayer>
+			<TanhLayer class="pybrain.structure.modules.tanhlayer.TanhLayer" name="hidden(3, 4, 1)">
+				<dim val="1"/>
+			</TanhLayer>
+			<TanhLayer class="pybrain.structure.modules.tanhlayer.TanhLayer" name="hidden(0, 3, 3)">
+				<dim val="1"/>
+			</TanhLayer>
+			<TanhLayer class="pybrain.structure.modules.tanhlayer.TanhLayer" name="hidden(1, 2, 3)">
+				<dim val="1"/>
+			</TanhLayer>
+			<TanhLayer class="pybrain.structure.modules.tanhlayer.TanhLayer" name="hidden(2, 1, 3)">
+				<dim val="1"/>
+			</TanhLayer>
+			<TanhLayer class="pybrain.structure.modules.tanhlayer.TanhLayer" name="hidden(3, 0, 3)">
+				<dim val="1"/>
+			</TanhLayer>
+			<TanhLayer class="pybrain.structure.modules.tanhlayer.TanhLayer" name="hidden(2, 4, 0)">
+				<dim val="1"/>
+			</TanhLayer>
+			<TanhLayer class="pybrain.structure.modules.tanhlayer.TanhLayer" name="hidden(3, 3, 0)">
+				<dim val="1"/>
+			</TanhLayer>
+			<TanhLayer class="pybrain.structure.modules.tanhlayer.TanhLayer" name="hidden(4, 2, 0)">
+				<dim val="1"/>
+			</TanhLayer>
+			<TanhLayer class="pybrain.structure.modules.tanhlayer.TanhLayer" name="hidden(2, 0, 2)">
+				<dim val="1"/>
+			</TanhLayer>
+			<TanhLayer class="pybrain.structure.modules.tanhlayer.TanhLayer" name="hidden(3, 1, 2)">
+				<dim val="1"/>
+			</TanhLayer>
+			<TanhLayer class="pybrain.structure.modules.tanhlayer.TanhLayer" name="hidden(4, 2, 2)">
+				<dim val="1"/>
+			</TanhLayer>
+			<TanhLayer class="pybrain.structure.modules.tanhlayer.TanhLayer" name="hidden(0, 2, 1)">
+				<dim val="1"/>
+			</TanhLayer>
+			<TanhLayer class="pybrain.structure.modules.tanhlayer.TanhLayer" name="hidden(1, 3, 1)">
+				<dim val="1"/>
+			</TanhLayer>
+			<TanhLayer class="pybrain.structure.modules.tanhlayer.TanhLayer" name="hidden(2, 4, 1)">
+				<dim val="1"/>
+			</TanhLayer>
+			<TanhLayer class="pybrain.structure.modules.tanhlayer.TanhLayer" name="hidden(0, 2, 3)">
+				<dim val="1"/>
+			</TanhLayer>
+			<TanhLayer class="pybrain.structure.modules.tanhlayer.TanhLayer" name="hidden(1, 1, 3)">
+				<dim val="1"/>
+			</TanhLayer>
+			<TanhLayer class="pybrain.structure.modules.tanhlayer.TanhLayer" name="hidden(2, 0, 3)">
+				<dim val="1"/>
+			</TanhLayer>
+			<TanhLayer class="pybrain.structure.modules.tanhlayer.TanhLayer" name="hidden(3, 4, 0)">
+				<dim val="1"/>
+			</TanhLayer>
+			<TanhLayer class="pybrain.structure.modules.tanhlayer.TanhLayer" name="hidden(4, 3, 0)">
+				<dim val="1"/>
+			</TanhLayer>
+			<TanhLayer class="pybrain.structure.modules.tanhlayer.TanhLayer" name="hidden(3, 0, 2)">
+				<dim val="1"/>
+			</TanhLayer>
+			<TanhLayer class="pybrain.structure.modules.tanhlayer.TanhLayer" name="hidden(4, 1, 2)">
+				<dim val="1"/>
+			</TanhLayer>
+			<TanhLayer class="pybrain.structure.modules.tanhlayer.TanhLayer" name="hidden(0, 3, 1)">
+				<dim val="1"/>
+			</TanhLayer>
+			<TanhLayer class="pybrain.structure.modules.tanhlayer.TanhLayer" name="hidden(1, 4, 1)">
+				<dim val="1"/>
+			</TanhLayer>
+			<TanhLayer class="pybrain.structure.modules.tanhlayer.TanhLayer" name="hidden(0, 1, 3)">
+				<dim val="1"/>
+			</TanhLayer>
+			<TanhLayer class="pybrain.structure.modules.tanhlayer.TanhLayer" name="hidden(1, 0, 3)">
+				<dim val="1"/>
+			</TanhLayer>
+			<TanhLayer class="pybrain.structure.modules.tanhlayer.TanhLayer" name="hidden(4, 4, 0)">
+				<dim val="1"/>
+			</TanhLayer>
+			<TanhLayer class="pybrain.structure.modules.tanhlayer.TanhLayer" name="hidden(4, 0, 2)">
+				<dim val="1"/>
+			</TanhLayer>
+			<TanhLayer class="pybrain.structure.modules.tanhlayer.TanhLayer" name="hidden(0, 4, 1)">
+				<dim val="1"/>
+			</TanhLayer>
+			<TanhLayer class="pybrain.structure.modules.tanhlayer.TanhLayer" name="hidden(0, 0, 3)">
+				<dim val="1"/>
+			</TanhLayer>
+		</Modules>
+		<MotherConnections>
+			<MotherConnection class="pybrain.structure.connections.shared.MotherConnection" name="bconn">
+				<nbparams val="1"/>
+				<name val="'bconn'"/>
+				<Parameters>
+					[-1.4879813892]
+				</Parameters>
+			</MotherConnection>
+			<MotherConnection class="pybrain.structure.connections.shared.MotherConnection" name="hconn0">
+				<nbparams val="1"/>
+				<name val="'hconn0'"/>
+				<Parameters>
+					[-0.39460345997]
+				</Parameters>
+			</MotherConnection>
+			<MotherConnection class="pybrain.structure.connections.shared.MotherConnection" name="inconn">
+				<nbparams val="2"/>
+				<name val="'inconn'"/>
+				<Parameters>
+					[-0.338302754617, -0.24393834683]
+				</Parameters>
+			</MotherConnection>
+			<MotherConnection class="pybrain.structure.connections.shared.MotherConnection" name="outconn">
+				<nbparams val="1"/>
+				<name val="'outconn'"/>
+				<Parameters>
+					[-0.287292707462]
+				</Parameters>
+			</MotherConnection>
+		</MotherConnections>
+		<Connections>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="bconn">
+				<inmod val="bias"/>
+				<outmod val="hidden(0, 0, 0)"/>
+				<mother val="bconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="bconn">
+				<inmod val="bias"/>
+				<outmod val="hidden(0, 0, 2)"/>
+				<mother val="bconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="bconn">
+				<inmod val="bias"/>
+				<outmod val="hidden(0, 1, 0)"/>
+				<mother val="bconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="bconn">
+				<inmod val="bias"/>
+				<outmod val="hidden(0, 1, 2)"/>
+				<mother val="bconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="bconn">
+				<inmod val="bias"/>
+				<outmod val="hidden(0, 2, 0)"/>
+				<mother val="bconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="bconn">
+				<inmod val="bias"/>
+				<outmod val="hidden(0, 2, 2)"/>
+				<mother val="bconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="bconn">
+				<inmod val="bias"/>
+				<outmod val="hidden(0, 3, 0)"/>
+				<mother val="bconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="bconn">
+				<inmod val="bias"/>
+				<outmod val="hidden(0, 3, 2)"/>
+				<mother val="bconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="bconn">
+				<inmod val="bias"/>
+				<outmod val="hidden(0, 4, 0)"/>
+				<mother val="bconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="bconn">
+				<inmod val="bias"/>
+				<outmod val="hidden(0, 4, 2)"/>
+				<mother val="bconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="bconn">
+				<inmod val="bias"/>
+				<outmod val="hidden(4, 0, 1)"/>
+				<mother val="bconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="bconn">
+				<inmod val="bias"/>
+				<outmod val="hidden(4, 0, 3)"/>
+				<mother val="bconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="bconn">
+				<inmod val="bias"/>
+				<outmod val="hidden(4, 1, 1)"/>
+				<mother val="bconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="bconn">
+				<inmod val="bias"/>
+				<outmod val="hidden(4, 1, 3)"/>
+				<mother val="bconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="bconn">
+				<inmod val="bias"/>
+				<outmod val="hidden(4, 2, 1)"/>
+				<mother val="bconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="bconn">
+				<inmod val="bias"/>
+				<outmod val="hidden(4, 2, 3)"/>
+				<mother val="bconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="bconn">
+				<inmod val="bias"/>
+				<outmod val="hidden(4, 3, 1)"/>
+				<mother val="bconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="bconn">
+				<inmod val="bias"/>
+				<outmod val="hidden(4, 3, 3)"/>
+				<mother val="bconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="bconn">
+				<inmod val="bias"/>
+				<outmod val="hidden(4, 4, 1)"/>
+				<mother val="bconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="bconn">
+				<inmod val="bias"/>
+				<outmod val="hidden(4, 4, 3)"/>
+				<mother val="bconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="bconn">
+				<inmod val="bias"/>
+				<outmod val="hidden(0, 0, 0)"/>
+				<mother val="bconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="bconn">
+				<inmod val="bias"/>
+				<outmod val="hidden(0, 0, 1)"/>
+				<mother val="bconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="bconn">
+				<inmod val="bias"/>
+				<outmod val="hidden(0, 4, 2)"/>
+				<mother val="bconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="bconn">
+				<inmod val="bias"/>
+				<outmod val="hidden(0, 4, 3)"/>
+				<mother val="bconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="bconn">
+				<inmod val="bias"/>
+				<outmod val="hidden(1, 0, 0)"/>
+				<mother val="bconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="bconn">
+				<inmod val="bias"/>
+				<outmod val="hidden(1, 0, 1)"/>
+				<mother val="bconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="bconn">
+				<inmod val="bias"/>
+				<outmod val="hidden(1, 4, 2)"/>
+				<mother val="bconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="bconn">
+				<inmod val="bias"/>
+				<outmod val="hidden(1, 4, 3)"/>
+				<mother val="bconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="bconn">
+				<inmod val="bias"/>
+				<outmod val="hidden(2, 0, 0)"/>
+				<mother val="bconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="bconn">
+				<inmod val="bias"/>
+				<outmod val="hidden(2, 0, 1)"/>
+				<mother val="bconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="bconn">
+				<inmod val="bias"/>
+				<outmod val="hidden(2, 4, 2)"/>
+				<mother val="bconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="bconn">
+				<inmod val="bias"/>
+				<outmod val="hidden(2, 4, 3)"/>
+				<mother val="bconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="bconn">
+				<inmod val="bias"/>
+				<outmod val="hidden(3, 0, 0)"/>
+				<mother val="bconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="bconn">
+				<inmod val="bias"/>
+				<outmod val="hidden(3, 0, 1)"/>
+				<mother val="bconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="bconn">
+				<inmod val="bias"/>
+				<outmod val="hidden(3, 4, 2)"/>
+				<mother val="bconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="bconn">
+				<inmod val="bias"/>
+				<outmod val="hidden(3, 4, 3)"/>
+				<mother val="bconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="bconn">
+				<inmod val="bias"/>
+				<outmod val="hidden(4, 0, 0)"/>
+				<mother val="bconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="bconn">
+				<inmod val="bias"/>
+				<outmod val="hidden(4, 0, 1)"/>
+				<mother val="bconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="bconn">
+				<inmod val="bias"/>
+				<outmod val="hidden(4, 4, 2)"/>
+				<mother val="bconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="bconn">
+				<inmod val="bias"/>
+				<outmod val="hidden(4, 4, 3)"/>
+				<mother val="bconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="inconn">
+				<inmod val="input"/>
+				<mother val="inconn"/>
+				<outmod val="hidden(0, 0, 0)"/>
+				<inSliceTo val="2"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="inconn">
+				<inmod val="input"/>
+				<mother val="inconn"/>
+				<outmod val="hidden(0, 0, 1)"/>
+				<inSliceTo val="2"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="inconn">
+				<inmod val="input"/>
+				<mother val="inconn"/>
+				<outmod val="hidden(0, 0, 2)"/>
+				<inSliceTo val="2"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="inconn">
+				<inmod val="input"/>
+				<mother val="inconn"/>
+				<outmod val="hidden(0, 0, 3)"/>
+				<inSliceTo val="2"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="inconn">
+				<inmod val="input"/>
+				<mother val="inconn"/>
+				<inSliceFrom val="2"/>
+				<outmod val="hidden(0, 1, 0)"/>
+				<inSliceTo val="4"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="inconn">
+				<inmod val="input"/>
+				<mother val="inconn"/>
+				<inSliceFrom val="2"/>
+				<outmod val="hidden(0, 1, 1)"/>
+				<inSliceTo val="4"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="inconn">
+				<inmod val="input"/>
+				<mother val="inconn"/>
+				<inSliceFrom val="2"/>
+				<outmod val="hidden(0, 1, 2)"/>
+				<inSliceTo val="4"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="inconn">
+				<inmod val="input"/>
+				<mother val="inconn"/>
+				<inSliceFrom val="2"/>
+				<outmod val="hidden(0, 1, 3)"/>
+				<inSliceTo val="4"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="inconn">
+				<inmod val="input"/>
+				<mother val="inconn"/>
+				<inSliceFrom val="4"/>
+				<outmod val="hidden(0, 2, 0)"/>
+				<inSliceTo val="6"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="inconn">
+				<inmod val="input"/>
+				<mother val="inconn"/>
+				<inSliceFrom val="4"/>
+				<outmod val="hidden(0, 2, 1)"/>
+				<inSliceTo val="6"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="inconn">
+				<inmod val="input"/>
+				<mother val="inconn"/>
+				<inSliceFrom val="4"/>
+				<outmod val="hidden(0, 2, 2)"/>
+				<inSliceTo val="6"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="inconn">
+				<inmod val="input"/>
+				<mother val="inconn"/>
+				<inSliceFrom val="4"/>
+				<outmod val="hidden(0, 2, 3)"/>
+				<inSliceTo val="6"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="inconn">
+				<inmod val="input"/>
+				<mother val="inconn"/>
+				<inSliceFrom val="6"/>
+				<outmod val="hidden(0, 3, 0)"/>
+				<inSliceTo val="8"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="inconn">
+				<inmod val="input"/>
+				<mother val="inconn"/>
+				<inSliceFrom val="6"/>
+				<outmod val="hidden(0, 3, 1)"/>
+				<inSliceTo val="8"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="inconn">
+				<inmod val="input"/>
+				<mother val="inconn"/>
+				<inSliceFrom val="6"/>
+				<outmod val="hidden(0, 3, 2)"/>
+				<inSliceTo val="8"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="inconn">
+				<inmod val="input"/>
+				<mother val="inconn"/>
+				<inSliceFrom val="6"/>
+				<outmod val="hidden(0, 3, 3)"/>
+				<inSliceTo val="8"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="inconn">
+				<inmod val="input"/>
+				<mother val="inconn"/>
+				<inSliceFrom val="8"/>
+				<outmod val="hidden(0, 4, 0)"/>
+				<inSliceTo val="10"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="inconn">
+				<inmod val="input"/>
+				<mother val="inconn"/>
+				<inSliceFrom val="8"/>
+				<outmod val="hidden(0, 4, 1)"/>
+				<inSliceTo val="10"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="inconn">
+				<inmod val="input"/>
+				<mother val="inconn"/>
+				<inSliceFrom val="8"/>
+				<outmod val="hidden(0, 4, 2)"/>
+				<inSliceTo val="10"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="inconn">
+				<inmod val="input"/>
+				<mother val="inconn"/>
+				<inSliceFrom val="8"/>
+				<outmod val="hidden(0, 4, 3)"/>
+				<inSliceTo val="10"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="inconn">
+				<inmod val="input"/>
+				<mother val="inconn"/>
+				<inSliceFrom val="10"/>
+				<outmod val="hidden(1, 0, 0)"/>
+				<inSliceTo val="12"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="inconn">
+				<inmod val="input"/>
+				<mother val="inconn"/>
+				<inSliceFrom val="10"/>
+				<outmod val="hidden(1, 0, 1)"/>
+				<inSliceTo val="12"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="inconn">
+				<inmod val="input"/>
+				<mother val="inconn"/>
+				<inSliceFrom val="10"/>
+				<outmod val="hidden(1, 0, 2)"/>
+				<inSliceTo val="12"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="inconn">
+				<inmod val="input"/>
+				<mother val="inconn"/>
+				<inSliceFrom val="10"/>
+				<outmod val="hidden(1, 0, 3)"/>
+				<inSliceTo val="12"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="inconn">
+				<inmod val="input"/>
+				<mother val="inconn"/>
+				<inSliceFrom val="12"/>
+				<outmod val="hidden(1, 1, 0)"/>
+				<inSliceTo val="14"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="inconn">
+				<inmod val="input"/>
+				<mother val="inconn"/>
+				<inSliceFrom val="12"/>
+				<outmod val="hidden(1, 1, 1)"/>
+				<inSliceTo val="14"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="inconn">
+				<inmod val="input"/>
+				<mother val="inconn"/>
+				<inSliceFrom val="12"/>
+				<outmod val="hidden(1, 1, 2)"/>
+				<inSliceTo val="14"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="inconn">
+				<inmod val="input"/>
+				<mother val="inconn"/>
+				<inSliceFrom val="12"/>
+				<outmod val="hidden(1, 1, 3)"/>
+				<inSliceTo val="14"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="inconn">
+				<inmod val="input"/>
+				<mother val="inconn"/>
+				<inSliceFrom val="14"/>
+				<outmod val="hidden(1, 2, 0)"/>
+				<inSliceTo val="16"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="inconn">
+				<inmod val="input"/>
+				<mother val="inconn"/>
+				<inSliceFrom val="14"/>
+				<outmod val="hidden(1, 2, 1)"/>
+				<inSliceTo val="16"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="inconn">
+				<inmod val="input"/>
+				<mother val="inconn"/>
+				<inSliceFrom val="14"/>
+				<outmod val="hidden(1, 2, 2)"/>
+				<inSliceTo val="16"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="inconn">
+				<inmod val="input"/>
+				<mother val="inconn"/>
+				<inSliceFrom val="14"/>
+				<outmod val="hidden(1, 2, 3)"/>
+				<inSliceTo val="16"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="inconn">
+				<inmod val="input"/>
+				<mother val="inconn"/>
+				<inSliceFrom val="16"/>
+				<outmod val="hidden(1, 3, 0)"/>
+				<inSliceTo val="18"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="inconn">
+				<inmod val="input"/>
+				<mother val="inconn"/>
+				<inSliceFrom val="16"/>
+				<outmod val="hidden(1, 3, 1)"/>
+				<inSliceTo val="18"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="inconn">
+				<inmod val="input"/>
+				<mother val="inconn"/>
+				<inSliceFrom val="16"/>
+				<outmod val="hidden(1, 3, 2)"/>
+				<inSliceTo val="18"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="inconn">
+				<inmod val="input"/>
+				<mother val="inconn"/>
+				<inSliceFrom val="16"/>
+				<outmod val="hidden(1, 3, 3)"/>
+				<inSliceTo val="18"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="inconn">
+				<inmod val="input"/>
+				<mother val="inconn"/>
+				<inSliceFrom val="18"/>
+				<outmod val="hidden(1, 4, 0)"/>
+				<inSliceTo val="20"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="inconn">
+				<inmod val="input"/>
+				<mother val="inconn"/>
+				<inSliceFrom val="18"/>
+				<outmod val="hidden(1, 4, 1)"/>
+				<inSliceTo val="20"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="inconn">
+				<inmod val="input"/>
+				<mother val="inconn"/>
+				<inSliceFrom val="18"/>
+				<outmod val="hidden(1, 4, 2)"/>
+				<inSliceTo val="20"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="inconn">
+				<inmod val="input"/>
+				<mother val="inconn"/>
+				<inSliceFrom val="18"/>
+				<outmod val="hidden(1, 4, 3)"/>
+				<inSliceTo val="20"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="inconn">
+				<inmod val="input"/>
+				<mother val="inconn"/>
+				<inSliceFrom val="20"/>
+				<outmod val="hidden(2, 0, 0)"/>
+				<inSliceTo val="22"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="inconn">
+				<inmod val="input"/>
+				<mother val="inconn"/>
+				<inSliceFrom val="20"/>
+				<outmod val="hidden(2, 0, 1)"/>
+				<inSliceTo val="22"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="inconn">
+				<inmod val="input"/>
+				<mother val="inconn"/>
+				<inSliceFrom val="20"/>
+				<outmod val="hidden(2, 0, 2)"/>
+				<inSliceTo val="22"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="inconn">
+				<inmod val="input"/>
+				<mother val="inconn"/>
+				<inSliceFrom val="20"/>
+				<outmod val="hidden(2, 0, 3)"/>
+				<inSliceTo val="22"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="inconn">
+				<inmod val="input"/>
+				<mother val="inconn"/>
+				<inSliceFrom val="22"/>
+				<outmod val="hidden(2, 1, 0)"/>
+				<inSliceTo val="24"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="inconn">
+				<inmod val="input"/>
+				<mother val="inconn"/>
+				<inSliceFrom val="22"/>
+				<outmod val="hidden(2, 1, 1)"/>
+				<inSliceTo val="24"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="inconn">
+				<inmod val="input"/>
+				<mother val="inconn"/>
+				<inSliceFrom val="22"/>
+				<outmod val="hidden(2, 1, 2)"/>
+				<inSliceTo val="24"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="inconn">
+				<inmod val="input"/>
+				<mother val="inconn"/>
+				<inSliceFrom val="22"/>
+				<outmod val="hidden(2, 1, 3)"/>
+				<inSliceTo val="24"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="inconn">
+				<inmod val="input"/>
+				<mother val="inconn"/>
+				<inSliceFrom val="24"/>
+				<outmod val="hidden(2, 2, 0)"/>
+				<inSliceTo val="26"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="inconn">
+				<inmod val="input"/>
+				<mother val="inconn"/>
+				<inSliceFrom val="24"/>
+				<outmod val="hidden(2, 2, 1)"/>
+				<inSliceTo val="26"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="inconn">
+				<inmod val="input"/>
+				<mother val="inconn"/>
+				<inSliceFrom val="24"/>
+				<outmod val="hidden(2, 2, 2)"/>
+				<inSliceTo val="26"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="inconn">
+				<inmod val="input"/>
+				<mother val="inconn"/>
+				<inSliceFrom val="24"/>
+				<outmod val="hidden(2, 2, 3)"/>
+				<inSliceTo val="26"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="inconn">
+				<inmod val="input"/>
+				<mother val="inconn"/>
+				<inSliceFrom val="26"/>
+				<outmod val="hidden(2, 3, 0)"/>
+				<inSliceTo val="28"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="inconn">
+				<inmod val="input"/>
+				<mother val="inconn"/>
+				<inSliceFrom val="26"/>
+				<outmod val="hidden(2, 3, 1)"/>
+				<inSliceTo val="28"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="inconn">
+				<inmod val="input"/>
+				<mother val="inconn"/>
+				<inSliceFrom val="26"/>
+				<outmod val="hidden(2, 3, 2)"/>
+				<inSliceTo val="28"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="inconn">
+				<inmod val="input"/>
+				<mother val="inconn"/>
+				<inSliceFrom val="26"/>
+				<outmod val="hidden(2, 3, 3)"/>
+				<inSliceTo val="28"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="inconn">
+				<inmod val="input"/>
+				<mother val="inconn"/>
+				<inSliceFrom val="28"/>
+				<outmod val="hidden(2, 4, 0)"/>
+				<inSliceTo val="30"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="inconn">
+				<inmod val="input"/>
+				<mother val="inconn"/>
+				<inSliceFrom val="28"/>
+				<outmod val="hidden(2, 4, 1)"/>
+				<inSliceTo val="30"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="inconn">
+				<inmod val="input"/>
+				<mother val="inconn"/>
+				<inSliceFrom val="28"/>
+				<outmod val="hidden(2, 4, 2)"/>
+				<inSliceTo val="30"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="inconn">
+				<inmod val="input"/>
+				<mother val="inconn"/>
+				<inSliceFrom val="28"/>
+				<outmod val="hidden(2, 4, 3)"/>
+				<inSliceTo val="30"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="inconn">
+				<inmod val="input"/>
+				<mother val="inconn"/>
+				<inSliceFrom val="30"/>
+				<outmod val="hidden(3, 0, 0)"/>
+				<inSliceTo val="32"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="inconn">
+				<inmod val="input"/>
+				<mother val="inconn"/>
+				<inSliceFrom val="30"/>
+				<outmod val="hidden(3, 0, 1)"/>
+				<inSliceTo val="32"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="inconn">
+				<inmod val="input"/>
+				<mother val="inconn"/>
+				<inSliceFrom val="30"/>
+				<outmod val="hidden(3, 0, 2)"/>
+				<inSliceTo val="32"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="inconn">
+				<inmod val="input"/>
+				<mother val="inconn"/>
+				<inSliceFrom val="30"/>
+				<outmod val="hidden(3, 0, 3)"/>
+				<inSliceTo val="32"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="inconn">
+				<inmod val="input"/>
+				<mother val="inconn"/>
+				<inSliceFrom val="32"/>
+				<outmod val="hidden(3, 1, 0)"/>
+				<inSliceTo val="34"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="inconn">
+				<inmod val="input"/>
+				<mother val="inconn"/>
+				<inSliceFrom val="32"/>
+				<outmod val="hidden(3, 1, 1)"/>
+				<inSliceTo val="34"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="inconn">
+				<inmod val="input"/>
+				<mother val="inconn"/>
+				<inSliceFrom val="32"/>
+				<outmod val="hidden(3, 1, 2)"/>
+				<inSliceTo val="34"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="inconn">
+				<inmod val="input"/>
+				<mother val="inconn"/>
+				<inSliceFrom val="32"/>
+				<outmod val="hidden(3, 1, 3)"/>
+				<inSliceTo val="34"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="inconn">
+				<inmod val="input"/>
+				<mother val="inconn"/>
+				<inSliceFrom val="34"/>
+				<outmod val="hidden(3, 2, 0)"/>
+				<inSliceTo val="36"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="inconn">
+				<inmod val="input"/>
+				<mother val="inconn"/>
+				<inSliceFrom val="34"/>
+				<outmod val="hidden(3, 2, 1)"/>
+				<inSliceTo val="36"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="inconn">
+				<inmod val="input"/>
+				<mother val="inconn"/>
+				<inSliceFrom val="34"/>
+				<outmod val="hidden(3, 2, 2)"/>
+				<inSliceTo val="36"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="inconn">
+				<inmod val="input"/>
+				<mother val="inconn"/>
+				<inSliceFrom val="34"/>
+				<outmod val="hidden(3, 2, 3)"/>
+				<inSliceTo val="36"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="inconn">
+				<inmod val="input"/>
+				<mother val="inconn"/>
+				<inSliceFrom val="36"/>
+				<outmod val="hidden(3, 3, 0)"/>
+				<inSliceTo val="38"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="inconn">
+				<inmod val="input"/>
+				<mother val="inconn"/>
+				<inSliceFrom val="36"/>
+				<outmod val="hidden(3, 3, 1)"/>
+				<inSliceTo val="38"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="inconn">
+				<inmod val="input"/>
+				<mother val="inconn"/>
+				<inSliceFrom val="36"/>
+				<outmod val="hidden(3, 3, 2)"/>
+				<inSliceTo val="38"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="inconn">
+				<inmod val="input"/>
+				<mother val="inconn"/>
+				<inSliceFrom val="36"/>
+				<outmod val="hidden(3, 3, 3)"/>
+				<inSliceTo val="38"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="inconn">
+				<inmod val="input"/>
+				<mother val="inconn"/>
+				<inSliceFrom val="38"/>
+				<outmod val="hidden(3, 4, 0)"/>
+				<inSliceTo val="40"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="inconn">
+				<inmod val="input"/>
+				<mother val="inconn"/>
+				<inSliceFrom val="38"/>
+				<outmod val="hidden(3, 4, 1)"/>
+				<inSliceTo val="40"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="inconn">
+				<inmod val="input"/>
+				<mother val="inconn"/>
+				<inSliceFrom val="38"/>
+				<outmod val="hidden(3, 4, 2)"/>
+				<inSliceTo val="40"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="inconn">
+				<inmod val="input"/>
+				<mother val="inconn"/>
+				<inSliceFrom val="38"/>
+				<outmod val="hidden(3, 4, 3)"/>
+				<inSliceTo val="40"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="inconn">
+				<inmod val="input"/>
+				<mother val="inconn"/>
+				<inSliceFrom val="40"/>
+				<outmod val="hidden(4, 0, 0)"/>
+				<inSliceTo val="42"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="inconn">
+				<inmod val="input"/>
+				<mother val="inconn"/>
+				<inSliceFrom val="40"/>
+				<outmod val="hidden(4, 0, 1)"/>
+				<inSliceTo val="42"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="inconn">
+				<inmod val="input"/>
+				<mother val="inconn"/>
+				<inSliceFrom val="40"/>
+				<outmod val="hidden(4, 0, 2)"/>
+				<inSliceTo val="42"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="inconn">
+				<inmod val="input"/>
+				<mother val="inconn"/>
+				<inSliceFrom val="40"/>
+				<outmod val="hidden(4, 0, 3)"/>
+				<inSliceTo val="42"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="inconn">
+				<inmod val="input"/>
+				<mother val="inconn"/>
+				<inSliceFrom val="42"/>
+				<outmod val="hidden(4, 1, 0)"/>
+				<inSliceTo val="44"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="inconn">
+				<inmod val="input"/>
+				<mother val="inconn"/>
+				<inSliceFrom val="42"/>
+				<outmod val="hidden(4, 1, 1)"/>
+				<inSliceTo val="44"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="inconn">
+				<inmod val="input"/>
+				<mother val="inconn"/>
+				<inSliceFrom val="42"/>
+				<outmod val="hidden(4, 1, 2)"/>
+				<inSliceTo val="44"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="inconn">
+				<inmod val="input"/>
+				<mother val="inconn"/>
+				<inSliceFrom val="42"/>
+				<outmod val="hidden(4, 1, 3)"/>
+				<inSliceTo val="44"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="inconn">
+				<inmod val="input"/>
+				<mother val="inconn"/>
+				<inSliceFrom val="44"/>
+				<outmod val="hidden(4, 2, 0)"/>
+				<inSliceTo val="46"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="inconn">
+				<inmod val="input"/>
+				<mother val="inconn"/>
+				<inSliceFrom val="44"/>
+				<outmod val="hidden(4, 2, 1)"/>
+				<inSliceTo val="46"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="inconn">
+				<inmod val="input"/>
+				<mother val="inconn"/>
+				<inSliceFrom val="44"/>
+				<outmod val="hidden(4, 2, 2)"/>
+				<inSliceTo val="46"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="inconn">
+				<inmod val="input"/>
+				<mother val="inconn"/>
+				<inSliceFrom val="44"/>
+				<outmod val="hidden(4, 2, 3)"/>
+				<inSliceTo val="46"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="inconn">
+				<inmod val="input"/>
+				<mother val="inconn"/>
+				<inSliceFrom val="46"/>
+				<outmod val="hidden(4, 3, 0)"/>
+				<inSliceTo val="48"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="inconn">
+				<inmod val="input"/>
+				<mother val="inconn"/>
+				<inSliceFrom val="46"/>
+				<outmod val="hidden(4, 3, 1)"/>
+				<inSliceTo val="48"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="inconn">
+				<inmod val="input"/>
+				<mother val="inconn"/>
+				<inSliceFrom val="46"/>
+				<outmod val="hidden(4, 3, 2)"/>
+				<inSliceTo val="48"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="inconn">
+				<inmod val="input"/>
+				<mother val="inconn"/>
+				<inSliceFrom val="46"/>
+				<outmod val="hidden(4, 3, 3)"/>
+				<inSliceTo val="48"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="inconn">
+				<inmod val="input"/>
+				<inSliceFrom val="48"/>
+				<outmod val="hidden(4, 4, 0)"/>
+				<mother val="inconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="inconn">
+				<inmod val="input"/>
+				<inSliceFrom val="48"/>
+				<outmod val="hidden(4, 4, 1)"/>
+				<mother val="inconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="inconn">
+				<inmod val="input"/>
+				<inSliceFrom val="48"/>
+				<outmod val="hidden(4, 4, 2)"/>
+				<mother val="inconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="inconn">
+				<inmod val="input"/>
+				<inSliceFrom val="48"/>
+				<outmod val="hidden(4, 4, 3)"/>
+				<mother val="inconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(0, 0, 0)"/>
+				<outmod val="hidden(0, 1, 0)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(0, 0, 0)"/>
+				<outmod val="hidden(1, 0, 0)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="outconn">
+				<inmod val="hidden(0, 0, 0)"/>
+				<outSliceTo val="1"/>
+				<outmod val="output"/>
+				<mother val="outconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(0, 4, 2)"/>
+				<outmod val="hidden(0, 3, 2)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(0, 4, 2)"/>
+				<outmod val="hidden(1, 4, 2)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="outconn">
+				<inmod val="hidden(0, 4, 2)"/>
+				<outSliceTo val="5"/>
+				<outSliceFrom val="4"/>
+				<outmod val="output"/>
+				<mother val="outconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(4, 0, 1)"/>
+				<outmod val="hidden(3, 0, 1)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(4, 0, 1)"/>
+				<outmod val="hidden(4, 1, 1)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="outconn">
+				<inmod val="hidden(4, 0, 1)"/>
+				<outSliceTo val="21"/>
+				<outSliceFrom val="20"/>
+				<outmod val="output"/>
+				<mother val="outconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(4, 4, 3)"/>
+				<outmod val="hidden(3, 4, 3)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(4, 4, 3)"/>
+				<outmod val="hidden(4, 3, 3)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="outconn">
+				<inmod val="hidden(4, 4, 3)"/>
+				<outSliceFrom val="24"/>
+				<outmod val="output"/>
+				<mother val="outconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(0, 1, 0)"/>
+				<outmod val="hidden(0, 2, 0)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(0, 1, 0)"/>
+				<outmod val="hidden(1, 1, 0)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="outconn">
+				<inmod val="hidden(0, 1, 0)"/>
+				<outSliceTo val="2"/>
+				<outSliceFrom val="1"/>
+				<outmod val="output"/>
+				<mother val="outconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(1, 0, 0)"/>
+				<outmod val="hidden(1, 1, 0)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(1, 0, 0)"/>
+				<outmod val="hidden(2, 0, 0)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="outconn">
+				<inmod val="hidden(1, 0, 0)"/>
+				<outSliceTo val="6"/>
+				<outSliceFrom val="5"/>
+				<outmod val="output"/>
+				<mother val="outconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(0, 3, 2)"/>
+				<outmod val="hidden(0, 2, 2)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(0, 3, 2)"/>
+				<outmod val="hidden(1, 3, 2)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="outconn">
+				<inmod val="hidden(0, 3, 2)"/>
+				<outSliceTo val="4"/>
+				<outSliceFrom val="3"/>
+				<outmod val="output"/>
+				<mother val="outconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(1, 4, 2)"/>
+				<outmod val="hidden(1, 3, 2)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(1, 4, 2)"/>
+				<outmod val="hidden(2, 4, 2)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="outconn">
+				<inmod val="hidden(1, 4, 2)"/>
+				<outSliceTo val="10"/>
+				<outSliceFrom val="9"/>
+				<outmod val="output"/>
+				<mother val="outconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(3, 0, 1)"/>
+				<outmod val="hidden(2, 0, 1)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(3, 0, 1)"/>
+				<outmod val="hidden(3, 1, 1)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="outconn">
+				<inmod val="hidden(3, 0, 1)"/>
+				<outSliceTo val="16"/>
+				<outSliceFrom val="15"/>
+				<outmod val="output"/>
+				<mother val="outconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(4, 1, 1)"/>
+				<outmod val="hidden(3, 1, 1)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(4, 1, 1)"/>
+				<outmod val="hidden(4, 2, 1)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="outconn">
+				<inmod val="hidden(4, 1, 1)"/>
+				<outSliceTo val="22"/>
+				<outSliceFrom val="21"/>
+				<outmod val="output"/>
+				<mother val="outconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(3, 4, 3)"/>
+				<outmod val="hidden(2, 4, 3)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(3, 4, 3)"/>
+				<outmod val="hidden(3, 3, 3)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="outconn">
+				<inmod val="hidden(3, 4, 3)"/>
+				<outSliceTo val="20"/>
+				<outSliceFrom val="19"/>
+				<outmod val="output"/>
+				<mother val="outconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(4, 3, 3)"/>
+				<outmod val="hidden(3, 3, 3)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(4, 3, 3)"/>
+				<outmod val="hidden(4, 2, 3)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="outconn">
+				<inmod val="hidden(4, 3, 3)"/>
+				<outSliceTo val="24"/>
+				<outSliceFrom val="23"/>
+				<outmod val="output"/>
+				<mother val="outconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(0, 2, 0)"/>
+				<outmod val="hidden(0, 3, 0)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(0, 2, 0)"/>
+				<outmod val="hidden(1, 2, 0)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="outconn">
+				<inmod val="hidden(0, 2, 0)"/>
+				<outSliceTo val="3"/>
+				<outSliceFrom val="2"/>
+				<outmod val="output"/>
+				<mother val="outconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(1, 1, 0)"/>
+				<outmod val="hidden(1, 2, 0)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(1, 1, 0)"/>
+				<outmod val="hidden(2, 1, 0)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="outconn">
+				<inmod val="hidden(1, 1, 0)"/>
+				<outSliceTo val="7"/>
+				<outSliceFrom val="6"/>
+				<outmod val="output"/>
+				<mother val="outconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(2, 0, 0)"/>
+				<outmod val="hidden(2, 1, 0)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(2, 0, 0)"/>
+				<outmod val="hidden(3, 0, 0)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="outconn">
+				<inmod val="hidden(2, 0, 0)"/>
+				<outSliceTo val="11"/>
+				<outSliceFrom val="10"/>
+				<outmod val="output"/>
+				<mother val="outconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(0, 2, 2)"/>
+				<outmod val="hidden(0, 1, 2)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(0, 2, 2)"/>
+				<outmod val="hidden(1, 2, 2)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="outconn">
+				<inmod val="hidden(0, 2, 2)"/>
+				<outSliceTo val="3"/>
+				<outSliceFrom val="2"/>
+				<outmod val="output"/>
+				<mother val="outconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(1, 3, 2)"/>
+				<outmod val="hidden(1, 2, 2)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(1, 3, 2)"/>
+				<outmod val="hidden(2, 3, 2)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="outconn">
+				<inmod val="hidden(1, 3, 2)"/>
+				<outSliceTo val="9"/>
+				<outSliceFrom val="8"/>
+				<outmod val="output"/>
+				<mother val="outconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(2, 4, 2)"/>
+				<outmod val="hidden(2, 3, 2)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(2, 4, 2)"/>
+				<outmod val="hidden(3, 4, 2)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="outconn">
+				<inmod val="hidden(2, 4, 2)"/>
+				<outSliceTo val="15"/>
+				<outSliceFrom val="14"/>
+				<outmod val="output"/>
+				<mother val="outconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(2, 0, 1)"/>
+				<outmod val="hidden(1, 0, 1)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(2, 0, 1)"/>
+				<outmod val="hidden(2, 1, 1)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="outconn">
+				<inmod val="hidden(2, 0, 1)"/>
+				<outSliceTo val="11"/>
+				<outSliceFrom val="10"/>
+				<outmod val="output"/>
+				<mother val="outconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(3, 1, 1)"/>
+				<outmod val="hidden(2, 1, 1)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(3, 1, 1)"/>
+				<outmod val="hidden(3, 2, 1)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="outconn">
+				<inmod val="hidden(3, 1, 1)"/>
+				<outSliceTo val="17"/>
+				<outSliceFrom val="16"/>
+				<outmod val="output"/>
+				<mother val="outconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(4, 2, 1)"/>
+				<outmod val="hidden(3, 2, 1)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(4, 2, 1)"/>
+				<outmod val="hidden(4, 3, 1)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="outconn">
+				<inmod val="hidden(4, 2, 1)"/>
+				<outSliceTo val="23"/>
+				<outSliceFrom val="22"/>
+				<outmod val="output"/>
+				<mother val="outconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(2, 4, 3)"/>
+				<outmod val="hidden(1, 4, 3)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(2, 4, 3)"/>
+				<outmod val="hidden(2, 3, 3)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="outconn">
+				<inmod val="hidden(2, 4, 3)"/>
+				<outSliceTo val="15"/>
+				<outSliceFrom val="14"/>
+				<outmod val="output"/>
+				<mother val="outconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(3, 3, 3)"/>
+				<outmod val="hidden(2, 3, 3)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(3, 3, 3)"/>
+				<outmod val="hidden(3, 2, 3)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="outconn">
+				<inmod val="hidden(3, 3, 3)"/>
+				<outSliceTo val="19"/>
+				<outSliceFrom val="18"/>
+				<outmod val="output"/>
+				<mother val="outconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(4, 2, 3)"/>
+				<outmod val="hidden(3, 2, 3)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(4, 2, 3)"/>
+				<outmod val="hidden(4, 1, 3)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="outconn">
+				<inmod val="hidden(4, 2, 3)"/>
+				<outSliceTo val="23"/>
+				<outSliceFrom val="22"/>
+				<outmod val="output"/>
+				<mother val="outconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(0, 3, 0)"/>
+				<outmod val="hidden(0, 4, 0)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(0, 3, 0)"/>
+				<outmod val="hidden(1, 3, 0)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="outconn">
+				<inmod val="hidden(0, 3, 0)"/>
+				<outSliceTo val="4"/>
+				<outSliceFrom val="3"/>
+				<outmod val="output"/>
+				<mother val="outconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(1, 2, 0)"/>
+				<outmod val="hidden(1, 3, 0)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(1, 2, 0)"/>
+				<outmod val="hidden(2, 2, 0)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="outconn">
+				<inmod val="hidden(1, 2, 0)"/>
+				<outSliceTo val="8"/>
+				<outSliceFrom val="7"/>
+				<outmod val="output"/>
+				<mother val="outconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(2, 1, 0)"/>
+				<outmod val="hidden(2, 2, 0)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(2, 1, 0)"/>
+				<outmod val="hidden(3, 1, 0)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="outconn">
+				<inmod val="hidden(2, 1, 0)"/>
+				<outSliceTo val="12"/>
+				<outSliceFrom val="11"/>
+				<outmod val="output"/>
+				<mother val="outconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(3, 0, 0)"/>
+				<outmod val="hidden(3, 1, 0)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(3, 0, 0)"/>
+				<outmod val="hidden(4, 0, 0)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="outconn">
+				<inmod val="hidden(3, 0, 0)"/>
+				<outSliceTo val="16"/>
+				<outSliceFrom val="15"/>
+				<outmod val="output"/>
+				<mother val="outconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(0, 1, 2)"/>
+				<outmod val="hidden(0, 0, 2)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(0, 1, 2)"/>
+				<outmod val="hidden(1, 1, 2)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="outconn">
+				<inmod val="hidden(0, 1, 2)"/>
+				<outSliceTo val="2"/>
+				<outSliceFrom val="1"/>
+				<outmod val="output"/>
+				<mother val="outconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(1, 2, 2)"/>
+				<outmod val="hidden(1, 1, 2)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(1, 2, 2)"/>
+				<outmod val="hidden(2, 2, 2)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="outconn">
+				<inmod val="hidden(1, 2, 2)"/>
+				<outSliceTo val="8"/>
+				<outSliceFrom val="7"/>
+				<outmod val="output"/>
+				<mother val="outconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(2, 3, 2)"/>
+				<outmod val="hidden(2, 2, 2)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(2, 3, 2)"/>
+				<outmod val="hidden(3, 3, 2)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="outconn">
+				<inmod val="hidden(2, 3, 2)"/>
+				<outSliceTo val="14"/>
+				<outSliceFrom val="13"/>
+				<outmod val="output"/>
+				<mother val="outconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(3, 4, 2)"/>
+				<outmod val="hidden(3, 3, 2)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(3, 4, 2)"/>
+				<outmod val="hidden(4, 4, 2)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="outconn">
+				<inmod val="hidden(3, 4, 2)"/>
+				<outSliceTo val="20"/>
+				<outSliceFrom val="19"/>
+				<outmod val="output"/>
+				<mother val="outconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(1, 0, 1)"/>
+				<outmod val="hidden(0, 0, 1)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(1, 0, 1)"/>
+				<outmod val="hidden(1, 1, 1)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="outconn">
+				<inmod val="hidden(1, 0, 1)"/>
+				<outSliceTo val="6"/>
+				<outSliceFrom val="5"/>
+				<outmod val="output"/>
+				<mother val="outconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(2, 1, 1)"/>
+				<outmod val="hidden(1, 1, 1)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(2, 1, 1)"/>
+				<outmod val="hidden(2, 2, 1)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="outconn">
+				<inmod val="hidden(2, 1, 1)"/>
+				<outSliceTo val="12"/>
+				<outSliceFrom val="11"/>
+				<outmod val="output"/>
+				<mother val="outconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(3, 2, 1)"/>
+				<outmod val="hidden(2, 2, 1)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(3, 2, 1)"/>
+				<outmod val="hidden(3, 3, 1)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="outconn">
+				<inmod val="hidden(3, 2, 1)"/>
+				<outSliceTo val="18"/>
+				<outSliceFrom val="17"/>
+				<outmod val="output"/>
+				<mother val="outconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(4, 3, 1)"/>
+				<outmod val="hidden(3, 3, 1)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(4, 3, 1)"/>
+				<outmod val="hidden(4, 4, 1)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="outconn">
+				<inmod val="hidden(4, 3, 1)"/>
+				<outSliceTo val="24"/>
+				<outSliceFrom val="23"/>
+				<outmod val="output"/>
+				<mother val="outconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(1, 4, 3)"/>
+				<outmod val="hidden(0, 4, 3)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(1, 4, 3)"/>
+				<outmod val="hidden(1, 3, 3)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="outconn">
+				<inmod val="hidden(1, 4, 3)"/>
+				<outSliceTo val="10"/>
+				<outSliceFrom val="9"/>
+				<outmod val="output"/>
+				<mother val="outconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(2, 3, 3)"/>
+				<outmod val="hidden(1, 3, 3)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(2, 3, 3)"/>
+				<outmod val="hidden(2, 2, 3)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="outconn">
+				<inmod val="hidden(2, 3, 3)"/>
+				<outSliceTo val="14"/>
+				<outSliceFrom val="13"/>
+				<outmod val="output"/>
+				<mother val="outconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(3, 2, 3)"/>
+				<outmod val="hidden(2, 2, 3)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(3, 2, 3)"/>
+				<outmod val="hidden(3, 1, 3)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="outconn">
+				<inmod val="hidden(3, 2, 3)"/>
+				<outSliceTo val="18"/>
+				<outSliceFrom val="17"/>
+				<outmod val="output"/>
+				<mother val="outconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(4, 1, 3)"/>
+				<outmod val="hidden(3, 1, 3)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(4, 1, 3)"/>
+				<outmod val="hidden(4, 0, 3)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="outconn">
+				<inmod val="hidden(4, 1, 3)"/>
+				<outSliceTo val="22"/>
+				<outSliceFrom val="21"/>
+				<outmod val="output"/>
+				<mother val="outconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(0, 4, 0)"/>
+				<outmod val="hidden(1, 4, 0)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="outconn">
+				<inmod val="hidden(0, 4, 0)"/>
+				<outSliceTo val="5"/>
+				<outSliceFrom val="4"/>
+				<outmod val="output"/>
+				<mother val="outconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(1, 3, 0)"/>
+				<outmod val="hidden(1, 4, 0)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(1, 3, 0)"/>
+				<outmod val="hidden(2, 3, 0)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="outconn">
+				<inmod val="hidden(1, 3, 0)"/>
+				<outSliceTo val="9"/>
+				<outSliceFrom val="8"/>
+				<outmod val="output"/>
+				<mother val="outconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(2, 2, 0)"/>
+				<outmod val="hidden(2, 3, 0)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(2, 2, 0)"/>
+				<outmod val="hidden(3, 2, 0)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="outconn">
+				<inmod val="hidden(2, 2, 0)"/>
+				<outSliceTo val="13"/>
+				<outSliceFrom val="12"/>
+				<outmod val="output"/>
+				<mother val="outconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(3, 1, 0)"/>
+				<outmod val="hidden(3, 2, 0)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(3, 1, 0)"/>
+				<outmod val="hidden(4, 1, 0)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="outconn">
+				<inmod val="hidden(3, 1, 0)"/>
+				<outSliceTo val="17"/>
+				<outSliceFrom val="16"/>
+				<outmod val="output"/>
+				<mother val="outconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(4, 0, 0)"/>
+				<outmod val="hidden(4, 1, 0)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="outconn">
+				<inmod val="hidden(4, 0, 0)"/>
+				<outSliceTo val="21"/>
+				<outSliceFrom val="20"/>
+				<outmod val="output"/>
+				<mother val="outconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(0, 0, 2)"/>
+				<outmod val="hidden(1, 0, 2)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="outconn">
+				<inmod val="hidden(0, 0, 2)"/>
+				<outSliceTo val="1"/>
+				<outmod val="output"/>
+				<mother val="outconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(1, 1, 2)"/>
+				<outmod val="hidden(1, 0, 2)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(1, 1, 2)"/>
+				<outmod val="hidden(2, 1, 2)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="outconn">
+				<inmod val="hidden(1, 1, 2)"/>
+				<outSliceTo val="7"/>
+				<outSliceFrom val="6"/>
+				<outmod val="output"/>
+				<mother val="outconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(2, 2, 2)"/>
+				<outmod val="hidden(2, 1, 2)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(2, 2, 2)"/>
+				<outmod val="hidden(3, 2, 2)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="outconn">
+				<inmod val="hidden(2, 2, 2)"/>
+				<outSliceTo val="13"/>
+				<outSliceFrom val="12"/>
+				<outmod val="output"/>
+				<mother val="outconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(3, 3, 2)"/>
+				<outmod val="hidden(3, 2, 2)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(3, 3, 2)"/>
+				<outmod val="hidden(4, 3, 2)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="outconn">
+				<inmod val="hidden(3, 3, 2)"/>
+				<outSliceTo val="19"/>
+				<outSliceFrom val="18"/>
+				<outmod val="output"/>
+				<mother val="outconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(4, 4, 2)"/>
+				<outmod val="hidden(4, 3, 2)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="outconn">
+				<inmod val="hidden(4, 4, 2)"/>
+				<outSliceFrom val="24"/>
+				<outmod val="output"/>
+				<mother val="outconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(0, 0, 1)"/>
+				<outmod val="hidden(0, 1, 1)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="outconn">
+				<inmod val="hidden(0, 0, 1)"/>
+				<outSliceTo val="1"/>
+				<outmod val="output"/>
+				<mother val="outconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(1, 1, 1)"/>
+				<outmod val="hidden(0, 1, 1)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(1, 1, 1)"/>
+				<outmod val="hidden(1, 2, 1)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="outconn">
+				<inmod val="hidden(1, 1, 1)"/>
+				<outSliceTo val="7"/>
+				<outSliceFrom val="6"/>
+				<outmod val="output"/>
+				<mother val="outconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(2, 2, 1)"/>
+				<outmod val="hidden(1, 2, 1)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(2, 2, 1)"/>
+				<outmod val="hidden(2, 3, 1)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="outconn">
+				<inmod val="hidden(2, 2, 1)"/>
+				<outSliceTo val="13"/>
+				<outSliceFrom val="12"/>
+				<outmod val="output"/>
+				<mother val="outconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(3, 3, 1)"/>
+				<outmod val="hidden(2, 3, 1)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(3, 3, 1)"/>
+				<outmod val="hidden(3, 4, 1)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="outconn">
+				<inmod val="hidden(3, 3, 1)"/>
+				<outSliceTo val="19"/>
+				<outSliceFrom val="18"/>
+				<outmod val="output"/>
+				<mother val="outconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(4, 4, 1)"/>
+				<outmod val="hidden(3, 4, 1)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="outconn">
+				<inmod val="hidden(4, 4, 1)"/>
+				<outSliceFrom val="24"/>
+				<outmod val="output"/>
+				<mother val="outconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(0, 4, 3)"/>
+				<outmod val="hidden(0, 3, 3)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="outconn">
+				<inmod val="hidden(0, 4, 3)"/>
+				<outSliceTo val="5"/>
+				<outSliceFrom val="4"/>
+				<outmod val="output"/>
+				<mother val="outconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(1, 3, 3)"/>
+				<outmod val="hidden(0, 3, 3)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(1, 3, 3)"/>
+				<outmod val="hidden(1, 2, 3)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="outconn">
+				<inmod val="hidden(1, 3, 3)"/>
+				<outSliceTo val="9"/>
+				<outSliceFrom val="8"/>
+				<outmod val="output"/>
+				<mother val="outconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(2, 2, 3)"/>
+				<outmod val="hidden(1, 2, 3)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(2, 2, 3)"/>
+				<outmod val="hidden(2, 1, 3)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="outconn">
+				<inmod val="hidden(2, 2, 3)"/>
+				<outSliceTo val="13"/>
+				<outSliceFrom val="12"/>
+				<outmod val="output"/>
+				<mother val="outconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(3, 1, 3)"/>
+				<outmod val="hidden(2, 1, 3)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(3, 1, 3)"/>
+				<outmod val="hidden(3, 0, 3)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="outconn">
+				<inmod val="hidden(3, 1, 3)"/>
+				<outSliceTo val="17"/>
+				<outSliceFrom val="16"/>
+				<outmod val="output"/>
+				<mother val="outconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(4, 0, 3)"/>
+				<outmod val="hidden(3, 0, 3)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="outconn">
+				<inmod val="hidden(4, 0, 3)"/>
+				<outSliceTo val="21"/>
+				<outSliceFrom val="20"/>
+				<outmod val="output"/>
+				<mother val="outconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(1, 4, 0)"/>
+				<outmod val="hidden(2, 4, 0)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="outconn">
+				<inmod val="hidden(1, 4, 0)"/>
+				<outSliceTo val="10"/>
+				<outSliceFrom val="9"/>
+				<outmod val="output"/>
+				<mother val="outconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(2, 3, 0)"/>
+				<outmod val="hidden(2, 4, 0)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(2, 3, 0)"/>
+				<outmod val="hidden(3, 3, 0)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="outconn">
+				<inmod val="hidden(2, 3, 0)"/>
+				<outSliceTo val="14"/>
+				<outSliceFrom val="13"/>
+				<outmod val="output"/>
+				<mother val="outconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(3, 2, 0)"/>
+				<outmod val="hidden(3, 3, 0)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(3, 2, 0)"/>
+				<outmod val="hidden(4, 2, 0)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="outconn">
+				<inmod val="hidden(3, 2, 0)"/>
+				<outSliceTo val="18"/>
+				<outSliceFrom val="17"/>
+				<outmod val="output"/>
+				<mother val="outconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(4, 1, 0)"/>
+				<outmod val="hidden(4, 2, 0)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="outconn">
+				<inmod val="hidden(4, 1, 0)"/>
+				<outSliceTo val="22"/>
+				<outSliceFrom val="21"/>
+				<outmod val="output"/>
+				<mother val="outconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(1, 0, 2)"/>
+				<outmod val="hidden(2, 0, 2)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="outconn">
+				<inmod val="hidden(1, 0, 2)"/>
+				<outSliceTo val="6"/>
+				<outSliceFrom val="5"/>
+				<outmod val="output"/>
+				<mother val="outconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(2, 1, 2)"/>
+				<outmod val="hidden(2, 0, 2)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(2, 1, 2)"/>
+				<outmod val="hidden(3, 1, 2)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="outconn">
+				<inmod val="hidden(2, 1, 2)"/>
+				<outSliceTo val="12"/>
+				<outSliceFrom val="11"/>
+				<outmod val="output"/>
+				<mother val="outconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(3, 2, 2)"/>
+				<outmod val="hidden(3, 1, 2)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(3, 2, 2)"/>
+				<outmod val="hidden(4, 2, 2)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="outconn">
+				<inmod val="hidden(3, 2, 2)"/>
+				<outSliceTo val="18"/>
+				<outSliceFrom val="17"/>
+				<outmod val="output"/>
+				<mother val="outconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(4, 3, 2)"/>
+				<outmod val="hidden(4, 2, 2)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="outconn">
+				<inmod val="hidden(4, 3, 2)"/>
+				<outSliceTo val="24"/>
+				<outSliceFrom val="23"/>
+				<outmod val="output"/>
+				<mother val="outconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(0, 1, 1)"/>
+				<outmod val="hidden(0, 2, 1)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="outconn">
+				<inmod val="hidden(0, 1, 1)"/>
+				<outSliceTo val="2"/>
+				<outSliceFrom val="1"/>
+				<outmod val="output"/>
+				<mother val="outconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(1, 2, 1)"/>
+				<outmod val="hidden(0, 2, 1)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(1, 2, 1)"/>
+				<outmod val="hidden(1, 3, 1)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="outconn">
+				<inmod val="hidden(1, 2, 1)"/>
+				<outSliceTo val="8"/>
+				<outSliceFrom val="7"/>
+				<outmod val="output"/>
+				<mother val="outconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(2, 3, 1)"/>
+				<outmod val="hidden(1, 3, 1)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(2, 3, 1)"/>
+				<outmod val="hidden(2, 4, 1)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="outconn">
+				<inmod val="hidden(2, 3, 1)"/>
+				<outSliceTo val="14"/>
+				<outSliceFrom val="13"/>
+				<outmod val="output"/>
+				<mother val="outconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(3, 4, 1)"/>
+				<outmod val="hidden(2, 4, 1)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="outconn">
+				<inmod val="hidden(3, 4, 1)"/>
+				<outSliceTo val="20"/>
+				<outSliceFrom val="19"/>
+				<outmod val="output"/>
+				<mother val="outconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(0, 3, 3)"/>
+				<outmod val="hidden(0, 2, 3)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="outconn">
+				<inmod val="hidden(0, 3, 3)"/>
+				<outSliceTo val="4"/>
+				<outSliceFrom val="3"/>
+				<outmod val="output"/>
+				<mother val="outconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(1, 2, 3)"/>
+				<outmod val="hidden(0, 2, 3)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(1, 2, 3)"/>
+				<outmod val="hidden(1, 1, 3)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="outconn">
+				<inmod val="hidden(1, 2, 3)"/>
+				<outSliceTo val="8"/>
+				<outSliceFrom val="7"/>
+				<outmod val="output"/>
+				<mother val="outconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(2, 1, 3)"/>
+				<outmod val="hidden(1, 1, 3)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(2, 1, 3)"/>
+				<outmod val="hidden(2, 0, 3)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="outconn">
+				<inmod val="hidden(2, 1, 3)"/>
+				<outSliceTo val="12"/>
+				<outSliceFrom val="11"/>
+				<outmod val="output"/>
+				<mother val="outconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(3, 0, 3)"/>
+				<outmod val="hidden(2, 0, 3)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="outconn">
+				<inmod val="hidden(3, 0, 3)"/>
+				<outSliceTo val="16"/>
+				<outSliceFrom val="15"/>
+				<outmod val="output"/>
+				<mother val="outconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(2, 4, 0)"/>
+				<outmod val="hidden(3, 4, 0)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="outconn">
+				<inmod val="hidden(2, 4, 0)"/>
+				<outSliceTo val="15"/>
+				<outSliceFrom val="14"/>
+				<outmod val="output"/>
+				<mother val="outconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(3, 3, 0)"/>
+				<outmod val="hidden(3, 4, 0)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(3, 3, 0)"/>
+				<outmod val="hidden(4, 3, 0)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="outconn">
+				<inmod val="hidden(3, 3, 0)"/>
+				<outSliceTo val="19"/>
+				<outSliceFrom val="18"/>
+				<outmod val="output"/>
+				<mother val="outconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(4, 2, 0)"/>
+				<outmod val="hidden(4, 3, 0)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="outconn">
+				<inmod val="hidden(4, 2, 0)"/>
+				<outSliceTo val="23"/>
+				<outSliceFrom val="22"/>
+				<outmod val="output"/>
+				<mother val="outconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(2, 0, 2)"/>
+				<outmod val="hidden(3, 0, 2)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="outconn">
+				<inmod val="hidden(2, 0, 2)"/>
+				<outSliceTo val="11"/>
+				<outSliceFrom val="10"/>
+				<outmod val="output"/>
+				<mother val="outconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(3, 1, 2)"/>
+				<outmod val="hidden(3, 0, 2)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(3, 1, 2)"/>
+				<outmod val="hidden(4, 1, 2)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="outconn">
+				<inmod val="hidden(3, 1, 2)"/>
+				<outSliceTo val="17"/>
+				<outSliceFrom val="16"/>
+				<outmod val="output"/>
+				<mother val="outconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(4, 2, 2)"/>
+				<outmod val="hidden(4, 1, 2)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="outconn">
+				<inmod val="hidden(4, 2, 2)"/>
+				<outSliceTo val="23"/>
+				<outSliceFrom val="22"/>
+				<outmod val="output"/>
+				<mother val="outconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(0, 2, 1)"/>
+				<outmod val="hidden(0, 3, 1)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="outconn">
+				<inmod val="hidden(0, 2, 1)"/>
+				<outSliceTo val="3"/>
+				<outSliceFrom val="2"/>
+				<outmod val="output"/>
+				<mother val="outconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(1, 3, 1)"/>
+				<outmod val="hidden(0, 3, 1)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(1, 3, 1)"/>
+				<outmod val="hidden(1, 4, 1)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="outconn">
+				<inmod val="hidden(1, 3, 1)"/>
+				<outSliceTo val="9"/>
+				<outSliceFrom val="8"/>
+				<outmod val="output"/>
+				<mother val="outconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(2, 4, 1)"/>
+				<outmod val="hidden(1, 4, 1)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="outconn">
+				<inmod val="hidden(2, 4, 1)"/>
+				<outSliceTo val="15"/>
+				<outSliceFrom val="14"/>
+				<outmod val="output"/>
+				<mother val="outconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(0, 2, 3)"/>
+				<outmod val="hidden(0, 1, 3)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="outconn">
+				<inmod val="hidden(0, 2, 3)"/>
+				<outSliceTo val="3"/>
+				<outSliceFrom val="2"/>
+				<outmod val="output"/>
+				<mother val="outconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(1, 1, 3)"/>
+				<outmod val="hidden(0, 1, 3)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(1, 1, 3)"/>
+				<outmod val="hidden(1, 0, 3)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="outconn">
+				<inmod val="hidden(1, 1, 3)"/>
+				<outSliceTo val="7"/>
+				<outSliceFrom val="6"/>
+				<outmod val="output"/>
+				<mother val="outconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(2, 0, 3)"/>
+				<outmod val="hidden(1, 0, 3)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="outconn">
+				<inmod val="hidden(2, 0, 3)"/>
+				<outSliceTo val="11"/>
+				<outSliceFrom val="10"/>
+				<outmod val="output"/>
+				<mother val="outconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(3, 4, 0)"/>
+				<outmod val="hidden(4, 4, 0)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="outconn">
+				<inmod val="hidden(3, 4, 0)"/>
+				<outSliceTo val="20"/>
+				<outSliceFrom val="19"/>
+				<outmod val="output"/>
+				<mother val="outconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(4, 3, 0)"/>
+				<outmod val="hidden(4, 4, 0)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="outconn">
+				<inmod val="hidden(4, 3, 0)"/>
+				<outSliceTo val="24"/>
+				<outSliceFrom val="23"/>
+				<outmod val="output"/>
+				<mother val="outconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(3, 0, 2)"/>
+				<outmod val="hidden(4, 0, 2)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="outconn">
+				<inmod val="hidden(3, 0, 2)"/>
+				<outSliceTo val="16"/>
+				<outSliceFrom val="15"/>
+				<outmod val="output"/>
+				<mother val="outconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(4, 1, 2)"/>
+				<outmod val="hidden(4, 0, 2)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="outconn">
+				<inmod val="hidden(4, 1, 2)"/>
+				<outSliceTo val="22"/>
+				<outSliceFrom val="21"/>
+				<outmod val="output"/>
+				<mother val="outconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(0, 3, 1)"/>
+				<outmod val="hidden(0, 4, 1)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="outconn">
+				<inmod val="hidden(0, 3, 1)"/>
+				<outSliceTo val="4"/>
+				<outSliceFrom val="3"/>
+				<outmod val="output"/>
+				<mother val="outconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(1, 4, 1)"/>
+				<outmod val="hidden(0, 4, 1)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="outconn">
+				<inmod val="hidden(1, 4, 1)"/>
+				<outSliceTo val="10"/>
+				<outSliceFrom val="9"/>
+				<outmod val="output"/>
+				<mother val="outconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(0, 1, 3)"/>
+				<outmod val="hidden(0, 0, 3)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="outconn">
+				<inmod val="hidden(0, 1, 3)"/>
+				<outSliceTo val="2"/>
+				<outSliceFrom val="1"/>
+				<outmod val="output"/>
+				<mother val="outconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="hconn0">
+				<inmod val="hidden(1, 0, 3)"/>
+				<outmod val="hidden(0, 0, 3)"/>
+				<mother val="hconn0"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="outconn">
+				<inmod val="hidden(1, 0, 3)"/>
+				<outSliceTo val="6"/>
+				<outSliceFrom val="5"/>
+				<outmod val="output"/>
+				<mother val="outconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="outconn">
+				<inmod val="hidden(4, 4, 0)"/>
+				<outSliceFrom val="24"/>
+				<outmod val="output"/>
+				<mother val="outconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="outconn">
+				<inmod val="hidden(4, 0, 2)"/>
+				<outSliceTo val="21"/>
+				<outSliceFrom val="20"/>
+				<outmod val="output"/>
+				<mother val="outconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="outconn">
+				<inmod val="hidden(0, 4, 1)"/>
+				<outSliceTo val="5"/>
+				<outSliceFrom val="4"/>
+				<outmod val="output"/>
+				<mother val="outconn"/>
+			</SharedFullConnection>
+			<SharedFullConnection class="pybrain.structure.connections.shared.SharedFullConnection" name="outconn">
+				<inmod val="hidden(0, 0, 3)"/>
+				<outSliceTo val="1"/>
+				<outmod val="output"/>
+				<mother val="outconn"/>
+			</SharedFullConnection>
+		</Connections>
+	</Network>
+</PyBrain>

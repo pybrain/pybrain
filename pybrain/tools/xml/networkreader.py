@@ -30,6 +30,7 @@ class NetworkReader(XMLHandling):
         return r.readNetwork(netroot)
     
     def readNetwork(self, node):
+        print node.getAttribute('class')
         nclass = eval(str(node.getAttribute('class')))        
         argdict = self.readArgs(node)  
         n = nclass(**argdict)

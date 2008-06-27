@@ -3,6 +3,7 @@ __author__ = 'Tom Schaul, tom@idsia.ch'
 
 from scipy import zeros, argmax
 
+from pybrain.rl.environments.twoplayergames import CaptureGame
 from randomplayer import RandomCapturePlayer
 from pybrain.utilities import drawIndex
 
@@ -18,8 +19,16 @@ class ModuleDecidingPlayer(RandomCapturePlayer):
         self.module = module
         
     def getAction(self):
-        """ get suggested action, return them if they are legal, otherwise choose randomly. """        
-        return [self.color, self._legalizeIt(self.module.activate(self.game.getBoardArray()))]
+        """ get suggested action, return them if they are legal, otherwise choose randomly. """ 
+        ba = self.game.getBoardArray()
+        # network is given inputs with self/other as input, not black/white
+        if self.color != CaptureGame.BLACK:
+            # invert values
+            tmp = zeros(len(ba))
+            tmp[:len(ba)-1:2] = ba[1:len(ba):2]
+            tmp[1:len(ba):2] = ba[:len(ba)-1:2]
+            ba = tmp
+        return [self.color, self._legalizeIt(self.module.activate(ba))]
     
     def newEpisode(self):
         self.module.reset()
