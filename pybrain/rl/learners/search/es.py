@@ -6,7 +6,7 @@ from pybrain.rl.learners.learner import Learner
 
     
 class ES(Learner):
-    """ Standard evolution strategy, mu + lambda. """    
+    """ Standard evolution strategy, (mu + lambda). """    
     
     mu = 50
     lambada = 50
@@ -31,12 +31,7 @@ class ES(Learner):
         
     def _learnStep(self):       
         # do a step only if we have accumulated the resources to do a whole batch.
-        if self.noisy:
-            if self.steps % (self.mu + self.lambada) != 0:
-                return
-        else:
-            if self.steps % self.lambada != 0:
-                return
+        if self.steps % self._stepsPerGeneration() != 0: return
         
         # re-evaluate the mu individuals if the fitness function is noisy        
         if self.noisy:
@@ -66,4 +61,11 @@ class ES(Learner):
         
         if self.population[0][0] >= self.bestEvaluation:
             self.bestEvaluation, self.bestEvaluable = self.population[0]
+            
+    def _stepsPerGeneration(self):            
+        if self.noisy:
+            return self.mu + self.lambada
+        else:
+            return self.lambada                
+        
         

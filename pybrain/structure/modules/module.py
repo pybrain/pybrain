@@ -121,7 +121,7 @@ class Module(Named):
         if input != None:
             self.inputbuffer[self.time] = input
         self.forward()
-        return self.outputbuffer[self.time-1]
+        return self.outputbuffer[self.time-1].copy()
     
     def backActivate(self, outerr = None, time = None):
         """ do one transformation of an output error backward, and return the result on the input
@@ -132,7 +132,7 @@ class Module(Named):
         if outerr != None:
             self.outputerror[self.time-1] = outerr
         self.backward()
-        return self.inputerror[self.time]
+        return self.inputerror[self.time].copy()
         
     def _forwardImplementation(self, inbuf, outbuf):
         """ the actual transformation function of the module """

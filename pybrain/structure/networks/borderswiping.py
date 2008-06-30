@@ -18,7 +18,7 @@ class BorderSwipingNetwork(SwipingNetwork):
     # by initializing them to the closest match.
     extrapolateBorderValues = True
         
-    # all border weights the same, except on corners?
+    # all border weights the same?
     simpleborders = False
     
                     

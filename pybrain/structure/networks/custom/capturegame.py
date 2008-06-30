@@ -20,6 +20,7 @@ class CaptureGameNetwork(BorderSwipingNetwork):
     predefined = None
     directlink = False
     componentclass = TanhLayer
+    outcomponentclass = SigmoidLayer
     peepholes = False
     outputs = 1
     comboutputs = 0   
@@ -56,7 +57,7 @@ class CaptureGameNetwork(BorderSwipingNetwork):
         inmesh = ModuleMesh.viewOnFlatLayer(inmod, (self.size, self.size), 'inmesh')
         
         # the output is a 2D-mesh (as a view on a flat sigmoid output layer)
-        outmod = SigmoidLayer(self.outputs*self.size*self.size, name = 'output')
+        outmod = self.outcomponentclass(self.outputs*self.size*self.size, name = 'output')
         outmesh = ModuleMesh.viewOnFlatLayer(outmod, (self.size, self.size), 'outmesh')
         
         if self.componentclass == MDLSTMLayer:
