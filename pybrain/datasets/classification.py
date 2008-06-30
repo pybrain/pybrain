@@ -141,7 +141,34 @@ class ClassificationDataSet(SupervisedDataSet):
         args = self.indim, self.outdim, self.nClasses, self.class_labels
         return creator, args, state, [], {}
             
+    def splitByClass(self, cls_select):
+        """ produce two new datasets, the first one comprising only the class selected (0..nClasses-1),
+        the second one containing the remaining samples """
+        leftIndices, dummy = where(self['class'] == cls_select)
+        rightIndices, dummy = where(self['class'] != cls_select)        
+        leftDs = self.copy()
+        rightDs = self.copy()
+        leftDs.clear()
+        rightDs.clear()
+        index = 0
+        # need to synchronize input, target, and class fields
+        for field in ['input','target','class']:
+            leftDs.setField(field, self[field][leftIndices,:])
+            leftDs.endmarker[field] = len(leftIndices)
+            rightDs.setField(field, self[field][rightIndices,:])
+            rightDs.endmarker[field] = len(rightIndices)
         
+        return leftDs, rightDs
+    
+    def castToRegression(self,values):
+        """ Converts data set into a SupervisedDataSet, for regression. Classes are changed into
+        the value array given."""
+        regDs = SupervisedDataSet(self.indim, 1)
+        regDs.setField('input', self['input'])
+        regDs.setField('target', values[self['class'].astype(int)])
+        return regDs
+    
+ 
 class SequenceClassificationDataSet(SequentialDataSet, ClassificationDataSet):
     
     def __init__(self, inp, target, nb_classes=0, class_labels=None):

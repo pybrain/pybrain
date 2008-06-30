@@ -4,8 +4,9 @@
 __author__ = "Martin Felder"
 __version__ = '$Id$' 
 from os.path import join
-from numpy import r_
+from numpy import r_, array
 from pybrain.datasets import SupervisedDataSet, SequentialDataSet, ClassificationDataSet, SequenceClassificationDataSet
+import pylab as p
 
 def convertSequenceToTimeWindows(DSseq, NewClass, winsize):
     """ converts a sequential dataset into time windows of fixed length (for use with MLPs) """
@@ -34,7 +35,41 @@ def convertSequenceToTimeWindows(DSseq, NewClass, winsize):
     print "total data points in windowed dataset: ", len(DSwin) * DSwin.indim
     return DSwin
 
-
+def windowSequenceEval(DS, winsz, result):
+    """ take results of a window-based classification and assess/plot them on the sequence """
+    si_old = 0
+    idx = 0 
+    x = []
+    y = []
+    seq_res = []
+    for si in DS['sequence_index'][1:]:
+        tar = DS['target'][si-1]
+        curr_x = si_old
+        correct = 0.
+        wrong  =  0.
+        while curr_x < si:    
+            x.append(curr_x)
+            if result[idx]==tar:
+                correct += 1.
+                y += [1.,1.]
+            else:
+                wrong += 1.
+                y += [0.,0.]
+            idx += 1
+            print "winidx: ", idx
+            curr_x += winsz
+            x.append(curr_x)
+        
+        seq_res.append(100.*correct/(correct+wrong))
+        print "sequence %d correct: %g2.2%%"
+        
+    seq_res = array(seq_res)
+    print "total fraction of correct sequences: ", 100.*float((seq_res>=0.5).sum())/seq_res.size
+        
+    
+    
+    
+    
 if __name__ == "__main__":
     winsize = 5
     pathtodata = '/maxdat/Data/Calogero/v1.1'

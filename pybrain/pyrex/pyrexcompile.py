@@ -6,6 +6,7 @@ from Pyrex.Distutils import build_ext
 import numpy
 import sys
 import os
+from os.path import join
 import platform
 
 sys.argv.append('build_ext') 
@@ -23,10 +24,10 @@ elif platform.system() == 'Windows':
     sys.argv.append('-c') 
     sys.argv.append('mingw32') 
     
-
-files = {'../structure/modules': ['_linearlayer', '_module', '_sigmoidlayer'],
-         '../structure/connections': ['_identity', '_connection', '_full'],
-         '../structure/networks': ['_network', ],
+structdir = join('..','structure')
+files = {join(structdir,'modules'): ['_linearlayer', '_module', '_sigmoidlayer'],
+         join(structdir,'connections'): ['_identity', '_connection', '_full'],
+         join(structdir,'networks'): ['_network', ],
          '.': ['pyrex_shared'],
          }
 
@@ -37,9 +38,9 @@ pyxFiles = []
 for k, v in files.items():
     for fn in v:
         try:
-            os.remove(k+'/'+fn+'.c')
+            os.remove(join(k,fn+'.c'))
         except Exception: pass
-        pyxfile = k+'/'+fn+'.pyx'
+        pyxfile = join(k,fn+'.pyx')
         pyxFiles.append(pyxfile)
         libs.append(fn)
         extModules.append(Extension(fn, [pyxfile],

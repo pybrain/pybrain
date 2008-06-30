@@ -104,7 +104,7 @@ class SupervisedDataSet(DataSet):
         return res/averageOver
         
     def splitWithProportion(self, proportion = 0.5):
-        """ produce two new datasets, each containing a part of the samples """
+        """ produce two new datasets, the first one containing the given fraction of the samples """
         leftIndices = sample(range(len(self)), int(len(self)*proportion))
         leftDs = self.copy()
         rightDs = self.copy()
