@@ -65,6 +65,31 @@ class CaptureGameTask(EpisodicTask, Named):
         if not self.isFinished():
             EpisodicTask.performAction(self, self.opponent.getAction())
             
+    def giveHandicap(self, h):
+        i = 0
+        for pos in self._handicapIterator():
+            i += 1
+            if i > h:
+                return
+            if self.env.isLegal(self.opponent.color, pos):        
+                self.env._setStone(self.opponent.color, pos)
+            
+    def _handicapIterator(self):
+        s = self.env.size
+        assert s > 2
+        yield (1,1)
+        if s > 3:
+            # 4 corners
+            yield (s-2, s-2)
+            yield (1, s-2)
+            yield (s-2, 1)
+        if s > 4:
+            for i in range(2,s-2):
+                yield (i, 1)
+                yield (i, s-2)
+                yield (1, i)
+                yield (s-2, i)
+            
     def __call__(self, x):
         """ If a module is given, wrap it into a ModuleDecidingAgent before evaluating it. 
         Also, if applicable, average the result over multiple games. """
@@ -79,5 +104,3 @@ class CaptureGameTask(EpisodicTask, Named):
             agent.color = -self.opponent.color
             res += EpisodicTask.__call__(self, agent)
         return res / float(self.averageOverGames)
-        
-        

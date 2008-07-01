@@ -67,7 +67,8 @@ class CompetitiveCoevolution(Named):
         
         if self.verbose:
             print 'Generation', self.generation
-            print zip(fitnesses, self.hostPop)
+            from pybrain.utilities import fListToString
+            print fListToString(fitnesses, 4)
                 
         # store best host in hall of fame
         self.hallOfFame.append(self.hostPop[argmax(array(fitnesses))])

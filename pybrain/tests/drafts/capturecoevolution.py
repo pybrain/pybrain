@@ -103,11 +103,12 @@ def handicapTask(p1):
         return high*2 -1 + 0.5(winProp(high)+winProp(high-1))
 
 def relativeTask(p1, p2):
+    """ returns True if p1 wins over p2. """
     tmp = CaptureGameTask(size, averageOverGames = 1)
     tmp.opponent = ModuleDecidingPlayer(p2, tmp.env, greedySelection = True)
     player = ModuleDecidingPlayer(p1, tmp.env, greedySelection = True)
     res = tmp(player)
-    return res
+    return res > 0
 
 learner = CompetitiveCoevolution(relativeTask, net.copy(), net.copy(), populationSize = popsize, verbose = True)
 newnet = learner.learn(evals)
