@@ -8,10 +8,17 @@ class KWArgDsc(object):
     def __init__(self, name, **kwargs):
         self.name = name
         self.private = False
-        keys=['private','default']
+        self.mandatory = False
+        keys=['private','default','mandatory']
         for key in keys:
             if kwargs.has_key(key):
                 setattr(self,key,kwargs[key])
+
+        assert not ( self.mandatory and self.hasDefault() )
+
+    def hasDefault(self):
+        return hasattr(self, 'default')
+
 
 
 class KWArgsProcessor(object):
@@ -35,9 +42,11 @@ class KWArgsProcessor(object):
         if self._obj_kwargs.has_key(name):
             # set attribute supplied value
             setattr(self._object, attrname, self._obj_kwargs[name])
-        elif hasattr(kwargDsc, 'default'):
+        elif kwargDsc.hasDefault():
             # set attribute to default value
             setattr(self._object, attrname, kwargDsc.default)
+        elif kwargDsc.mandatory:
+            raise KeyError('Mandatory Keyword argument "%s" missing!' % name)
         # del kwargs[name]
 
 
@@ -54,19 +63,27 @@ if __name__ == '__main__':
             kp.add('a', default=33)
             kp.add('b', private=True, default=55)
             kp.add('c', default=self.a+self._b)
+            kp.add('m', mandatory=True)
 
         def __str__(self):
             return str(dict(self.__dict__))
 
-    c1 = C()
+    c1 = C(m=1)
     print 'c1 =',c1
 
-    c2 = C(a=1, b=2)
+    c2 = C(m=1,a=1, b=2)
     print 'c2 =',c2
     
-    c3 = C(simple="hallo", a=11, b=22, c=55)
+    c3 = C(m=1,simple="hallo", a=11, b=22, c=55)
     print 'c3 =',c3
 
 
     print "\nc3.b = ", c3.b
+
+    try:
+        C() # will raise KeyError because mandatory keyword argument "m" is missing
+    except KeyError, k:
+        print k
+
+
 

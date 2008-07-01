@@ -11,7 +11,7 @@ from matplotlib.backends.backend_wxagg import FigureCanvasWxAgg
 from matplotlib.figure  import Figure
 import wx
 
-from lib.debug import dbg,tracedm
+from pybrain.examples.svm.lib.debug import dbg,tracedm
 
 
 
@@ -118,8 +118,10 @@ class InvokeEvent(wx.PyEvent):
 
 
 class SimpleGui(wx.Frame, threading.Thread):
+    _sizer = None
     @tracedm
     def __init__(self):
+        self._status_text = ''
         threading.Thread.__init__(self)
         self._app = wx.PySimpleApp()
         try: self._title
@@ -136,8 +138,9 @@ class SimpleGui(wx.Frame, threading.Thread):
 
         self.CreateStatusBar()
 
-        self._sizer = wx.BoxSizer(wx.HORIZONTAL)
-        self.SetSizer(self._sizer)
+        if self._sizer is None:
+            self._sizer = wx.BoxSizer(wx.HORIZONTAL)
+            self.SetSizer(self._sizer)
 
         # refresh layout
         self._sizer.Fit(self)
@@ -155,6 +158,7 @@ class SimpleGui(wx.Frame, threading.Thread):
         self._app.MainLoop()
 
 
+    # zzz wrong place?
     @tracedm
     def doUpdateObservers(self):
         self._invoke(self.update)
@@ -164,6 +168,7 @@ class SimpleGui(wx.Frame, threading.Thread):
     def _onClose(self,evt):
         exit(0)
 
+    # zzz wrong place?
     @tracedm
     def _onTimer(self,evt):
         # we want idle events all the time

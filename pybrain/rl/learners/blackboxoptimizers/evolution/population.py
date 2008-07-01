@@ -58,23 +58,33 @@ class SimplePopulation(Population):
     def __init__(self):
         self._individuals = set()
 #        self._fitness = collections.defaultdict( lambda: 0. )
-        self._fitness = collections.defaultdict( lambda: float('-inf') )
-#        self._fitness = {}
+#        self._fitness = collections.defaultdict( lambda: float('-inf') )
+        self._fitness = {}
 
     def getIndividuals(self):
         return self._individuals.copy()
 
     def addIndividual(self, individual):
         self._individuals.add(individual)
+        self._fitness[individual] = float('-inf')
 
     def addIndividuals(self, individuals):
-        self._individuals = self._individuals.union(set(individuals))
+        for individual in individuals:
+            self.addIndividual(individual)
+#        self._individuals = self._individuals.union(set(individuals))
 
     def removeIndividual(self, individual):
         self._individuals.discard(individual)
+        del self._fitness[individual]
+#        self._fitness[individual] = float('-inf')
+#        if self._fitness.has_key(individual):
+#            self._fitness[individual] = float('-inf')
+#            del self._fitness[individual]
 
     def removeIndividuals(self, individuals):
-        self._individuals.difference_update(set(individuals))
+        for individual in individuals:
+            self.removeIndividual(individual)
+#        self._individuals.difference_update(set(individuals))
 
 
     def setIndividualFitness(self, individual, fitness):
@@ -87,7 +97,9 @@ class SimplePopulation(Population):
 
     def clearFitness(self):
         """ Clears all stored fitness values """
-        self._fitness.clear()
+        for (ind, fit) in self._fitness.iteritems():
+            self._fitness[ind] = float('-inf')
+#        self._fitness.clear()
 
     def getFitnessMap(self):
         """ Returns the fitness dictionary """
@@ -104,7 +116,11 @@ class SimplePopulation(Population):
             If n is greater than the number of individuals inside the population
             all individuals are returned.
         """
-        return set( self.getSortedIndividualList()[:n] )
+        return set( self.getBestIndividualsSorted(n) )
+
+    def getBestIndividualsSorted(self, n):
+        return self.getSortedIndividualList()[:n]
+
 
     def getWorstIndividuals(self, n):
         """ Returns the n individuals with the lowest fitness ranking.
@@ -132,4 +148,9 @@ class SimplePopulation(Population):
         """ Returns the number of individuals inside the population """
         return len(self._individuals)
 
+    def getAverageFitness(self):
+        return sum(self._fitness.values()) / float(len(self._fitness))
 
+
+                                                 
+                                                 

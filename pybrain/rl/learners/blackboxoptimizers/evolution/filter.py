@@ -56,32 +56,18 @@ class SimpleGenomeManipulation(Filter):
 
 
 class SimpleMutation(SimpleGenomeManipulation):
-    _mutation_variate = None
+    mutationVariate = None
     """ A simple mutation filter, which uses a gaussian variate per default
         for mutation.
     """
-    def __init__(self, **kwargs):
+    def __init__(self):
         """ @param kwargs: See setArgs() method documentation
         """
         SimpleGenomeManipulation.__init__(self)
-        if self._mutation_variate is None:
-            self._mutation_variate = GaussianVariate()
-            self._mutation_variate.alpha = 0.1
-        self._verbosity=0
-        self.setArgs(**kwargs)
+        self.mutationVariate = GaussianVariate()
+        self.mutationVariate.alpha = 0.1
+        self.verbosity=0
 
-
-    def setArgs(self,**kwargs):
-        """ @param **kwargs:
-                mv : set an alternative mutation variate
-                v  : set verbosity
-        """
-        for key, value in kwargs.items():
-            if key in ('mv', 'mutation_variate'):
-                self._mutation_variate = value
-            elif key in ("verbose", "verbosity", "ver", "v"):
-                self._verbosity = value
-            else: pass
 
     def apply(self, population):
         """ Apply the mutation to the population
@@ -102,8 +88,8 @@ class SimpleMutation(SimpleGenomeManipulation):
             Set's the x0 value of the variate to value and takes a new sample
             value and returns it.
         """
-        self._mutation_variate.x0 = value
-        newval = self._mutation_variate.getSample()
+        self.mutationVariate.x0 = value
+        newval = self.mutationVariate.getSample()
 #        print "MUTATED: ", value, "--->", newval
         return newval
 

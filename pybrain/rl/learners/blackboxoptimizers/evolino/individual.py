@@ -12,7 +12,7 @@ class EvolinoIndividual(Individual):
     """ Individual of the Evolino framework, that consists of a list of
         sub-individuals. The genomes of the sub-individuals are used as
         the cromosomes for the main individual's genome.
-        The genome of an individual encodes the connection weights of the network.
+        The genome of an individual encodes the RNN's connection weights.
     """
     def __init__(self, sub_individuals):
         """ @param sub_individuals: sequence (e.g. list) of sub-individuals
@@ -20,24 +20,18 @@ class EvolinoIndividual(Individual):
         self._sub_individuals = list(sub_individuals)
 
     def getGenome(self):
-        """ Returns the genome by first concatenating the chromosomes supplied
+        """ Returns the genome created by concatenating the chromosomes supplied
             by the sub-individuals.
         """
         genome=[]
         for sub_individual in self._sub_individuals:
-            genome.append(sub_individual.getGenome())
+            genome.append( deepcopy(sub_individual.getGenome()) )
         return genome
 
     def getSubIndividuals(self):
         """ Returns a shallow copy of the list of sub-individuals """
         return copy(self._sub_individuals)
 
-
-    def getId(self):
-        id_ = []
-        for i in self._sub_individuals:
-            id_.append(i.id)
-        return tuple(id_)
 
 
 class EvolinoSubIndividual(Individual):
