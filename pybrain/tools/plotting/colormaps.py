@@ -1,7 +1,7 @@
 __author__ = 'Tom Schaul, tom@idsia.ch'
 
 from pylab import figure, savefig, imshow, axes, axis, cm, show
-from scipy import array
+from scipy import array, amin, amax
 
 
 class ColorMap:
@@ -10,9 +10,9 @@ class ColorMap:
         @param mat: the matrix to be used for the colormap. 
         """
         if minvalue == None:
-            minvalue = min(mat)
+            minvalue = amin(mat)
         if maxvalue == None:
-            maxvalue = max(mat)
+            maxvalue = amax(mat)
         if not cmap:
             cmap = cm.hot
             

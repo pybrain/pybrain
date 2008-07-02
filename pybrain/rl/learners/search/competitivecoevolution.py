@@ -16,6 +16,10 @@ class CompetitiveCoevolution(Named):
     elitism = False
     verbose = False
     
+    # proportion of the parent's weights intermixed with offspring
+    # in case of successful children
+    parentChildAvg = 0.
+    
     def __init__(self, evaluator, evaluable1, evaluable2, **args):
         self.setArgs(**args)
         self.evaluator = evaluator
@@ -48,7 +52,7 @@ class CompetitiveCoevolution(Named):
                                                         
     def oneGeneration(self):
         self.generation += 1
-        self._doTournament()
+        self._doTournament(self.hostPop, self.parasitePop)
         # determine beat-sum for parasites (nb of games lost)
         beatsums = {}
         for p in self.parasitePop:
@@ -124,10 +128,12 @@ class CompetitiveCoevolution(Named):
             tmp.id = id
         return res
         
-    def _doTournament(self):
+    def _doTournament(self, pop1, pop2):
         """ All hosts play 2 games against all parasites (one as first player, one as second). """
-        for h in self.hostPop:
-            for p in self.parasitePop:
+        for h in pop1:
+            for p in pop2:
+                if h == p:
+                    continue
                 if (h.id,p.id) not in self.allResults:
                     self.allResults[(h.id,p.id)] = [0,0]
                 self.allResults[(h.id,p.id)][1] += 1
