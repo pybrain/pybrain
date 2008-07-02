@@ -8,9 +8,9 @@ from pybrain.rl.agents.capturegameplayers.killing import KillingPlayer
 from pybrain.structure.modules.mdlstm import MDLSTMLayer
 
 # task settings: opponent, averaging to reduce noise, board size, etc.
-size = 9
+size = 5
 hsize = 5
-evals = 100
+evals = 1000
 avgover = 40
 
 task = CaptureGameTask(size, averageOverGames = avgover, opponent = KillingPlayer)
@@ -44,9 +44,9 @@ if True:
     from pybrain.tools.xml import NetworkWriter
     n = newnet.getBase()
     n.argdict['RUNRES'] = res[:]
-    NetworkWriter.writeToFile(n, '../temp/e'+str(evals)+'-avg'+str(avgover)+newnet.name[18:-5])
+    NetworkWriter.writeToFile(n, '../temp/capturegame/new-e'+str(evals)+'-avg'+str(avgover)+newnet.name[18:-5])
 
-if False:
+if True:
     # now, let's take the result, and compare it's performance on a larger game-baord
     newsize = 9
     bignew = newnet.getBase().resizedTo(newsize)
@@ -56,7 +56,7 @@ if False:
     print 'Old net on medium board score:', newtask(bigold)
     print 'New net on medium board score:', newtask(bignew)
 
-if True:
+if False:
     # now, let's take the result, and compare it's performance on an even larger game-baord
     newsize = 19
     bignew = newnet.getBase().resizedTo(newsize)

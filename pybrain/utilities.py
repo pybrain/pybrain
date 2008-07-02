@@ -13,7 +13,7 @@ from math import sqrt
 from random import random, choice
 from string import split
 
-from scipy import where, array
+from scipy import where, array, exp
 
 
 def abstractMethod():
@@ -44,6 +44,30 @@ def drawIndex(probs, tolerant = False):
             return i
     return choice(range(len(probs)))
 
+
+def drawGibbs(vals, temperature = 1.):
+    """ return the index of the sample drawn by a softmax. """
+    if temperature == 0:
+        # randopmly pick one of the values with the max value.
+        m = max(vals)
+        best = []
+        for i, v in enumerate(vals):
+            if v == m:
+                best.append(i)
+        return choice(best)
+    else:
+        temp = vals / temperature
+        
+        # make sure we keep the exponential bounded (between +20 and -20)
+        temp += 20 - max(temp)
+        if min(temp) < -20:
+            for i, v in enumerate(temp):
+                if v < -20:
+                    temp[i] = -20
+        temp = exp(temp)
+        temp /= sum(temp)
+        return drawIndex(temp)
+    
 
 def iterCombinations(tup):
     """ all possible of integer tuples of the same dimension than tup, and each component being

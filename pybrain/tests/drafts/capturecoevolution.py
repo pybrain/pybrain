@@ -1,6 +1,4 @@
-""" A little test for comptitive coevolution on the capturegame:
- dimension 4, with a simple net (3 hidden neurons)
- all evaluations are greedy (which is not good)."""
+""" A little test for comptitive coevolution on the capturegame. """
 
 __author__ = 'Tom Schaul, tom@idsia.ch'
 
@@ -10,12 +8,14 @@ from pybrain.structure.networks.custom.capturegame import CaptureGameNetwork
 from pybrain.rl.learners.search.competitivecoevolution import CompetitiveCoevolution
 from pybrain.rl.agents.capturegameplayers import KillingPlayer, ModuleDecidingPlayer
 
-size = 4
-hsize = 1
-popsize = 8
+size = 5
+hsize = 4
+popsize = 50
+generations = 200
+temperature = 0.1 # for learning games
 
 # total games to be played:
-evals = 640
+evals = generations*popsize*popsize*2
 
 net = CaptureGameNetwork(size = size, hsize = hsize, simpleborders = True, #componentclass = MDLSTMLayer
                          )
@@ -25,6 +25,14 @@ print net.name, 'has', net.paramdim, 'trainable parameters.'
 
 absoluteTask = CaptureGameTask(size, averageOverGames = 40, alternateStarting = True,
                                opponent = KillingPlayer)
+
+def relativeTask(p1, p2):
+    """ returns True if p1 wins over p2. """
+    tmp = CaptureGameTask(size, averageOverGames = 1)
+    tmp.opponent = ModuleDecidingPlayer(p2, tmp.env, greedySelection = False, temperature = temperature)
+    player = ModuleDecidingPlayer(p1, tmp.env, greedySelection = False, temperature = temperature)
+    res = tmp(player)
+    return res > 0
 
 def handicapTask(p1):
     """ The score for this task is not the percentage of wins, but the achieved handicap against
@@ -37,6 +45,8 @@ def handicapTask(p1):
     
     # the maximal handicap given is a full line of stones along the second line.
     maxHandicaps = (size-2)*2+(size-4)*2
+    
+    maxGames = 200
     
     # stores [wins, total] for each handicap-key
     results = {0: [0,0]}
@@ -74,7 +84,8 @@ def handicapTask(p1):
     def stable(h):
         return (fluctuating() 
                 or (results[h][1] > 10 and (not goUp(h)) and (not goDown(h)))
-                or (results[h][1] > 10 and goUp(h) and h >= maxHandicaps))
+                or (results[h][1] > 10 and goUp(h) and h >= maxHandicaps)
+                or (results[h][1] > 10 and goDown(h) and h == 0))
     
     def addResult(h, win):
         if h+1 not in results:
@@ -82,52 +93,58 @@ def handicapTask(p1):
         results[h][1]+=1
         if win > 0: 
             results[h][0]+=1
-            
-    
+                
     task = CaptureGameTask(size, averageOverGames = 1, opponent = KillingPlayer)
     
     # main loop
     current = 0
-    while not stable(current):
+    games = 0
+    while games < maxGames and not stable(current):
+        games += 1
         task.reset()
         task.giveHandicap(current)
-        addResult(current, task(p1))
+        res = task(p1)
+        addResult(current, res)
         if goUp(current) and current < maxHandicaps:
             current += 1
         elif goDown(current) and current > 1:
             current -= 1
+        
     high = bestHandicap()    
     if not fluctuating():
         return high*2 + winProp(high)
     else:
         return high*2 -1 + 0.5(winProp(high)+winProp(high-1))
 
-def relativeTask(p1, p2):
-    """ returns True if p1 wins over p2. """
-    tmp = CaptureGameTask(size, averageOverGames = 1)
-    tmp.opponent = ModuleDecidingPlayer(p2, tmp.env, greedySelection = True)
-    player = ModuleDecidingPlayer(p1, tmp.env, greedySelection = True)
-    res = tmp(player)
-    return res > 0
 
+res = []
+hres = []    
 learner = CompetitiveCoevolution(relativeTask, net.copy(), net.copy(), populationSize = popsize, verbose = True)
-newnet = learner.learn(evals)
+for g in range(generations):
+    newnet = learner.learn(evals/generations)
+    h = learner.hallOfFame[-1]
+    res.append(absoluteTask(h))
+    hres.append(handicapTask(h))
 
 if True:
-    res = []
-    for h in learner.hallOfFame:
-        res.append(absoluteTask(h))
-    res1 = []
-    for h in learner.hallOfFame:
-        res1.append(handicapTask(h))
     # plot the progression
     import pylab
+    print res
     pylab.plot(res)
-    pylab.plot(res1)
+    print hres
+    pylab.plot(hres)
     pylab.title(net.name)
+    
+# store result
+if True:
+    from pybrain.tools.xml import NetworkWriter
+    n = newnet.getBase()
+    n.argdict['RUNRES'] = res[:]
+    n.argdict['RUNRESH'] = hres[:]
+    NetworkWriter.writeToFile(n, '../temp/capturegame/Coev-e'+str(evals)+'-pop'+str(popsize)+newnet.name[18:-5])
 
 if False:
-    # now, let's take the result, and compare it's performance on a larger game-baord
+    # now, let's take the result, and compare its performance on a larger game-baord
     newsize = 9
     bignew = newnet.getBase().resizedTo(newsize)
     bigold = net.getBase().resizedTo(newsize)

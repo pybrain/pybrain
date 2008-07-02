@@ -55,8 +55,13 @@ class CaptureGameTask(EpisodicTask, Named):
         return res
     
     def getReward(self):
+        """ Final positive reward for winner, negative for loser. """
         if self.isFinished():
-            return - self.opponent.color * self.env.winner * self.winnerReward
+            if self.alternateStarting and self.switched:
+                # opponent color has been inverted after the game!
+                return self.opponent.color * self.env.winner * self.winnerReward
+            else:
+                return - self.opponent.color * self.env.winner * self.winnerReward
         else:
             return 0
         
@@ -102,5 +107,5 @@ class CaptureGameTask(EpisodicTask, Named):
         res = 0
         for dummy in range(self.averageOverGames):
             agent.color = -self.opponent.color
-            res += EpisodicTask.__call__(self, agent)
+            res += EpisodicTask.__call__(self, agent)            
         return res / float(self.averageOverGames)

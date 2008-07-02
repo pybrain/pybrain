@@ -1,11 +1,11 @@
 __author__ = 'Tom Schaul, tom@idsia.ch'
 
 
-from scipy import zeros, argmax
+from scipy import zeros, ones
 
 from pybrain.rl.environments.twoplayergames import CaptureGame
 from randomplayer import RandomCapturePlayer
-from pybrain.utilities import drawIndex
+from pybrain.utilities import drawGibbs
 
 
 class ModuleDecidingPlayer(RandomCapturePlayer):
@@ -13,10 +13,15 @@ class ModuleDecidingPlayer(RandomCapturePlayer):
     according to the output of a module that takes as input the current state of the board. """
 
     greedySelection = False
+    
+    # if the selection is not greedy, use Gibbs-sampling with this temperature
+    temperature = 1.
 
     def __init__(self, module, *args, **kwargs):
         RandomCapturePlayer.__init__(self, *args, **kwargs)
         self.module = module
+        if self.greedySelection:
+            self.temperature = 0.
         
     def getAction(self):
         """ get suggested action, return them if they are legal, otherwise choose randomly. """ 
@@ -34,18 +39,15 @@ class ModuleDecidingPlayer(RandomCapturePlayer):
         self.module.reset()
 
     def _legalizeIt(self, a):
-        """ draw index from an array of probabilities, filtering out illegal moves. """
+        """ draw index from an array of values, filtering out illegal moves. """
         assert min(a) >= 0
         legals = self.game.getLegals(self.color)
-        probs = zeros(len(a))
+        vals = ones(len(a))*(-100)
         for i in map(self._convertPosToIndex, legals):
-            probs[i] = a[i]
-        # geedy selection
-        if self.greedySelection:
-            drawn = argmax(probs)
-        else:
-            drawn = drawIndex(probs, tolerant = True)
-        return self._convertIndexToPos(drawn)
+            vals[i] = a[i]        
+        drawn = self._convertIndexToPos(drawGibbs(vals, self.temperature))
+        assert drawn in legals
+        return drawn
         
     def _convertIndexToPos(self, i):
         return (i/self.game.size, i%self.game.size)
