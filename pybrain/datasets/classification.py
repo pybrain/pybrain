@@ -108,8 +108,10 @@ class ClassificationDataSet(SupervisedDataSet):
         if self.outdim != 1:
             # we already have the correct representation (hopefully...)
             return
+        if self.nClasses <=0:
+            self.calculateStatistics()
         oldtarg = self.getField('target')
-        newtarg = zeros([len(self), int(oldtarg.max())-int(oldtarg.min())+1],dtype='Int32') + bounds[0]
+        newtarg = zeros([len(self), self.nClasses],dtype='Int32') + bounds[0]
         for i in range(len(self)):
             newtarg[i,int(oldtarg[i])] = bounds[1]
         self.setField('target',newtarg)
