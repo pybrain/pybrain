@@ -13,24 +13,31 @@ from pybrain.rl.learners.search.coevolution import Coevolution
 from pybrain.rl.agents.capturegameplayers import KillingPlayer, ModuleDecidingPlayer
 from pybrain.tools.xml import NetworkWriter
     
-size = 5
-hsize = 10
-popsize = 30
-generations = 30
+size = 7
+hsize = 2
+popsize = 10
+generations = 20
 elitist = False
-temperature = 1. # for learning games
-relTaskAvg = 3
-competitive = True
-storage = True
-ciao = True
-scalingtest = True
+temperature = 0.1 # for learning games
+relTaskAvg = 1
+hallOfFameProp = 0.5
+selProp = 0.5
+beta = 0.5
+tournSize = 5
+competitive = False
+ciao = False
 absplot = True
+scalingtest = False
+storage = True
 
 # total games to be played:
-if competitive:
+if tournSize != None:
+    onegeneration = tournSize * popsize * 2
+elif competitive:
     onegeneration = popsize*popsize*2
 else:
     onegeneration = popsize*(popsize-1)*2
+    
 evals = generations * onegeneration
 
 net = CaptureGameNetwork(size = size, hsize = hsize, simpleborders = True, #componentclass = MDLSTMLayer
@@ -130,13 +137,11 @@ def handicapTask(p1):
     if not fluctuating():
         return high*2 + winProp(high)
     else:
-        return high*2 -1 + 0.5(winProp(high)+winProp(high-1))
-
-name = 'Coev'
+        return high*2 -1 + 0.5 * (winProp(high)+winProp(high-1))
+name = ''
 if competitive:
-    name += '-C'
-else:
-    name += '-S'
+    name += 'Comp'
+name += 'Coev'
 if relTaskAvg > 1:
     name += '-rA'+str(relTaskAvg)
 if elitist:
@@ -144,26 +149,41 @@ if elitist:
 name += '-T'+str(temperature)
 name += '-e'+str(evals)
 name += '-pop'+str(popsize)
-name += net.name[18:-5]
+if tournSize != None:
+    name += '-tSize'+str(tournSize)
+if beta < 1:
+    name += '-pc_avg'+str(beta)
+if hallOfFameProp > 0:
+    name += '-HoF'+str(hallOfFameProp)
+if selProp != 0.5:
+    name += '-selP'+str(selProp)
+name += net.name[19:-5]
 print name
     
 res = []
 hres = []   
 
 if competitive: 
-    learner = CompetitiveCoevolution(relativeTask, net.copy(), net.copy(), elitism = elitist,
-                                     populationSize = popsize, verbose = True)
+    lclass = CompetitiveCoevolution
 else:
-    learner = Coevolution(relativeTask, net.copy(), elitism = elitist,
-                          populationSize = popsize, verbose = True)
+    lclass = Coevolution
+
+learner = lclass(relativeTask, [net.copy()], 
+                 elitism = elitist, 
+                 parentChildAverage = beta,
+                 tournamentSize = tournSize,
+                 populationSize = popsize, 
+                 selectionProportion = selProp,
+                 hallOfFameEvaluation = hallOfFameProp,
+                 verbose = True)
     
 for g in range(generations):
     newnet = learner.learn(onegeneration)
     h = learner.hallOfFame[-1]
     res.append(absoluteTask(h))
     hres.append(handicapTask(h))
-    print res[-1], hres[-1]
-    
+    print res[-1], hres[-1], '(evals:', learner.steps, ')'
+
 # store result
 if storage and evals > 100 and size > 3:
     n = newnet.getBase()

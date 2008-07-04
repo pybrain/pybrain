@@ -1,3 +1,5 @@
 from hillclimber import HillClimber
 from weightguessing import WeightGuessing, WeightMaskGuessing
 from es import ES
+from coevolution import Coevolution
+from competitivecoevolution import CompetitiveCoevolution

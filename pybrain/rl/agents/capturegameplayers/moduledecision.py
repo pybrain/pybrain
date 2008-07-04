@@ -42,7 +42,7 @@ class ModuleDecidingPlayer(RandomCapturePlayer):
         """ draw index from an array of values, filtering out illegal moves. """
         assert min(a) >= 0
         legals = self.game.getLegals(self.color)
-        vals = ones(len(a))*(-100)
+        vals = ones(len(a))*(-100)*(1+self.temperature)
         for i in map(self._convertPosToIndex, legals):
             vals[i] = a[i]        
         drawn = self._convertIndexToPos(drawGibbs(vals, self.temperature))
