@@ -21,8 +21,15 @@ if platform.system() == 'Darwin':
     os.environ["MACOSX_DEPLOYMENT_TARGET"] = baseversion
 
 elif platform.system() == 'Windows':
+    # It can be a bit tricky getting this to run...
+    # Install Mingw and put MinGW\bin into the system path.
+    # Tell it to Pyrex:
     sys.argv.append('-c') 
     sys.argv.append('mingw32') 
+    # If this doesn't cut it, make sure (a copy of) e.g. 
+    # python25.dll resides in Python25\libs\
+    # not only in Windows\system32
+    
     
 structdir = join('..','structure')
 files = {join(structdir,'modules'): ['_linearlayer', '_module', '_sigmoidlayer'],
