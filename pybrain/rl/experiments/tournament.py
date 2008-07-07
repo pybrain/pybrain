@@ -13,6 +13,7 @@ class Tournament(Named):
     
     def __init__(self, env, agents):
         assert isinstance(env, TwoPlayerGame)
+        self.startcolor = env.startcolor
         self.env = env
         self.agents = agents
         self.reset()
@@ -37,6 +38,7 @@ class Tournament(Named):
         self.numGames += 1
         self.env.reset()
         players = (p1, p2)
+        p1.color = self.startcolor
         p2.color = -p1.color
         i = 0
         while not self.env.gameOver():

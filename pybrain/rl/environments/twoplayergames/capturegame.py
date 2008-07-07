@@ -18,6 +18,8 @@ class CaptureGame(TwoPlayerGame):
     WHITE = -1
     EMPTY = 0
     
+    startcolor = BLACK
+    
     def __init__(self, size, suicideenabled = True):
         """ the size of the board is generally between 3 and 19. """
         self.size = size
