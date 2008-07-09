@@ -26,8 +26,8 @@ u, s, d = svd(sigma)
 def multivariate_normal2():
     return mu + dot(d, dot(sqrt(s)*randn(len(mu)), u)) + 1
      
-samples = map(lambda x: multivariate_normal2(), range(nb))
-#samples = map(lambda x: multivariateCauchy(mu, sigma, onlyDiagonal= True), range(nb))
+#samples = map(lambda x: multivariate_normal2(), range(nb))
+samples = map(lambda x: multivariateCauchy(mu, sigma, onlyDiagonal= False), range(nb))
 F.addSamples(samples, color = 'b')
 
 F.addCovEllipse(sigma, mu, color = 'y')

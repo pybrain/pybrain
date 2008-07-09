@@ -5,30 +5,37 @@ __author__ = 'Tom Schaul, tom@idsia.ch'
 import pylab
     
 from pybrain.tools.plotting.ciaoplot import CiaoPlot    
-from pybrain.rl.tasks.capturegame import CaptureGameTask
 from pybrain.structure.evolvables.cheaplycopiable import CheaplyCopiable
 from pybrain.structure.networks.custom.capturegame import CaptureGameNetwork
+from pybrain.rl.tasks.capturegame import CaptureGameTask, HandicapCaptureTask, RelativeCaptureTask
+from pybrain.rl.agents.capturegameplayers.clientwrapper import ClientCapturePlayer
 from pybrain.rl.learners.search.competitivecoevolution import CompetitiveCoevolution
 from pybrain.rl.learners.search.coevolution import Coevolution
-from pybrain.rl.agents.capturegameplayers import KillingPlayer, ModuleDecidingPlayer
+from pybrain.rl.agents.capturegameplayers import KillingPlayer
 from pybrain.tools.xml import NetworkWriter
     
-size = 7
-hsize = 2
-popsize = 10
-generations = 20
-elitist = False
-temperature = 0.1 # for learning games
+# parameters
+size = 5
+hsize = 5
+popsize = 8
+generations = 50
+elitist = True
+temperature = 0.05 # for learning games
 relTaskAvg = 1
 hallOfFameProp = 0.5
-selProp = 0.5
-beta = 0.5
-tournSize = 5
+selProp = 0.25
+beta = 1
+tournSize = 4
+absProp = 0.
+mutationStd = 0.01
 competitive = False
+
+# experiment settings
 ciao = False
 absplot = True
 scalingtest = False
 storage = True
+javaTest = False
 
 # total games to be played:
 if tournSize != None:
@@ -42,140 +49,79 @@ evals = generations * onegeneration
 
 net = CaptureGameNetwork(size = size, hsize = hsize, simpleborders = True, #componentclass = MDLSTMLayer
                          )
+net.mutationStd = mutationStd
 net._params /= 20
 net = CheaplyCopiable(net)
 print net.name, 'has', net.paramdim, 'trainable parameters.'
 
-absoluteTask = CaptureGameTask(size, averageOverGames = 40, alternateStarting = True,
-                               opponent = KillingPlayer)
+absoluteTask = CaptureGameTask(size, averageOverGames = 40, alternateStarting = True, opponent = KillingPlayer)
+handicapTask = HandicapCaptureTask(size, opponent = KillingPlayer)
+relativeTask = RelativeCaptureTask(size, useNetworks = True)
+    
+def buildName():
+    name = ''
+    if competitive:
+        name += 'Comp'
+    name += 'Coev'
+    if relTaskAvg > 1:
+        name += '-rA'+str(relTaskAvg)
+    if elitist:
+        name += '-elit'
+    name += '-T'+str(temperature)
+    name += '-e'+str(evals)
+    name += '-pop'+str(popsize)
+    if tournSize != None:
+        name += '-tSize'+str(tournSize)
+    if beta < 1:
+        name += '-pc_avg'+str(beta)
+    if hallOfFameProp > 0:
+        name += '-HoF'+str(hallOfFameProp)
+    if selProp != 0.5:
+        name += '-selP'+str(selProp)
+    if absProp > 0:
+        name += '-absP'+str(absProp)
+    if mutationStd != 0.1:
+        name += '-mut'+str(mutationStd)
+    name += net.name[19:-5]
+    return name
 
-def relativeTask(p1, p2):
-    """ returns True if p1 wins over p2. """
-    tmp = CaptureGameTask(size, averageOverGames = relTaskAvg)
-    tmp.opponent = ModuleDecidingPlayer(p2, tmp.env, greedySelection = False, temperature = temperature)
-    player = ModuleDecidingPlayer(p1, tmp.env, greedySelection = False, temperature = temperature)
-    res = tmp(player)
-    return res > 0
-
-def handicapTask(p1):
-    """ The score for this task is not the percentage of wins, but the achieved handicap against
-    killingplayer when the results stabilize. 
-    Stabilize: if after minimum of 5 games at the same handicap H, > 80% were won by the player, increase the handicap. 
-    if <40% decrease (this tends to not overestimate the handicap).
-    If the system fluctuates between H and H+1, with at least 10 games played on each level,
-    assert H+0.5 as handicap.
-    the score = 2 * #handicaps + proportion of wins at that level. """
-    
-    # the maximal handicap given is a full line of stones along the second line.
-    maxHandicaps = (size-2)*2+(size-4)*2
-    
-    maxGames = 200
-    
-    # stores [wins, total] for each handicap-key
-    results = {0: [0,0]}
-    
-    def winProp(h):
-        w, t = results[h]
-        if t > 0:
-            return w/float(t)
-        else:
-            return 0.5
-    
-    def goUp(h):
-        """ ready to go up one handicap? """
-        if results[h][1] >= 5:
-            return winProp(h) > 0.8
-        return False
-    
-    def goDown(h):
-        """ have to go down one handicap? """
-        if results[h][1] >= 5:
-            return winProp(h) < 0.4
-        return False
-    
-    def bestHandicap():
-        return max(results.keys())-1 
-    
-    def fluctuating():
-        """ Is the highest handicap unstable? """
-        high = bestHandicap()
-        if high > 0:
-            if results[high][1] > 10 and results[high-1][1] > 10:
-                return goUp(high-1) and goDown(high)
-        return False
-    
-    def stable(h):
-        return (fluctuating() 
-                or (results[h][1] > 10 and (not goUp(h)) and (not goDown(h)))
-                or (results[h][1] > 10 and goUp(h) and h >= maxHandicaps)
-                or (results[h][1] > 10 and goDown(h) and h == 0))
-    
-    def addResult(h, win):
-        if h+1 not in results:
-            results[h+1] = [0,0]
-        results[h][1]+=1
-        if win > 0: 
-            results[h][0]+=1
-                
-    task = CaptureGameTask(size, averageOverGames = 1, opponent = KillingPlayer)
-    
-    # main loop
-    current = 0
-    games = 0
-    while games < maxGames and not stable(current):
-        games += 1
-        task.reset()
-        task.giveHandicap(current)
-        res = task(p1)
-        addResult(current, res)
-        if goUp(current) and current < maxHandicaps:
-            current += 1
-        elif goDown(current) and current > 1:
-            current -= 1
-        
-    high = bestHandicap()    
-    if not fluctuating():
-        return high*2 + winProp(high)
-    else:
-        return high*2 -1 + 0.5 * (winProp(high)+winProp(high-1))
-name = ''
-if competitive:
-    name += 'Comp'
-name += 'Coev'
-if relTaskAvg > 1:
-    name += '-rA'+str(relTaskAvg)
-if elitist:
-    name += '-elit'
-name += '-T'+str(temperature)
-name += '-e'+str(evals)
-name += '-pop'+str(popsize)
-if tournSize != None:
-    name += '-tSize'+str(tournSize)
-if beta < 1:
-    name += '-pc_avg'+str(beta)
-if hallOfFameProp > 0:
-    name += '-HoF'+str(hallOfFameProp)
-if selProp != 0.5:
-    name += '-selP'+str(selProp)
-name += net.name[19:-5]
+name = buildName()
 print name
     
 res = []
 hres = []   
+jres = []
 
 if competitive: 
     lclass = CompetitiveCoevolution
 else:
     lclass = Coevolution
 
-learner = lclass(relativeTask, [net.copy()], 
+seeds = []
+for dummy in range(popsize):
+    tmp = net.copy()
+    tmp.randomize()
+    seeds.append(tmp)
+
+learner = lclass(lambda x,y: relativeTask(x,y, temperature), 
+                 seeds, 
                  elitism = elitist, 
                  parentChildAverage = beta,
                  tournamentSize = tournSize,
                  populationSize = popsize, 
                  selectionProportion = selProp,
                  hallOfFameEvaluation = hallOfFameProp,
+                 absEvalProportion = absProp,
+                 absEvaluator = absoluteTask,
                  verbose = True)
+if javaTest:
+    try:
+        javaTask = CaptureGameTask(size, averageOverGames = 40, alternateStarting = True,
+                                   opponent = ClientCapturePlayer)
+        javaTask.opponent.randomPartMoves = 0.2
+    except:
+        print 'No server found.'
+        javaTest = False
     
 for g in range(generations):
     newnet = learner.learn(onegeneration)
@@ -183,12 +129,20 @@ for g in range(generations):
     res.append(absoluteTask(h))
     hres.append(handicapTask(h))
     print res[-1], hres[-1], '(evals:', learner.steps, ')'
-
+    if javaTest:
+        try:
+            jres.append(javaTask(h))
+            print 'Java-play:', jres[-1]
+        except:
+            jres.append(0)
+            print 'Server playing error.'
+        
 # store result
 if storage and evals > 100 and size > 3:
     n = newnet.getBase()
     n.argdict['RUNRES'] = res[:]
     n.argdict['RUNRESH'] = hres[:]
+    n.argdict['RUNRESJ'] = jres[:]
     ps = []
     for h in learner.hallOfFame:
         ps.append(h.params.copy())
@@ -204,8 +158,7 @@ if ciao:
     else:
         hof1 = hof
         hof2 = hof
-    relTaskAvg = 3
-    p = CiaoPlot(relativeTask, hof1, hof2)
+    p = CiaoPlot(lambda x,y: relativeTask(x, y, 0), hof1, hof2)
     pylab.title('CIAO'+name)
     
 if absplot:
@@ -213,6 +166,8 @@ if absplot:
     pylab.figure()
     pylab.plot(res)
     pylab.plot(hres)
+    if javaTest:
+        pylab.plot(jres)
     pylab.title(name)
     
 if scalingtest:

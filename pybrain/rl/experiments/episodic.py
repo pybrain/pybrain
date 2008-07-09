@@ -8,7 +8,6 @@ class EpisodicExperiment(Experiment):
     
     def doEpisodes(self, number = 1):
         """ returns the rewards of each step as a list """
-        start = self.stepid
         all_rewards = []
         for dummy in range(number):
             rewards = []

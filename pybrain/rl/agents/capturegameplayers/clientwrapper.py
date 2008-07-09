@@ -1,20 +1,20 @@
 __author__ = 'Tom Schaul, tom@idsia.ch'
 
 import socket
+from random import random
 
-from captureplayer import CapturePlayer
+from randomplayer import RandomCapturePlayer
 from pybrain.rl.environments.twoplayergames import CaptureGame
 
-# TODO: allow partially forced random moves.
-
-class ClientCapturePlayer(CapturePlayer):
+class ClientCapturePlayer(RandomCapturePlayer):
     """ A wrapper class for using external code to play the capture game,
     interacting via a TCP socket. """
     
     verbose = False
+    randomPartMoves = 0
     
     def __init__(self, game, color = CaptureGame.BLACK, **args):
-        CapturePlayer.__init__(self, game, color, **args)
+        RandomCapturePlayer.__init__(self, game, color, **args)
         # build connection
         host = "127.0.0.1"
         port = 6524
@@ -28,6 +28,9 @@ class ClientCapturePlayer(CapturePlayer):
             
 
     def getAction(self):
+        if self.randomPartMoves > 0 and random() < self.randomPartMoves:
+            return RandomCapturePlayer.getAction(self)
+        
         # build a java string
         if self.color == CaptureGame.BLACK:
             js = '1-'
@@ -58,7 +61,9 @@ class ClientCapturePlayer(CapturePlayer):
             print " received.", jr
         
         chosen = eval(jr)
-        assert self.game.isLegal(self.color, chosen)
+        if not self.game.isLegal(self.color, chosen):
+            print 'Server played illegally!', chosen
+            return RandomCapturePlayer.getAction(self)
         return [self.color, chosen]
 
 

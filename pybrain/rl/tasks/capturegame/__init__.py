@@ -1,1 +1,3 @@
 from capturetask import CaptureGameTask
+from handicaptask import HandicapCaptureTask
+from relativetask import RelativeCaptureTask

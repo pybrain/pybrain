@@ -21,6 +21,7 @@ class Coevolution(Named):
     
     # an external absolute evaluator
     absEvaluator = None
+    absEvalProportion = 0
     
     # execution settings
     maxGenerations = None
@@ -96,7 +97,9 @@ class Coevolution(Named):
                 fit += self._beats(p, opp)
             if self.hallOfFameEvaluation > 0:
                 for opp in self.hallOfFame:
-                    fit += self._beats(p, opp)                
+                    fit += self._beats(p, opp)     
+            if self.absEvalProportion > 0 and self.absEvaluator != None:
+                fit = (1-self.absEvalProportion) * fit + self.absEvalProportion * self.absEvaluator(p)           
             fitnesses.append(fit)
         return fitnesses
             

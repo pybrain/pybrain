@@ -35,6 +35,7 @@ class CaptureGame(TwoPlayerGame):
     def reset(self):
         """ empty the board. """
         TwoPlayerGame.reset(self)
+        self.movesDone = 0
         self.b = {}
         for p in self._iterPos():
             self.b[p] = self.EMPTY
@@ -71,7 +72,8 @@ class CaptureGame(TwoPlayerGame):
     
     def doMove(self, c, pos):
         """ the action is a (color, position) tuple, for the next stone to move. 
-        returns True if the move was legal. """   
+        returns True if the move was legal. """  
+        self.movesDone += 1 
         if pos == 'resign':
             self.winner = -c
             return True
@@ -105,7 +107,8 @@ class CaptureGame(TwoPlayerGame):
                 else: s += ' '+str(val)
             s += '\n'
         if self.winner:
-            s += 'Winner:'+str(self.winner)+'\n'
+            s += 'Winner:'+str(self.winner)
+            s += ' (moves done:'+str(self.movesDone)+')\n'
         return s
     
     def _neighbors(self, pos):
@@ -215,3 +218,38 @@ class CaptureGame(TwoPlayerGame):
             c = -c
         return nbmoves
     
+    def giveHandicap(self, h, color = BLACK):
+        i = 0
+        for pos in self._handicapIterator():
+            i += 1
+            if i > h:
+                return
+            if self.isLegal(color, pos):        
+                self._setStone(color, pos)
+            
+    def _handicapIterator(self):
+        s = self.size
+        assert s > 2
+        yield (1,1)
+        if s > 3:
+            # 4 corners
+            yield (s-2, s-2)
+            yield (1, s-2)
+            yield (s-2, 1)
+        if s > 4:
+            for i in range(2,s-2):
+                yield (i, 1)
+                yield (i, s-2)
+                yield (1, i)
+                yield (s-2, i)
+            
+    def _playToTheEnd(self, p1, p2):
+        """ alternate playing moves between players until the game is over. """
+        assert p1.color == -p2.color
+        i = 0
+        players = [p1, p2]
+        while not self.gameOver():
+            p = players[i]
+            self.performAction(p.getAction())
+            i = (i+1)%2
+                        

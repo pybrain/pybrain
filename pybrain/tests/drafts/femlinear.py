@@ -9,7 +9,7 @@ from pybrain.rl.learners import CMAES, FEM
 from pybrain.rl.environments.functions import RotateFunction, TranslateFunction, LinearFunction, OppositeFunction
 from pybrain.tools.rankingfunctions import TopLinearRanking, ExponentialRanking, SmoothGiniRanking, TopSelection, RankingFunction
 
-dim = 3
+dim = 1
 basef = LinearFunction(dim)
 f = TranslateFunction(RotateFunction(basef))
 f.desiredValue = 1e6
@@ -21,7 +21,6 @@ fem = FEM(f, x0,
          forgetFactor = 0.03,
          elitist = False,
          #rankingFunction = RankingFunction(),               # fail
-         #rankingFunction = TopSelection(topFraction = 0.02),# 15
          #rankingFunction = TopSelection(topFraction = 0.1), # 25
          #rankingFunction = TopSelection(topFraction = 0.3), # 55
          #rankingFunction = TopSelection(topFraction = 0.5), # fail
@@ -32,7 +31,7 @@ fem = FEM(f, x0,
          #rankingFunction = ExponentialRanking(temperature = 1.),# fail
          #rankingFunction = ExponentialRanking(temperature =10.),# 25
          #rankingFunction = SmoothGiniRanking(gini = 0.01, linearComponent = 0.), # 15
-         #rankingFunction = SmoothGiniRanking(gini = 0.1, linearComponent = 0.),  # 20
+         rankingFunction = SmoothGiniRanking(gini = 0.1, linearComponent = 0.),  # 20
          #rankingFunction = SmoothGiniRanking(gini = 0.7, linearComponent = 0.),  # 150
          #rankingFunction = SmoothGiniRanking(gini = 0.1, linearComponent = 0.1), # fail
          maxEvaluations = 10000,
@@ -49,6 +48,8 @@ if True:
     import pylab
     #pylab.plot(log10(-array(res)))
     pylab.plot(log10(-array(fem.muevals)))
-    #pylab.figure()
-    #pylab.plot(log10(-array(res)))
+    pylab.figure()
+    pylab.plot(log10(array(map(lambda x: abs(x[0][0])+1, fem.allsigmas))))
+    pylab.figure()
+    pylab.plot(log10(-array(res)))
     pylab.show()
