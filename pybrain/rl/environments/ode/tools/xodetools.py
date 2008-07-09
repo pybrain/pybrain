@@ -639,7 +639,7 @@ class XODELSRTableGlas(XODESLR): #XODESLR
         self.insertJoint('plate','leg4','fixed', axis={'x':0,'y':0,'z':0}, anchor=(-19.5,0.0,-10.5))
 
         # create glas
-        self.insertBody('glas','box',[0.25,1.5,0.25],30,pos=[-6.5,1.75,-10.5], mass=0.15, color=(0.6, 0.6, 0.0))
+        self.insertBody('glas','box',[0.25,1.5,0.25],30,pos=[-6.5,1.75,-10.5], mass=0.15, color=(0.6, 0.6, 0.0, 0.5))
 
 if __name__ == '__main__' :
 

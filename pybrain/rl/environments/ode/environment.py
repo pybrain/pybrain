@@ -122,7 +122,7 @@ class ODEEnvironment(GraphicalEnvironment):
         else:
             (body,geom) = self._create_box(self.space, 10, 0.5,0.5,0.5)
         # randomize position slightly
-        body.setPosition( (random.normal(0, 0.1), 3.0, random.normal(0, 0.1)) )
+        body.setPosition( (random.normal(-6.5, 0.5), 6.0, random.normal(-6.5, 0.5)) )
         # body.setPosition( (0.0, 3.0, 0.0) )
         # randomize orientation slightly
         theta = random.uniform(0,2*pi)
@@ -248,10 +248,10 @@ class ODEEnvironment(GraphicalEnvironment):
             # ('name', (0.3,0.4,0.5))
             objname, coldef = eval(coldefstring)
             for (body,geom) in self.body_geom:
-                if objname == body.name:
-                    geom.color = coldef
-                    body.color = coldef
-                    break
+                if hasattr(body, 'name'):
+                    if objname == body.name:
+                        body.color = coldef
+                        break
                 
                 
         if not reload:
@@ -409,7 +409,7 @@ class ODEEnvironment(GraphicalEnvironment):
 
         # Check if the objects do collide
         contacts = ode.collide(geom1, geom2)
-
+        
         # Create contact joints
         world,contactgroup = args
         for c in contacts:
@@ -444,6 +444,7 @@ class ODEEnvironment(GraphicalEnvironment):
                 # transform (rotate, translate) body accordingly
                 item['position'] = body.getPosition()
                 item['rotation'] = body.getRotation()
+                if hasattr(body, 'color'): item['color'] = body.color
                 
                 # switch different geom objects
                 if type(geom) == ode.GeomBox:
@@ -497,6 +498,7 @@ class ODEEnvironment(GraphicalEnvironment):
 
         # Detect collisions and create contact joints
         self.space.collide((self.world, self.contactgroup), self._near_callback)
+
         # Simulation step
         self.world.step(float(self.dt))
         # Remove all contact joints

@@ -165,8 +165,11 @@ class ODEViewer(object):
 
         if item['type'] in ['GeomBox', 'GeomSphere', 'GeomCylinder', 'GeomCCylinder']:
             # set color of object (currently dark gray)
-            if item.has_key('color'): glColor3f(*(item['color']))
-            else: glColor3f(0.3, 0.3, 0.3)
+            if item.has_key('color'): 
+               glEnable (GL_BLEND)
+               glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
+               glColor4f(*(item['color']))
+            else: glColor3f(0.1, 0.1, 0.1)
 
             # transform (rotate, translate) body accordingly
             (x,y,z) = item['position']
