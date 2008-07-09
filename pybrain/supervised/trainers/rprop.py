@@ -35,7 +35,7 @@ class RPropMinusTrainer(BackpropTrainer):
         error = 0
         ponderation = 0.
         for seq in self.ds._provideSequences():
-            e = self._calcDerivs(seq)
+            e, dummy = self._calcDerivs(seq)
             error += e
         if self.verbose:
             print "epoch %6d  total error %12.5g" % (self.epoch, error)
@@ -77,4 +77,4 @@ class RPropMinusTrainer(BackpropTrainer):
             self.module.outputerror[time] = (target - self.module.outputbuffer[time])
             self.module.backward()
             error += 0.5 * dot(self.module.outputerror[time], self.module.outputerror[time])
-        return error
+        return error, 1.0
