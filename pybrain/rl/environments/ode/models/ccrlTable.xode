@@ -547,5 +547,7 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocat
 ('body', 'shoulderUpRight', 'shoulderUpLeft')
 <centerOn>
 body
+<colors>
+('glas', (0.59999999999999998, 0.59999999999999998, 0.0))
 <end>
 -->

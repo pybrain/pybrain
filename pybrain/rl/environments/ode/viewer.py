@@ -43,7 +43,7 @@ class ODEViewer(object):
 
         # capture only every frameT. frame
         self.counter = 0
-        self.frameT = 25
+        self.frameT = 1
 
         self.init_GL()  
 
@@ -165,7 +165,8 @@ class ODEViewer(object):
 
         if item['type'] in ['GeomBox', 'GeomSphere', 'GeomCylinder', 'GeomCCylinder']:
             # set color of object (currently dark gray)
-            glColor3f(0.3, 0.3, 0.3)
+            if item.has_key('color'): glColor3f(*(item['color']))
+            else: glColor3f(0.3, 0.3, 0.3)
 
             # transform (rotate, translate) body accordingly
             (x,y,z) = item['position']

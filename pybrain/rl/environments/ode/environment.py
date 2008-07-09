@@ -118,7 +118,7 @@ class ODEEnvironment(GraphicalEnvironment):
         """Drops a random object (box, sphere) into the scene."""
         # choose between boxes and spheres
         if random.uniform() > 0.5:
-          (body,geom) = self._create_sphere(self.space, 10, 0.4)
+            (body,geom) = self._create_sphere(self.space, 10, 0.4)
         else:
             (body,geom) = self._create_box(self.space, 10, 0.5,0.5,0.5)
         # randomize position slightly
@@ -243,6 +243,17 @@ class ODEEnvironment(GraphicalEnvironment):
                 j.attach(obj, ode.environment)
                 j.setFixed()
 
+        # <colors>
+        for coldefstring in self.config.getValue("colors")[:]:
+            # ('name', (0.3,0.4,0.5))
+            objname, coldef = eval(coldefstring)
+            for (body,geom) in self.body_geom:
+                if objname == body.name:
+                    geom.color = coldef
+                    body.color = coldef
+                    break
+                
+                
         if not reload:
             # add the JointSensor as default
             self.sensors = [] 

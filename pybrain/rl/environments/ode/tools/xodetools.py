@@ -26,6 +26,7 @@ class XODEfile(XMLstruct):
         self.sensorElements=[]
         self._nSensorElements=0
         self._pass = {}     # dict of sets containing objects allowed to pass
+        self._colors = []   # list of tuples ('name', (r,g,b))
         XMLstruct.__init__(self, 'world')
         self.insert('space')
         # TODO: insert palm, support, etc. (derived class)
@@ -61,12 +62,14 @@ class XODEfile(XMLstruct):
             sys.exit(1)
 
             
-    def insertBody(self, bname, shape, size, density, pos=[0,0,0],passSet=None,euler=None,mass=None):
+    def insertBody(self, bname, shape, size, density, pos=[0,0,0],passSet=None,euler=None,mass=None, color=None):
         """Inserts a body with the given custom name and one of the standard
         shapes. The size and pos parameters are given as xyz-lists or tuples.
         euler are three rotation angles (degrees), 
         if mass is given, density is calculated automatically"""
         self.insert('body',{'name': bname})
+        if color is not None:
+            self._colors.append((bname,color))
         self.insert('transform')
         self.insert('position', {'x':pos[0],'y':pos[1],'z':pos[2]})
         if euler is not None:
@@ -252,7 +255,7 @@ class XODEfile(XMLstruct):
         if self._nSensorElements > 0:
             f.write('<sensors>\n')
             f.write("SpecificJointSensor("+str(self.sensorElements)+",name='PressureElements')\n")
-        # compile all sensor commands
+         # compile all sensor commands
         for sensor in self.sensors:
             outstr = sensor[0]+"("
             for val in sensor[1]:
@@ -261,6 +264,10 @@ class XODEfile(XMLstruct):
                 outstr += ','+key+'='+repr(val)
             outstr = outstr.replace('(,','(')+")\n"
             f.write(outstr)
+        if self._colors:
+            f.write('<colors>\n')
+            for col in self._colors:
+                f.write(str(col)+"\n")
 
         f.write('<end>\n')
         f.write('-->\n')
@@ -632,7 +639,7 @@ class XODELSRTableGlas(XODESLR): #XODESLR
         self.insertJoint('plate','leg4','fixed', axis={'x':0,'y':0,'z':0}, anchor=(-19.5,0.0,-10.5))
 
         # create glas
-        self.insertBody('glas','box',[0.25,1.5,0.25],30,pos=[-6.5,1.75,-10.5], mass=0.15)
+        self.insertBody('glas','box',[0.25,1.5,0.25],30,pos=[-6.5,1.75,-10.5], mass=0.15, color=(0.6, 0.6, 0.0))
 
 if __name__ == '__main__' :
 
