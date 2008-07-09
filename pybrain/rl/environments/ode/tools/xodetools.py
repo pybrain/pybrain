@@ -570,7 +570,7 @@ class XODESLR(XODEfile):
         """Creates hand with fingertip and palm sensors -- palm up"""
         XODEfile.__init__(self,name,**kwargs)
         # create the hand and finger
-        self.insertBody('body','box',[7.0,16.0,10.0],30,pos=[0,0,2.0], passSet=['total'], mass=15.0)
+        self.insertBody('body','box',[7.0,16.0,10.0],30,pos=[0,0,2.0], passSet=['total'], mass=15.0, color=(0.5, 0.5, 0.4, 1.0))
         #right arm
         self.insertBody('shoulderUpRight','cappedCylinder',[0.5,2.0],5,pos=[2.5,7.0,-3.5], euler=[0,90,0], passSet=['rightSh','total'], mass=0.25)
         self.insertBody('shoulderLRRight','cappedCylinder',[0.5,2.0],5,pos=[3.5,6.0,-3.5], euler=[90,0,0], passSet=['rightSh'], mass=0.25)
@@ -579,9 +579,9 @@ class XODESLR(XODEfile):
         self.insertBody('armPRRight','cappedCylinder',[0.5,2.0],5,pos=[3.5,0.0,-3.5], euler=[90,0,0], passSet=['rightAr'],mass=0.25)
         self.insertBody('handUpRight','cappedCylinder',[0.5,2.0],5,pos=[3.5,-2.0,-3.5], euler=[90,0,0], passSet=['rightAr','rightHa'], mass=0.25)
         #right hand
-        self.insertBody('palmRight','box',[1.5,0.25,0.5],30,pos=[3.5,-3.0,-3.5], passSet=['rightHa'], mass=0.1)
-        self.insertBody('fingerRight1','box',[0.25,1.0,0.5],30,pos=[4.0,-3.5,-3.5], passSet=['rightHa'], mass=0.1)
-        self.insertBody('fingerRight2','box',[0.25,1.0,0.5],30,pos=[3.0,-3.5,-3.5], passSet=['rightHa'], mass=0.1)
+        self.insertBody('palmRight','box',[1.5,0.25,0.5],30,pos=[3.5,-3.0,-3.5], passSet=['rightHa'], mass=0.1, color=(0.6, 0.6, 0.3, 1.0))
+        self.insertBody('fingerRight1','box',[0.25,1.0,0.5],30,pos=[4.0,-3.5,-3.5], passSet=['rightHa'], mass=0.1, color=(0.6, 0.6, 0.3, 1.0))
+        self.insertBody('fingerRight2','box',[0.25,1.0,0.5],30,pos=[3.0,-3.5,-3.5], passSet=['rightHa'], mass=0.1, color=(0.6, 0.6, 0.3, 1.0))
         
         #left arm
         self.insertBody('shoulderUpLeft','cappedCylinder',[0.5,2.0],5,pos=[-2.5,7.0,-3.5], euler=[0,90,0], passSet=['leftSh','total'], mass=0.25)
@@ -591,9 +591,9 @@ class XODESLR(XODEfile):
         self.insertBody('armPRLeft','cappedCylinder',[0.5,2.0],5,pos=[-3.5,0.0,-3.5], euler=[90,0,0], passSet=['leftAr'],mass=0.25)
         self.insertBody('handUpLeft','cappedCylinder',[0.5,2.0],5,pos=[-3.5,-2.0,-3.5], euler=[90,0,0], passSet=['leftAr','leftHa'], mass=0.25)
         #left hand
-        self.insertBody('palmLeft','box',[1.5,0.25,0.5],30,pos=[-3.5,-3.0,-3.5], passSet=['leftHa'], mass=0.1)
-        self.insertBody('fingerLeft1','box',[0.25,1.0,0.5],30,pos=[-4.0,-3.5,-3.5], passSet=['leftHa'], mass=0.1)
-        self.insertBody('fingerLeft2','box',[0.25,1.0,0.5],30,pos=[-3.0,-3.5,-3.5], passSet=['leftHa'], mass=0.1)
+        self.insertBody('palmLeft','box',[1.5,0.25,0.5],30,pos=[-3.5,-3.0,-3.5], passSet=['leftHa'], mass=0.1, color=(0.6, 0.6, 0.3, 1.0))
+        self.insertBody('fingerLeft1','box',[0.25,1.0,0.5],30,pos=[-4.0,-3.5,-3.5], passSet=['leftHa'], mass=0.1, color=(0.6, 0.6, 0.3, 1.0))
+        self.insertBody('fingerLeft2','box',[0.25,1.0,0.5],30,pos=[-3.0,-3.5,-3.5], passSet=['leftHa'], mass=0.1, color=(0.6, 0.6, 0.3, 1.0))
         
         #Joints right        
         self.insertJoint('body','shoulderUpRight','hinge', axis={'x':1,'y':0,'z':0}, anchor=(2.5,7.0,-3.5))
@@ -628,18 +628,18 @@ class XODELSRTableGlas(XODESLR): #XODESLR
     def __init__(self, name, **kwargs):
         XODESLR.__init__(self, name, **kwargs)
         # create table
-        self.insertBody('plate','box',[15.0,1.0,8.0],30,pos=[-12.5,0.5,-14.0], passSet=['table'], mass=2.0)
-        self.insertBody('leg1','box',[0.5,8.0,0.5],30,pos=[-19.5,-4.0,-17.5], passSet=['table'], mass=0.3)
+        self.insertBody('plate','box',[15.0,1.0,8.0],30,pos=[-12.5,0.5,-14.0], passSet=['table'], mass=2.0, color=(0.4, 0.25, 0.0, 1.0))
+        self.insertBody('leg1','box',[0.5,8.0,0.5],30,pos=[-19.5,-4.0,-17.5], passSet=['table'], mass=0.3, color=(0.6, 0.8, 0.8, 0.8))
         self.insertJoint('plate','leg1','fixed', axis={'x':0,'y':0,'z':0}, anchor=(-19.5,0.0,-17.5))
-        self.insertBody('leg2','box',[0.5,8.0,0.5],30,pos=[-5.5,-4.0,-17.5], passSet=['table'], mass=0.3)
+        self.insertBody('leg2','box',[0.5,8.0,0.5],30,pos=[-5.5,-4.0,-17.5], passSet=['table'], mass=0.3, color=(0.6, 0.8, 0.8, 0.8))
         self.insertJoint('plate','leg2','fixed', axis={'x':0,'y':0,'z':0}, anchor=(-5.5,0.0,-17.5))
-        self.insertBody('leg3','box',[0.5,8.0,0.5],30,pos=[-5.5,-4.0,-10.5], passSet=['table'], mass=0.3)
+        self.insertBody('leg3','box',[0.5,8.0,0.5],30,pos=[-5.5,-4.0,-10.5], passSet=['table'], mass=0.3, color=(0.6, 0.8, 0.8, 0.8))
         self.insertJoint('plate','leg3','fixed', axis={'x':0,'y':0,'z':0}, anchor=(-5.5,0.0,-10.5))
-        self.insertBody('leg4','box',[0.5,8.0,0.5],30,pos=[-19.5,-4.0,-10.5], passSet=['table'], mass=0.3)
+        self.insertBody('leg4','box',[0.5,8.0,0.5],30,pos=[-19.5,-4.0,-10.5], passSet=['table'], mass=0.3, color=(0.6, 0.8, 0.8, 0.8))
         self.insertJoint('plate','leg4','fixed', axis={'x':0,'y':0,'z':0}, anchor=(-19.5,0.0,-10.5))
 
         # create glas
-        self.insertBody('glas','box',[0.25,1.5,0.25],30,pos=[-6.5,1.75,-10.5], mass=0.15, color=(0.6, 0.6, 0.0, 0.5))
+        self.insertBody('glas','box',[0.25,1.5,0.25],30,pos=[-6.5,1.75,-10.5], mass=0.15, color=(0.6, 0.6, 0.8, 0.5))
 
 if __name__ == '__main__' :
 
