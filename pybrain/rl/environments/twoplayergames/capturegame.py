@@ -243,7 +243,7 @@ class CaptureGame(TwoPlayerGame):
                 yield (1, i)
                 yield (s-2, i)
             
-    def _playToTheEnd(self, p1, p2):
+    def playToTheEnd(self, p1, p2):
         """ alternate playing moves between players until the game is over. """
         assert p1.color == -p2.color
         i = 0

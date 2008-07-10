@@ -88,7 +88,9 @@ class Coevolution(Named):
                     
     def _evaluatePopulation(self):
         self._doTournament(self.pop, self.pop, self.tournamentSize)
-        if self.hallOfFameEvaluation > 0:
+        if (self.hallOfFameEvaluation > 0 and 
+            ((self.tournamentSize != None and self.generation > self.tournamentSize)
+             or (self.tournamentSize == None and self.generation > 3))):
             self._doTournament(self.pop, self.hallOfFame, self.tournamentSize)
         fitnesses = []
         for p in self.pop:
@@ -189,7 +191,9 @@ class Coevolution(Named):
     
     def _stepsPerGeneration(self):
         if self.tournamentSize == None:
-            return self.populationSize*(self.populationSize-1) * 2
+            res = self.populationSize*(self.populationSize-1) * 2
         else:
-            return self.populationSize*self.tournamentSize * 2
-    
+            res = self.populationSize*self.tournamentSize * 2
+        if self.hallOfFameEvaluation > 0:
+            res *= 2
+        return res

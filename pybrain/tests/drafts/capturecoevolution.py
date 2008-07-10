@@ -15,15 +15,15 @@ from pybrain.rl.agents.capturegameplayers import KillingPlayer
 from pybrain.tools.xml import NetworkWriter
     
 # parameters
-size = 5
+size = 6
 hsize = 5
-popsize = 8
-generations = 50
-elitist = True
-temperature = 0.05 # for learning games
-relTaskAvg = 1
+popsize = 10
+generations = 100
+elitist = False
+temperature = 0. # for learning games
+relTaskAvg = 5
 hallOfFameProp = 0.5
-selProp = 0.25
+selProp = 0.5
 beta = 1
 tournSize = 4
 absProp = 0.
@@ -37,29 +37,55 @@ scalingtest = False
 storage = True
 javaTest = False
 
-# total games to be played:
-if tournSize != None:
-    onegeneration = tournSize * popsize * 2
-elif competitive:
-    onegeneration = popsize*popsize*2
-else:
-    onegeneration = popsize*(popsize-1)*2
-    
-evals = generations * onegeneration
+# the tasks:
+absoluteTask = CaptureGameTask(size, averageOverGames = 40, alternateStarting = True, 
+                               opponent = KillingPlayer)
+handicapTask = HandicapCaptureTask(size, opponent = KillingPlayer)
+relativeTask = RelativeCaptureTask(size, useNetworks = True, maxGames = relTaskAvg,
+                                   minTemperature = temperature)
 
-net = CaptureGameNetwork(size = size, hsize = hsize, simpleborders = True, #componentclass = MDLSTMLayer
+# the network
+net = CaptureGameNetwork(size = size, hsize = hsize, simpleborders = True, 
+                         #componentclass = MDLSTMLayer
                          )
 net.mutationStd = mutationStd
-net._params /= 20
+net._params /= 10 # start with small values.
 net = CheaplyCopiable(net)
+
 print net.name, 'has', net.paramdim, 'trainable parameters.'
 
-absoluteTask = CaptureGameTask(size, averageOverGames = 40, alternateStarting = True, opponent = KillingPlayer)
-handicapTask = HandicapCaptureTask(size, opponent = KillingPlayer)
-relativeTask = RelativeCaptureTask(size, useNetworks = True)
     
+res = []
+hres = []   
+jres = []
+
+if competitive: 
+    lclass = CompetitiveCoevolution
+else:
+    lclass = Coevolution
+
+seeds = []
+for dummy in range(popsize):
+    tmp = net.copy()
+    tmp.randomize()
+    seeds.append(tmp)
+
+learner = lclass(relativeTask, 
+                 seeds, 
+                 elitism = elitist, 
+                 parentChildAverage = beta,
+                 tournamentSize = tournSize,
+                 populationSize = popsize, 
+                 selectionProportion = selProp,
+                 hallOfFameEvaluation = hallOfFameProp,
+                 absEvalProportion = absProp,
+                 absEvaluator = absoluteTask,
+                 verbose = True)
+
+evals = generations * learner._stepsPerGeneration() * relTaskAvg
+
 def buildName():
-    name = ''
+    name = 'N-'
     if competitive:
         name += 'Comp'
     name += 'Coev'
@@ -82,38 +108,15 @@ def buildName():
         name += '-absP'+str(absProp)
     if mutationStd != 0.1:
         name += '-mut'+str(mutationStd)
-    name += net.name[19:-5]
+    name += net.name[18:-5]
     return name
 
 name = buildName()
+
 print name
-    
-res = []
-hres = []   
-jres = []
 
-if competitive: 
-    lclass = CompetitiveCoevolution
-else:
-    lclass = Coevolution
+print learner
 
-seeds = []
-for dummy in range(popsize):
-    tmp = net.copy()
-    tmp.randomize()
-    seeds.append(tmp)
-
-learner = lclass(lambda x,y: relativeTask(x,y, temperature), 
-                 seeds, 
-                 elitism = elitist, 
-                 parentChildAverage = beta,
-                 tournamentSize = tournSize,
-                 populationSize = popsize, 
-                 selectionProportion = selProp,
-                 hallOfFameEvaluation = hallOfFameProp,
-                 absEvalProportion = absProp,
-                 absEvaluator = absoluteTask,
-                 verbose = True)
 if javaTest:
     try:
         javaTask = CaptureGameTask(size, averageOverGames = 40, alternateStarting = True,
@@ -124,7 +127,7 @@ if javaTest:
         javaTest = False
     
 for g in range(generations):
-    newnet = learner.learn(onegeneration)
+    newnet = learner.learn(learner._stepsPerGeneration())
     h = learner.hallOfFame[-1]
     res.append(absoluteTask(h))
     hres.append(handicapTask(h))

@@ -52,5 +52,6 @@ class CompetitiveCoevolution(Coevolution):
         tmp = self.pop
         self.pop = self.parasitePop
         self.parasitePop = tmp
-            
-    
+        
+    def _stepsPerGeneration(self):    
+        return self.populationSize ** 2
