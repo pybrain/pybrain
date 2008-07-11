@@ -1,3 +1,4 @@
+# $Id$
 __author__ = 'Thomas Rueckstiess, ruecksti@in.tum.de'
 
 from scipy import zeros, clip, asarray, sign     
@@ -6,13 +7,20 @@ from copy import deepcopy
 class GradientDescent(object):
         
     def __init__(self):
+        """ initialise algorithms with standard parameters """
+        #-------<BackProp>-----------------
         # learning rate
         self.alpha = 0.1
         
         # alpha decay (1.0 = disabled)
         self.alphadecay = 1.0
     
-        # rprop parameters
+        # momentum parameters
+        self.momentum = 0.0
+        self.momentumvector = None
+        #-------</BackProp>----------------
+
+        #-------<RProp>--------------------
         self.rprop = False
         self.deltamax = 5.0
         self.deltamin = 0.01
@@ -20,19 +28,29 @@ class GradientDescent(object):
         self.etaplus = 1.2
         self.etaminus = 0.5
         self.lastgradient = None
+        #-------</RProp>-------------------
         
-        # momentum parameters
-        self.momentum = 0.0
-        self.momentumvector = None
 
+        
     def init(self, values):
+        """ call this to initialize data structures *after* algorithm to use
+        has been selected
+        @param values: the list (or array) of parameters to perform gradient descent on
+                       (will be copied, original not modified)
+        """
         self.values = deepcopy(values)
-        self.momentumvector = zeros(len(values))
-        self.lastgradient = zeros(len(values))
-        self.rprop_theta = self.lastgradient + self.deltanull      
+        if self.rprop:
+            self.lastgradient = zeros(len(values))
+            self.rprop_theta = self.lastgradient + self.deltanull      
+            self.momentumvector = None
+        else:
+            self.lastgradient = None
+            self.momentumvector = zeros(len(values))
+            
     
     def __call__(self, gradient):            
-        # check if gradient has correct dimensionality, then make array
+        """ calculates parameter change based on given gradient and returns updated parameters """
+        # check if gradient has correct dimensionality, then make array """
         assert len(gradient) == len(self.values)
         gradient_arr = asarray(gradient)
         

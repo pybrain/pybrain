@@ -21,13 +21,14 @@ class RPropMinusTrainer(BackpropTrainer):
         """
         BackpropTrainer.__init__(self, module, **kwargs)
         self.epoch = 0
-        # save the individual stepwidths Delta, and the last gradient
-        self.etaplus = etaplus
-        self.etaminus = etaminus
-        self.deltamin = deltamin
-        self.deltamax = deltamax
-        self.delta = zeros(module.paramdim) + delta0
-        self.prevgrad = zeros(module.paramdim)    
+        # set descender to RPROP mode and update parameters
+        self.descent.rprop = True
+        self.descent.etaplus = etaplus
+        self.descent.etaminus = etaminus
+        self.descent.deltamin = deltamin
+        self.descent.deltamax = deltamax
+        self.descent.deltanull = delta0
+        self.descent.init(module.params)  # reinitialize, since mode changed
 
     def train(self):
         """ Train the network for one epoch """
@@ -39,32 +40,11 @@ class RPropMinusTrainer(BackpropTrainer):
             error += e
         if self.verbose:
             print "epoch %6d  total error %12.5g" % (self.epoch, error)
-        self.updateWeights()
+        self.module._setParameters(self.descent(self.module.derivs))
         self.epoch += 1
         self.totalepochs += 1
 
-    def updateWeights(self):
-        """ Update network weights and step width parameters """
-        gradient = self.module.derivs
-        w = self.module.params
-
-        # update weights
-        w += sign(gradient) * self.delta
-        
-        # update weight steps for wm
-        dirSwitch = gradient * self.prevgrad
-        self.delta[dirSwitch > 0] *= self.etaplus
-        idx =  dirSwitch < 0
-        self.delta[idx] *= self.etaminus
-        gradient[idx] = 0
-        
-        # limit growth and shrinkage of Deltas
-        self.delta = self.delta.clip(self.deltamin, self.deltamax)
-        
-        # save stuff for next iteration
-        self.prevgrad = gradient.copy()
-        
-    
+     
     def _calcDerivs(self, seq):
         self.module.reset()        
         for time, sample in enumerate(seq):

@@ -1,32 +1,37 @@
+# $Id$
 __author__ = 'Daan Wierstra and Tom Schaul'
 
 from scipy import zeros, dot, ones, argmax
+from random import shuffle
 
 from trainer import Trainer
 from pybrain.utilities import fListToString
-
-from random import shuffle
+from pybrain.auxiliary import GradientDescent
 
 
 class BackpropTrainer(Trainer):
     """ Train the parameters of a module according to a supervised dataset (potentially sequential)
         by backpropagating the errors (through time). """
         
-    def __init__(self, module, dataset = None, learningrate = 0.01, momentum = 0., 
+    def __init__(self, module, dataset = None, learningrate = 0.01, lrdecay=1.0, momentum = 0., 
                  verbose = False, batchlearning = False):
         """ @param module: the module whose parameters should be trained. 
             @param learningrate: learning rate (default: 0.01)
             @param momentum: momentum (default: 0)
         """
         Trainer.__init__(self, module)
-        self.lr = learningrate
-        self.momentum = momentum
-        self.momentumvector = zeros(self.module.paramdim)
         self.setData(dataset)
         self.verbose = verbose
         self.batchlearning = batchlearning
         self.epoch = 0
         self.totalepochs = 0
+        # set up gradient descender
+        self.descent = GradientDescent()
+        self.descent.alpha = learningrate
+        self.descent.momentum = momentum
+        self.descent.alphadecay = lrdecay
+        self.descent.init(module.params)
+        
         
     def train(self):
         """ @param batchlearning: should the parameters be updated only at the end of the epoch? """
@@ -42,22 +47,17 @@ class BackpropTrainer(Trainer):
             errors += e
             ponderation += p
             if not self.batchlearning:
-                self.updateWeights()
+                self.module._setParameters(self.descent(self.module.derivs))
                 self.module.resetDerivatives()
         if self.verbose:
             print "Total error:", errors/ponderation
         if self.batchlearning:
-            self.updateWeights()
+            self.module._setParameters(self.descent(self.module.derivs))
         self.epoch += 1
         self.totalepochs += 1
         return errors/ponderation
         
-    def updateWeights(self):
-        self.momentumvector *= self.momentum
-        self.momentumvector += self.lr * self.module.derivs
-        p = self.module.params
-        p += self.momentumvector
-        
+    
     def _calcDerivs(self, seq):
         self.module.reset()        
         for time, sample in enumerate(seq):
