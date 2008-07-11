@@ -3,8 +3,7 @@ __author__ = 'Tom Schaul, tom@idsia.ch'
 from scipy import argmax, array
 from random import sample, choice, shuffle
 
-from pybrain.utilities import fListToString
-from pybrain.utilities import Named
+from pybrain.utilities import fListToString, Named
 
 
 class Coevolution(Named):
@@ -156,14 +155,17 @@ class Coevolution(Named):
         """ Play a tournament. 
         @param tournamentSize: If unspecified, play all-against-all 
         """
+        # TODO: Preferably select high-performing opponents?
         for p in pop1:
-            if tournamentSize != None and tournamentSize < len(pop2):                
-                opps = sample(pop2, tournamentSize)
+            pop3 = pop2[:]
+            if p in pop3:
+                pop3.remove(p)
+            if tournamentSize != None and tournamentSize < len(pop3):                
+                opps = sample(pop3, tournamentSize)
             else:                
-                opps = pop2            
+                opps = pop3                    
             for opp in opps:
-                if p == opp:
-                    continue
+                assert p != opp
                 if (p,opp) not in self.allResults:
                     self.allResults[(p,opp)] = [0,0]
                 if (opp,p) not in self.allResults:

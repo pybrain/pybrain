@@ -1,13 +1,10 @@
-from pybrain.tests.drafts import coevolutiontest
-from pybrain.structure.networks.custom.capturegame import CaptureGameNetwork
 __author__ = 'Tom Schaul, tom@idsia.ch'
 
 from capturetask import CaptureGameTask
-from pybrain.rl.experiments import EpisodicExperiment
-from pybrain.rl.tasks import EpisodicTask
 from pybrain.rl.agents.capturegameplayers import ModuleDecidingPlayer
 from pybrain.rl.environments.twoplayergames import CaptureGame
 from pybrain.rl.agents.capturegameplayers.captureplayer import CapturePlayer
+from pybrain.structure.networks.custom.capturegame import CaptureGameNetwork
 
 
 class RelativeCaptureTask(CaptureGameTask):

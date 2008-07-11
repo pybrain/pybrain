@@ -17,8 +17,9 @@ class CompetitiveCoevolution(Coevolution):
             s1 = seeds[:len(seeds)/2]
             s2 = seeds[len(seeds)/2:]
         else:
+            # not enough seeds: randomize 
             s1 = seeds
-            s2 = seeds
+            s2 = [seeds[0].copy().randomize()]
         self.pop = self._extendPopulation(s1, self.populationSize)
         self.parasitePop = self._extendPopulation(s2, self.populationSize)
         
@@ -54,4 +55,8 @@ class CompetitiveCoevolution(Coevolution):
         self.parasitePop = tmp
         
     def _stepsPerGeneration(self):    
-        return self.populationSize ** 2
+        if self.tournamentSize == None:
+            return 2 * self.populationSize** 2
+        else:
+            return Coevolution._stepsPerGeneration(self)
+        

@@ -1,19 +1,36 @@
 __author__ = 'Tom Schaul, tom@idsia.ch'
 
-from pybrain.rl.tasks.capturegame import CaptureGameTask
+from pybrain.rl.tasks.capturegame import CaptureGameTask, HandicapCaptureTask
 from pybrain.structure.evolvables.cheaplycopiable import CheaplyCopiable
 from pybrain.rl.learners import ES
 from pybrain.utilities import storeCallResults
-from pybrain.rl.agents.capturegameplayers.killing import KillingPlayer
+from pybrain.rl.agents.capturegameplayers import KillingPlayer, ClientCapturePlayer
 from pybrain.structure.modules.mdlstm import MDLSTMLayer
 
 # task settings: opponent, averaging to reduce noise, board size, etc.
 size = 5
-hsize = 5
-evals = 1000
+hsize = 2
+evals = 400
 avgover = 40
 
-task = CaptureGameTask(size, averageOverGames = avgover, opponent = KillingPlayer)
+
+javaTask = CaptureGameTask(size, averageOverGames = avgover, opponent = ClientCapturePlayer)
+
+class javaEval:
+
+    def __call__(self, p):
+        javaTask.opponent.randomPartMoves = 0.2
+        res = None
+        while res == None:
+            try:
+                res = javaTask(p)
+            except:
+                print 'Oh-oh.'
+        return res
+
+#task = CaptureGameTask(size, averageOverGames = avgover, opponent = KillingPlayer)
+#task = HandicapCaptureTask(size, opponent = KillingPlayer, minEvals = 10)
+task = javaEval()
 
 # keep track of evaluations for plotting
 res = storeCallResults(task)
@@ -27,7 +44,7 @@ else:
     from pybrain.structure.networks.custom.capturegame import CaptureGameNetwork
     net = CaptureGameNetwork(size = size, hsize = hsize, simpleborders = True, #componentclass = MDLSTMLayer
                              )
-    
+net._params /= 10
 net = CheaplyCopiable(net)
 print net.name, 'has', net.paramdim, 'trainable parameters.'
 
@@ -44,7 +61,7 @@ if True:
     from pybrain.tools.xml import NetworkWriter
     n = newnet.getBase()
     n.argdict['RUNRES'] = res[:]
-    NetworkWriter.writeToFile(n, '../temp/capturegame/new-e'+str(evals)+'-avg'+str(avgover)+newnet.name[18:-5])
+    NetworkWriter.writeToFile(n, '../temp/capturegame/JN-e'+str(evals)+'-avg'+str(avgover)+newnet.name[18:-5])
 
 if True:
     # now, let's take the result, and compare it's performance on a larger game-baord

@@ -9,25 +9,26 @@ from pybrain.structure.evolvables.cheaplycopiable import CheaplyCopiable
 from pybrain.structure.networks.custom.capturegame import CaptureGameNetwork
 from pybrain.rl.tasks.capturegame import CaptureGameTask, HandicapCaptureTask, RelativeCaptureTask
 from pybrain.rl.agents.capturegameplayers.clientwrapper import ClientCapturePlayer
-from pybrain.rl.learners.search.competitivecoevolution import CompetitiveCoevolution
-from pybrain.rl.learners.search.coevolution import Coevolution
+from pybrain.rl.learners.search import CompetitiveCoevolution, MultiPopulationCoevolution, Coevolution
 from pybrain.rl.agents.capturegameplayers import KillingPlayer
 from pybrain.tools.xml import NetworkWriter
     
 # parameters
-size = 6
+size = 5
 hsize = 5
-popsize = 10
-generations = 100
+popsize = 8
+generations = 50
 elitist = False
-temperature = 0. # for learning games
-relTaskAvg = 5
-hallOfFameProp = 0.5
+temperature = 0.
+relTaskAvg = 6
+hallOfFameProp = 0.
 selProp = 0.5
 beta = 1
-tournSize = 4
+tournSize = 3
 absProp = 0.
-mutationStd = 0.01
+mutationStd = 0.05
+multipop = True
+populations = 3
 competitive = False
 
 # experiment settings
@@ -36,11 +37,11 @@ absplot = True
 scalingtest = False
 storage = True
 javaTest = False
+handicapTest = False
 
 # the tasks:
 absoluteTask = CaptureGameTask(size, averageOverGames = 40, alternateStarting = True, 
                                opponent = KillingPlayer)
-handicapTask = HandicapCaptureTask(size, opponent = KillingPlayer)
 relativeTask = RelativeCaptureTask(size, useNetworks = True, maxGames = relTaskAvg,
                                    minTemperature = temperature)
 
@@ -60,7 +61,9 @@ hres = []
 jres = []
 
 if competitive: 
-    lclass = CompetitiveCoevolution
+    lclass = CompetitiveCoevolution    
+elif multipop:
+    lclass = MultiPopulationCoevolution
 else:
     lclass = Coevolution
 
@@ -76,6 +79,7 @@ learner = lclass(relativeTask,
                  parentChildAverage = beta,
                  tournamentSize = tournSize,
                  populationSize = popsize, 
+                 numPops = populations,
                  selectionProportion = selProp,
                  hallOfFameEvaluation = hallOfFameProp,
                  absEvalProportion = absProp,
@@ -117,6 +121,9 @@ print name
 
 print learner
 
+if handicapTest:
+    handicapTask = HandicapCaptureTask(size, opponent = KillingPlayer)
+
 if javaTest:
     try:
         javaTask = CaptureGameTask(size, averageOverGames = 40, alternateStarting = True,
@@ -130,8 +137,12 @@ for g in range(generations):
     newnet = learner.learn(learner._stepsPerGeneration())
     h = learner.hallOfFame[-1]
     res.append(absoluteTask(h))
-    hres.append(handicapTask(h))
-    print res[-1], hres[-1], '(evals:', learner.steps, ')'
+    print res[-1], '(evals:', learner.steps, ')',
+    if handicapTest:
+        hres.append(handicapTask(h))
+        print 'Handicap: ', hres[-1]
+    else:
+        print
     if javaTest:
         try:
             jres.append(javaTask(h))
@@ -167,8 +178,13 @@ if ciao:
 if absplot:
     # plot the progression
     pylab.figure()
-    pylab.plot(res)
-    pylab.plot(hres)
+    if multipop:
+        for i in range(populations):
+            pylab.plot(res[i::populations])
+    else:
+        pylab.plot(res)
+    if handicapTest:
+        pylab.plot(hres)
     if javaTest:
         pylab.plot(jres)
     pylab.title(name)

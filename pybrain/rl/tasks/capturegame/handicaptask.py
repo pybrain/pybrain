@@ -23,6 +23,7 @@ class HandicapCaptureTask(CaptureGameTask):
     
     maxGames = 200
     averageOverGames = 1
+    minEvals = 5
     
     def __init__(self, *args, **kargs):
         CaptureGameTask.__init__(self, *args, **kargs)
@@ -44,13 +45,13 @@ class HandicapCaptureTask(CaptureGameTask):
     
     def goUp(self, h):
         """ ready to go up one handicap? """
-        if self.results[h][1] >= 6:
+        if self.results[h][1] >= self.minEvals:
             return self.winProp(h) > 0.6
         return False
     
     def goDown(self, h):
         """ have to go down one handicap? """
-        if self.results[h][1] >= 6:
+        if self.results[h][1] >= self.minEvals:
             return self.winProp(h) < -0.6
         return False
     
@@ -61,15 +62,15 @@ class HandicapCaptureTask(CaptureGameTask):
         """ Is the highest handicap unstable? """
         high = self.bestHandicap()
         if high > 0:
-            if self.results[high][1] >= 10 and self.results[high-1][1] >= 10:
+            if self.results[high][1] >= 2*self.minEvals and self.results[high-1][1] >= 2*self.minEvals:
                 return self.goUp(high-1) and self.goDown(high)
         return False
     
     def stable(self, h):
         return (self.fluctuating() 
-                or (self.results[h][1] >= 10 and (not self.goUp(h)) and (not self.goDown(h)))
-                or (self.results[h][1] >= 10 and self.goUp(h) and h >= self.maxHandicaps)
-                or (self.results[h][1] >= 10 and self.goDown(h) and h == 0))
+                or (self.results[h][1] >= 2*self.minEvals and (not self.goUp(h)) and (not self.goDown(h)))
+                or (self.results[h][1] >= 2*self.minEvals and self.goUp(h) and h >= self.maxHandicaps)
+                or (self.results[h][1] >= 2*self.minEvals and self.goDown(h) and h == 0))
     
     def addResult(self, h, win, moves):
         if h+1 not in self.results:
