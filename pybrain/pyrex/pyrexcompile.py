@@ -33,7 +33,7 @@ elif platform.system() == 'Windows':
     
 structdir = join('..','structure')
 files = {join(structdir,'modules'): ['_linearlayer', '_module', '_sigmoidlayer'],
-         join(structdir,'connections'): ['_identity', '_connection', '_full'],
+         join(structdir,'connections'): ['_identity', '_connection', '_full', '_shared'],
          join(structdir,'networks'): ['_network', ],
          '.': ['pyrex_shared'],
          }

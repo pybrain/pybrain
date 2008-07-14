@@ -3,6 +3,7 @@ __author__ = 'Tom Schaul, tom@idsia.ch'
 from pybrain.structure.parametercontainer import ParameterContainer
 from connection import Connection
 from full import FullConnection
+from pybrain.utilities import substitute
 
 
 class OwnershipViolation(Exception):
@@ -59,4 +60,9 @@ class SharedFullConnection(SharedConnection, FullConnection):
     
     def _backwardImplementation(self, outerr, inerr, inbuf):
         FullConnection._backwardImplementation(self, outerr, inerr, inbuf)
+        
+    @substitute('pybrain.pyrex._shared.SharedFullConnectionforward')
+    def forward(self, time, desttime = None):
+        Connection.forward(self, time, desttime)
+    
     
