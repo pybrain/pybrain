@@ -7,30 +7,38 @@ from copy import deepcopy
 class GradientDescent(object):
         
     def __init__(self):
-        """ initialise algorithms with standard parameters """
+        """ initialise algorithms with standard parameters (typical values given in parentheses)"""
+        #-------<common parameters>--------
+        # weght decay for regularization - use with care (0.05-0.0001)
+        self.weightdecay = 0.0
+        #-------</common parameters>-------
+        
         #-------<BackProp>-----------------
-        # learning rate
+        # learning rate (0.1-0.001, down to 1e-7 for RNNs)
         self.alpha = 0.1
         
-        # alpha decay (1.0 = disabled)
+        # alpha decay (0.999; 1.0 = disabled)
         self.alphadecay = 1.0
     
-        # momentum parameters
+        # momentum parameters (0.1 or 0.9)
         self.momentum = 0.0
         self.momentumvector = None
         #-------</BackProp>----------------
 
         #-------<RProp>--------------------
         self.rprop = False
+        # maximum step width (1 - 20)
         self.deltamax = 5.0
+        # minimum step width (0.01 - 1e-6)
         self.deltamin = 0.01
+        # the remaining parameters do not normally need to be changed
         self.deltanull = 0.1
         self.etaplus = 1.2
         self.etaminus = 0.5
         self.lastgradient = None
         #-------</RProp>-------------------
         
-
+    
         
     def init(self, values):
         """ call this to initialize data structures *after* algorithm to use
@@ -58,7 +66,7 @@ class GradientDescent(object):
             rprop_theta = self.rprop_theta
             
             # update parameters 
-            self.values += sign(gradient_arr) * rprop_theta
+            self.values += (sign(gradient_arr) * rprop_theta  - self.weightdecay * self.values)
 
             # update rprop meta parameters
             dirSwitch = self.lastgradient * gradient_arr
@@ -84,7 +92,7 @@ class GradientDescent(object):
             self.alpha *= self.alphadecay
         
             # update parameters 
-            self.values += self.momentumvector
+            self.values += (self.momentumvector - self.weightdecay * self.values)
             
         return self.values
 

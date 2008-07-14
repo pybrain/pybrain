@@ -14,10 +14,14 @@ class BackpropTrainer(Trainer):
         by backpropagating the errors (through time). """
         
     def __init__(self, module, dataset = None, learningrate = 0.01, lrdecay=1.0, momentum = 0., 
-                 verbose = False, batchlearning = False):
+                 verbose = False, batchlearning = False, weightdecay = 0.):
         """ @param module: the module whose parameters should be trained. 
             @param learningrate: learning rate (default: 0.01)
+            @param lrdecay: learning rate decay (default: 1.0 = none)
             @param momentum: momentum (default: 0)
+            @param weightdecay: weight decay rate (default: 0 = none). 
+            Caveat: To ease comparison between different setups, weight decay does not alter the reported
+            errors, merely the weight updates.
         """
         Trainer.__init__(self, module)
         self.setData(dataset)
@@ -30,6 +34,7 @@ class BackpropTrainer(Trainer):
         self.descent.alpha = learningrate
         self.descent.momentum = momentum
         self.descent.alphadecay = lrdecay
+        self.descent.weightdecay = weightdecay
         self.descent.init(module.params)
         
         
