@@ -1,0 +1,2 @@
+from randomplayer import RandomGomokuPlayer
+from killing import KillingGomokuPlayer

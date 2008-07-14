@@ -55,7 +55,7 @@ class CaptureGame(TwoPlayerGame):
     def getBoardArray(self):
         """ an array with thow boolean values per position, indicating 
         'white stone present' and 'black stone present' respectively. """
-        a = zeros(2*(self.size**2))
+        a = zeros(self.outdim)
         for i, p in enumerate(self._iterPos()):
             if self.b[p] == self.WHITE:
                 a[2*i] = 1
