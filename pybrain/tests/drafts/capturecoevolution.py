@@ -15,20 +15,20 @@ from pybrain.tools.xml import NetworkWriter
     
 # parameters
 size = 5
-hsize = 5
+hsize = 1
 popsize = 8
-generations = 50
+generations = 200
 elitist = False
 temperature = 0.
-relTaskAvg = 20
-hallOfFameProp = 0.
+relTaskAvg = 6
+hallOfFameProp = 0.5
 selProp = 0.5
 beta = 1
 tournSize = 3
 absProp = 0.
 mutationStd = 0.1
 multipop = True
-populations = 3
+populations = 5
 competitive = False
 
 # experiment settings
@@ -50,7 +50,6 @@ net = CaptureGameNetwork(size = size, hsize = hsize, simpleborders = True,
                          #componentclass = MDLSTMLayer
                          )
 net.mutationStd = mutationStd
-net._params /= 10 # start with small values.
 net = CheaplyCopiable(net)
 
 print net.name, 'has', net.paramdim, 'trainable parameters.'
@@ -71,6 +70,7 @@ seeds = []
 for dummy in range(popsize):
     tmp = net.copy()
     tmp.randomize()
+    tmp._params /= 10 # start with small values.
     seeds.append(tmp)
 
 learner = lclass(relativeTask, 

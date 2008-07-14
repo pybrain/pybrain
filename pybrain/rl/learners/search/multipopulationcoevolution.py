@@ -56,6 +56,7 @@ class MultiPopulationCoevolution(Coevolution):
     def _oneGeneration(self):
         Coevolution._oneGeneration(self)
         # change the main pop
+        self.pops[self.mainpop] = self.pop
         self.mainpop = self.generation % self.numPops
         self.pop = self.pops[self.mainpop]
         

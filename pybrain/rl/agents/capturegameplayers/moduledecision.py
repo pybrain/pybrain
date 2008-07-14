@@ -33,7 +33,7 @@ class ModuleDecidingPlayer(RandomCapturePlayer):
             tmp[:len(ba)-1:2] = ba[1:len(ba):2]
             tmp[1:len(ba):2] = ba[:len(ba)-1:2]
             ba = tmp
-        return [self.color, self._legalizeIt(self.module.activate(ba))]
+        return [self.color, self._legalizeIt(self.module.activate(ba, 0))]
     
     def newEpisode(self):
         self.module.reset()

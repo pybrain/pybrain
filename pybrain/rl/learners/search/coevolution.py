@@ -69,13 +69,17 @@ class Coevolution(Named):
         self.generation += 1        
         fitnesses = self._evaluatePopulation()
         # store best in hall of fame
-        self.hallOfFame.append(self.pop[argmax(array(fitnesses))])
+        besti = argmax(array(fitnesses))
+        best = self.pop[besti]
+        self.hallOfFame.append(best)
                 
         if self.verbose:
             print 'Generation', self.generation
-            print fListToString(fitnesses, 4)
+            print '   relative fitnesses:', fListToString(fitnesses, 3)
+            print '   best params:', fListToString(best.params, 4)
                 
         self.pop = self._selectAndReproduce(self.pop, fitnesses)
+            
         
     def _averageWithParents(self, pop, childportion):
         for i, p in enumerate(pop[:]):
@@ -105,8 +109,9 @@ class Coevolution(Named):
         return fitnesses
             
     def _initPopulation(self, seeds):
-        for s in seeds:
-            s.parent = None
+        if self.parentChildAverage < 0:
+            for s in seeds:
+                s.parent = None
         self.pop = self._extendPopulation(seeds, self.populationSize)
             
     def _extendPopulation(self, seeds, size):
@@ -117,7 +122,8 @@ class Coevolution(Named):
             chosen = choice(seeds)
             tmp = chosen.copy()
             tmp.mutate()
-            tmp.parent = chosen
+            if self.parentChildAverage < 0:
+                tmp.parent = chosen
             res.append(tmp)            
         return res
         
