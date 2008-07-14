@@ -8,7 +8,7 @@ from scipy import size
 from pybrain.structure.moduleslice import ModuleSlice
 from pybrain.structure.modules.module import Module
 from pybrain.structure.parametercontainer import ParameterContainer
-from pybrain.utilities import combineLists
+from pybrain.utilities import combineLists, substitute
 from pybrain.structure.connections.shared import SharedConnection
 from pybrain.structure.evolvables.evolvable import Evolvable
 
@@ -134,6 +134,7 @@ class Network(Module, ParameterContainer):
             x._setDerivatives(self.derivs[index:index+x.paramdim], self)
             index += x.paramdim
         
+    @substitute('pybrain.pyrex._network.Network_forwardImplementation')
     def _forwardImplementation(self, inbuf, outbuf):
         assert self.sorted
         index = 0
@@ -155,7 +156,7 @@ class Network(Module, ParameterContainer):
         for m in self.outmodules:
             outbuf[index:index + m.outdim] = m.outputbuffer[t]
             index += m.outdim
-        
+            
     def _backwardImplementation(self, outerr, inerr, outbuf, inbuf):
         assert self.sorted
         index = 0
