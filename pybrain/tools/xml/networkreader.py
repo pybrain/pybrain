@@ -5,6 +5,7 @@ from handling import XMLHandling
 
 # those imports are necessary for the eval() commands to find the right classes
 import pybrain
+from scipy import array
 try: import newversion
 except: pass
 
@@ -30,6 +31,8 @@ class NetworkReader(XMLHandling):
         return r.readNetwork(netroot)
     
     def readNetwork(self, node):
+        # TODO: why is this necessary?
+        import pybrain.structure.networks.custom
         nclass = eval(str(node.getAttribute('class')))        
         argdict = self.readArgs(node)  
         n = nclass(**argdict)

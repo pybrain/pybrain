@@ -93,7 +93,11 @@ def setAllArgs(obj, argdict):
                 obj.argdict[n] = argdict[n]  
         else:
             print 'Warning: parameter name', n, 'not found!'  
-            
+            if xmlstore:
+                if not hasattr(obj, '_unknown_argdict'):
+                    obj._unknown_argdict = {}
+                obj._unknown_argdict[n] = argdict[n]
+                
 def linscale(d, lim):
     """ utility function to linearly scale array d to the interval defined by lim """
     return (d-d.min())*(lim[1]-lim[0]) + lim[0]

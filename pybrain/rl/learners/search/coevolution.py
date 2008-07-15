@@ -43,6 +43,9 @@ class Coevolution(Named):
         # the best host and the best parasite from each generation
         self.hallOfFame = []
         
+        # the relative fitnesses from each generation (of the selected individuals)
+        self.hallOfFitnesses = []
+        
         # this dictionnary stores all the results between 2 players (first one starting): 
         #  { (player1, player2): [games won, total games] }
         self.allResults = {}
@@ -71,12 +74,14 @@ class Coevolution(Named):
         # store best in hall of fame
         besti = argmax(array(fitnesses))
         best = self.pop[besti]
+        bestFits = sorted(fitnesses)[::-1][:self._numSelected()]
         self.hallOfFame.append(best)
+        self.hallOfFitnesses.append(bestFits)
                 
         if self.verbose:
             print 'Generation', self.generation
-            print '   relative fitnesses:', fListToString(fitnesses, 3)
-            print '   best params:', fListToString(best.params, 4)
+            print '        relat. fits:', fListToString(sorted(fitnesses), 4)
+            print '        best params:', fListToString(best.params, 4)
                 
         self.pop = self._selectAndReproduce(self.pop, fitnesses)
             

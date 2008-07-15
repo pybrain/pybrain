@@ -15,20 +15,20 @@ from pybrain.tools.xml import NetworkWriter
     
 # parameters
 size = 5
-hsize = 1
-popsize = 8
-generations = 200
+hsize = 2
+popsize = 10
+generations = 300
 elitist = False
 temperature = 0.
-relTaskAvg = 6
+relTaskAvg = 7
 hallOfFameProp = 0.5
 selProp = 0.5
 beta = 1
 tournSize = 3
 absProp = 0.
-mutationStd = 0.1
+mutationStd = 0.2
 multipop = True
-populations = 5
+populations = 3
 competitive = False
 
 # experiment settings
@@ -52,7 +52,7 @@ net = CaptureGameNetwork(size = size, hsize = hsize, simpleborders = True,
 net.mutationStd = mutationStd
 net = CheaplyCopiable(net)
 
-print net.name, 'has', net.paramdim, 'trainable parameters.'
+print net.name[:-5], 'has', net.paramdim, 'trainable parameters.'
 
     
 res = []
@@ -90,36 +90,36 @@ evals = generations * learner._stepsPerGeneration() * relTaskAvg
 
 def buildName():
     name = 'N-'
-    if competitive:
-        name += 'Comp'
-    name += 'Coev'
+    name += str(learner)
+    #if competitive:
+    #    name += 'Comp'
+    #name += 'Coev'
     if relTaskAvg > 1:
         name += '-rA'+str(relTaskAvg)
-    if elitist:
-        name += '-elit'
+    #if elitist:
+    #    name += '-elit'
     name += '-T'+str(temperature)
     name += '-e'+str(evals)
-    name += '-pop'+str(popsize)
-    if tournSize != None:
-        name += '-tSize'+str(tournSize)
+    #name += '-pop'+str(popsize)
+    #if tournSize != None:
+    name += '-tSize'+str(tournSize)
     if beta < 1:
         name += '-pc_avg'+str(beta)
     if hallOfFameProp > 0:
         name += '-HoF'+str(hallOfFameProp)
-    if selProp != 0.5:
-        name += '-selP'+str(selProp)
+    #if selProp != 0.5:
+    #    name += '-selP'+str(selProp)
     if absProp > 0:
         name += '-absP'+str(absProp)
-    if mutationStd != 0.1:
-        name += '-mut'+str(mutationStd)
+    #if mutationStd != 0.1:
+    name += '-mut'+str(mutationStd)
     name += net.name[18:-5]
     return name
 
 name = buildName()
 
-print name
-
-print learner
+print 'Experiment:', name
+print
 
 if handicapTest:
     handicapTask = HandicapCaptureTask(size, opponent = KillingPlayer)
@@ -132,12 +132,26 @@ if javaTest:
     except:
         print 'No server found.'
         javaTest = False
+
+def storeResults():
+    print ' --- Storing..',
+    n = newnet.getBase()
+    n.argdict['RUNRES'] = res[:]
+    n.argdict['RUNRESH'] = hres[:]
+    n.argdict['RUNRESJ'] = jres[:]
+    ps = []
+    for h in learner.hallOfFame:
+        ps.append(h.params.copy())
+    n.argdict['HoF_PARAMS'] = ps
+    n.argdict['HoBestFitnesses'] = learner.hallOfFitnesses
+    NetworkWriter.writeToFile(n, '../temp/capturegame/1/'+name+'.xml')
+    print '..done. --- '
     
 for g in range(generations):
     newnet = learner.learn(learner._stepsPerGeneration())
     h = learner.hallOfFame[-1]
     res.append(absoluteTask(h))
-    print res[-1], '(evals:', learner.steps, ')',
+    print res[-1], '    (evals:', learner.steps, '*', relTaskAvg, ')',
     if handicapTest:
         hres.append(handicapTask(h))
         print 'Handicap: ', hres[-1]
@@ -150,18 +164,15 @@ for g in range(generations):
         except:
             jres.append(0)
             print 'Server playing error.'
+
+    if g % 10 == 0 and g > 0 and storage and evals > 100:
+        storeResults()
+        
+    print
         
 # store result
-if storage and evals > 100 and size > 3:
-    n = newnet.getBase()
-    n.argdict['RUNRES'] = res[:]
-    n.argdict['RUNRESH'] = hres[:]
-    n.argdict['RUNRESJ'] = jres[:]
-    ps = []
-    for h in learner.hallOfFame:
-        ps.append(h.params.copy())
-    n.argdict['HoF_PARAMS'] = ps
-    NetworkWriter.writeToFile(n, '../temp/capturegame/'+name)
+if storage and evals > 100:
+    storeResults()
 
 # plot CIAO diagram
 if ciao:    
