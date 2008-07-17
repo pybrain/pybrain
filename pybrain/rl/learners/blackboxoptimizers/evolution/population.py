@@ -3,7 +3,7 @@ __author__ = 'Michael Isik'
 
 
 import collections
-
+from numpy import Infinity
 
 class Population:
     """ Abstract template for a minimal Population.
@@ -58,7 +58,7 @@ class SimplePopulation(Population):
     def __init__(self):
         self._individuals = set()
 #        self._fitness = collections.defaultdict( lambda: 0. )
-#        self._fitness = collections.defaultdict( lambda: float('-inf') )
+#        self._fitness = collections.defaultdict( lambda: -Infinity )
         self._fitness = {}
 
     def getIndividuals(self):
@@ -66,7 +66,7 @@ class SimplePopulation(Population):
 
     def addIndividual(self, individual):
         self._individuals.add(individual)
-        self._fitness[individual] = float('-inf')
+        self._fitness[individual] = -Infinity
 
     def addIndividuals(self, individuals):
         for individual in individuals:
@@ -76,9 +76,9 @@ class SimplePopulation(Population):
     def removeIndividual(self, individual):
         self._individuals.discard(individual)
         del self._fitness[individual]
-#        self._fitness[individual] = float('-inf')
+#        self._fitness[individual] = -Infinity
 #        if self._fitness.has_key(individual):
-#            self._fitness[individual] = float('-inf')
+#            self._fitness[individual] = -Infinity
 #            del self._fitness[individual]
 
     def removeIndividuals(self, individuals):
@@ -98,7 +98,7 @@ class SimplePopulation(Population):
     def clearFitness(self):
         """ Clears all stored fitness values """
         for (ind, fit) in self._fitness.iteritems():
-            self._fitness[ind] = float('-inf')
+            self._fitness[ind] = -Infinity
 #        self._fitness.clear()
 
     def getFitnessMap(self):

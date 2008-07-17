@@ -4,7 +4,7 @@ __author__ = 'Michael Isik'
 
 
 import numpy
-from numpy            import array, zeros, empty, where, abs, inner, exp,  float, float64, int
+from numpy            import array, zeros, empty, where, abs, inner, exp,  float, float64, int, Infinity
 from trainer          import Trainer
 from pybrain.datasets import SupervisedDataSet
 #from pybrain.examples.svm.svmtrainer import selectWorkingSet # zzzzzzzttttttt
@@ -353,7 +353,7 @@ class SVMTrainer(Trainer):
 
 
         # === find G_max1 and G_max_idx (=i)
-        G_max11    = float('-inf')
+        G_max11    = -Infinity
         G_max_idx1 = -1
         where1,    = where( self._cond_not_upper_and_pos_Y )
         if len(where1):
@@ -361,7 +361,7 @@ class SVMTrainer(Trainer):
             G_max_idx1 = where1[G_max_idx1]
             G_max11    = -G[G_max_idx1]
 
-        G_max12    = float('-inf')
+        G_max12    = -Infinity
         G_max_idx2 = -1
         where1,    = where( self._cond_not_lower_and_neg_Y )
         if len(where1):
@@ -390,8 +390,8 @@ class SVMTrainer(Trainer):
 
         # find G_min_idx1 obj_diff_min1 and G_max21
         G_min_idx1    = -1
-        G_max21       = float('-inf')
-        obj_diff_min1 = float('inf')
+        G_max21       = -Infinity
+        obj_diff_min1 = Infinity
 
         where1, = where(self._cond_not_lower_and_pos_Y)
 
@@ -422,8 +422,8 @@ class SVMTrainer(Trainer):
 
         # find G_min_idx2 obj_diff_min2 and G_max22
         G_min_idx2    = -1
-        G_max22       = float('-inf')
-        obj_diff_min2 = float('inf')
+        G_max22       = -Infinity
+        obj_diff_min2 = Infinity
 
         where1, = where(self._cond_not_upper_and_neg_Y)
 
@@ -576,8 +576,8 @@ class SVMTrainer(Trainer):
         else:
             where_ub_neg_or_lb_pos, = where( ( ( active_alpha_status == UPPER_BOUND ) & self._cond_neg_Y[0:actsz] ) | ( (active_alpha_status == LOWER_BOUND ) & self._cond_pos_Y[0:actsz] ) )
             where_ub_pos_or_lb_neg, = where( ( ( active_alpha_status == UPPER_BOUND ) & self._cond_pos_Y[0:actsz] ) | ( (active_alpha_status == LOWER_BOUND ) & self._cond_neg_Y[0:actsz] ) )
-            ub = float('inf')
-            lb = float('-inf')
+            ub = Infinity
+            lb = -Infinity
             if len( where_ub_neg_or_lb_pos ): ub = min( YG[where_ub_neg_or_lb_pos] )
             if len( where_ub_pos_or_lb_neg ): lb = max( YG[where_ub_pos_or_lb_neg] )
             r = ( ub + lb ) / 2

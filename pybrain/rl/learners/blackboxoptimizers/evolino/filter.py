@@ -7,7 +7,7 @@ from pybrain.rl.learners.blackboxoptimizers.evolution.population import SimplePo
 from pybrain.tools.validation import Validator, ModuleValidator
 from pybrain.tools.kwargsprocessor import KWArgsProcessor
 
-from numpy import zeros, empty, array, dot, append, concatenate
+from numpy import zeros, empty, array, dot, append, concatenate, Infinity
 from scipy.linalg import pinv2
 from copy import deepcopy
 
@@ -38,7 +38,7 @@ class EvolinoEvaluation(Filter):
 
         self.network = evolino_network
         self.dataset = dataset
-        self.max_fitness = float('-inf')
+        self.max_fitness = -Infinity
 
 
     def _evaluateNet(self, net, dataset, wtRatio):
@@ -104,7 +104,7 @@ class EvolinoEvaluation(Filter):
         population.clearFitness()
         best_individual = None
         best_W = None
-        best_fitness = float('-inf')
+        best_fitness = -Infinity
 
 
         # iterate all individuals. Note, that these individuals are created on the fly

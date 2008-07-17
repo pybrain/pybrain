@@ -15,7 +15,7 @@ from pybrain.rl.learners.blackboxoptimizers.evolution.variate      import Cauchy
 from pybrain.tools.kwargsprocessor import KWArgsProcessor
 
 
-from numpy import array
+from numpy import array, Infinity
 
 
 
@@ -52,7 +52,7 @@ class EvolinoTrainer(Trainer):
             @param wtRatio: The quotient: washout-time/training-time. Needed to
                             split the sequences into washout phase and training phase.
             @param nBurstMutationEpochs: Number of epochs without increase of fitness in a row,
-                                         before burstmutation is applied. default=float('inf')
+                                         before burstmutation is applied. default=Infinity
             @param backprojectionFactor: Weight of the backprojection. Usually
                                          supplied through evolino_network.
             @param selection: Selection object for evolino
@@ -86,7 +86,7 @@ class EvolinoTrainer(Trainer):
         ap.add( 'wtRatio',            private=True, default=(1,3) )
 
         # burst mutation
-        ap.add( 'nBurstMutationEpochs', default=float('inf') )
+        ap.add( 'nBurstMutationEpochs', default=Infinity )
 
         # network
         ap.add( 'backprojectionFactor', private=True, default=float(evolino_network.backprojectionFactor) )

@@ -23,7 +23,7 @@ Tests for Construction of Module and Trainer
     ...     initialWeightRange = ( -0.01 , 0.01 ),
     ...     backprojectionFactor = 0.001,
     ...     mutationAlpha = 0.001,
-    ...     nBurstMutationEpochs = float('inf'),
+    ...     nBurstMutationEpochs = numpy.Infinity,
     ...     wtRatio = 1./3.,
     ...     verbosity = 0)
 
