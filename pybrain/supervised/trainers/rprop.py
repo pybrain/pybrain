@@ -1,7 +1,7 @@
 # $Id$
 __author__ = 'Martin Felder'
 
-from scipy import zeros, dot, ones, argmax, sign
+from scipy import zeros, dot, ones, argmax, sign, sqrt
 
 from pybrain.supervised.trainers import BackpropTrainer
 
@@ -39,8 +39,8 @@ class RPropMinusTrainer(BackpropTrainer):
             e, dummy = self._calcDerivs(seq)
             error += e
         if self.verbose:
-            print "epoch %6d  total error %12.5g" % (self.epoch, error)
-        self.module._setParameters(self.descent(self.module.derivs))
+            print "epoch %6d  total error %12.5g   avg weight  %12.5g" % (self.epoch, error, sqrt((self.module.params**2).mean()))
+        self.module._setParameters(self.descent(self.module.derivs - self.weightdecay*self.module.params))
         self.epoch += 1
         self.totalepochs += 1
 

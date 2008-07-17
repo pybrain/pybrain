@@ -27,6 +27,7 @@ class BackpropTrainer(Trainer):
         self.setData(dataset)
         self.verbose = verbose
         self.batchlearning = batchlearning
+        self.weightdecay = weightdecay
         self.epoch = 0
         self.totalepochs = 0
         # set up gradient descender
@@ -34,7 +35,6 @@ class BackpropTrainer(Trainer):
         self.descent.alpha = learningrate
         self.descent.momentum = momentum
         self.descent.alphadecay = lrdecay
-        self.descent.weightdecay = weightdecay
         self.descent.init(module.params)
         
         
@@ -52,7 +52,7 @@ class BackpropTrainer(Trainer):
             errors += e
             ponderation += p
             if not self.batchlearning:
-                self.module._setParameters(self.descent(self.module.derivs))
+                self.module._setParameters(self.descent(self.module.derivs - self.weightdecay*self.module.params))
                 self.module.resetDerivatives()
         if self.verbose:
             print "Total error:", errors/ponderation

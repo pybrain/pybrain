@@ -40,7 +40,8 @@ if __name__ == '__main__':
     n.addConnection(FullConnection(n['in'], n['hidden']))
     n.addConnection(FullConnection(n['hidden'], n['out']))   
     n.sortModules()
-
+    n._setParameters(np.random.uniform(-0.1,0.1, size=n.paramdim))
+    
     # build some data
     y = np.arange(0.0, 1.0, 0.005).reshape(200,1)
     x = y + 0.3*np.sin(2*np.pi*y) + np.random.uniform(-0.1,0.1,y.size).reshape(y.size,1)
@@ -49,8 +50,8 @@ if __name__ == '__main__':
     dataset.setField('target',y)
     
     # train the network
-    #trainer = BackpropTrainerMix(n,dataset=dataset,learningrate=0.001, momentum=0.0, batchlearning=False, verbose=True)
-    trainer = RPropMinusTrainerMix(n,dataset=dataset,verbose=True)
+    #trainer = BackpropTrainerMix(n,dataset=dataset,learningrate=0.001, momentum=0.0, weightdecay=0.0001, batchlearning=False, verbose=True)
+    trainer = RPropMinusTrainerMix(n,dataset=dataset,verbose=True, weightdecay=0.05)
     trainer.trainEpochs(200)
    
     # plot the density and other stuff

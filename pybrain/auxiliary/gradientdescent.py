@@ -9,8 +9,6 @@ class GradientDescent(object):
     def __init__(self):
         """ initialise algorithms with standard parameters (typical values given in parentheses)"""
         #-------<common parameters>--------
-        # weght decay for regularization - use with care (0.05-0.0001)
-        self.weightdecay = 0.0
         #-------</common parameters>-------
         
         #-------<BackProp>-----------------
@@ -66,7 +64,7 @@ class GradientDescent(object):
             rprop_theta = self.rprop_theta
             
             # update parameters 
-            self.values += (sign(gradient_arr) * rprop_theta  - self.weightdecay * self.values)
+            self.values += sign(gradient_arr) * rprop_theta 
 
             # update rprop meta parameters
             dirSwitch = self.lastgradient * gradient_arr
@@ -92,7 +90,7 @@ class GradientDescent(object):
             self.alpha *= self.alphadecay
         
             # update parameters 
-            self.values += (self.momentumvector - self.weightdecay * self.values)
+            self.values += self.momentumvector
             
         return self.values
 
