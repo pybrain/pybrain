@@ -61,7 +61,7 @@ trainer = EvolinoTrainer(
     backprojectionFactor = 0.001,
     mutationAlpha = 0.001,
 #    mutationAlpha = 0.0000001,
-    nBurstMutationEpochs = float('inf'),
+    nBurstMutationEpochs = numpy.Infinity,
     wtRatio = wtRatio,
     verbosity = 2)
 

@@ -11,7 +11,7 @@ from matplotlib.backends.backend_wxagg import FigureCanvasWxAgg
 from matplotlib.figure  import Figure
 import wx
 
-from pybrain.examples.svm.lib.debug import dbg,tracedm
+from lib.debug import dbg,tracedm
 
 
 
