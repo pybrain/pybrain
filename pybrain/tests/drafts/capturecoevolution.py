@@ -15,21 +15,21 @@ from pybrain.tools.xml import NetworkWriter
     
 # parameters
 size = 5
-hsize = 2
-popsize = 10
-generations = 300
+hsize = 5
+popsize = 20
+generations = 200
 elitist = False
 temperature = 0.
 relTaskAvg = 7
 hallOfFameProp = 0.5
 selProp = 0.5
 beta = 1
-tournSize = 3
+tournSize = 4
 absProp = 0.
-mutationStd = 0.2
+mutationStd = 0.05
 multipop = True
-populations = 3
-competitive = False
+populations = 2
+competitive = True
 
 # experiment settings
 ciao = False
@@ -89,7 +89,7 @@ learner = lclass(relativeTask,
 evals = generations * learner._stepsPerGeneration() * relTaskAvg
 
 def buildName():
-    name = 'N-'
+    name = 'x-'
     name += str(learner)
     #if competitive:
     #    name += 'Comp'

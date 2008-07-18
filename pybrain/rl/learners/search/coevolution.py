@@ -169,14 +169,13 @@ class Coevolution(Named):
         # TODO: Preferably select high-performing opponents?
         for p in pop1:
             pop3 = pop2[:]
-            if p in pop3:
+            while p in pop3:
                 pop3.remove(p)
             if tournamentSize != None and tournamentSize < len(pop3):                
                 opps = sample(pop3, tournamentSize)
             else:                
                 opps = pop3                    
             for opp in opps:
-                assert p != opp
                 if (p,opp) not in self.allResults:
                     self.allResults[(p,opp)] = [0,0]
                 if (opp,p) not in self.allResults:

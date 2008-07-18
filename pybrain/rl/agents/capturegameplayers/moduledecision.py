@@ -33,14 +33,21 @@ class ModuleDecidingPlayer(RandomCapturePlayer):
             tmp[:len(ba)-1:2] = ba[1:len(ba):2]
             tmp[1:len(ba):2] = ba[:len(ba)-1:2]
             ba = tmp
-        return [self.color, self._legalizeIt(self.module.activate(ba, 0))]
+        self.module.reset()
+        return [self.color, self._legalizeIt(self.module.activate(ba))]
     
     def newEpisode(self):
         self.module.reset()
 
     def _legalizeIt(self, a):
         """ draw index from an array of values, filtering out illegal moves. """
-        assert min(a) >= 0
+        if not min(a) >= 0:
+            print a
+            print min(a)
+            print self.module.params
+            print self.module.inputbuffer
+            print self.module.outputbuffer
+            raise Exception('No positve value in array?')
         legals = self.game.getLegals(self.color)
         vals = ones(len(a))*(-100)*(1+self.temperature)
         for i in map(self._convertPosToIndex, legals):
@@ -57,4 +64,6 @@ class ModuleDecidingPlayer(RandomCapturePlayer):
         
     def integrateObservation(self, obs = None):
         pass
+    
+
  
