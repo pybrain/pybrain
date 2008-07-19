@@ -11,4 +11,4 @@
 
    `Near-Optimal Hashing Algorithms for Approximate Nearest Neighbor in High Dimensions <http://web.mit.edu/andoni/www/papers/cSquared.pdf>`_
       Paper that describes the algorithm used in this module by Alexandr Andoni
-      and Piotr Indyk, MIT.
+      and Piotr Indyk.
