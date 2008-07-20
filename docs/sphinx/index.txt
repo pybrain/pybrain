@@ -13,8 +13,9 @@ Contents:
    intro
    netmodcon
    reinforcement-learning
+   superviseddataset
+   classificationdataset
    nearoptimal
-   
 
 Indices and tables
 ==================

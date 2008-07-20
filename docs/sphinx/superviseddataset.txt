@@ -1,0 +1,12 @@
+:mod:`supervised` -- Dataset for Supervised Regression Training
+===============================================================
+
+.. automodule:: pybrain.datasets.supervised
+
+.. autoclass:: SupervisedDataSet
+   :members: __init__, addField, addSample, batches, clear, copy, endOfData, getDimension, getField, getFieldNames, getLength, getLinked, getSample, getVectorFormat, hasField, linkFields, loadFromFile, randomBatches, reconstruct, reset, saveToFile, setField, splitWithProportion
+
+   
+.. note::
+
+   This documentation comprises just a subjective excerpt of available methods. See the source code for additional functionality.
