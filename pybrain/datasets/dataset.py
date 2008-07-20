@@ -6,7 +6,7 @@ __author__ = 'Thomas Rueckstiess, ruecksti@in.tum.de'
 
 import random
 import types
-import cPickle
+import pickle
 
 from itertools import chain
 
@@ -292,46 +292,33 @@ class DataSet(Serializable):
             shape[0] = 0
             self.data[k] = zeros(shape)
             self.endmarker[k] = 0
-
-    def saveToFile(self, filename, **kwargs):
-        """Save the current dataset to the given filename."""
-        fp = file(filename, 'w+')
-        self._saveToFileLike(fp, **kwargs)
-        fp.close()
     
     @classmethod
     def reconstruct(cls, filename ):
         """ read an incomplete data set (option arraysonly) into the given one. """
         # FIXME: Provisional! Should be replaced once saving full arrays is working.
         obj = cls(1,1)
-        for key, val in cPickle.load(file(filename)).iteritems():
+        for key, val in pickle.load(file(filename)).iteritems():
             obj.setField(key, val)
         return obj
 
-    def _saveToFileLike(self, flo, protocol=0, arraysonly=False ):
+    def save_pickle(self, flo, protocol=0, arraysonly=False ):
         """Save the current dataset into the given file like object."""
         if arraysonly:
             # failsave version; but need to crop arrays to the correct length
             for key in self.data.keys():
                 self.data[key] = self.data[key][0:self.endmarker[key],:]
-            cPickle.dump(self.data, flo, protocol=protocol)
+            pickle.dump(self.data, flo, protocol=protocol)
         else:
             package = {
                 'initial': self._initialValues(),
                 'dict': self._dumpDict(),
             }
-            cPickle.dump(package, flo, protocol=protocol)
+            pickle.dump(package, flo, protocol=protocol)
 
     @classmethod
-    def loadFromFile(cls, filename):
-        fp = file(filename)
-        tmp = cls._loadFromFileLike(fp)
-        fp.close()
-        return tmp
-
-    @classmethod
-    def _loadFromFileLike(cls, flo):
-        package = cPickle.load(flo)
+    def load_pickle(cls, flo):
+        package = pickle.load(flo)
         args, kwargs = package['initial']
         obj = cls(*args, **kwargs)
         obj.__dict__.update(package['dict'])

@@ -15,7 +15,13 @@ from string import split
 
 from scipy import where, array, exp
 
-
+# file extension for load/save protocol mapping
+known_extensions = {
+    'mat': 'matlab',
+    'txt': 'ascii',
+    'svm': 'libsvm',
+    'pkl': 'pickle' }
+    
 def abstractMethod():
     """ This should be called when an abstract method is called that should have been 
     implemented by a subclass. It should not be called in situations where no implementation
@@ -109,7 +115,17 @@ def percentError(out, true):
     wrong = where(arrout!=array(true).flatten())[0].size
     return 100.*float(wrong)/float(arrout.size)
 
-            
+def extension2protocol(fname):
+    """ tries to infer a protocol from the file extension """
+    base, ext = os.path.splitext(fname)
+    if not ext: return None
+    try:
+        protocol = known_extensions[ext]
+    except KeyError:
+        protocol = None
+    return protocol
+
+    
 class XMLBuildable(object):
     """ subclasses of this can be losslessly stored in XML, and 
     automatically reconstructed on reading. For this they need to store 
@@ -130,14 +146,14 @@ class Serializable(object):
     supported.
     """
     
-    def saveToFileLike(self, flo, protocol=None):
+    def saveToFileLike(self, flo, protocol=None, **kwargs):
         """Save the object to a given file like object with the given protocol.
         """
         protocol = 'pickle' if protocol is None else protocol
         save = getattr(self, "save_%s" % protocol, None)
         if save is None:
             raise ValueError("Unknown protocol '%s'." % protocol)
-        save(flo)
+        save(flo, **kwargs)
         
     @classmethod
     def loadFromFileLike(cls, flo, protocol=None):
@@ -149,15 +165,18 @@ class Serializable(object):
             raise ValueError("Unknown protocol '%s'." % protocol)
         return load(flo)
         
-    def saveToFile(self, filename, protocol=None):
+    def saveToFile(self, filename, protocol=None, **kwargs):
         """Save the object to file given by filename."""
         with file(filename) as fp:
-            self.saveToFileLike(fp, protocol)
+            self.saveToFileLike(fp, protocol, **kwargs)
         
     @classmethod
     def loadFromFile(cls, filename, protocol=None):
         """Return an instance of the class that is saved in the file with the
         given filename in the specified protocol."""
+        if protocol is None:
+            # try to derive protocol from file extension
+            protocol = extension2protocol(filename)
         with file(filename) as fp:
             return self.loadFromFileLike(fp, protocol)
     

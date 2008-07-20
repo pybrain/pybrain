@@ -6,7 +6,7 @@ from scipy import isscalar
 from dataset import DataSet
 from pybrain.utilities import fListToString
     
-class SupervisedDataSet(DataSet):
+class SupervisedDataSet(DataSet): 
     """ SupervisedDataSet has 2 fields: input, target. It is mostly used for supervised learning,
         e.g. neural networks. The functions addSample and getSample are added for
         convenience as wrappers for addLinked and getLinked, to stay in the terminology of supervised learning."""
@@ -52,7 +52,7 @@ class SupervisedDataSet(DataSet):
             @param index: the index of the row to be returned. if index=None, the current row is returned """
         return self.getLinked(index)
         
-    def setField(self, label, arr, **kwargs):
+    def setField(self, label, arr, **kwargs): 
         """ sets the given array as the new array of field 'label'
             @param label: the name of the field
             @param arr: the new array for that field """

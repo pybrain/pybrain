@@ -23,25 +23,9 @@ class ClassificationDataSet(SupervisedDataSet):
         # copy classes (may be changed into other representation)
         self.setField('class', self.getField('target') )
 
-    @classmethod
-    def loadFromFile(cls, filename):
-        """ decide which format the data is in, and load that data """
-        fp = file(filename)
-        if filename.endswith('.mat'):
-            # load Matlab(R) array
-            DS = cls._loadMATdata(fp)
-        elif filename.endswith('.svm'):
-            # load data in LIBSVM format
-            DS = cls._loadSVMdata(fp)
-        else:
-            # load pickled dataset
-            DS = cls._loadFromFileLike(fp)
-        DS.filename = filename.strip()
-        fp.close()
-        return DS
 
     @classmethod
-    def _loadMATdata(cls, fname):
+    def load_matlab(cls, fname):
         """ read Matlab file containing one variable called 'data' which is an array
         nSamples x nFeatures+1 and contains the class in the first column """
         from mlabwrap import mlab
@@ -49,9 +33,8 @@ class ClassificationDataSet(SupervisedDataSet):
         return cls(d.data[:,0], d.data[:,1:])
     
     @classmethod
-    def _loadSVMdata(cls, f):
-        """ read sparse LIBSVM/SVMlight format from file 'fname' (with labels only)
-        output: [attributes[], labels[]] """
+    def load_libsvm(cls, f):
+        """ read sparse LIBSVM/SVMlight format from given (with labels only) """
         nFeat = 0
         # find max. number of features 
         for line in f:
