@@ -379,12 +379,7 @@ class ODEEnvironment(GraphicalEnvironment):
         
         for i in range(self.stepsPerAction):
             self.step()
-        if self.render:
-            if self.updateDone: 
-                self.updateClients()                    
-                if self.server.clients > 0 and self.realtime:
-                    time.sleep(self.dt)
-
+        
     def getXODERoot(self):
         return self.root
 
@@ -507,6 +502,12 @@ class ODEEnvironment(GraphicalEnvironment):
         # update all sensors
         for s in self.sensors:
             s._update()
+        
+        # update clients
+        if self.render and self.updateDone: 
+            self.updateClients()                    
+            if self.server.clients > 0 and self.realtime:
+                time.sleep(self.dt)
         
         # increase step counter
         self.stepCounter += 1
