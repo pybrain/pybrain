@@ -1,0 +1,11 @@
+:mod:`network` -- Neural Network Base Structure
+===============================================
+
+.. automodule:: pybrain.structure.networks
+
+.. autoclass:: Network
+   :members: __init__, activate, activateOnDataset, addConnection, addInputModule, addModule, addOutputModule, addRecurrentConnection, copy, getName, hasDerivatives, paramdim, randomize, reset, saveToFile, setArgs, sortModules, stdParams
+   
+.. note::
+
+   This documentation comprises just a subjective excerpt of available methods. See the source code for additional functionality.

@@ -15,7 +15,10 @@ Contents:
    reinforcement-learning
    superviseddataset
    classificationdataset
-   nearoptimal
+   network
+   trainers
+   tools
+
 
 Indices and tables
 ==================

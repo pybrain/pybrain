@@ -1,0 +1,13 @@
+:mod:`tools` -- Datasets for Supervised Classification Training
+========================================================================
+
+.. automodule:: pybrain.tools.shortcuts
+
+.. autofunction:: buildNetwork
+
+   
+.. note::
+
+   See the documentation of :class:`pybrain.datasets.supervised.SupervisedDataSet` for inherited methods.
+
+

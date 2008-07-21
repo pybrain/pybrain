@@ -2,3 +2,12 @@
 
 Introduction
 ============
+
+
+This documentation describes our machine learning toolbox called PyBrain (PYthon-Based Reinforcement learning, Artificial Intelligence and Neural networks library). Its general concept is to encapsulate different data processing algorithms in what we call :class:`Modules`. A minimal Module contains a forward implementation and a collection of free parameters that can be adjusted, usually through some machine learning algorithm. Modules have an input and an output buffer, plus corresponding error buffers which are used in error backpropagation algorithms.
+
+Modules are assembled into :class:`Networks` by connecting them via :class:`Connectors`, which again contain a number of adjustable parameters, the connection weights. Note that a Network itself is again a Module, such that it is easy to build hierarchical networks as well. Shortcuts exist for building the most common network architectures, but in principle this system allow almost arbitrary connectionist systems to be assembled.
+
+The free parameters of the Network are adjusted by means of a :class:`Trainer`, which in the supervised case uses a :class:`Dataset` to learn the optimum parameters from examples. For reinforcement learning experiments, a simulation environment with an associated optimisation task is used instead of a Dataset. 
+
+.. image:: ./pics/dataprocessing_flowchart.*
