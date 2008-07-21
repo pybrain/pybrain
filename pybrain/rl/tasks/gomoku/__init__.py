@@ -1,0 +1,1 @@
+from gomokutask import GomokuTask

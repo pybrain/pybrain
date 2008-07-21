@@ -4,14 +4,16 @@ performance of randomly generated CaptureGameNetworks. """
 __author__ = 'Tom Schaul, tom@idsia.ch'
 
 from pybrain.rl.agents.capturegameplayers import KillingPlayer, RandomCapturePlayer
+from pybrain.rl.agents.gomokuplayers import KillingGomokuPlayer, RandomGomokuPlayer
 from pybrain.rl.tasks.capturegame import CaptureGameTask, HandicapCaptureTask
+from pybrain.rl.tasks.gomoku import GomokuTask
 from pybrain.structure.networks.custom.capturegame import CaptureGameNetwork
 from pybrain.utilities import fListToString
 from nesexperiments import pickleDumpDict, pickleReadDict
 from pybrain import buildNetwork, TanhLayer, SigmoidLayer
         
 
-def randEval(size, hsize, opponent, handicap = False, mlp = False, initScaling = 1, avgOver = 100, verbose = True):
+def randEval(size, hsize, opponent, handicap = False, mlp = False, capturegame = True, initScaling = 1, avgOver = 100, verbose = True):
     if mlp:
         # comarison with simple MLP
         net = buildNetwork(2 * size**2, hsize * size**2, size**2, 
@@ -20,13 +22,22 @@ def randEval(size, hsize, opponent, handicap = False, mlp = False, initScaling =
         net = CaptureGameNetwork(size = size, hsize = hsize, simpleborders = True) 
     net.randomize()
     net._params /= initScaling # start with small values?
-    if handicap:
-        handicapTask = HandicapCaptureTask(size, opponent = opponent)
-        res = handicapTask(net)
+    
+    if capturegame:
+        if handicap:
+            handicapTask = HandicapCaptureTask(size, opponent = opponent)
+            res = handicapTask(net)
+        else:
+            absoluteTask = CaptureGameTask(size, averageOverGames = avgOver, alternateStarting = True, 
+                                           opponent = opponent)
+            res = absoluteTask(net)
     else:
-        absoluteTask = CaptureGameTask(size, averageOverGames = avgOver, alternateStarting = True, 
-                                       opponent = opponent)
+        # Gomoku
+        absoluteTask = GomokuTask(size, averageOverGames = avgOver, alternateStarting = True, 
+                                  opponent = opponent)
         res = absoluteTask(net)
+        
+        
     
     if verbose:
         print 'Size', size, 'H', hsize, 'res', int(res*1000)/1000.,
@@ -60,24 +71,29 @@ def iterArgumentCombinations(d):
         
 if __name__ == '__main__':
     # settings
-    game = 'x-capture'
+    tag = 'x-'
+    capturegame = False
     killer = True
     handicap = False
     mlp = False
-    argsVars = {'size': [3, 5, 9],
-                'hsize': [1, 5],
-                'initScaling': [1, 10],
+    argsVars = {'size': [9],
+                'hsize': [1],
+                'initScaling': [1],
                 }
     dir = '../temp/stats/'
-    repeat = 200
-    minData = 200
+    repeat = 20
+    minData = 20
     plotting = True
     
     # build the type name
+    if capturegame:
+        stype = tag+'capture'
+    else:        
+        stype = tag+'gomoku'
     if killer:
-        stype = game+'-killer'
+        stype += '-killer'
     else:
-        stype = game+'-random'
+        stype += '-random'
     if handicap:
         stype += '-handicap'
     if mlp:
@@ -98,10 +114,17 @@ if __name__ == '__main__':
             key = (args['size'], args['hsize'], args['initScaling'])
             if key not in results:
                 results[key] = []
-            if killer:
-                args['opponent'] = KillingPlayer
-            else:
-                args['opponent'] = RandomCapturePlayer
+            args['capturegame'] = capturegame
+            if capturegame:
+                if killer:
+                    args['opponent'] = KillingPlayer
+                else:
+                    args['opponent'] = RandomCapturePlayer
+            else:                
+                if killer:
+                    args['opponent'] = KillingGomokuPlayer
+                else:
+                    args['opponent'] = RandomGomokuPlayer
             args['handicap'] = handicap
             args['mlp'] = mlp
             for i in range(10):
