@@ -355,19 +355,22 @@ class ODEEnvironment(GraphicalEnvironment):
             warnings.warn('sensor ' + name + ' is not in sensor list.')
             return []
         
-        return self.sensors[idx].getValues()
-            
-        # startIdx = 0
-        # for i in range(idx):
-        #     startIdx += self.sensors[i].getNumValues()
-        # endIdx = startIdx + self.sensors[idx].getNumValues()
-        # return self.getSensors()[startIdx:endIdx]        
+        return self.sensors[idx].getValues()      
         
-    def getActionLength(self):
+    @property    
+    def indim(self):
         num = 0
         for a in self.actuators:
             num += a.getNumValues()
         return num
+
+    def getActionLength(self):
+        print "getActionLength() is depricated. use property 'indim' instead."
+        return self.indim
+
+    @property
+    def outdim(self):
+        return len(self.getSensors())
 
     def performAction(self, action):
         """ sets the values for all actuators combined. """
