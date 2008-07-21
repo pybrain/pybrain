@@ -12,11 +12,6 @@ class SimpleEnvironment(GraphicalEnvironment):
         self.indim = dim
         self.outdim = dim
         self.noise = None
-        # if dim == 1:
-            # self.setRenderer(SimpleRenderer())
-            # self.renderer.setFunction(self.f, -3, +3)
-            # self.renderer.start()
-        
         self.reset()
         
     def setNoise(self, variance):
