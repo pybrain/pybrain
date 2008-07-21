@@ -6,6 +6,7 @@ from random import shuffle
 
 from trainer import Trainer
 from pybrain.utilities import fListToString
+from pybrain.datasets import ReinforcementDataSet
 from pybrain.auxiliary import GradientDescent
 
 
@@ -72,11 +73,17 @@ class BackpropTrainer(Trainer):
         error = 0
         ponderation = 0.
         for time, sample in reversed(list(enumerate(seq))):
-            if len(sample) > 2:
-                dummy, target, importance = sample
+            
+            # use importance, if we have a 3rd field and it is not the reward of a ReinforcementDataSet
+            if isinstance(self.ds, ReinforcementDataSet):
+                target = sample[1]
+                importance = ones(len(target))
+            elif len(sample) > 2:
+                dummy, target, importance = sample  
             else:
                 dummy, target = sample
-                importance = ones(len(target))              
+                importance = ones(len(target))  
+                        
             outerr = target - self.module.outputbuffer[time]
             self.module.outputerror[time] = outerr*importance
             error += 0.5 * dot(importance, outerr**2)
