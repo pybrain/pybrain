@@ -25,7 +25,7 @@ class GaussianProcess:
     
     def _kernel(self, a, b):
         """ kernel function, here RBF kernel """
-        (l, sigma_f, sigma_n) = (0.3, 6.0, 0.001)
+        (l, sigma_f, sigma_n) = (0.3, 2.0, 0.01)
         return sigma_f**2*exp(-1.0/(2*l**2)*norm(a-b, 2)**2+sigma_n*eye(self.indim))
 
     def _buildGrid(self, start, stop, step):
@@ -140,30 +140,44 @@ class GaussianProcess:
 
 if __name__ == '__main__':
     # --- example on how to use the GP in 1 dimension
-    ds = SupervisedDataSet(1,1)
-    
-    x = mgrid[0:5:4j]
-    y = cos(x)
+    ds = SupervisedDataSet(1, 1)
+    gp = GaussianProcess(indim=1, start=-3, stop=3, step=0.05)    
 
-    for i,j in zip(x, y):
-        ds.addSample([i], [j])
+    x = mgrid[-3:3:0.2]
+    y = 0.1*x**2 + x + 1
+    z = sin(x) + 0.5*cos(y)
     
-    gp = GaussianProcess(indim=1, start=0, stop=5, step=0.1)    
-    gp.trainOnDataset(ds)
-    gp.plotCurves() 
-        
-    # --- example on how to use the GP in 2 dimensions
-    ds = SupervisedDataSet(2,1)
+    ds.addSample(-2.5, -1)
+    ds.addSample(-1.0, 3)
+    gp.mean = 0
     
-    x,y = mgrid[0:5:4j, 0:5:4j]
-    z = cos(x)*sin(y)
-    (x, y, z) = map(ravel, [x, y, z])
+    # new feature "autonoise" adds uncertainty to data depending on
+    # it's distance to other points in the dataset. not tested much yet.
+    
+    # gp.autonoise = True
+    
+    gp.trainOnDataset(ds) 
+    gp.plotCurves(showSamples=True) 
+            
+    # example on how to use the GP in 2 dimensions
+    #
+    # THERE'S A BUG SOMEWHERE IN THE CODE:
+    #    File "gaussprocess.py", line 40, in _buildCov
+    #    K[i,j] = self._kernel(a[i,:], b[j,:])
+    #    ValueError: setting an array element with a sequence.
+    
+    # ds = SupervisedDataSet(2,1)
+    # gp = GaussianProcess(indim=2, start=0, stop=5, step=0.2)    
+    # 
+    # x,y = mgrid[0:5:4j, 0:5:4j]
+    # z = cos(x)*sin(y)
+    # (x, y, z) = map(ravel, [x, y, z])
+    # 
+    # for i,j,k in zip(x, y, z):
+    #     ds.addSample([i, j], [k])
+    # 
+    # gp.trainOnDataset(ds)
+    # gp.plotCurves() 
+ 
 
-    for i,j,k in zip(x, y, z):
-        ds.addSample([i, j], [k])
-    
-    gp = GaussianProcess(indim=2, start=0, stop=5, step=0.2)    
-    gp.trainOnDataset(ds)
-    gp.plotCurves() 
-    
     show()
