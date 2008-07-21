@@ -13,15 +13,19 @@ from nesexperiments import pickleDumpDict, pickleReadDict
 from pybrain import buildNetwork, TanhLayer, SigmoidLayer
         
 
-def randEval(size, hsize, opponent, handicap = False, mlp = False, capturegame = True, initScaling = 1, avgOver = 100, verbose = True):
+def randEval(size, hsize, opponent, handicap = False, mlp = False, capturegame = True, initScaling = 1, 
+             avgOver = 100, verbose = True, setParams = None, allReturn = False):
     if mlp:
         # comarison with simple MLP
         net = buildNetwork(2 * size**2, hsize * size**2, size**2, 
                            hiddenclass = TanhLayer, outclass = SigmoidLayer)        
     else:
         net = CaptureGameNetwork(size = size, hsize = hsize, simpleborders = True) 
-    net.randomize()
-    net._params /= initScaling # start with small values?
+    if setParams != None:
+        net._params[:] = setParams
+    else:
+        net.randomize()
+        net._params /= initScaling # start with small values?    
     
     if capturegame:
         if handicap:
@@ -36,9 +40,7 @@ def randEval(size, hsize, opponent, handicap = False, mlp = False, capturegame =
         absoluteTask = GomokuTask(size, averageOverGames = avgOver, alternateStarting = True, 
                                   opponent = opponent)
         res = absoluteTask(net)
-        
-        
-    
+                    
     if verbose:
         print 'Size', size, 'H', hsize, 'res', int(res*1000)/1000.,
         if initScaling != 1:
@@ -47,7 +49,11 @@ def randEval(size, hsize, opponent, handicap = False, mlp = False, capturegame =
             print fListToString(net.params, 4)
         else:
             print
-    return res
+            
+    if allReturn:
+        return res, net.params
+    else:
+        return res
 
 def iterArgumentCombinations(d):
     """ Returns dictionnaries with all argument variations. 
@@ -72,8 +78,8 @@ def iterArgumentCombinations(d):
 if __name__ == '__main__':
     # settings
     tag = 'x-'
-    capturegame = False
-    killer = True
+    capturegame = True
+    killer = False
     handicap = False
     mlp = False
     argsVars = {'size': [9],
@@ -81,8 +87,8 @@ if __name__ == '__main__':
                 'initScaling': [1],
                 }
     dir = '../temp/stats/'
-    repeat = 20
-    minData = 20
+    repeat = 0
+    minData = 0
     plotting = True
     
     # build the type name
