@@ -14,6 +14,7 @@ Contents:
    netmodcon
    reinforcement-learning
    superviseddataset
+   sequentialdataset
    classificationdataset
    network
    trainers

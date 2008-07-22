@@ -1,13 +1,25 @@
-:mod:`tools` -- Datasets for Supervised Classification Training
-========================================================================
+:mod:`tools` -- Some Useful Tools and Macros
+============================================
 
 .. automodule:: pybrain.tools.shortcuts
 
 .. autofunction:: buildNetwork
 
-   
-.. note::
+.. automodule:: pybrain.tools.datasettools
 
-   See the documentation of :class:`pybrain.datasets.supervised.SupervisedDataSet` for inherited methods.
+.. autofunction:: convertSequenceToTimeWindows
+
+.. automodule:: pybrain.tools.validation
+
+.. autoclass:: Validator
+   :members:
+
+.. autoclass:: ModuleValidator
+   :members:
+
+.. autoclass:: CrossValidator
+   :members:
+
+.. autofunction:: testOnSequenceData
 
 

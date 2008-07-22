@@ -1,0 +1,12 @@
+:mod:`sequential` -- Dataset for Supervised Regression Training
+===============================================================
+
+.. automodule:: pybrain.datasets.sequential
+
+.. autoclass:: SequentialDataSet
+   :members: 
+
+   
+.. note::
+
+   This documentation comprises just a subjective excerpt of available methods. See the source code for additional functionality.

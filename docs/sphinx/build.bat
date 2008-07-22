@@ -1,0 +1,2 @@
+sphinx-build . .build
+pause
