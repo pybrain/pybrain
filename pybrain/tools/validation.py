@@ -239,11 +239,11 @@ class CrossValidator(object):
         Then the dataset ist shuffled and split up into n parts of equal length.
 
         A clone of the trainer and its module is made, and trained with n-1 parts
-        of the splitted dataset. After training, the module gets validated with
-        the n'th part of the dataset, that was not used during training.
+        of the split dataset. After training, the module is validated with
+        the n'th part of the dataset that was not used during training.
 
         This is done for each possible combination of n-1 dataset pieces.
-        The the mean of the calculated validation values will be returned.
+        The the mean of the calculated validation results will be returned.
     """
     def __init__(self, trainer, dataset, n_folds=5, valfunc=ModuleValidator.classificationPerformance, **kwargs):
         """ @param trainer: Trainer containing a module to be trained
@@ -251,7 +251,7 @@ class CrossValidator(object):
             @param n_folds: Number of pieces, the dataset will be splitted to
             @param valfunc: Validation function. Should expect a module and a dataset.
                             E.g. ModuleValidator.MSE()
-            @param **kwargs: see setArgs() method
+            @param others: see setArgs() method
         """
         self._trainer = trainer
         self._dataset = dataset
@@ -261,12 +261,9 @@ class CrossValidator(object):
         self.setArgs(**kwargs)
 
     def setArgs(self,**kwargs):
-        """ @param **kwargs:
-                max_epochs: set the number of epochs, that the the trainer should
-                            train the module. It is possible, that the training
-                            will be finished, before max_epochs iterations are
-                            passed. Hence, the "max"-prefix.
-                verbosity : set verbosity
+        """ Set the specified member variables.
+        @param max_epochs: maximum number of epochs the trainer should train the module for.
+        @param verbosity: set verbosity level
         """
         for key, value in kwargs.items():
             if key in ("verbose", "ver", "v"):
@@ -347,9 +344,11 @@ class CrossValidator(object):
 
 
 
-def testOnSequenceData(module, dataset):
-    # fetch targets and calculate the modules output on dataset
-    # output and target are in one-of-many format
+def testOnSequenceData(module, dataset): 
+    """ Fetch targets and calculate the modules output on dataset.
+    Output and target are in one-of-many format. The class for each sequence is
+    determined by first summing the probabilities for each individual sample over 
+    the sequence, and then finding its maximum."""
     target = dataset.getField("target")
     output = ModuleValidator.calculateModuleOutput(module,dataset)
 

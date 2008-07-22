@@ -9,7 +9,12 @@ class ClassificationDataSet(SupervisedDataSet):
     """ Specialized data set for classification data. Classes are to be numbered from 0 to nb_classes-1. """
     
     def __init__(self, inp, target, nb_classes=0, class_labels=None):
-        # FIXME: hard to keep nClasses synchronized if appendLinked() etc. is used.
+        """ Initialize as an empty dataset. 
+        @param inp: dimension of input vector
+        @param target: dimension of target vector (should be 1!)
+        @param nb_classes: Number of classes is normally inferred from the targets. If not all possible classes are present, use this to set classes manually.
+        @param class_labels: list of strings labelling the classes, defaults to target values """
+         # FIXME: hard to keep nClasses synchronized if appendLinked() etc. is used.
         SupervisedDataSet.__init__(self, inp, target)
         self.nClasses = nb_classes
         if len(self) > 0:
@@ -71,8 +76,10 @@ class ClassificationDataSet(SupervisedDataSet):
         return DS
  
     def calculateStatistics(self):
-        """ calculate class histogram """
-        flat_labels = list( self.getField('target').flatten() )
+        """ return a class histogram """
+        if len(self['class']) < len(self['target']):
+            self.setField('class', self.getField('target') )
+        flat_labels = list( self.getField('class').flatten() )
         classes       = list(set( flat_labels ))
         self.nClasses = len(classes)
         self.classHist = {}
@@ -81,13 +88,15 @@ class ClassificationDataSet(SupervisedDataSet):
         return self.classHist
 
     def getClass(self,idx):
+        """ return the label of given class """
         try:
             return self.class_labels[idx]
         except IndexError:
             print "error: classes not defined yet!" 
 
     def _convertToOneOfMany(self, bounds=[0,1]):
-        """ converts the target classes to a 1-of-k representation, retaining the old targets as a field 'class' """
+        """ converts the target classes to a 1-of-k representation, retaining the old targets as a field 'class'
+        @param bounds: target values for class non-membership and membership """
         if self.outdim != 1:
             # we already have the correct representation (hopefully...)
             return
@@ -104,7 +113,7 @@ class ClassificationDataSet(SupervisedDataSet):
         ##self.linkFields(self.link.append('class'))
 
     def _convertToClassNb(self):
-        """ the reverse of _convertToOneOfMany. 1-of-k field is overwritten.  """
+        """ the reverse of _convertToOneOfMany. target field is overwritten.  """
         newtarg = self.getField('class')
         self.setField('target', newtarg)
         
@@ -146,7 +155,7 @@ class ClassificationDataSet(SupervisedDataSet):
         return leftDs, rightDs
     
     def castToRegression(self,values):
-        """ Converts data set into a SupervisedDataSet, for regression. Classes are changed into
+        """ Converts data set into a SupervisedDataSet, for regression. Classes are used as indices into
         the value array given."""
         regDs = SupervisedDataSet(self.indim, 1)
         regDs.setField('input', self['input'])
@@ -155,20 +164,29 @@ class ClassificationDataSet(SupervisedDataSet):
     
  
 class SequenceClassificationDataSet(SequentialDataSet, ClassificationDataSet):
+    """ Defines a dataset for sequence classification. Each sample in the sequence still needs its own target value. """
     
     def __init__(self, inp, target, nb_classes=0, class_labels=None):
+        """ Initialize as an empty dataset. 
+        @param inp: dimension of input vector
+        @param target: dimension of target vector (should be 1!)
+        @param nb_classes: Number of classes is normally inferred from the targets. If not all possible classes are present, use this to set classes manually.
+        @param class_labels: list of strings labelling the classes, defaults to target values """
+        
         # FIXME: hard to keep nClasses synchronized if appendLinked() etc. is used.
         SequentialDataSet.__init__(self, inp, target)
-        self.nClasses = nb_classes
+        # we want integer class numbers as targets
+        self.convertField('target',int)
         if len(self) > 0:
             # calculate class histogram, if we already have data
             self.calculateStatistics()
-        self.convertField('target',int)
+        if nb_classes > 0:
+            self.nClasses = nb_classes
         if class_labels is None:
-            self.class_labels = list(set(self.getField('target').flatten()))
+            self.class_labels = range(self.nClasses)
         else:
             self.class_labels = class_labels
-        # copy classes (may be changed into other representation)
+        # copy classes (targets may be changed into other representation)
         self.setField('class', self.getField('target') )
 
 

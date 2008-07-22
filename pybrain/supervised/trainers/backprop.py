@@ -5,7 +5,7 @@ from scipy import zeros, dot, ones, argmax
 from random import shuffle
 
 from trainer import Trainer
-from pybrain.utilities import fListToString
+from pybrain.utilities import fListToString 
 from pybrain.datasets import ReinforcementDataSet
 from pybrain.auxiliary import GradientDescent
 
@@ -16,14 +16,14 @@ class BackpropTrainer(Trainer):
         
     def __init__(self, module, dataset = None, learningrate = 0.01, lrdecay=1.0, momentum = 0., 
                  verbose = False, batchlearning = False, weightdecay = 0.):
-        """ @param module: the module whose parameters should be trained. 
-            @param learningrate: learning rate (default: 0.01)
+        """ Set up training algorithm parameters, and objects associated with the trainer.
+            @param module: the module whose parameters should be trained. 
+            @param learningrate: learning rate
             @param lrdecay: learning rate decay (default: 1.0 = none)
-            @param momentum: momentum (default: 0)
+            @param momentum: momentum coefficient for gradient descent
+            @param batchlearning: should the parameters be updated only at the end of the epoch? 
             @param weightdecay: weight decay rate (default: 0 = none). 
-            Caveat: To ease comparison between different setups, weight decay does not alter the reported
-            errors, merely the weight updates.
-        """
+            """
         Trainer.__init__(self, module)
         self.setData(dataset)
         self.verbose = verbose
@@ -40,7 +40,7 @@ class BackpropTrainer(Trainer):
         
         
     def train(self):
-        """ @param batchlearning: should the parameters be updated only at the end of the epoch? """
+        """ Train the associated module for one epoch. """
         self.module.resetDerivatives()
         errors = 0        
         ponderation = 0.
@@ -65,6 +65,7 @@ class BackpropTrainer(Trainer):
         
     
     def _calcDerivs(self, seq):
+        """ Calculate error function and back-propagate output errors to yield the gradient. """
         self.module.reset()        
         for time, sample in enumerate(seq):
             input = sample[0]      
@@ -144,14 +145,13 @@ class BackpropTrainer(Trainer):
         return avgErr
                 
     def testOnClassData(self, dataset = None, verbose = False, return_targets=False):
-        """ Return winner-takes-all classification output on given data data set
-        FIXME: provisional; should also compute cross-class entropy and class errors
-        @param dataset: by default the one previously used by the trainer """        
+        """ Return winner-takes-all classification output on given data data set. Optionally 
+        return corresponding target classes as well.
+        @param dataset: Dataset to classify (default: training set) 
+        @param return_targets: Convenience option to return target classes. """        
         if dataset == None:
             dataset = self.ds
         dataset.reset()
-        if verbose:
-            print '\nTesting on class data:'
         out = []
         targ = []
         for seq in dataset._provideSequences():
@@ -166,10 +166,15 @@ class BackpropTrainer(Trainer):
             return out
         
     def trainUntilConvergence(self, alldata = None, maxEpochs = None, verbose = None,
-                              continueEpochs = 1, validationProportion = 0.33):
-        """ Early-Stopping
-        Train on the trainingData, until the validation error stops going down (for continueEpochs epochs). 
-        Return the module with the parameters that gave the minimal validation error. """
+                              continueEpochs = 10, validationProportion = 0.25):
+        """ Early Stopping regularization procedure:
+        Split given data set randomly into training and validation set. Train on the training set until 
+        the validation error stops going down for a number of epochs. 
+        Return the module with the parameters that gave the minimal validation error. 
+        @param alldata: the dataset to be split up and used for training/validation (stored training data by default) 
+        @param maxEpochs: training stops after this many epochs at latest
+        @param continueEpochs: each time validation error hits a minimum, try for this many epochs to find a better one
+        @param validationProportion: use this fraction of all data for validation """
         epochs = 0
         if alldata == None:
             alldata = self.ds

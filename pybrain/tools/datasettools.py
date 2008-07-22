@@ -9,7 +9,12 @@ from pybrain.datasets import SupervisedDataSet, SequentialDataSet, Classificatio
 import pylab as p
 
 def convertSequenceToTimeWindows(DSseq, NewClass, winsize):
-    """ converts a sequential dataset into time windows of fixed length (for use with MLPs) """
+    """ Converts a sequential classification dataset into time windows of fixed length. 
+    Assumes the correct class is given at the last timestep of each sequence. Incomplete windows at the 
+    sequence end are pruned. No overlap between windows.
+    @param DSseq: the sequential data set to cut up
+    @param winsize: size of the data window
+    @param NewClass: class of the windowed data set to be returned (gets initialised with indim*winsize, outdim)"""
     assert isinstance(DSseq, SequentialDataSet)
     #assert isinstance(DSwin, SupervisedDataSet)
     
@@ -22,7 +27,7 @@ def convertSequenceToTimeWindows(DSseq, NewClass, winsize):
         input = DSseq['input'][si[i]:si[i+1],:]
         target = DSseq['target'][si[i]:si[i+1],:]
         nseqs += 1
-        # cut this sequence into windows, assuming class is given at the last step
+        # cut this sequence into windows, assuming class is given at the last step of each sequence
         for k in range(winsize, input.shape[0], winsize):
             inp_win = input[k-winsize:k,:]
             tar_win = target[k-1,:]   
@@ -36,7 +41,8 @@ def convertSequenceToTimeWindows(DSseq, NewClass, winsize):
     return DSwin
 
 def windowSequenceEval(DS, winsz, result):
-    """ take results of a window-based classification and assess/plot them on the sequence """
+    """ take results of a window-based classification and assess/plot them on the sequence 
+    WARNING: NOT TESTED!"""
     si_old = 0
     idx = 0 
     x = []
