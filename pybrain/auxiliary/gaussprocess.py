@@ -13,6 +13,9 @@ class GaussianProcess:
 
     def __init__(self, indim, start, stop, step):
         self.mean = 0
+        self.start = start
+        self.stop = stop
+        self.step = step
         self.indim = indim
         self.trainx = zeros((0, indim), float)
         self.trainy = zeros((0), float)
@@ -22,11 +25,13 @@ class GaussianProcess:
         self.pred_mean = zeros(len(self.testx))
         self.pred_cov = eye(len(self.testx))
         self.autonoise = False
+        self.hyper = (0.5, 2.0, 0.01)
     
     def _kernel(self, a, b):
         """ kernel function, here RBF kernel """
-        (l, sigma_f, sigma_n) = (0.3, 2.0, 0.01)
-        return sigma_f**2*exp(-1.0/(2*l**2)*norm(a-b, 2)**2+sigma_n*eye(self.indim))
+        (l, sigma_f, sigma_n) = self.hyper
+        # CHECKME: multiply with I at the end? should return scalar though...
+        return sigma_f**2*exp(-1.0/(2*l**2)*norm(a-b, 2)**2 + sigma_n) #*eye(self.indim))
 
     def _buildGrid(self, start, stop, step):
         """ returns a mgrid type of array for 'dim' dimensions """
@@ -54,15 +59,24 @@ class GaussianProcess:
          
         self.trainx = dataset.getField('input')
         self.trainy = ravel(dataset.getField('target'))
-        self.noise = array([0.01]*len(self.trainx))
+        self.noise = array([0.001]*len(self.trainx))
         # print self.trainx, self.trainy
+        self.calculated = False
+        
+    def addDataset(self, dataset):
+        """ adds the points from the dataset to the training set """
+        assert (dataset.getDimension('input') == self.indim)
+        assert (dataset.getDimension('target') == 1)
+        
+        self.trainx = r_[self.trainx, dataset.getField('input')]
+        self.trainy = r_[self.trainy, ravel(dataset.getField('target'))]
+        self.noise = array([0.001]*len(self.trainx))
         self.calculated = False
         
     def addSample(self, train, target):
         self.trainx = r_[self.trainx, asarray([train])]
         self.trainy = r_[self.trainy, asarray(target)]
         self.noise = r_[self.noise, array([0.001])]
-
         self.calculated = False
         
     def _calculate(self):
@@ -131,6 +145,10 @@ class GaussianProcess:
         elif self.indim == 2:
             fig = figure()
             ax = a3.Axes3D(fig)
+            
+            # plot training set
+            ax.plot3D(ravel(self.trainx[:,0]), ravel(self.trainx[:,1]), ravel(self.trainy), 'ro')
+            
             # plot mean
             (x, y, z) = map(lambda m: m.reshape(sqrt(len(m)), sqrt(len(m))), (self.testx[:,0], self.testx[:,1], self.pred_mean))
             ax.plot_wireframe(x, y, z, colors='gray')
@@ -153,31 +171,26 @@ if __name__ == '__main__':
     
     # new feature "autonoise" adds uncertainty to data depending on
     # it's distance to other points in the dataset. not tested much yet.
-    
     # gp.autonoise = True
     
     gp.trainOnDataset(ds) 
     gp.plotCurves(showSamples=True) 
+     
+     
             
-    # example on how to use the GP in 2 dimensions
-    #
-    # THERE'S A BUG SOMEWHERE IN THE CODE:
-    #    File "gaussprocess.py", line 40, in _buildCov
-    #    K[i,j] = self._kernel(a[i,:], b[j,:])
-    #    ValueError: setting an array element with a sequence.
+    # --- example on how to use the GP in 2 dimensions
     
-    # ds = SupervisedDataSet(2,1)
-    # gp = GaussianProcess(indim=2, start=0, stop=5, step=0.2)    
-    # 
-    # x,y = mgrid[0:5:4j, 0:5:4j]
-    # z = cos(x)*sin(y)
-    # (x, y, z) = map(ravel, [x, y, z])
-    # 
-    # for i,j,k in zip(x, y, z):
-    #     ds.addSample([i, j], [k])
-    # 
-    # gp.trainOnDataset(ds)
-    # gp.plotCurves() 
- 
+    ds = SupervisedDataSet(2,1)
+    gp = GaussianProcess(indim=2, start=0, stop=5, step=0.2)    
+    
+    x,y = mgrid[0:5:4j, 0:5:4j]
+    z = cos(x)*sin(y)
+    (x, y, z) = map(ravel, [x, y, z])
+    
+    for i,j,k in zip(x, y, z):
+        ds.addSample([i, j], [k])
+    
+    gp.trainOnDataset(ds)
+    gp.plotCurves() 
 
     show()
