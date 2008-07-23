@@ -21,8 +21,11 @@ class SwipingNetwork(Network):
     # dimensions of the swiping grid
     dims = None
         
-    def __init__(self, inmesh = None, hiddenmesh = None, outmesh = None, predefined = {}, **args):
-        self.predefined = predefined
+    def __init__(self, inmesh = None, hiddenmesh = None, outmesh = None, predefined = None, **args):
+        if predefined != None:
+            self.predefined = predefined
+        else:
+            self.predefined = {}
         Network.__init__(self, **args)
         
         # determine the dimensions 
