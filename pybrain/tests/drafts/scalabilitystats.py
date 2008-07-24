@@ -12,15 +12,18 @@ from pybrain.rl.agents.gomokuplayers import KillingGomokuPlayer, RandomGomokuPla
 if __name__ == '__main__':
     # settings
     tag = 'x-'
-    capturegame = True
+    capturegame = False
     killer = False
     handicap = False
-    sizes = [5,9,19]                
-    argsVars = {'hsize': [1, 5],
-                'initScaling': [1, 10],
+    if capturegame:
+        sizes = [5,9]                
+    else:
+        sizes = [7,11]
+    argsVars = {'hsize': [5],
+                'initScaling': [1,10],
                 }
     dir = '../temp/stats/'
-    repeat = 150
+    repeat = 100
     minData = 0
     plotting = True
     
@@ -41,10 +44,20 @@ if __name__ == '__main__':
     
     #old results:
     results = pickleReadDict(fname)
+    
     olds = 0
     for k in results.keys():
         olds += len(results[k])
     print 'Old results:', olds, 'runs.'
+    
+    #if True:
+    #    for k in results.keys():
+    #        if k[0] == 5:
+    #            ko = (1, k[1])
+    #            results[ko].extend(results[k])
+    #            del results[k]
+    #    pickleDumpDict(fname, results)
+        
     
     for i in range(repeat):
         # produce new results
@@ -64,37 +77,66 @@ if __name__ == '__main__':
                 else:
                     args['opponent'] = RandomGomokuPlayer
             args['handicap'] = handicap
-            
+            print args
             tmp = []
             # first run on smallest size
-            x, p = randEval(size = sizes[0], allReturn = True, **args)
-            tmp.append(x)
-            for s in sizes[1:]:
-                tmp.append(randEval(size = s, setParams = p, **args))
+            try:
+                x, p = randEval(size = sizes[0], allReturn = True, **args)
+                tmp.append(x)
+                for s in sizes[1:]:
+                    tmp.append(randEval(size = s, setParams = p, **args))
                 
-            results[key].append((zip(sizes, tmp), p))
-            print ':',
-            pickleDumpDict(fname, results)
-            print '.'
+                results[key].append((zip(sizes, tmp), p))
+                print ':',
+                pickleDumpDict(fname, results)
+                print '.'
+            except:
+                print 'Oh-oh.'
 
 
     # plot the results
     if plotting:
         import pylab
-        pylab.plot([-1,1], [-1,1], '.')
-        title = stype+' '+str(sizes[0])+' vs. '+str(sizes[-1])
-        pylab.title(title)
-        for k in results.keys():
-            # for now, only plot the first and the last size against each other
-            x, y = [], []
-            for point in results[k]:
-                if point[0][0][0] == sizes[0]:
-                    if point[0][-1][0] == sizes[-1]:
-                        x.append(point[0][0][1]) 
-                        y.append(point[0][-1][1]) 
-                        
-            pylab.plot(x, y, '.', label = k)
-        pylab.legend()    
-        pylab.savefig(dir+title+'.eps')
+        
+        if True:
+            for i in range(len(sizes)-1):
+                smin = sizes[i]
+                smax = sizes[i+1]
+                pylab.figure()
+                pylab.plot([-1,1], [-1,1], '.')
+                title = stype+' '+str(smin)+' vs. '+str(smax)
+                pylab.title(title)
+                for k in results.keys():
+                    # for now, only plot the first and the last size against each other
+                    xs, ys = [], []
+                    for point in results[k]:
+                        x, y = None, None
+                        for s, val in point[0]:
+                            if s == smin:
+                                x = val
+                            elif s == smax:
+                                y = val                        
+                        if x != None and y != None:
+                            xs.append(x)
+                            ys.append(y)
+                    pylab.plot(xs, ys, '.', label = k)
+                pylab.legend()    
+                pylab.savefig(dir+title+'.eps')
+            
+        
+            
+        if True:
+            pylab.figure()
+            pylab.title('(border weight * output weight) vs performance')
+            xs, ys = [], []
+            for point in results[(1,1)]:
+                if not point[0][0][0] == 5:
+                    continue
+                xs.append(point[0][0][1])
+                ys.append(point[1][0] * point[1][-1])
+            pylab.plot(xs, ys, '.')
+        
+        
+            
         pylab.show()
-    
+        

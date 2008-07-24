@@ -13,14 +13,14 @@ from nesexperiments import pickleDumpDict, pickleReadDict
 from pybrain import buildNetwork, TanhLayer, SigmoidLayer
         
 
-def randEval(size, hsize, opponent, handicap = False, mlp = False, capturegame = True, initScaling = 1, 
+def randEval(size = 0, hsize = 0, opponent = None, handicap = False, mlp = False, capturegame = True, initScaling = 1, 
              avgOver = 100, verbose = True, setParams = None, allReturn = False):
     if mlp:
         # comarison with simple MLP
         net = buildNetwork(2 * size**2, hsize * size**2, size**2, 
                            hiddenclass = TanhLayer, outclass = SigmoidLayer)        
     else:
-        net = CaptureGameNetwork(size = size, hsize = hsize, simpleborders = True) 
+        net = CaptureGameNetwork(size = size, hsize = hsize, simpleborders = True)         
     if setParams != None:
         net._params[:] = setParams
     else:
@@ -36,7 +36,9 @@ def randEval(size, hsize, opponent, handicap = False, mlp = False, capturegame =
                                            opponent = opponent)
             res = absoluteTask(net)
     else:
-        # Gomoku
+        # Gomoku#            del results[k]
+    #    pickleDumpDict(fname, results)
+    
         absoluteTask = GomokuTask(size, averageOverGames = avgOver, alternateStarting = True, 
                                   opponent = opponent)
         res = absoluteTask(net)
@@ -133,11 +135,14 @@ if __name__ == '__main__':
                     args['opponent'] = RandomGomokuPlayer
             args['handicap'] = handicap
             args['mlp'] = mlp
-            for i in range(10):
-                results[key].append(randEval(**args))
-            print ':',
-            pickleDumpDict(fname, results)
-            print '.'
+            try:
+                for i in range(10):
+                    results[key].append(randEval(**args))
+                print ':',
+                pickleDumpDict(fname, results)
+                print '.'
+            except:
+                print 'Oh-oh'
         
     # print a summary
     if not plotting:
