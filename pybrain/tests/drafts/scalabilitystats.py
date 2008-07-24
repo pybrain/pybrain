@@ -9,6 +9,7 @@ from pybrain.rl.agents.capturegameplayers import KillingPlayer, RandomCapturePla
 from pybrain.rl.agents.gomokuplayers import KillingGomokuPlayer, RandomGomokuPlayer
 
 
+
 if __name__ == '__main__':
     # settings
     tag = 'x-'
@@ -49,16 +50,7 @@ if __name__ == '__main__':
     for k in results.keys():
         olds += len(results[k])
     print 'Old results:', olds, 'runs.'
-    
-    #if True:
-    #    for k in results.keys():
-    #        if k[0] == 5:
-    #            ko = (1, k[1])
-    #            results[ko].extend(results[k])
-    #            del results[k]
-    #    pickleDumpDict(fname, results)
         
-    
     for i in range(repeat):
         # produce new results
         for args in iterArgumentCombinations(argsVars):

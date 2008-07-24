@@ -81,7 +81,7 @@ if __name__ == '__main__':
     # settings
     tag = 'x-'
     capturegame = True
-    killer = False
+    killer = True
     handicap = False
     mlp = False
     argsVars = {'size': [9],
@@ -111,18 +111,13 @@ if __name__ == '__main__':
     
     #old results:
     results = pickleReadDict(fname)
+    otherresults = pickleReadDict(dir+tag+'comparative-'+stype[len(tag):])
     olds = 0
     for k in results.keys():
         olds += len(results[k])
+    for k in otherresults.keys():
+        olds += sum(map(len, otherresults[k]))        
     print 'Old results:', olds, 'runs.'
-    
-    #if True:
-    #    for k in results.keys():
-    #        if k[0] == 5:
-    #            ko = (1, k[1])
-    #            results[ko].extend(results[k])
-    #            del results[k]
-    #    pickleDumpDict(fname, results)
     
     for i in range(repeat/10):
         # produce new results
@@ -166,9 +161,17 @@ if __name__ == '__main__':
         import pylab
         from scipy import array
         for k in sorted(results.keys()):
-            if len(results[k]) < minData:
+            val = results[k]
+            k2 = tuple(k[1:])
+            if k2 in otherresults:
+                for point in otherresults[k2]:
+                    for dim, score in point[0]:
+                        if dim == k[0]:
+                            val.append(score)
+            print k, k2, len(val)
+            if len(val) < minData:
                 continue
-            x = array([max(results[k])]+sorted(results[k])[::-1])
+            x = array([max(val)]+sorted(val)[::-1])
             y = array(map(float, range(len(x))))
             y /= (len(x)-1)
             pylab.plot(y, x, label = str(k)+'-'+str(len(x)-1))
