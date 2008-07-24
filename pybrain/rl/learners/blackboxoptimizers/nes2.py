@@ -63,8 +63,9 @@ class NaturalEvolutionStrategies2(BlackBoxOptimizer):
         while len(self.allSamples) < maxSteps:
             for dummy in range(self.batchSize):
                 self._oneSample()
+            shapedFits = self.fitnessShaping(self.allFitnesses[-self.batchSize:])
             gradient = self._calcVanillaGradient(self.allSamples[-self.batchSize:], 
-                                                 self.allFitnesses[-self.batchSize:])
+                                                 shapedFits)
             if self.momentum != None:
                 self.momentumVector *= self.momentum 
                 self.momentumVector += gradient 
@@ -121,9 +122,11 @@ class NaturalEvolutionStrategies2(BlackBoxOptimizer):
             self.phiSquareWindow[index:index+len(phi)] = phiSquare
             fits = fitnesses[index:][:]
             fits.extend(fitnesses[:index])
+            fits = self.fitnessShaping(fits)
+            
             phiSquare = self.phiSquareWindow
         else:
-            fits = fitnesses            
+            fits = self.fitnessShaping(fitnesses)          
             
         paramWeightings = dot(ones(self.batchSize), phiSquare)            
         baseline = dot(fits, phiSquare) / paramWeightings
