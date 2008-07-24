@@ -12,6 +12,8 @@ class NelderMead(BlackBoxOptimizer):
     stopPrecision = 1e-6
     
     minimize = True
+    
+    online = False
         
     def _batchLearn(self, maxSteps = None):
         """ The only stopping crtiterion (apart form limiting the evaluations) is

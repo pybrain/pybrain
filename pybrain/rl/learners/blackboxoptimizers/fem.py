@@ -25,6 +25,9 @@ class FEM(BlackBoxOptimizer):
     rankingFunction = RankingFunction()
     useCauchy = False
     
+    # TODO: interface changed: make coherent
+    online = False
+    
     def __init__(self, evaluator, evaluable, **parameters):
         BlackBoxOptimizer.__init__(self, evaluator, evaluable, **parameters)
         self.alphas = ones(self.numberOfCenters)/self.numberOfCenters

@@ -1,7 +1,7 @@
 __author__ = 'Tom Schaul, tom@idsia.ch'
 
 
-from scipy import ndarray, size
+from scipy import ndarray, size, rand
 
 from pybrain.rl.learners import Learner
 from pybrain.structure.parametercontainer import ParameterContainer
@@ -12,7 +12,7 @@ class BlackBoxOptimizer(Learner):
     It only accepts evaluables that are arrays, or have a .params attribute which is an array. 
     
     Subclasses can implement a ._batchLearn() method instead of the _learnStep() method, 
-    which will be called preferably.
+    which will be called instead if the 'online' parameter is set accordingly. 
     """
     
     # minimize or maximize? 
@@ -27,6 +27,12 @@ class BlackBoxOptimizer(Learner):
     wrappingEvaluable = None
     
     noisyEvaluator = False
+    
+    # if None, the provided weights are kept. This is a list of tuples.
+    initialSearchRange = None 
+    
+    
+    online = True
     
     def __init__(self, evaluator, evaluable, **args):
         Learner.__init__(self, evaluator, evaluable, **args)
@@ -53,14 +59,18 @@ class BlackBoxOptimizer(Learner):
             
         # the first guess at the solution (it must be an array)
         assert type(self.x0) == ndarray
-        self.noisyEvaluator = evaluator.noisy
         self.xdim = size(self.x0)
+        if self.initialSearchRange != None:
+            for i  in range(self.xdim):
+                mi, ma = self.initialSearchRange[i]
+                self.x0[i] = rand()*(ma-mi)+mi
+        self.noisyEvaluator = evaluator.noisy
         
     def learn(self, maxSteps = None):
         """ Some BlackBoxOptimizers can only be called one time, and currently do not support iteratively
         adding more steps. """
         
-        if hasattr(self, '_batchLearn'):
+        if not self.online:
             if self.maxEvaluations != None:
                 if maxSteps != None:
                     maxSteps = min(maxSteps, self.maxEvaluations-self.steps)

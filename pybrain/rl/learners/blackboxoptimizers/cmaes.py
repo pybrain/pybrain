@@ -17,6 +17,8 @@ class CMAES(BlackBoxOptimizer):
     minimize = True
     stopPrecision = 1e-6
     
+    online = False
+    
     def _batchLearn(self, maxSteps = None):    
         N = self.xdim
         strfitnessfct = self.evaluator

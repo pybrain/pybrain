@@ -12,8 +12,8 @@ from pybrain.rl.agents.gomokuplayers import KillingGomokuPlayer, RandomGomokuPla
 if __name__ == '__main__':
     # settings
     tag = 'x-'
-    capturegame = False
-    killer = False
+    capturegame = True
+    killer = True
     handicap = False
     if capturegame:
         sizes = [5,9]                
@@ -23,7 +23,7 @@ if __name__ == '__main__':
                 'initScaling': [1,10],
                 }
     dir = '../temp/stats/'
-    repeat = 100
+    repeat = 0
     minData = 0
     plotting = True
     

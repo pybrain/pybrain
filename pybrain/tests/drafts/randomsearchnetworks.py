@@ -116,6 +116,14 @@ if __name__ == '__main__':
         olds += len(results[k])
     print 'Old results:', olds, 'runs.'
     
+    #if True:
+    #    for k in results.keys():
+    #        if k[0] == 5:
+    #            ko = (1, k[1])
+    #            results[ko].extend(results[k])
+    #            del results[k]
+    #    pickleDumpDict(fname, results)
+    
     for i in range(repeat/10):
         # produce new results
         for args in iterArgumentCombinations(argsVars):

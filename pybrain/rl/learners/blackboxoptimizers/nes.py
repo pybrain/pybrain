@@ -86,6 +86,8 @@ class NaturalEvolutionStrategies(BlackBoxOptimizer):
     minimize = False
     
     
+    online = False
+    
     def __init__(self, evaluator, evaluable, **parameters):
         BlackBoxOptimizer.__init__(self, evaluator, evaluable, **parameters)
         n = self.xdim        
