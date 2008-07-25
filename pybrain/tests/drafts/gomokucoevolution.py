@@ -7,43 +7,41 @@ import pylab
 from pybrain.tools.plotting.ciaoplot import CiaoPlot    
 from pybrain.structure.evolvables.cheaplycopiable import CheaplyCopiable
 from pybrain.structure.networks.custom.capturegame import CaptureGameNetwork
-from pybrain.rl.tasks.capturegame import CaptureGameTask, HandicapCaptureTask, RelativeCaptureTask
-from pybrain.rl.agents.capturegameplayers.clientwrapper import ClientCapturePlayer
+from pybrain.rl.tasks.gomoku import GomokuTask, RelativeGomokuTask
+from pybrain.rl.agents.gomokuplayers import KillingGomokuPlayer
 from pybrain.rl.learners.search import CompetitiveCoevolution, MultiPopulationCoevolution, Coevolution
-from pybrain.rl.agents.capturegameplayers import KillingPlayer
 from pybrain.tools.xml import NetworkWriter
     
 # parameters
-size = 5
+size = 7
 hsize = 5
-popsize = 6
-generations = 250
+popsize = 2
+generations = 200
 elitist = False
 temperature = 0.
-relTaskAvg = 7
+relTaskAvg = 1
 hallOfFameProp = 0.9
 selProp = 0.5
 beta = 1
-tournSize = 3
+tournSize = 2
 absProp = 0.
-mutationStd = 0.1
+mutationStd = 0.05
+
 multipop = True
-populations = 5
-competitive = True
+populations = 4
+competitive = False
 
 # experiment settings
 ciao = False
 absplot = True
 scalingtest = False
 storage = True
-javaTest = False
-handicapTest = False
 
 # the tasks:
-absoluteTask = CaptureGameTask(size, averageOverGames = 40, alternateStarting = True, 
-                               opponent = KillingPlayer)
-relativeTask = RelativeCaptureTask(size, useNetworks = True, maxGames = relTaskAvg,
-                                   minTemperature = temperature)
+absoluteTask = GomokuTask(size, averageOverGames = 40, alternateStarting = True, 
+                          opponent = KillingGomokuPlayer)
+relativeTask = RelativeGomokuTask(size, useNetworks = True, maxGames = relTaskAvg,
+                                  minTemperature = temperature)
 
 # the network
 net = CaptureGameNetwork(size = size, hsize = hsize, simpleborders = True, 
@@ -56,8 +54,6 @@ print net.name[:-5], 'has', net.paramdim, 'trainable parameters.'
 
     
 res = []
-hres = []   
-jres = []
 
 if competitive: 
     lclass = CompetitiveCoevolution    
@@ -89,7 +85,7 @@ learner = lclass(relativeTask,
 evals = generations * learner._stepsPerGeneration() * relTaskAvg
 
 def buildName():
-    name = 'x-'
+    name = 'Gomoku-'
     name += str(learner)
     #if competitive:
     #    name += 'Comp'
@@ -121,30 +117,16 @@ name = buildName()
 print 'Experiment:', name
 print
 
-if handicapTest:
-    handicapTask = HandicapCaptureTask(size, opponent = KillingPlayer)
-
-if javaTest:
-    try:
-        javaTask = CaptureGameTask(size, averageOverGames = 40, alternateStarting = True,
-                                   opponent = ClientCapturePlayer)
-        javaTask.opponent.randomPartMoves = 0.2
-    except:
-        print 'No server found.'
-        javaTest = False
-
 def storeResults():
     print ' --- Storing..',
     n = newnet.getBase()
     n.argdict['RUNRES'] = res[:]
-    n.argdict['RUNRESH'] = hres[:]
-    n.argdict['RUNRESJ'] = jres[:]
     ps = []
     for h in learner.hallOfFame:
         ps.append(h.params.copy())
     n.argdict['HoF_PARAMS'] = ps
     n.argdict['HoBestFitnesses'] = learner.hallOfFitnesses
-    NetworkWriter.writeToFile(n, '../temp/capturegame/1/'+name+'.xml')
+    NetworkWriter.writeToFile(n, '../temp/capturegame/2/'+name+'.xml')
     print '..done. --- '
     
 for g in range(generations):
@@ -152,22 +134,9 @@ for g in range(generations):
     h = learner.hallOfFame[-1]
     res.append(absoluteTask(h))
     print res[-1], '    (evals:', learner.steps, '*', relTaskAvg, ')',
-    if handicapTest:
-        hres.append(handicapTask(h))
-        print 'Handicap: ', hres[-1]
-    else:
-        print
-    if javaTest:
-        try:
-            jres.append(javaTask(h))
-            print 'Java-play:', jres[-1]
-        except:
-            jres.append(0)
-            print 'Server playing error.'
-
+    print
     if g % 10 == 0 and g > 0 and storage and evals > 100:
-        storeResults()
-        
+        storeResults()        
     print
         
 # store result
@@ -194,20 +163,16 @@ if absplot:
             pylab.plot(res[i::populations])
     else:
         pylab.plot(res)
-    if handicapTest:
-        pylab.plot(hres)
-    if javaTest:
-        pylab.plot(jres)
     pylab.title(name)
     
 if scalingtest:
     # now, let's take the result, and compare its performance on a larger game-baord
-    newsize = 9
+    newsize = 11
     bignew = newnet.getBase().resizedTo(newsize)
     bigold = net.getBase().resizedTo(newsize)
 
-    newtask = CaptureGameTask(newsize, averageOverGames = 100, alternateStarting = True,
-                              opponent = KillingPlayer)
+    newtask = GomokuTask(newsize, averageOverGames = 100, alternateStarting = True,
+                              opponent = KillingGomokuPlayer)
     print 'Old net on medium board score:', newtask(bigold)
     print 'New net on medium board score:', newtask(bignew)
 

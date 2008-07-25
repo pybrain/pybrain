@@ -80,17 +80,17 @@ def iterArgumentCombinations(d):
 if __name__ == '__main__':
     # settings
     tag = 'x-'
-    capturegame = True
+    capturegame = False
     killer = True
     handicap = False
     mlp = False
-    argsVars = {'size': [9],
-                'hsize': [1],
-                'initScaling': [1],
+    argsVars = {'size': [7,11],
+                'hsize': [5,10],
+                'initScaling': [1,10],
                 }
     dir = '../temp/stats/'
-    repeat = 0
-    minData = 0
+    repeat = 1
+    minData = 10
     plotting = True
     
     # build the type name
@@ -119,7 +119,7 @@ if __name__ == '__main__':
         olds += sum(map(len, otherresults[k]))        
     print 'Old results:', olds, 'runs.'
     
-    for i in range(repeat/10):
+    for i in range(1):
         # produce new results
         for args in iterArgumentCombinations(argsVars):
             key = (args['size'], args['hsize'], args['initScaling'])
@@ -139,8 +139,7 @@ if __name__ == '__main__':
             args['handicap'] = handicap
             args['mlp'] = mlp
             try:
-                for i in range(10):
-                    results[key].append(randEval(**args))
+                results[key].append(randEval(**args))
                 print ':',
                 pickleDumpDict(fname, results)
                 print '.'

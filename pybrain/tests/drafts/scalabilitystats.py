@@ -14,14 +14,14 @@ if __name__ == '__main__':
     # settings
     tag = 'x-'
     capturegame = True
-    killer = True
+    killer = False
     handicap = False
     if capturegame:
         sizes = [5,9]                
     else:
         sizes = [7,11]
     argsVars = {'hsize': [5],
-                'initScaling': [1,10],
+                'initScaling': [1],
                 }
     dir = '../temp/stats/'
     repeat = 0
@@ -114,10 +114,9 @@ if __name__ == '__main__':
                     pylab.plot(xs, ys, '.', label = k)
                 pylab.legend()    
                 pylab.savefig(dir+title+'.eps')
-            
+                        
         
-            
-        if True:
+        if False:
             pylab.figure()
             pylab.title('(border weight * output weight) vs performance')
             xs, ys = [], []
@@ -128,7 +127,6 @@ if __name__ == '__main__':
                 ys.append(point[1][0] * point[1][-1])
             pylab.plot(xs, ys, '.')
         
-        
-            
+                 
         pylab.show()
         

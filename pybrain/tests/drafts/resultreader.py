@@ -54,12 +54,12 @@ def slidingAverage(a, avgOver = 5):
     
     
 if __name__ == '__main__':
-    dir = '../temp/capturegame/1/'
-    tag = 'N'
+    dir = '../temp/capturegame/2/'
+    tag = 'Gomoku'
     ext = '.xml'
     files = getTaggedFiles(dir, tag, ext)
-    numPops = 5
-    avgOver = 10
+    numPops = 2
+    avgOver = 2
     selected = selectSome(files, [#'-s5', #'volution', 
                                   'MultiPop'+str(numPops)],  requireAll = True)
     print selected
