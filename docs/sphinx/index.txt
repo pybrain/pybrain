@@ -12,6 +12,7 @@ Contents:
    
    intro
    netmodcon
+   fnn
    reinforcement-learning
    superviseddataset
    sequentialdataset
