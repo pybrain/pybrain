@@ -15,20 +15,23 @@ from pybrain.tools.xml import NetworkWriter
     
 # parameters
 size = 5
-hsize = 5
-popsize = 6
-generations = 250
+generations = 400
+hsize = 20
+
+popsize = 12
+selProp = 0.5
 elitist = False
 temperature = 0.
-relTaskAvg = 7
-hallOfFameProp = 0.9
-selProp = 0.5
+relTaskAvg = 1
+tournSize = 12
+hallOfFameProp = 0.67
+sharedSampling = True
 beta = 1
-tournSize = 3
 absProp = 0.
 mutationStd = 0.1
-multipop = True
-populations = 5
+
+multipop = False
+populations = 2
 competitive = True
 
 # experiment settings
@@ -78,6 +81,7 @@ learner = lclass(relativeTask,
                  elitism = elitist, 
                  parentChildAverage = beta,
                  tournamentSize = tournSize,
+                 useSharedSampling = sharedSampling,
                  populationSize = popsize, 
                  numPops = populations,
                  selectionProportion = selProp,
@@ -89,29 +93,21 @@ learner = lclass(relativeTask,
 evals = generations * learner._stepsPerGeneration() * relTaskAvg
 
 def buildName():
-    name = 'x-'
+    name = 'z-'
     name += str(learner)
-    #if competitive:
-    #    name += 'Comp'
-    #name += 'Coev'
     if relTaskAvg > 1:
         name += '-rA'+str(relTaskAvg)
-    #if elitist:
-    #    name += '-elit'
     name += '-T'+str(temperature)
     name += '-e'+str(evals)
-    #name += '-pop'+str(popsize)
-    #if tournSize != None:
     name += '-tSize'+str(tournSize)
     if beta < 1:
         name += '-pc_avg'+str(beta)
+    if sharedSampling:
+        name += '-sharS'
     if hallOfFameProp > 0:
         name += '-HoF'+str(hallOfFameProp)
-    #if selProp != 0.5:
-    #    name += '-selP'+str(selProp)
     if absProp > 0:
         name += '-absP'+str(absProp)
-    #if mutationStd != 0.1:
     name += '-mut'+str(mutationStd)
     name += net.name[18:-5]
     return name

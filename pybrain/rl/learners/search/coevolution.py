@@ -17,6 +17,7 @@ class Coevolution(Named):
     parentChildAverage = 1. # proportion of the child
     tournamentSize = None
     hallOfFameEvaluation = 0. # proportion of HoF evaluations in relative fitness
+    useSharedSampling = False
     
     # an external absolute evaluator
     absEvaluator = None
@@ -35,6 +36,8 @@ class Coevolution(Named):
         # set parameters
         self.setArgs(**args)
         self.relEvaluator = relEvaluator
+        if self.tournamentSize == None:
+            self.tournamentSize = self.populationSize
         
         # initialize algorithm variables
         self.steps = 0        
@@ -46,9 +49,15 @@ class Coevolution(Named):
         # the relative fitnesses from each generation (of the selected individuals)
         self.hallOfFitnesses = []
         
-        # this dictionnary stores all the results between 2 players (first one starting): 
-        #  { (player1, player2): [games won, total games] }
+        # this dictionary stores all the results between 2 players (first one starting): 
+        #  { (player1, player2): [games won, total games, cumulative score, list of scores] }
         self.allResults = {}
+        
+        # this dictionary stores the opponents a player has played against.
+        self.allOpponents = {}
+        
+        # a list of all previous populations
+        self.oldPops = []
         
         # build initial populations
         self._initPopulation(seeds)
@@ -69,6 +78,7 @@ class Coevolution(Named):
         return self.hallOfFame[-1]
 
     def _oneGeneration(self):
+        self.oldPops.append(self.pop)
         self.generation += 1        
         fitnesses = self._evaluatePopulation()
         # store best in hall of fame
@@ -84,8 +94,7 @@ class Coevolution(Named):
             print '        best params:', fListToString(best.params, 4)
                 
         self.pop = self._selectAndReproduce(self.pop, fitnesses)
-            
-        
+                    
     def _averageWithParents(self, pop, childportion):
         for i, p in enumerate(pop[:]):
             if p.parent != None:
@@ -95,17 +104,23 @@ class Coevolution(Named):
                 pop[i] = tmp
                     
     def _evaluatePopulation(self):
-        self._doTournament(self.pop, self.pop, self.tournamentSize)
-        if (self.hallOfFameEvaluation > 0 and 
-            ((self.tournamentSize != None and self.generation > self.tournamentSize)
-             or (self.tournamentSize == None and self.generation > 3))):
-            self._doTournament(self.pop, self.hallOfFame, self.tournamentSize)
+        hoFtournSize = min(self.generation, int(self.tournamentSize * self.hallOfFameEvaluation))
+        tournSize = self.tournamentSize - hoFtournSize
+        if self.useSharedSampling:
+            opponents = self._sharedSampling(tournSize, self.pop, self.oldPops[-1])
+        else:
+            opponents = self.pop
+        if len(opponents) < tournSize:
+            tournSize = len(opponents)
+        self._doTournament(self.pop, opponents, tournSize)
+        if hoFtournSize > 0:
+            self._doTournament(self.pop, self.hallOfFame, hoFtournSize)
         fitnesses = []
         for p in self.pop:
             fit = 0
-            for opp in self.pop:
+            for opp in opponents:
                 fit += self._beats(p, opp)
-            if self.hallOfFameEvaluation > 0:
+            if hoFtournSize > 0:
                 for opp in self.hallOfFame:
                     fit += self._beats(p, opp)     
             if self.absEvalProportion > 0 and self.absEvaluator != None:
@@ -158,8 +173,8 @@ class Coevolution(Named):
         if (h,p) not in self.allResults:
             return 0
         else:
-            hscore, hpgames = self.allResults[(h,p)]
-            pscore, phgames = self.allResults[(p,h)]
+            hwins, hpgames, hscore = self.allResults[(h,p)][:3]
+            pwins, phgames, pscore = self.allResults[(p,h)][:3]
             return (hscore-pscore)/float(hpgames+phgames)            
                 
     def _doTournament(self, pop1, pop2, tournamentSize = None):
@@ -176,15 +191,56 @@ class Coevolution(Named):
             else:                
                 opps = pop3                    
             for opp in opps:
-                if (p,opp) not in self.allResults:
-                    self.allResults[(p,opp)] = [0,0]
-                if (opp,p) not in self.allResults:
-                    self.allResults[(opp,p)] = [0,0]
-                self.allResults[(p,opp)][1] += 1
-                self.allResults[(p,opp)][0] += self.relEvaluator(p, opp)
-                self.allResults[(opp,p)][1] += 1
-                self.allResults[(opp,p)][0] += self.relEvaluator(opp, p)
-                self.steps += 2     
+                self._relEval(p, opp)
+                self._relEval(opp, p)
+                
+    def _globalScore(self, p):
+        """ The average score over all evaluations for a player. """
+        if p not in self.allOpponents:
+            return 0.
+        scoresum, played = 0., 0
+        for opp in self.allOpponents[p]:
+            scoresum += self.allResults[(p, opp)][2]
+            played += self.allResults[(p, opp)][1]
+            scoresum -= self.allResults[(opp, p)][2]
+            played += self.allResults[(opp, p)][1]
+        return scoresum/played
+                
+    def _sharedSampling(self, numSelect, selectFrom, relativeTo):
+        """ Build a shared sampling set of opponents """
+        if numSelect < 1:
+            return []
+        # determine the player of selectFrom with the most wins against players from relativeTo (and which ones)
+        tmp = {}
+        for p in selectFrom:
+            beaten = []
+            for opp in relativeTo:
+                if self._beats(p, opp) > 0:
+                    beaten.append(opp)
+            tmp[p] = beaten
+        beatlist = map(lambda (p, beaten): (len(beaten), self._globalScore(p), p),  tmp.items())
+        shuffle(beatlist)
+        beatlist.sort(key = lambda x: x[:2])
+        best = beatlist[-1][2]
+        unBeaten = list(set(relativeTo).difference(tmp[best]))
+        otherSelect = selectFrom[:]
+        otherSelect.remove(best)
+        return [best] + self._sharedSampling(numSelect - 1, otherSelect, unBeaten)
+                
+    def _relEval(self, p, opp):
+        """ a single relative evaluation (in one direction) with the involved bookkeeping."""
+        if p not in self.allOpponents:
+            self.allOpponents[p] = []
+        self.allOpponents[p].append(opp)
+        if (p,opp) not in self.allResults:
+            self.allResults[(p,opp)] = [0,0,0.,[]]
+        res = self.relEvaluator(p, opp)
+        if res > 0:
+            self.allResults[(p,opp)][0] += 1
+        self.allResults[(p,opp)][1] += 1
+        self.allResults[(p,opp)][2] += res
+        self.allResults[(p,opp)][3].append(res)
+        self.steps += 1
     
     def __str__(self):
         s = 'Coevolution ('
@@ -202,10 +258,28 @@ class Coevolution(Named):
         return int(self.populationSize*self.selectionProportion)
     
     def _stepsPerGeneration(self):
-        if self.tournamentSize == None:
-            res = self.populationSize*(self.populationSize-1) * 2
-        else:
-            res = self.populationSize*self.tournamentSize * 2
-        if self.hallOfFameEvaluation > 0:
-            res *= 2
+        res = self.populationSize*self.tournamentSize * 2
         return res
+    
+    
+    
+    
+    
+if __name__ == '__main__':
+    # TODO: convert to unittest
+    x = Coevolution(None, [None], populationSize = 1)
+    x.allResults[(1,2)] = [1,1,1,[]]
+    x.allResults[(2,1)] = [-1,1,-1,[]]
+    x.allResults[(2,5)] = [1,1,2,[]]
+    x.allResults[(5,2)] = [-1,1,-1,[]]
+    x.allResults[(2,3)] = [1,1,3,[]]
+    x.allResults[(3,2)] = [-1,1,-1,[]]
+    x.allResults[(4,3)] = [1,1,4,[]]
+    x.allResults[(3,4)] = [-1,1,-1,[]]
+    x.allOpponents[1] = [2]
+    x.allOpponents[2] = [1,5]
+    x.allOpponents[3] = [2,4]
+    x.allOpponents[4] = [3]
+    x.allOpponents[5] = [2]
+    print x._sharedSampling(4, [1,2,3,4,5], [1,2,3,4,6,7,8,9])
+    print 'should be', [4, 1, 2, 5]

@@ -15,12 +15,12 @@ from pybrain.tools.xml import NetworkWriter
 # parameters
 size = 7
 hsize = 5
-popsize = 2
-generations = 200
+popsize = 4
+generations = 150
 elitist = False
 temperature = 0.
-relTaskAvg = 1
-hallOfFameProp = 0.9
+relTaskAvg = 3
+hallOfFameProp = 0.
 selProp = 0.5
 beta = 1
 tournSize = 2
@@ -28,7 +28,7 @@ absProp = 0.
 mutationStd = 0.05
 
 multipop = True
-populations = 4
+populations = 3
 competitive = False
 
 # experiment settings

@@ -54,14 +54,17 @@ def slidingAverage(a, avgOver = 5):
     
     
 if __name__ == '__main__':
-    dir = '../temp/capturegame/2/'
-    tag = 'Gomoku'
+    dir = '../temp/capturegame/1/'
+    tag = 'z'
     ext = '.xml'
     files = getTaggedFiles(dir, tag, ext)
     numPops = 2
-    avgOver = 2
-    selected = selectSome(files, [#'-s5', #'volution', 
-                                  'MultiPop'+str(numPops)],  requireAll = True)
+    avgOver = 3
+    plotrelative = False
+    selected = selectSome(files, [#'-s11', #'volution', 
+                                  'Compe',
+                                  #'MultiPop'+str(numPops)
+                                  ],  requireAll = True)
     print selected
     nets = []
     otherdata = {}
@@ -70,6 +73,7 @@ if __name__ == '__main__':
         nets.append(n) 
         print f
         print n.name
+        n._fname = f
         if hasattr(n, '_unknown_argdict'):
             otherdata[n] = n._unknown_argdict.copy()
             del n._unknown_argdict
@@ -85,11 +89,12 @@ if __name__ == '__main__':
             absfits = otherdata[n]['RUNRES']
             pylab.figure()
             pylab.title('Absolute '+n.name+' averaged '+str(avgOver))
+            pylab.xlabel(n._fname)
             for g in range(numPops):
                 pylab.plot(slidingAverage(absfits[g::numPops], avgOver), hm[g%numPops], label = 'abs'+str(g+1))                
             pylab.legend()
             
-        if 'HoBestFitnesses' in otherdata[n]:
+        if plotrelative and 'HoBestFitnesses' in otherdata[n]:
             relfits = otherdata[n]['HoBestFitnesses']
             avgRelFits = map(lambda x: sum(x)/len(x), relfits)
             bestRelFits = map(max, relfits)

@@ -44,7 +44,17 @@ class CompetitiveCoevolution(Coevolution):
         return fitnesses
     
     def _evaluatePopulation(self):
-        self._doTournament(self.pop, self.parasitePop, self.tournamentSize)
+        hoFtournSize = min(self.generation, int(self.tournamentSize * self.hallOfFameEvaluation))
+        tournSize = self.tournamentSize - hoFtournSize
+        if self.useSharedSampling and self.generation > 2:
+            opponents = self._sharedSampling(tournSize, self.parasitePop, self.oldPops[-2])
+        else:
+            opponents = self.parasitePop
+        if len(opponents) < tournSize:
+            tournSize = len(opponents)
+        self._doTournament(self.pop, opponents, tournSize)
+        if hoFtournSize > 0:
+            self._doTournament(self.pop, self.hallOfFame, hoFtournSize)
         return self._competitiveSharedFitness(self.pop, self.parasitePop)
     
     def _oneGeneration(self):
@@ -54,9 +64,4 @@ class CompetitiveCoevolution(Coevolution):
         self.pop = self.parasitePop
         self.parasitePop = tmp
         
-    def _stepsPerGeneration(self):    
-        if self.tournamentSize == None:
-            return 2 * self.populationSize** 2
-        else:
-            return Coevolution._stepsPerGeneration(self)
         
