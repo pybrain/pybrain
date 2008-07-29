@@ -114,14 +114,15 @@ class Coevolution(Named):
             tournSize = len(opponents)
         self._doTournament(self.pop, opponents, tournSize)
         if hoFtournSize > 0:
-            self._doTournament(self.pop, self.hallOfFame, hoFtournSize)
+            hoF = list(set(self.hallOfFame))
+            self._doTournament(self.pop, hoF, hoFtournSize)
         fitnesses = []
         for p in self.pop:
             fit = 0
             for opp in opponents:
                 fit += self._beats(p, opp)
             if hoFtournSize > 0:
-                for opp in self.hallOfFame:
+                for opp in hoF:
                     fit += self._beats(p, opp)     
             if self.absEvalProportion > 0 and self.absEvaluator != None:
                 fit = (1-self.absEvalProportion) * fit + self.absEvalProportion * self.absEvaluator(p)           
@@ -129,7 +130,7 @@ class Coevolution(Named):
         return fitnesses
             
     def _initPopulation(self, seeds):
-        if self.parentChildAverage < 0:
+        if self.parentChildAverage < 1:
             for s in seeds:
                 s.parent = None
         self.pop = self._extendPopulation(seeds, self.populationSize)
@@ -142,7 +143,7 @@ class Coevolution(Named):
             chosen = choice(seeds)
             tmp = chosen.copy()
             tmp.mutate()
-            if self.parentChildAverage < 0:
+            if self.parentChildAverage < 1:
                 tmp.parent = chosen
             res.append(tmp)            
         return res
@@ -173,8 +174,8 @@ class Coevolution(Named):
         if (h,p) not in self.allResults:
             return 0
         else:
-            hwins, hpgames, hscore = self.allResults[(h,p)][:3]
-            pwins, phgames, pscore = self.allResults[(p,h)][:3]
+            hpgames, hscore = self.allResults[(h,p)][1:3]
+            phgames, pscore = self.allResults[(p,h)][1:3]
             return (hscore-pscore)/float(hpgames+phgames)            
                 
     def _doTournament(self, pop1, pop2, tournamentSize = None):
@@ -204,6 +205,8 @@ class Coevolution(Named):
             played += self.allResults[(p, opp)][1]
             scoresum -= self.allResults[(opp, p)][2]
             played += self.allResults[(opp, p)][1]
+        # slightly bias the global score in favor of players with more games (just for tie-breaking)
+        played += 0.01
         return scoresum/played
                 
     def _sharedSampling(self, numSelect, selectFrom, relativeTo):

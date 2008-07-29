@@ -15,16 +15,16 @@ from pybrain.tools.xml import NetworkWriter
     
 # parameters
 size = 5
-generations = 400
-hsize = 20
+generations = 500
+hsize = 5
 
-popsize = 12
-selProp = 0.5
+popsize = 15
+selProp = 0.334
 elitist = False
 temperature = 0.
 relTaskAvg = 1
-tournSize = 12
-hallOfFameProp = 0.67
+tournSize = 9
+hallOfFameProp = 0.667
 sharedSampling = True
 beta = 1
 absProp = 0.
@@ -93,7 +93,7 @@ learner = lclass(relativeTask,
 evals = generations * learner._stepsPerGeneration() * relTaskAvg
 
 def buildName():
-    name = 'z-'
+    name = 'q-'
     name += str(learner)
     if relTaskAvg > 1:
         name += '-rA'+str(relTaskAvg)

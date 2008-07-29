@@ -55,13 +55,14 @@ def slidingAverage(a, avgOver = 5):
     
 if __name__ == '__main__':
     dir = '../temp/capturegame/1/'
-    tag = 'z'
+    tag = 'q'
     ext = '.xml'
     files = getTaggedFiles(dir, tag, ext)
     numPops = 2
-    avgOver = 3
-    plotrelative = False
-    selected = selectSome(files, [#'-s11', #'volution', 
+    avgOver = 1
+    plotrelative = True
+    selected = selectSome(files, ['6123', #'volution', 
+                                  #'2650',
                                   'Compe',
                                   #'MultiPop'+str(numPops)
                                   ],  requireAll = True)
@@ -78,7 +79,6 @@ if __name__ == '__main__':
             otherdata[n] = n._unknown_argdict.copy()
             del n._unknown_argdict
             for k, val in otherdata[n].items():
-                #print k, val
                 pass
         print
     
