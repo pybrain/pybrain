@@ -11,7 +11,7 @@ from matplotlib import axes3d as a3
 
 class GaussianProcess:
 
-    def __init__(self, indim, start, stop, step):
+    def __init__(self, indim, start=0, stop=1, step=0.1):
         self.mean = 0
         self.start = start
         self.stop = stop
@@ -20,24 +20,33 @@ class GaussianProcess:
         self.trainx = zeros((0, indim), float)
         self.trainy = zeros((0), float)
         self.noise = zeros((0), float)
-        self.testx = self._buildGrid(start, stop, step)
+        self.testx = self._buildGrid()
         self.calculated = True
         self.pred_mean = zeros(len(self.testx))
         self.pred_cov = eye(len(self.testx))
         self.autonoise = False
-        self.hyper = (0.5, 2.0, 0.01)
+        self.hyper = (0.5, 2.0, 0.1)
+        figure()
     
     def _kernel(self, a, b):
         """ kernel function, here RBF kernel """
         (l, sigma_f, sigma_n) = self.hyper
-        # CHECKME: multiply with I at the end? should return scalar though...
-        return sigma_f**2*exp(-1.0/(2*l**2)*norm(a-b, 2)**2 + sigma_n) #*eye(self.indim))
+        r = sigma_f**2*exp(-1.0/(2*l**2)*norm(a-b, 2)**2)
+        # if a == b:
+        #   r += sigma_n**2
+        return r
 
-    def _buildGrid(self, start, stop, step):
+    def _buildGrid(self):
+        (start, stop, step) = (self.start, self.stop, self.step)
         """ returns a mgrid type of array for 'dim' dimensions """
-        dimstr = 'start:stop:step, '*self.indim
+        if isinstance(start, (int, long, float, complex)):
+            dimstr = 'start:stop:step, '*self.indim
+        else:
+            assert len(start) == len(stop) == len(step)
+            dimstr = ["start[%i]:stop[%i]:step[%i], " % (i, i, i) for i in range(len(start))]
+            dimstr = ''.join(dimstr)
         return eval('c_[map(ravel, mgrid['+dimstr+'])]').T
-
+        
     def _buildCov(self, a, b):
         K = zeros((len(a), len(b)), float)
         for i in range(len(a)):
@@ -78,8 +87,17 @@ class GaussianProcess:
         self.trainy = r_[self.trainy, asarray(target)]
         self.noise = r_[self.noise, array([0.001])]
         self.calculated = False
-        
+    
+    def testOnArray(self, arr):
+        self.testx = arr
+        self._calculate()
+        return self.pred_mean
+           
     def _calculate(self):
+        # calculate only of necessary
+        if len(self.trainx) == 0:
+            return
+            
         # build covariance matrices
         train_train = self._buildCov(self.trainx, self.trainx)
         train_test = self._buildCov(self.trainx, self.testx)
@@ -98,7 +116,6 @@ class GaussianProcess:
                     continue
                 avgdist += d - sort_trainx[i-1]
             avgdist /= len(sort_trainx)-1
-            print avgdist
             # sort(self.trainx)
         
             # add auto-noise from neighbouring samples (not standard gp)  
@@ -109,8 +126,8 @@ class GaussianProcess:
                 
                     d = norm(self.trainy[i] - self.trainy[j]) / (exp(norm(self.trainx[i] - self.trainx[j])))
                     K[i,i] += d
-        
-        self.pred_mean = self.mean+dot(test_train, solve(K, self.trainy-self.mean, sym_pos=False))
+
+        self.pred_mean = self.mean + dot(test_train, solve(K, self.trainy-self.mean, sym_pos=0))
         self.pred_cov = test_test - dot(test_train, dot(inv(K), train_test))
         self.calculated = True
     
@@ -143,7 +160,8 @@ class GaussianProcess:
             title('1D Gaussian Process with mean and variance')
             
         elif self.indim == 2:
-            fig = figure()
+            fig = gcf()
+            fig.clear()
             ax = a3.Axes3D(fig)
             
             # plot training set
@@ -152,7 +170,8 @@ class GaussianProcess:
             # plot mean
             (x, y, z) = map(lambda m: m.reshape(sqrt(len(m)), sqrt(len(m))), (self.testx[:,0], self.testx[:,1], self.pred_mean))
             ax.plot_wireframe(x, y, z, colors='gray')
-        
+            return ax
+            
         else: print "plotting only supported for indim=1 or indim=2."
     
 
@@ -173,10 +192,13 @@ if __name__ == '__main__':
     # it's distance to other points in the dataset. not tested much yet.
     # gp.autonoise = True
     
-    gp.trainOnDataset(ds) 
+    gp.trainOnDataset(ds)
     gp.plotCurves(showSamples=True) 
-     
-     
+    
+    # you can also test the gp on single points, but this deletes the
+    # original testing grid. it can be restored with a call to _buildGrid()
+    print gp.testOnArray(array([[0.4]])) 
+    
             
     # --- example on how to use the GP in 2 dimensions
     
@@ -192,5 +214,5 @@ if __name__ == '__main__':
     
     gp.trainOnDataset(ds)
     gp.plotCurves() 
-
+    
     show()
