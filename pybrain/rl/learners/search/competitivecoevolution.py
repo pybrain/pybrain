@@ -29,6 +29,9 @@ class CompetitiveCoevolution(Coevolution):
     def _competitiveSharedFitness(self, hosts, parasites):
         """ determine the competitive shared fitness for the population of hosts, w.r. to
         the population of parasites. """
+        if len(parasites) == 0:
+            return [0]*len(hosts)
+        
         # determine beat-sum for parasites (nb of games lost)
         beatsums = {}
         for p in parasites:
@@ -41,11 +44,19 @@ class CompetitiveCoevolution(Coevolution):
         fitnesses = []
         for h in hosts:
             hsum = 0
+            unplayed = 0
             for p in parasites:
-                if self._beats(h, p) > 0 and beatsums[p] > 0:
+                if self._beats(h, p) > 0:
+                    assert beatsums[p] > 0
                     hsum += 1./beatsums[p]
+                elif self._beats(h, p) == 0:
+                    unplayed += 1
+            # take into account the number of parasites played, to avoid
+            # biasing for old agents in the elitist case
+            hsum /= float(len(parasites) - unplayed)
+            
             # this is purely for breaking ties in favor of globally better players:
-            hsum += 1e-4 * self._globalScore(h)
+            hsum += 1e-5 * self._globalScore(h)
             fitnesses.append(hsum)        
         return fitnesses
     
@@ -61,10 +72,12 @@ class CompetitiveCoevolution(Coevolution):
         self._doTournament(self.pop, opponents, tournSize)
         if hoFtournSize > 0:
             self._doTournament(self.pop, self.hallOfFame, hoFtournSize)
-            parasites = list(set(self.parasitePop+self.hallOfFame))
-        else:
-            parasites = self.parasitePop
-        return self._competitiveSharedFitness(self.pop, parasites)
+        
+        fit = self._competitiveSharedFitness(self.pop, self.parasitePop)
+        if hoFtournSize > 0:
+            fitHof = self._competitiveSharedFitness(self.pop, self.hallOfFame)
+            fit = map(lambda (f1, f2): tournSize*f1+hoFtournSize*f2, zip(fit, fitHof))
+        return fit
     
     def _oneGeneration(self):
         Coevolution._oneGeneration(self)

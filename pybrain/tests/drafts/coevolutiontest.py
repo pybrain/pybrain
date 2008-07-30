@@ -144,16 +144,16 @@ if __name__ == '__main__':
     x1.randomize()
     print x1
     L = CompetitiveCoevolution(RPSEval, [x1], 
-                               populationSize = 4, 
-                               selectionProportion = 0.25,
+                               populationSize = 8, 
+                               selectionProportion = 0.125,
                                verbose = True,
-                               tournamentSize = 4,
-                               elitism = False,
+                               tournamentSize = 8,
+                               elitism = True,
                                useSharedSampling = True,
                                hallOfFameEvaluation = 0.75
                                )
     print L
-    print L.learn(2e4)
+    print L.learn(10000)
     
     import pylab
     from resultreader import slidingAverage
