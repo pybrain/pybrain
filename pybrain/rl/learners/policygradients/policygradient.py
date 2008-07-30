@@ -17,16 +17,16 @@ class PolicyGradientLearner(RLLearner):
     def setAlpha(self, alpha):
         """ pass the alpha value through to the gradient descent object """
         self.gd.alpha = alpha
-        #print "patching through to gd"
+        print "patching through to gd", alpha
     
-    def getAlpha(self, alpha):
+    def getAlpha(self):
         return self.gd.alpha
     
     alpha = property(getAlpha, setAlpha)
         
     def setModule(self, module):
         RLLearner.setModule(self, module)
-        self.gd.init(module.params)      
+        self.gd.init(module.params)    
         
     def learn(self):
         """ calls the gradient calculation function and executes a step in direction
@@ -36,8 +36,11 @@ class PolicyGradientLearner(RLLearner):
         
         # calculate the gradient with the specific function from subclass
         gradient = ravel(self.calculateGradient())
-        # prevent gradient having too large values
-        gradient = clip(gradient, -50, +50)
+
+        # scale gradient if it has too large values
+        if max(gradient) > 1000:
+            gradient = gradient / max(gradient) * 1000
+        
         # update the parameters
         p = self.gd(gradient)
         self.module._setParameters(p)

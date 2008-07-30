@@ -83,7 +83,8 @@ class PolicyGradientAgent(LearningAgent):
         assert self.lastaction != None
 
         # store state, action, r, loglh in dataset
-        self.history.appendLinked(self.lastobs, self.lastaction, r, self.loglh)
+        if self.remember:
+            self.history.appendLinked(self.lastobs, self.lastaction, r, self.loglh)
 
         self.lastobs = None
         self.lastaction = None

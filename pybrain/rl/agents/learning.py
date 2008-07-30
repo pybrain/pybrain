@@ -37,7 +37,8 @@ class LearningAgent(HistoryAgent):
         return self.lastaction
         
     def newEpisode(self):
-        self.history.newSequence()  
+        if self.remember:
+            self.history.newSequence()  
             
     def reset(self):
         """ clears the history of the agent and resets the module. """

@@ -8,7 +8,7 @@ from pybrain.structure.parametercontainer import ParameterContainer
 
 class StateDependentLayer(NeuronLayer, ParameterContainer):
     
-    def __init__(self, dim, module, name=None, onesigma=False):
+    def __init__(self, dim, module, name=None, onesigma=True):
         NeuronLayer.__init__(self, dim, name)
         self.exploration = zeros(dim, float)
         self.state = None
