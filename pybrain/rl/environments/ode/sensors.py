@@ -249,6 +249,37 @@ class SpecificJointSensor(JointSensor):
         self._update()
         self._numValues = len(self._values)
 
+
+class SpecificJointVelocitySensor(JointVelocitySensor):
+    ''' This sensor takes a list of joint names, and returns only their velocities. '''
+
+    def __init__(self, jointNames, name=None):
+        Sensor.__init__(self, name, 0)
+        self._names = jointNames
+        self._joints = []
+        self._values = []
+
+    def _parseJoints(self, node=None):
+        for name in self._names:
+            try:
+                self._joints.append(self._world.getXODERoot().namedChild(name).getODEObject())
+            except KeyError:
+                # the given object name is not found. output warning and quit.
+                warnings.warn("Joint with name '", name, "' not found.")
+                sys.exit()
+
+    def _connect(self, world):
+        """ Connects the sensor to the world and initializes the value list. """
+        Sensor._connect(self, world)
+
+        # initialize object list - this should not change during runtime
+        self._joints = [] 
+        self._parseJoints()
+
+        # do initial update to get numValues
+        self._update()
+        self._numValues = len(self._values)
+
                               
 class SpecificBodyPositionSensor(BodyPositionSensor):
     ''' This sensor takes a list of body names, and returns their positions. It must
