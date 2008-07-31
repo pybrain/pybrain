@@ -14,21 +14,23 @@ from pybrain.rl.agents.capturegameplayers import KillingPlayer
 from pybrain.tools.xml import NetworkWriter
     
 # parameters
-size = 5
+size = 7
 generations = 400
-hsize = 20
+hsize = 10
 
-popsize = 10
-selProp = 0.3
+popsize = 15
+selProp = 0.334
 elitist = True
 temperature = 0.
 relTaskAvg = 1
-tournSize = 10
-hallOfFameProp = 0.5
+presetGames = 0.
+
+tournSize = 9
+hallOfFameProp = 0.667
 sharedSampling = True
 beta = 1
 absProp = 0.
-mutationStd = 0.01
+mutationStd = 0.1
 
 competitive = True
 multipop = True
@@ -46,7 +48,8 @@ handicapTest = False
 absoluteTask = CaptureGameTask(size, averageOverGames = 40, alternateStarting = True, 
                                opponent = KillingPlayer)
 relativeTask = RelativeCaptureTask(size, useNetworks = True, maxGames = relTaskAvg,
-                                   minTemperature = temperature)
+                                   minTemperature = temperature, presetGamesProportion = presetGames,
+                                   )
 
 # the network
 net = CaptureGameNetwork(size = size, hsize = hsize, simpleborders = True, 
@@ -161,7 +164,7 @@ for g in range(generations):
             jres.append(0)
             print 'Server playing error.'
 
-    if g % 10 == 0 and g > 0 and storage and evals > 100:
+    if g % 5 == 0 and g > 0 and storage and evals > 100:
         storeResults()
         
     print

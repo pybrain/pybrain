@@ -53,7 +53,8 @@ class CompetitiveCoevolution(Coevolution):
                     unplayed += 1
             # take into account the number of parasites played, to avoid
             # biasing for old agents in the elitist case
-            hsum /= float(len(parasites) - unplayed)
+            if len(parasites) > unplayed:
+                hsum /= float(len(parasites) - unplayed)
             
             # this is purely for breaking ties in favor of globally better players:
             hsum += 1e-5 * self._globalScore(h)

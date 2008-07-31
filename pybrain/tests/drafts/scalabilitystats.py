@@ -7,14 +7,15 @@ from randomsearchnetworks import randEval, iterArgumentCombinations
 from nesexperiments import pickleDumpDict, pickleReadDict
 from pybrain.rl.agents.capturegameplayers import KillingPlayer, RandomCapturePlayer
 from pybrain.rl.agents.gomokuplayers import KillingGomokuPlayer, RandomGomokuPlayer
-
+from scipy.stats import pearsonr
 
 
 if __name__ == '__main__':
     # settings
     tag = 'x-'
-    capturegame = True
-    killer = False
+    lstm = False
+    capturegame = False
+    killer = True
     handicap = False
     if capturegame:
         sizes = [5,9]                
@@ -23,6 +24,11 @@ if __name__ == '__main__':
     argsVars = {'hsize': [5],
                 'initScaling': [1],
                 }
+    if lstm:
+        tag = 'lstm-'
+        argsVars['lstm'] = [True]
+        argsVars['avgOver'] = [40]
+                
     dir = '../temp/stats/'
     repeat = 0
     minData = 0
@@ -111,6 +117,7 @@ if __name__ == '__main__':
                         if x != None and y != None:
                             xs.append(x)
                             ys.append(y)
+                    print 'params', k, 'samples', len(xs), 'correlation:', pearsonr(xs, ys)[0]
                     pylab.plot(xs, ys, '.', label = k)
                 pylab.legend()    
                 pylab.savefig(dir+title+'.eps')

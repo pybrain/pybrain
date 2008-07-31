@@ -62,32 +62,34 @@ class RelativeCaptureTask(CaptureGameTask):
         
         # the games with increasing temperatures and lower coefficients
         coeffSum = 0.
-        res = 0.
+        score = 0.
         np = int(self.cases * (1-self.presetGamesProportion))
         for i in range(self.maxGames):
             coeff = 1/(10*self.temp+1)
             preset = None
-            if i % self.cases >= np:
-                preset = self.sPos[(i-np) % self.cases]
-            elif i < self.cases:
-                # greedy, no need to repeat, just increase the coefficient
-                if i == 0:
-                    coeff *= np
-                else:
-                    continue
-            res += coeff * self._oneGame(preset)
+            if self.cases > 1:
+                if i % self.cases >= np:
+                    preset = self.sPos[(i-np) % self.cases]
+                elif i < self.cases:
+                    # greedy, no need to repeat, just increase the coefficient
+                    if i == 0:
+                        coeff *= np
+                    else:
+                        continue
+            res = self._oneGame(preset)
+            score += coeff * res
             coeffSum += coeff
-            if i % self.cases == 0 and i > 0:
+            if self.cases == 1 or (i % self.cases == 0 and i > 0):
                 self._globalWarming()
             
-        return res / coeffSum
+        return score / coeffSum
     
     def _globalWarming(self):
         """ increase temperature """
         if self.temp == 0:
             self.temp = 0.02
         else: 
-            self.temp *= 1.2
+            self.temp *= 1.5
         if self.temp > self.maxTemperature:
             return False
         elif self._setTemperature() == False:

@@ -91,7 +91,8 @@ class Coevolution(Named):
         if self.verbose:
             print 'Generation', self.generation
             print '        relat. fits:', fListToString(sorted(fitnesses), 4)
-            print '        best params:', fListToString(best.params, 4)
+            if len(best.params) < 20:
+                print '        best params:', fListToString(best.params, 4)
                 
         self.pop = self._selectAndReproduce(self.pop, fitnesses)
                     

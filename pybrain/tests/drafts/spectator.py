@@ -96,12 +96,13 @@ if __name__ == "__main__":
     from pybrain.rl.environments.twoplayergames import CaptureGame
     from pybrain.rl.agents.capturegameplayers import KillingPlayer, ModuleDecidingPlayer
     from pybrain.structure.networks.custom.capturegame import CaptureGameNetwork
+    from resultreader import getTaggedFiles, selectSome
     
-    playsize = 5
+    playsize = 9
     steps = False
     learned = True
     #indices = range(200)
-    indices = range(1)
+    indices = range(5)
     
     if not learned:
         size = None
@@ -110,20 +111,25 @@ if __name__ == "__main__":
         fname = 'x-comparative-capture-killer'
     else:
         dir = '../temp/capturegame/1/'
-        #fname = 'q-CompetitiveCoevolution (5+10)-T0.0-e135000-tSize9-sharS-HoF0.667-mut0.01-s5-h5--572573.xml'
-        fname = 'q-CompetitiveCoevolution (6+24)-T0.0-e450000-tSize15-sharS-HoF0.667-mut0.1-s5-h5--314153.xml'
-        #fname = 'q-CompetitiveCoevolution (10+20)-T0.0-e450000-tSize15-sharS-HoF0.667-mut0.1-s5-h5--137533.xml'
+        tag = 'p'
+        ext = '.xml'
+        files = getTaggedFiles(dir, tag, ext)
+        selected = selectSome(files, [
+                                      '7004',
+                                      #'8283',
+                                      ], requireAll = True)
+        fname = selected[0][len(dir):]
         
     net, gens = readElitistNetAndParams(dir, fname)
+    trainsize = net.size
     gv = map(lambda (p, g, s): (sum(s)/float(len(s)), g, p), gens.values())
     gv.sort(key = lambda x: -x[0])
     for s, g, p in gv:
         print s, g
-        print ' '*5, fListToString(p, 3)
+        if len(p) < 20:
+            print ' '*5, fListToString(p, 3)
         
-    
-if False:
-    cheatsheet = {5: 1, 12:2, 45:5}
+    cheatsheet = {5: 1, 12:2, 21:3, 45:5, 140:10}
     g = CaptureGame(playsize)
     p1 = KillingPlayer(g)
     
@@ -137,16 +143,20 @@ if False:
                             format = '%(message)s',
                             filename = dir+'playexamples.txt', 
                             filemode = 'w')
+    
     logging.info('Players from file: '+dir+fname)
     logging.info('')
             
     for windex in indices:
         print windex
         if learned:
-            w, trainsize = getBestAgent2(dir, fname, windex)            
+            w = gv[windex][2]
+            logging.info('Trained Size: '+str(trainsize))
+            logging.info('Score: '+str(gv[windex][0]))
+            logging.info('Item '+str(windex)+' of '+str(len(gv)))            
         else:
             w = getBestAgent(dir, fname, size, dkey, windex)
-        #w = [ -0.0765, -0.0673,  0.0050, -0.1023,  0.1692]
+        
         if w == None:
             print 'No agent found.'
         else:

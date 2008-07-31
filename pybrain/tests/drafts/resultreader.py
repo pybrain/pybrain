@@ -55,14 +55,15 @@ def slidingAverage(a, avgOver = 5):
     
 if __name__ == '__main__':
     dir = '../temp/capturegame/1/'
-    tag = 'q'
+    tag = 'p'
     ext = '.xml'
     files = getTaggedFiles(dir, tag, ext)
     numPops = 2
-    avgOver = 10
-    plotrelative = False
-    selected = selectSome(files, [#'6123', #'volution', 
-                                  #-'967',
+    avgOver = 5
+    plotrelative = True
+    selected = selectSome(files, [#'',
+                                  #'7004',
+                                  #'8283',
                                   'Compe',
                                   #'MultiPop'+str(numPops)
                                   ],  requireAll = True)
@@ -91,8 +92,12 @@ if __name__ == '__main__':
             pylab.title('Absolute '+n.name+' averaged '+str(avgOver))
             pylab.xlabel(n._fname)
             for g in range(numPops):
-                pylab.plot(slidingAverage(absfits[g::numPops], avgOver), hm[g%numPops], label = 'avg'+str(g+1))                
-                pylab.plot(absfits[g::numPops], hm[g%numPops], label = 'abs'+str(g+1))                
+                popfits = absfits[g::numPops]
+                pylab.plot(range(avgOver/2, len(popfits) - avgOver/2),
+                           slidingAverage(popfits, avgOver), 
+                           hm[g%numPops], label = 'avg'+str(g+1))                
+                pylab.plot(popfits, 
+                           hm[g%numPops], label = 'abs'+str(g+1))                
             pylab.legend()
             
         if plotrelative and 'HoBestFitnesses' in otherdata[n]:
@@ -102,8 +107,10 @@ if __name__ == '__main__':
             pylab.figure()
             pylab.title('Relative '+n.name+' averaged '+str(avgOver))
             for g in range(numPops):
-                pylab.plot(slidingAverage(avgRelFits[g::numPops], avgOver), hm[g%numPops], label = 'avg'+str(g+1))
-                pylab.plot(slidingAverage(bestRelFits[g::numPops], avgOver), hm[g%numPops], label = 'max'+str(g+1))
+                pylab.plot(slidingAverage(avgRelFits[g::numPops], avgOver), 
+                           hm[g%numPops], label = 'avg'+str(g+1))
+                pylab.plot(slidingAverage(bestRelFits[g::numPops], avgOver), 
+                           hm[g%numPops], label = 'max'+str(g+1))
             pylab.legend()
     if len(selected) > 0:
         pylab.show()

@@ -10,17 +10,22 @@ from pybrain.rl.tasks.gomoku import GomokuTask
 from pybrain.structure.networks.custom.capturegame import CaptureGameNetwork
 from pybrain.utilities import fListToString
 from nesexperiments import pickleDumpDict, pickleReadDict
-from pybrain import buildNetwork, TanhLayer, SigmoidLayer
+from pybrain import buildNetwork, TanhLayer, SigmoidLayer, MDLSTMLayer
         
 
 def randEval(size = 0, hsize = 0, opponent = None, handicap = False, mlp = False, capturegame = True, initScaling = 1, 
-             avgOver = 100, verbose = True, setParams = None, allReturn = False):
+             avgOver = 100, verbose = True, setParams = None, allReturn = False,
+             lstm = False):
     if mlp:
         # comarison with simple MLP
         net = buildNetwork(2 * size**2, hsize * size**2, size**2, 
                            hiddenclass = TanhLayer, outclass = SigmoidLayer)        
     else:
-        net = CaptureGameNetwork(size = size, hsize = hsize, simpleborders = True)         
+        if lstm:
+            net = CaptureGameNetwork(size = size, hsize = hsize, simpleborders = True,
+                                     componentclass = MDLSTMLayer)         
+        else:
+            net = CaptureGameNetwork(size = size, hsize = hsize, simpleborders = True)         
     if setParams != None:
         net._params[:] = setParams
     else:
