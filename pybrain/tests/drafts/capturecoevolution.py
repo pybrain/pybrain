@@ -14,23 +14,23 @@ from pybrain.rl.agents.capturegameplayers import KillingPlayer
 from pybrain.tools.xml import NetworkWriter
     
 # parameters
-size = 7
+size = 5
 generations = 400
 hsize = 10
 
-popsize = 15
-selProp = 0.334
+popsize = 20
+selProp = 0.25
 elitist = True
 temperature = 0.
 relTaskAvg = 1
-presetGames = 0.
+presetGames = 0.5
 
-tournSize = 9
+tournSize = 15
 hallOfFameProp = 0.667
 sharedSampling = True
 beta = 1
 absProp = 0.
-mutationStd = 0.1
+mutationStd = 0.02
 
 competitive = True
 multipop = True
@@ -96,7 +96,7 @@ learner = lclass(relativeTask,
 evals = generations * learner._stepsPerGeneration() * relTaskAvg
 
 def buildName():
-    name = 'p-'
+    name = 'p0-'
     name += str(learner)
     if relTaskAvg > 1:
         name += '-rA'+str(relTaskAvg)

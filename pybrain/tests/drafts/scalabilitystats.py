@@ -15,12 +15,12 @@ if __name__ == '__main__':
     tag = 'x-'
     lstm = False
     capturegame = False
-    killer = True
+    killer = False
     handicap = False
     if capturegame:
-        sizes = [5,9]                
+        sizes = [5,9,19]
     else:
-        sizes = [7,11]
+        sizes = [5,7,11,19]
     argsVars = {'hsize': [5],
                 'initScaling': [1],
                 }
@@ -30,7 +30,7 @@ if __name__ == '__main__':
         argsVars['avgOver'] = [40]
                 
     dir = '../temp/stats/'
-    repeat = 0
+    repeat = 50
     minData = 0
     plotting = True
     
@@ -117,8 +117,10 @@ if __name__ == '__main__':
                         if x != None and y != None:
                             xs.append(x)
                             ys.append(y)
-                    print 'params', k, 'samples', len(xs), 'correlation:', pearsonr(xs, ys)[0]
-                    pylab.plot(xs, ys, '.', label = k)
+                    if len(xs) > 1:
+                        print smin, smax, 'params', k, 'samples', len(xs), 
+                        print 'correlation:', pearsonr(xs, ys)[0]
+                        pylab.plot(xs, ys, '.', label = k)
                 pylab.legend()    
                 pylab.savefig(dir+title+'.eps')
                         

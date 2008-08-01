@@ -60,9 +60,9 @@ if __name__ == '__main__':
     files = getTaggedFiles(dir, tag, ext)
     numPops = 2
     avgOver = 5
-    plotrelative = True
+    plotrelative = False
     selected = selectSome(files, [#'',
-                                  #'7004',
+                                  #'6046',
                                   #'8283',
                                   'Compe',
                                   #'MultiPop'+str(numPops)
@@ -75,7 +75,7 @@ if __name__ == '__main__':
         nets.append(n) 
         print f
         print n.name
-        n._fname = f
+        n._fname = f[len(dir):-4]
         if hasattr(n, '_unknown_argdict'):
             otherdata[n] = n._unknown_argdict.copy()
             del n._unknown_argdict

@@ -13,7 +13,8 @@ from nesexperiments import pickleDumpDict, pickleReadDict
 from pybrain import buildNetwork, TanhLayer, SigmoidLayer, MDLSTMLayer
         
 
-def randEval(size = 0, hsize = 0, opponent = None, handicap = False, mlp = False, capturegame = True, initScaling = 1, 
+def randEval(size = 0, hsize = 0, opponent = None, handicap = False, mlp = False, 
+             capturegame = True, initScaling = 1, 
              avgOver = 100, verbose = True, setParams = None, allReturn = False,
              lstm = False):
     if mlp:
