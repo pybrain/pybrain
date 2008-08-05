@@ -167,7 +167,7 @@ class Serializable(object):
         
     def saveToFile(self, filename, protocol=None, **kwargs):
         """Save the object to file given by filename."""
-        with file(filename) as fp:
+        with file(filename, 'w+') as fp:
             self.saveToFileLike(fp, protocol, **kwargs)
         
     @classmethod
@@ -178,7 +178,7 @@ class Serializable(object):
             # try to derive protocol from file extension
             protocol = extension2protocol(filename)
         with file(filename) as fp:
-            return self.loadFromFileLike(fp, protocol)
+            return cls.loadFromFileLike(fp, protocol)
     
     def save_pickle(self, flo):
         pickle.dump(self, flo)
