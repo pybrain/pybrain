@@ -141,9 +141,8 @@ class ClassificationDataSet(SupervisedDataSet):
         leftIndices, dummy = where(self['class'] == cls_select)
         rightIndices, dummy = where(self['class'] != cls_select)        
         leftDs = self.copy()
-        rightDs = self.copy()
         leftDs.clear()
-        rightDs.clear()
+        rightDs = leftDs.copy()
         index = 0
         # need to synchronize input, target, and class fields
         for field in ['input','target','class']:
@@ -180,12 +179,8 @@ class SequenceClassificationDataSet(SequentialDataSet, ClassificationDataSet):
         if len(self) > 0:
             # calculate class histogram, if we already have data
             self.calculateStatistics()
-        if nb_classes > 0:
-            self.nClasses = nb_classes
-        if class_labels is None:
-            self.class_labels = range(self.nClasses)
-        else:
-            self.class_labels = class_labels
+        self.nClasses = nb_classes
+        self.class_labels = range(self.nClasses) if class_labels is None else class_labels
         # copy classes (targets may be changed into other representation)
         self.setField('class', self.getField('target') )
 

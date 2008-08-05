@@ -107,9 +107,8 @@ class SupervisedDataSet(DataSet):
         """ produce two new datasets, the first one containing the given fraction of the samples """
         leftIndices = sample(range(len(self)), int(len(self)*proportion))
         leftDs = self.copy()
-        rightDs = self.copy()
         leftDs.clear()
-        rightDs.clear()
+        rightDs = leftDs.copy()
         index = 0
         for sp in self:
             if index in leftIndices:
