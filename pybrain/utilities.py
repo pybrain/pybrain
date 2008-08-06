@@ -115,15 +115,17 @@ def percentError(out, true):
     wrong = where(arrout!=array(true).flatten())[0].size
     return 100.*float(wrong)/float(arrout.size)
 
-def extension2protocol(fname):
-    """ tries to infer a protocol from the file extension """
+
+def formatFromExtension(fname):
+    """Tries to infer a protocol from the file extension."""
     base, ext = os.path.splitext(fname)
-    if not ext: return None
+    if not ext: 
+        return None
     try:
-        protocol = known_extensions[ext]
+        format = known_extensions[ext]
     except KeyError:
-        protocol = None
-    return protocol
+        format = None
+    return format
 
     
 class XMLBuildable(object):
@@ -142,43 +144,43 @@ class XMLBuildable(object):
 class Serializable(object):
     """Class that implements shortcuts to serialize an object.
     
-    Serialization is done by various protocols. At the moment, only 'pickle' is
+    Serialization is done by various formats. At the moment, only 'pickle' is
     supported.
     """
     
-    def saveToFileLike(self, flo, protocol=None, **kwargs):
-        """Save the object to a given file like object with the given protocol.
+    def saveToFileLike(self, flo, format=None, **kwargs):
+        """Save the object to a given file like object in the given format.
         """
-        protocol = 'pickle' if protocol is None else protocol
-        save = getattr(self, "save_%s" % protocol, None)
+        format = 'pickle' if format is None else format
+        save = getattr(self, "save_%s" % format, None)
         if save is None:
-            raise ValueError("Unknown protocol '%s'." % protocol)
+            raise ValueError("Unknown format '%s'." % format)
         save(flo, **kwargs)
         
     @classmethod
-    def loadFromFileLike(cls, flo, protocol=None):
+    def loadFromFileLike(cls, flo, format=None):
         """Load the object to a given file like object with the given protocol.
         """
-        protocol = 'pickle' if protocol is None else protocol
-        load = getattr(cls, "load_%s" % protocol, None)
+        format = 'pickle' if format is None else format
+        load = getattr(cls, "load_%s" % format, None)
         if load is None:
-            raise ValueError("Unknown protocol '%s'." % protocol)
+            raise ValueError("Unknown format '%s'." % format)
         return load(flo)
         
-    def saveToFile(self, filename, protocol=None, **kwargs):
+    def saveToFile(self, filename, format=None, **kwargs):
         """Save the object to file given by filename."""
         with file(filename, 'w+') as fp:
-            self.saveToFileLike(fp, protocol, **kwargs)
+            self.saveToFileLike(fp, format, **kwargs)
         
     @classmethod
-    def loadFromFile(cls, filename, protocol=None):
+    def loadFromFile(cls, filename, format=None):
         """Return an instance of the class that is saved in the file with the
-        given filename in the specified protocol."""
-        if protocol is None:
+        given filename in the specified format."""
+        if format is None:
             # try to derive protocol from file extension
-            protocol = extension2protocol(filename)
+            format = formatFromExtension(filename)
         with file(filename) as fp:
-            return cls.loadFromFileLike(fp, protocol)
+            return cls.loadFromFileLike(fp, format)
     
     def save_pickle(self, flo):
         pickle.dump(self, flo)

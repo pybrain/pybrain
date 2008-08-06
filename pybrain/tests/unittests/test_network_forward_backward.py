@@ -21,8 +21,8 @@ The backward passes, also by two different but equivalent methods
 Verify that the inputs and outputs are proportional
     >>> sum(n.outputbuffer[1]/n.outputbuffer[0])
     6.0
-    >>> (n.inputerror[1]/n.inputerror[0])[1]
-    3.0
+    >>> abs((n.inputerror[1]/n.inputerror[0])[1] - 3.0) < 0.0001
+    True
     
 """
 
