@@ -95,7 +95,7 @@ if storage:
         ps.append(h.params.copy())
     n.argdict['HoF_PARAMS'] = ps
     
-    NetworkWriter.writeToFile(n, dir+tag+fname)
+    NetworkWriter.writeToFile(n, dir+tag+fname+'.xml')
 
 if False:
     # now, let's take the result, and compare it's performance on a larger game-baord
