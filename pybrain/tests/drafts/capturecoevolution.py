@@ -14,23 +14,23 @@ from pybrain.rl.agents.capturegameplayers import KillingPlayer
 from pybrain.tools.xml import NetworkWriter
     
 # parameters
-size = 5
-generations = 400
-hsize = 10
+size = 7
+generations = 500
+hsize = 20
 
-popsize = 20
+popsize = 12
 selProp = 0.25
 elitist = True
 temperature = 0.
 relTaskAvg = 1
-presetGames = 0.5
+presetGames = 0.
 
 tournSize = 15
 hallOfFameProp = 0.667
 sharedSampling = True
 beta = 1
 absProp = 0.
-mutationStd = 0.02
+mutationStd = 0.2
 
 competitive = True
 multipop = True

@@ -1,23 +1,25 @@
 __author__ = 'Tom Schaul, tom@idsia.ch'
 
 import socket
-from random import random
 
-from randomplayer import RandomCapturePlayer
+from captureplayer import CapturePlayer
 from pybrain.rl.environments.twoplayergames import CaptureGame
 
-class ClientCapturePlayer(RandomCapturePlayer):
+# TODO: allow partially forced random moves.
+
+class ClientCapturePlayer(CapturePlayer):
     """ A wrapper class for using external code to play the capture game,
     interacting via a TCP socket. """
     
     verbose = False
-    randomPartMoves = 0
     
-    def __init__(self, game, color = CaptureGame.BLACK, **args):
-        RandomCapturePlayer.__init__(self, game, color, **args)
+    def __init__(self, game, color = CaptureGame.BLACK, player = 'AtariGreedy', **args):
+        '''player: AtariGreedy, AtariMinMax, AtariAlphaBeta possible'''
+        CapturePlayer.__init__(self, game, color, **args)
         # build connection
         host = "127.0.0.1"
         port = 6524
+        self.player=player
         try:
             self.theSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             self.theSocket.connect((host, port))
@@ -25,12 +27,18 @@ class ClientCapturePlayer(RandomCapturePlayer):
                 print "Connected to server"
         except:
             print 'Failed to connect'
-            
+
+        #define player
+        self.theSocket.send(player+'-'+str(color)+'\n')
+        if self.verbose:
+            print 'Sending:', player+'-'+str(color)
+        accept = ""
+        while len (accept) < 2:
+            accept = self.theSocket.recv(1000)
+        assert accept=='OK'            
+        
 
     def getAction(self):
-        if self.randomPartMoves > 0 and random() < self.randomPartMoves:
-            return RandomCapturePlayer.getAction(self)
-        
         # build a java string
         if self.color == CaptureGame.BLACK:
             js = '1-'
@@ -61,9 +69,7 @@ class ClientCapturePlayer(RandomCapturePlayer):
             print " received.", jr
         
         chosen = eval(jr)
-        if not self.game.isLegal(self.color, chosen):
-            print 'Server played illegally!', chosen
-            return RandomCapturePlayer.getAction(self)
+        assert self.game.isLegal(self.color, chosen)
         return [self.color, chosen]
 
 

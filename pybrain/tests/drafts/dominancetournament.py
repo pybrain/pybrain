@@ -35,11 +35,11 @@ def dominanceNumber(relEval, champions, verbose = True):
 
 if __name__ == '__main__':
     dir = '../temp/capturegame/1/'
-    tag = 'p'
+    tag = 'p0-'
     ext = '.xml'
     verbose = False
     files = getTaggedFiles(dir, tag, ext)
-    selected = selectSome(files, [], requireAll = True)
+    selected = selectSome(files, ['7194', '50323', '3788'], requireAll = False)
     for fname in selected:
         fname = fname[len(dir):]
         n, all = readNetAndParams(dir, fname)

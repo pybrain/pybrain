@@ -12,7 +12,7 @@ if __name__ == '__main__':
     
     moves = 0
         
-    for g in range(100):
+    for g in range(10):
         c.reset()
         player = 1
         while c.winner == None:

@@ -28,6 +28,11 @@ class ES(Learner):
         
         self._sortPopulation()
         self.steps = self.mu+self.lambada
+        # the best per generation stored here
+        self.hallOfFame = [self.population[0][1]]
+        
+    def __str__(self):
+        return 'ES('+str(self.mu)+'+'+str(self.lambada)+')'
         
     def _learnStep(self):       
         # do a step only if we have accumulated the resources to do a whole batch.
@@ -51,8 +56,9 @@ class ES(Learner):
                 return
 
         self._sortPopulation()
+        self.hallOfFame.append(self.population[0][1])        
         if self.verbose:
-            print self.steps, ':', self.population[0][0]
+            print self.steps, 'evals. Best fit:', self.population[0][0]
 
     def _sortPopulation(self):
         # shuffle-sort the population and fitnesses

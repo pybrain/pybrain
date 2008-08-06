@@ -21,6 +21,9 @@ class CaptureGameTask(EpisodicTask, Named):
     # numerical reward value attributed to winning
     winnerReward = 1.
     
+    # coefficient determining the importance of long vs. short games w.r. to winning/losing
+    numMovesCoeff = 0.  
+    
     # average over some games for evaluations
     averageOverGames = 10
     
@@ -37,6 +40,8 @@ class CaptureGameTask(EpisodicTask, Named):
         if not self.opponentStart:
             opponent.color = CaptureGame.WHITE
         self.opponent = opponent
+        self.maxmoves = self.env.size * self.env.size
+        self.minmoves = 3
         self.reset()
                     
     def reset(self):
@@ -57,11 +62,15 @@ class CaptureGameTask(EpisodicTask, Named):
     def getReward(self):
         """ Final positive reward for winner, negative for loser. """
         if self.isFinished():
+            win = (self.env.winner != self.opponent.color)
+            moves = self.env.movesDone
+            res = self.winnerReward - self.numMovesCoeff * (moves -self.minmoves)/(self.maxmoves-self.minmoves)
+            if not win:
+                res *= -1                
             if self.alternateStarting and self.switched:
                 # opponent color has been inverted after the game!
-                return self.opponent.color * self.env.winner * self.winnerReward
-            else:
-                return - self.opponent.color * self.env.winner * self.winnerReward
+                res *= -1
+            return res
         else:
             return 0
         

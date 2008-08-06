@@ -60,7 +60,7 @@ if __name__ == '__main__':
                                       ], requireAll = True)
     
     for fname in selected:
-        info = selected[0][len(dirin):]
+        info = fname[len(dirin):]
         if info not in results:
             results[info] = {}
         net, all = readNetAndParams('', fname)
