@@ -301,29 +301,7 @@ class DataSet(Serializable):
         for key, val in pickle.load(file(filename)).iteritems():
             obj.setField(key, val)
         return obj
-
-    def save_pickle(self, flo, protocol=0, arraysonly=False ):
-        """Save the current dataset into the given file like object."""
-        if arraysonly:
-            # failsave version; but need to crop arrays to the correct length
-            for key in self.data.keys():
-                self.data[key] = self.data[key][0:self.endmarker[key],:]
-            pickle.dump(self.data, flo, protocol=protocol)
-        else:
-            package = {
-                'initial': self._initialValues(),
-                'dict': self._dumpDict(),
-            }
-            pickle.dump(package, flo, protocol=protocol)
-
-    @classmethod
-    def load_pickle(cls, flo):
-        package = pickle.load(flo)
-        args, kwargs = package['initial']
-        obj = cls(*args, **kwargs)
-        obj.__dict__.update(package['dict'])
-        return obj
-                    
+                
     def __reduce__(self):
         def creator():
             obj = self.__class__()
