@@ -1,8 +1,8 @@
 __author__ = "Martin Felder, felder@in.tum.de"
 # $Id$
 
-from numpy import zeros, where
-from numpy.random import randint
+from numpy import zeros, where, ravel
+from numpy.random import randint, permutation
 from pybrain.datasets import SupervisedDataSet, SequentialDataSet
 
 class ClassificationDataSet(SupervisedDataSet):
@@ -116,19 +116,7 @@ class ClassificationDataSet(SupervisedDataSet):
         """ the reverse of _convertToOneOfMany. target field is overwritten.  """
         newtarg = self.getField('class')
         self.setField('target', newtarg)
-        
-    def _equalizeClasses(self):
-        """ Re-sample dataset to ensure equal number of data for each class """
-        n = max(self.classHist)
-        if self.outdim == 1:
-            classes = self['target']
-        else:
-            classes = self['class']
-        for cls, nVal in self.classHist.iteritems():
-            idx = where(classes == cls)
-            i = randint(len(idx), size=n-nVal)
-            i = idx[i]
-            
+                  
     def __reduce__(self):
         _, _, state, lst, dct = super(ClassificationDataSet, self).__reduce__()
         creator = self.__class__
@@ -184,6 +172,37 @@ class SequenceClassificationDataSet(SequentialDataSet, ClassificationDataSet):
         # copy classes (targets may be changed into other representation)
         self.setField('class', self.getField('target') )
 
+    def stratifiedSplit(self, testfrac=0.15, evalfrac=0):
+        """ Stratified random split of a sequence data set, i.e. (almost) same proportion of
+        sequences in each class for all fragments. Returns (training, test[, eval]) data sets.
+        Assumption: Last target for each class is the class of the sequence.
+        Warning: The data will be sorted by class in the resulting data sets.
+        @param testfrac: fraction of total sequences in test dataset
+        @param evalfrac: fraction of total sequences in validation dataset (0=do not return eval set) """
+        lastidx = ravel(self['sequence_index'][1:]-1).astype(int)
+        classes = ravel(self['class'][lastidx])
+        trnDs = self.copy()
+        trnDs.clear()
+        tstDs = trnDs.copy()
+        valDs = trnDs.copy()
+        for c in range(self.nClasses):
+            # scramble available sequences for current class
+            idx, = where(classes == c)
+            nCls = len(idx)
+            perm = permutation(nCls).tolist()
+            nTst, nVal = (int(testfrac*nCls), int(evalfrac*nCls))
+            for count, ds in zip([nTst,nVal,nCls-nTst-nVal], [tstDs,valDs,trnDs]):
+                for i in range(count):
+                    feat = self.getSequence(idx[perm.pop()])[0]
+                    ds.newSequence()
+                    for s in feat:
+                        ds.addSample(s, [c])
+            assert perm==[]
+        if len(valDs)>0:
+            return trnDs, tstDs, valDs
+        else:
+            return trnDs, tstDs
+        
 
 if __name__ == "__main__":
     dataset = ClassificationDataSet(2,1, class_labels=['Urd','Verdandi','Skuld'])
