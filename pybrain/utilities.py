@@ -182,8 +182,8 @@ class Serializable(object):
         with file(filename) as fp:
             return cls.loadFromFileLike(fp, format)
     
-    def save_pickle(self, flo):
-        pickle.dump(self, flo)
+    def save_pickle(self, flo, protocol=0):
+        pickle.dump(self, flo, protocol)
         
     @classmethod
     def load_pickle(cls, flo):

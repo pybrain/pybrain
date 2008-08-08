@@ -1,7 +1,7 @@
 __author__ = "Martin Felder, felder@in.tum.de"
 # $Id$
 
-from numpy import zeros, where, ravel
+from numpy import zeros, where, ravel, arange, r_, single
 from numpy.random import randint, permutation
 from pybrain.datasets import SupervisedDataSet, SequentialDataSet
 
@@ -75,15 +75,21 @@ class ClassificationDataSet(SupervisedDataSet):
         DS = cls(features, labels)
         return DS
  
-    def calculateStatistics(self):
-        """ return a class histogram """
+    def assignClasses(self):
+        """ ensure that the class field is properly defined, and nClasses is set. """
         if len(self['class']) < len(self['target']):
             self.setField('class', self.getField('target') )
-        flat_labels = list( self.getField('class').flatten() )
-        classes       = list(set( flat_labels ))
-        self.nClasses = len(classes)
+        if self.nClasses <= 0:
+            flat_labels = list( ravel(self['class']) )
+            classes       = list(set( flat_labels ))
+            self.nClasses = len(classes)
+
+    def calculateStatistics(self):
+        """ return a class histogram """
+        self.assignClasses()
         self.classHist = {}
-        for class_ in classes:
+        flat_labels = list( ravel(self['class']) )
+        for class_ in range(self.nClasses):
             self.classHist[class_] = flat_labels.count(class_)
         return self.classHist
 
@@ -138,7 +144,8 @@ class ClassificationDataSet(SupervisedDataSet):
             leftDs.endmarker[field] = len(leftIndices)
             rightDs.setField(field, self[field][rightIndices,:])
             rightDs.endmarker[field] = len(rightIndices)
-        
+        leftDs.assignClasses()
+        rightDs.assignClasses()
         return leftDs, rightDs
     
     def castToRegression(self,values):
@@ -197,12 +204,89 @@ class SequenceClassificationDataSet(SequentialDataSet, ClassificationDataSet):
                     ds.newSequence()
                     for s in feat:
                         ds.addSample(s, [c])
+                ds.assignClasses()
             assert perm==[]
         if len(valDs)>0:
             return trnDs, tstDs, valDs
         else:
             return trnDs, tstDs
+
+    def getSequenceClass(self, index=None):
+        """ returns flat array (or single scalar) comprising one class per sequence, 
+        as given by last pattern in each sequence """
+        lastSeq = self.getNumSequences()-1
+        if index is None:
+            classidx = r_[self['sequence_index'].astype(int)[1:,0]-1, len(self)-1]
+            return self['class'][classidx,0]
+        else:
+            if index < lastSeq:
+                return self['class'][self['sequence_index'].astype(int)[index+1,0]-1,0]
+            elif index == lastSeq:
+                return self['class'][len(self)-1,0]
+            raise IndexError, "Sequence index out of range!"
+
+    def removeSequence(self, index):
+        """ removes sequence (including class field) from dataset """
+        self.assignClasses()
+        self.linkFields(['input','target','class'])
+        SequentialDataSet.removeSequence(self, index)
+        self.unlinkFields(['class'])
+
+    def save_netcdf(self, flo, **kwargs):
+        """Save the current dataset to the given file as a netCDF dataset to be used
+        with Alex Graves nnl_ndim program in task="sequence classification" mode."""
+        # make sure classes are defined properly
+        assert len(self['class'])==len(self['target'])
+        if self.nClasses > 10:
+            raise 
+        from pycdf import CDF, NC
+        from os.path import splitext, join
+
+        # need to regenerate the file name
+        filename = flo.name
+        flo.close()
         
+        # Create the file. Raise the automode flag, so that
+        # we do not need to worry about setting the define/data mode.
+        d = CDF(filename, NC.WRITE|NC.CREATE|NC.TRUNC)
+        d.automode()
+        
+        # Create 2 global attributes, one holding a string,
+        # and the other one 2 floats.
+        d.title = 'Sequential data exported from PyBrain (www.pybrain.org)'
+        
+        # create the dimensions
+        dimsize = { 'numTimesteps':        len(self),
+                    'inputPattSize':       self.indim,
+                    'numLabels':           self.nClasses,
+                    'numSeqs':             self.getNumSequences(),
+                    'maxLabelLength':      1 }
+        dims = {}
+        for name, sz in dimsize.iteritems():
+            dims[name] = d.def_dim(name, sz)
+    
+        # Create a netCDF record variables
+        inputs        = d.def_var('inputs', NC.FLOAT, (dims['numTimesteps'],dims['inputPattSize']))
+        targetStrings = d.def_var('targetStrings', NC.CHAR, (dims['numSeqs'],dims['maxLabelLength']))
+        seqLengths    = d.def_var('seqLengths', NC.INT, (dims['numSeqs']))       
+        labels        = d.def_var('labels', NC.CHAR, (dims['numLabels'],dims['maxLabelLength']))
+        
+        # Switch to data mode (automatic)
+
+        # assign float and integer arrays directly 
+        inputs.put( self['input'].astype(single) )
+        # strings must be written as scalars (sucks!)
+        for i in range(dimsize['numSeqs']):
+            targetStrings.put_1(i, str(self.getSequenceClass(i)))
+        for i in range(self.nClasses):
+            labels.put_1(i,str(i))
+        # need colon syntax for assigning list
+        seqLengths[:] = [self.getSequenceLength(i) for i in range(self.getNumSequences())]
+        
+        # Close file
+        print "wrote netCDF file "+filename
+        d.close()                     
+    
 
 if __name__ == "__main__":
     dataset = ClassificationDataSet(2,1, class_labels=['Urd','Verdandi','Skuld'])

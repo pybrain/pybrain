@@ -189,46 +189,6 @@ class SequentialDataSet(SupervisedDataSet):
             res += totalError/ponderation    
         return res/averageOver
    
-    def save_netcdf(self, flo, **kwargs):
-        """Save the current dataset to the given filename."""
-        basefile, ext = splitext(filename)
-        # save as a netCDF dataset (--> Alex Graves nn console)
-        # FIXME: Only for classification data!
-        assert self.hasField('class')
-        
-        from pycdf import CDF, NC
-        # Create the file. Raise the automode flag, so that
-        # we do not need to worry about setting the define/data mode.
-        d = CDF(filename, NC.WRITE|NC.CREATE|NC.TRUNC)
-        d.automode()
-        
-        # Create 2 global attributes, one holding a string,
-        # and the other one 2 floats.
-        d.title = 'Sequential data exported from PyBrain (www.pybrain.org)'
-        
-        # create the dimensions
-        dimsize = { 'numTimesteps':        len(self),
-                    'inputPattSize':       self.getDimension('input'),
-                    'numTargetClasses':    len(set(self['target'].flatten().tolist())),
-                    'numSeqs':             self.getNumSequences() }
-        dims = {}
-        for name, sz in dimsize.iteritems():
-            dims[name] = d.def_dim(name, sz)
-    
-        # Create a netCDF record variables
-        inputs        = d.def_var('inputs', NC.FLOAT, (dims['numTimesteps'],dims['inputPattSize']))
-        targetClasses = d.def_var('targetClasses', NC.FLOAT, (dims['numTimesteps']))
-        seqLengths    = d.def_var('seqLengths', NC.INT, (dims['numSeqs']))
-        
-        # Switch to data mode.
-        # Initialize variable with a few records
-        inputs = self['input']
-        targetClasses = self['target'].flatten()
-        seqLengths[:] = [self.getSequenceLength(i) for i in range(self.getNumSequences())]
-        
-        # Close file
-        d.close()                     
-    
     def splitWithProportion(self, proportion = 0.5):
         """ produce two new datasets, each containing a part of the sequences """
         l = self.getNumSequences()
