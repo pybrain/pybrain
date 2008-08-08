@@ -627,6 +627,7 @@ class XODESLR(XODEfile):
 class XODELSRTableGlas(XODESLR): #XODESLR
     def __init__(self, name, **kwargs):
         XODESLR.__init__(self, name, **kwargs)
+        
         # create table
         self.insertBody('plate','box',[15.0,1.0,8.0],30,pos=[-12.5,0.5,-14.0], passSet=['table'], mass=2.0, color=(0.4, 0.25, 0.0, 1.0))
         self.insertBody('leg1','box',[0.5,8.0,0.5],30,pos=[-19.5,-4.0,-17.5], passSet=['table'], mass=0.3, color=(0.6, 0.8, 0.8, 0.8))
@@ -638,15 +639,20 @@ class XODELSRTableGlas(XODESLR): #XODESLR
         self.insertBody('leg4','box',[0.5,8.0,0.5],30,pos=[-19.5,-4.0,-10.5], passSet=['table'], mass=0.3, color=(0.6, 0.8, 0.8, 0.8))
         self.insertJoint('plate','leg4','fixed', axis={'x':0,'y':0,'z':0}, anchor=(-19.5,0.0,-10.5))
 
-        # create glas
-        self.insertBody('glas','box',[0.25,1.5,0.25],30,pos=[-6.5,1.75,-10.5], mass=0.15, color=(0.6, 0.6, 0.8, 0.5))
+        # create glass + coaster (necessary because cylinder collision has a bug)
+        self.insertBody('glas', 'cylinder', [0.3, 1], 30, pos=[-6.5, 1.52 ,-10.5], passSet=['glas'], euler=[90, 0, 0], color=(0.6, 0.6, 0.8, 0.5))
+        self.insertBody('glas-coaster', 'box', [0.4, 0.02, 0.4], 30, pos=[-6.5, 1.01, -10.5], passSet=['glas'])
+        self.insertJoint('glas','glas-coaster','fixed', axis={'x':0,'y':0,'z':0}, anchor=(-6.5,1.01,-10.5))
+
 
 if __name__ == '__main__' :
 
-        z = XODELSRTableGlas('../models/ccrlTable')
+        table = XODELSRTableGlas('../models/ccrlTable')
+        
         #z = XODESLR('../models/slr')
         #z = XODEhand('hand_mal_10')
         #z = XODEhandflip('handflip')
         #z = XODEhandflip('handflip')
         #z.scaleModel(0.5)
-        z.writeXODE()
+        
+        table.writeXODE()
