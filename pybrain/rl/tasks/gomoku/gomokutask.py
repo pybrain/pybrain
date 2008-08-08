@@ -21,6 +21,9 @@ class GomokuTask(EpisodicTask, Named):
     # numerical reward value attributed to winning
     winnerReward = 1.
     
+    # coefficient determining the importance of long vs. short games w.r. to winning/losing
+    numMovesCoeff = 0.  
+    
     # average over some games for evaluations
     averageOverGames = 10
     
@@ -37,6 +40,8 @@ class GomokuTask(EpisodicTask, Named):
         if not self.opponentStart:
             opponent.color = GomokuGame.WHITE
         self.opponent = opponent
+        self.minmoves = 9
+        self.maxmoves = self.env.size[0] * self.env.size[1]
         self.reset()
                     
     def reset(self):
@@ -59,14 +64,18 @@ class GomokuTask(EpisodicTask, Named):
         if self.isFinished():
             if self.env.winner == self.env.DRAW:
                 return 0
+            win = (self.env.winner != self.opponent.color)
+            moves = self.env.movesDone
+            res = self.winnerReward - self.numMovesCoeff * (moves -self.minmoves)/(self.maxmoves-self.minmoves)
+            if not win:
+                res *= -1                
             if self.alternateStarting and self.switched:
                 # opponent color has been inverted after the game!
-                return self.opponent.color * self.env.winner * self.winnerReward
-            else:
-                return - self.opponent.color * self.env.winner * self.winnerReward
+                res *= -1
+            return res
         else:
             return 0
-        
+                
     def performAction(self, action):
         EpisodicTask.performAction(self, action)
         if not self.isFinished():

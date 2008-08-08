@@ -28,11 +28,17 @@ class RelativeGomokuTask(GomokuTask):
     
     verbose = False
     
+    # coefficient determining the importance of long vs. short games w.r. to winning/losing
+    numMovesCoeff = 0.5
+    
     def __init__(self, size, **args):
         self.setArgs(**args)
         self.size = size
         self.task = GomokuTask(self.size)
-        self.env = self.task.env        
+        self.env = self.task.env  
+        self.maxmoves = self.env.size[0] * self.env.size[1]
+        self.minmoves = 9
+      
 
     def __call__(self, p1, p2):
         self.temp = self.minTemperature
@@ -100,11 +106,12 @@ class RelativeGomokuTask(GomokuTask):
         win = self.env.winner == self.player.color
         if self.verbose:
             print 'Preset:', preset, 'T:', self.temp, 'Win:', win, 'after', moves, 'moves.'
+        res = 1 - self.numMovesCoeff * (moves -self.minmoves)/(self.maxmoves-self.minmoves)
         if win:
-            return 1 + (0.1/moves)
+            return res
         else:
-            # the number of moves until losing is more important
-            return -1 - (1./moves)
+            return -res
+        
         
     
 if __name__ == '__main__':

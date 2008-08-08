@@ -8,20 +8,27 @@ from pybrain.rl.agents.capturegameplayers import KillingPlayer, ClientCapturePla
 from pybrain.structure.modules.mdlstm import MDLSTMLayer
 from pybrain.tools.xml import NetworkWriter
 import pylab
+from pybrain.rl.tasks.gomoku.gomokutask import GomokuTask
+from pybrain.rl.agents.gomokuplayers.killing import KillingGomokuPlayer
 from scipy import array, average
     
 # task settings: opponent, averaging to reduce noise, board size, etc.
+capturegame = False
 size = 5
-hsize = 10
-evals = 100
-avgover = 250
-population = 2
-mutationStd = 0.05
+hsize = 20
+evals = 2000
+avgover = 100
+population = 10
+mutationStd = 0.1
 
-dir = '../temp/capturegame/3/'
-tag = 'x0-'
+    
+tag = 'x-'
 storage = True
 plotting = True
+if capturegame:
+    dir = '../temp/capturegame/3/'
+else:
+    dir = '../temp/capturegame/4/'
 
 
 if False:
@@ -37,9 +44,14 @@ if False:
                     print 'Oh-oh.'
             return res
 
-task = CaptureGameTask(size, averageOverGames = avgover, opponent = KillingPlayer, numMovesCoeff = 0.2)
-#task = HandicapCaptureTask(size, opponent = KillingPlayer, minEvals = 10)
-#task = javaEval()
+if capturegame:
+    task = CaptureGameTask(size, averageOverGames = avgover, opponent = KillingPlayer, numMovesCoeff = 0.2)
+    #task = HandicapCaptureTask(size, opponent = KillingPlayer, minEvals = 10)
+    #task = javaEval()
+    
+else:
+    task = GomokuTask(size, averageOverGames = avgover, opponent = KillingGomokuPlayer, numMovesCoeff = 0.2)
+    
 
 # keep track of evaluations for plotting
 res = storeCallResults(task)
@@ -64,6 +76,8 @@ learner = ES(task, net, mu = population/2, lambada = population/2, verbose = Tru
 fname = net.name[:-5]+'-'+str(learner)
 fname += '-avg'+str(avgover)
 fname += '-mut'+str(mutationStd)
+if not capturegame:
+    fname += '-gomoku'
     
 print fname
 

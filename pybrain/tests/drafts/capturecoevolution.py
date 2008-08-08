@@ -13,13 +13,15 @@ from pybrain.rl.learners.search import CompetitiveCoevolution, MultiPopulationCo
 from pybrain.rl.agents.capturegameplayers import KillingPlayer
 from pybrain.tools.xml import NetworkWriter
     
+tag = 'we1-'
+
 # parameters
 size = 7
-generations = 500
-hsize = 20
+generations = 400
+hsize = 5
 
-popsize = 12
-selProp = 0.25
+popsize = 15
+selProp = 0.334
 elitist = True
 temperature = 0.
 relTaskAvg = 1
@@ -30,7 +32,7 @@ hallOfFameProp = 0.667
 sharedSampling = True
 beta = 1
 absProp = 0.
-mutationStd = 0.2
+mutationStd = 0.05
 
 competitive = True
 multipop = True
@@ -96,7 +98,7 @@ learner = lclass(relativeTask,
 evals = generations * learner._stepsPerGeneration() * relTaskAvg
 
 def buildName():
-    name = 'p0-'
+    name = tag
     name += str(learner)
     if relTaskAvg > 1:
         name += '-rA'+str(relTaskAvg)

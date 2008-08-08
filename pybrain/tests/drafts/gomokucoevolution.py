@@ -1,4 +1,4 @@
-""" A little test for comptitive coevolution on the capturegame. """
+""" A little test for comptitive coevolution on gomoku. """
 
 __author__ = 'Tom Schaul, tom@idsia.ch'
 
@@ -12,24 +12,29 @@ from pybrain.rl.agents.gomokuplayers import KillingGomokuPlayer
 from pybrain.rl.learners.search import CompetitiveCoevolution, MultiPopulationCoevolution, Coevolution
 from pybrain.tools.xml import NetworkWriter
     
+tag = 'we2-'
+
 # parameters
-size = 7
-hsize = 5
-popsize = 4
-generations = 150
-elitist = False
+size = 5
+generations = 400
+hsize = 10
+
+popsize = 15
+selProp = 0.334
+elitist = True
 temperature = 0.
-relTaskAvg = 3
-hallOfFameProp = 0.
-selProp = 0.5
+relTaskAvg = 1
+
+tournSize = 15
+hallOfFameProp = 0.667
+sharedSampling = True
 beta = 1
-tournSize = 2
 absProp = 0.
 mutationStd = 0.05
 
+competitive = True
 multipop = True
-populations = 3
-competitive = False
+populations = 2
 
 # experiment settings
 ciao = False
@@ -38,8 +43,8 @@ scalingtest = False
 storage = True
 
 # the tasks:
-absoluteTask = GomokuTask(size, averageOverGames = 40, alternateStarting = True, 
-                          opponent = KillingGomokuPlayer)
+absoluteTask = GomokuTask(size, averageOverGames = 100, alternateStarting = True, 
+                          opponent = KillingGomokuPlayer, numMovesCoeff = 0.2)
 relativeTask = RelativeGomokuTask(size, useNetworks = True, maxGames = relTaskAvg,
                                   minTemperature = temperature)
 
@@ -47,11 +52,11 @@ relativeTask = RelativeGomokuTask(size, useNetworks = True, maxGames = relTaskAv
 net = CaptureGameNetwork(size = size, hsize = hsize, simpleborders = True, 
                          #componentclass = MDLSTMLayer
                          )
+net._params /= 10
 net.mutationStd = mutationStd
 net = CheaplyCopiable(net)
 
 print net.name[:-5], 'has', net.paramdim, 'trainable parameters.'
-
     
 res = []
 
@@ -85,7 +90,7 @@ learner = lclass(relativeTask,
 evals = generations * learner._stepsPerGeneration() * relTaskAvg
 
 def buildName():
-    name = 'Gomoku-'
+    name = tag+'Gomoku-'
     name += str(learner)
     #if competitive:
     #    name += 'Comp'
@@ -135,7 +140,7 @@ for g in range(generations):
     res.append(absoluteTask(h))
     print res[-1], '    (evals:', learner.steps, '*', relTaskAvg, ')',
     print
-    if g % 10 == 0 and g > 0 and storage and evals > 100:
+    if g % 5 == 0 and g > 0 and storage and evals > 100:
         storeResults()        
     print
         
