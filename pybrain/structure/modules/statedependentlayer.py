@@ -6,6 +6,7 @@ from neuronlayer import NeuronLayer
 from pybrain.tools.functions import expln, explnPrime
 from pybrain.structure.parametercontainer import ParameterContainer
 
+
 class StateDependentLayer(NeuronLayer, ParameterContainer):
     
     def __init__(self, dim, module, name=None, onesigma=True):
@@ -22,7 +23,8 @@ class StateDependentLayer(NeuronLayer, ParameterContainer):
             ParameterContainer.__init__(self, module.paramdim)
         
         # a module for the exploration
-        assert module.outdim == dim
+        assert module.outdim == dim, (
+            "Passed module does not have right dimension")
         self.module = module
         self.autoalpha = False
         self.enabled = True
@@ -33,7 +35,8 @@ class StateDependentLayer(NeuronLayer, ParameterContainer):
         self.module.reset()
         
     def drawRandomWeights(self):
-        self.module._setParameters(random.normal(0, expln(self.params), self.module.paramdim)) 
+        self.module._setParameters(
+            random.normal(0, expln(self.params), self.module.paramdim)) 
 
     def _forwardImplementation(self, inbuf, outbuf):
         assert self.exploration != None
@@ -48,16 +51,21 @@ class StateDependentLayer(NeuronLayer, ParameterContainer):
             # algorithm for one global sigma for all mu's
             expln_params = expln(self.params)
             sumxsquared = dot(self.state, self.state)
-            self._derivs += sum((outbuf - inbuf)**2 - expln_params**2 * sumxsquared) / expln_params * explnPrime(self.params)
+            self._derivs += (
+                sum((outbuf - inbuf)**2 - expln_params**2 * sumxsquared) 
+                / expln_params * explnPrime(self.params)
+            )
             inerr[:] = (outbuf - inbuf)
         
             if not self.autoalpha and sumxsquared != 0:
                 inerr /= expln_params**2 * sumxsquared
                 self._derivs /= expln_params**2 * sumxsquared
         else:
-            # algorithm for seperate sigma for each mu
-            expln_params = expln(self.params).reshape(len(outbuf), len(self.state))
-            explnPrime_params = explnPrime(self.params).reshape(len(outbuf), len(self.state))
+            # Algorithm for seperate sigma for each mu
+            expln_params = expln(self.params
+                            ).reshape(len(outbuf), len(self.state))
+            explnPrime_params = explnPrime(self.params
+                            ).reshape(len(outbuf), len(self.state))
         
             idx = 0
             for j in xrange(len(outbuf)):

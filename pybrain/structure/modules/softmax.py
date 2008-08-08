@@ -3,7 +3,7 @@ from pybrain.tools.functions import safeExp
 
 
 class SoftmaxLayer(NeuronLayer):
-    """ A layer implementing a softmax distribution over the input. """
+    """ A layer implementing a softmax distribution over the input."""
     
     # TODO: collapsing option?
     # CHECKME: temperature parameter?

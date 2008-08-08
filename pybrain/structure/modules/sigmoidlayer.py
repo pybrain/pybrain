@@ -6,7 +6,7 @@ from pybrain.utilities import substitute
 
 
 class SigmoidLayer(NeuronLayer):
-    """ A layer implementing the sigmoid squashing function. """
+    """Layer implementing the sigmoid squashing function."""
 
     @substitute('pybrain.pyrex._sigmoidlayer.SigmoidLayer_forwardImplementation')
     def _forwardImplementation(self, inbuf, outbuf):
@@ -16,5 +16,5 @@ class SigmoidLayer(NeuronLayer):
         inerr[:] = outbuf*(1-outbuf)*outerr
         
     @substitute('pybrain.pyrex._sigmoidlayer.SigmoidLayerforward')
-    def forward(self, time = None):
+    def forward(self, time=None):
         NeuronLayer.forward(self, time)

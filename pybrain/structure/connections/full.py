@@ -8,8 +8,8 @@ from pybrain.structure.parametercontainer import ParameterContainer
 
         
 class FullConnection(Connection, ParameterContainer):
-    """ a connection which fully connects every element from the first module's output buffer
-    to the second module's input buffer """
+    """ a connection which fully connects every element from the first module's 
+    output buffer to the second module's input buffer """
     
     def __init__(self, *args, **kwargs):
         Connection.__init__(self, *args, **kwargs)
