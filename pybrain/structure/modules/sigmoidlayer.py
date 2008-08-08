@@ -13,7 +13,7 @@ class SigmoidLayer(NeuronLayer):
         outbuf[:] = sigmoid(inbuf)
         
     def _backwardImplementation(self, outerr, inerr, outbuf, inbuf):
-        inerr[:] = outbuf*(1-outbuf)*outerr
+        inerr[:] = outbuf * (1 - outbuf) * outerr
         
     @substitute('pybrain.pyrex._sigmoidlayer.SigmoidLayerforward')
     def forward(self, time=None):

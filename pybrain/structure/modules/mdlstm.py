@@ -10,20 +10,19 @@ from pybrain.structure.moduleslice import ModuleSlice
 
 
 class MDLSTMLayer(NeuronLayer, ParameterContainer):
-    """ multi-dimensional long short-term memory cell layer 
-    @attention: this module has to be used with care: it's last <size> input and outputs are reserved
-    for transmitting internal states on flattened recursive multi-dim networks, and so int's connections 
-    have always to be sliced!
-    """ 
+    """Multi-dimensional long short-term memory cell layer.
+    
+    Attention: this module has to be used with care: it's last <size> input and
+    outputs are reserved for transmitting internal states on flattened recursive
+    multi-dim networks, and so int's connections have always to be sliced!""" 
     
     peepholes = False
     dimensions = 1   
     
-    def __init__(self, dim, dimensions = 1, peepholes = False, name = None):
-        self.setArgs(dim = dim, peepholes = peepholes, dimensions = dimensions)
-                
+    def __init__(self, dim, dimensions=1, peepholes=False, name=None):
+        self.setArgs(dim=dim, peepholes=peepholes, dimensions=dimensions)
         
-        # internal buffers:
+        # Internal buffers:
         self.ingate = zeros((0,dim))
         self.outgate = zeros((0,dim))
         self.forgetgate = zeros((0,dim*dimensions))
@@ -36,37 +35,39 @@ class MDLSTMLayer(NeuronLayer, ParameterContainer):
         self.forgetgateError = zeros((0,dim*dimensions))
         self.stateError = zeros((0,dim))
         
-        Module.__init__(self, (3+2*dimensions)*dim, dim*2, name)
+        Module.__init__(self, (3 + 2 * dimensions) * dim, dim * 2, name)
         
         if self.peepholes:
-            ParameterContainer.__init__(self, dim*(2+dimensions))
+            ParameterContainer.__init__(self, dim * (2 + dimensions))
             self._setParameters(self.params)
             self._setDerivatives(self.derivs)        
             
-        # transfer functions and their derivatives
+        # Transfer functions and their derivatives
         self.f = sigmoid
         self.fprime = sigmoidPrime
-        self.g = lambda x: 2*tanh(x)
-        self.gprime = lambda x: 2*tanhPrime(x)
+        self.g = lambda x: 2 * tanh(x)
+        self.gprime = lambda x: 2 * tanhPrime(x)
         self.h = self.g
         self.hprime = self.gprime
         
-    def _setParameters(self, p, owner = None):
+    def _setParameters(self, p, owner=None):
         ParameterContainer._setParameters(self, p, owner)
         size = self.dim
         self.ingatePeepWeights = self.params[:size]
-        self.forgetgatePeepWeights = self.params[size:size*(1+self.dimensions)]
-        self.outgatePeepWeights = self.params[size*(1+self.dimensions):]
+        self.forgetgatePeepWeights = self.params[size:size*(1 + self.dimensions)]
+        self.outgatePeepWeights = self.params[size*(1 + self.dimensions):]
         
-    def _setDerivatives(self, d, owner = None):
+    def _setDerivatives(self, d, owner=None):
         ParameterContainer._setDerivatives(self, d, owner)
         size = self.dim
         self.ingatePeepDerivs = self.derivs[:size]
-        self.forgetgatePeepDerivs = self.derivs[size:size*(1+self.dimensions)]
-        self.outgatePeepDerivs = self.derivs[size*(1+self.dimensions):]        
+        self.forgetgatePeepDerivs = \
+            self.derivs[size:size * (1 + self.dimensions)]
+        self.outgatePeepDerivs = \
+            self.derivs[size * (1 + self.dimensions):]        
         
     def _growBuffers(self):
-        """ increase the buffer sizes. """
+        """Increase the buffer sizes."""
         Module._growBuffers(self)
         self.ingate = self._resizeArray(self.ingate)
         self.outgate = self._resizeArray(self.outgate)
@@ -81,7 +82,7 @@ class MDLSTMLayer(NeuronLayer, ParameterContainer):
         self.stateError = self._resizeArray(self.stateError)
         
     def _resetBuffers(self):
-        """ reset buffers to a length (in time dimension) of 1 """
+        """Reset buffers to a length (in time dimension) of 1."""
         Module._resetBuffers(self)
         self.ingate = zeros((1,self.dim))
         self.outgate = zeros((1,self.dim))
@@ -111,14 +112,14 @@ class MDLSTMLayer(NeuronLayer, ParameterContainer):
         
     def _forwardImplementation(self, inbuf, outbuf):
         size = self.dim
-        # slicing the input buffer into the 4 parts
+        # slicing the input buffer into the 4 parts.
         self.ingatex[self.time] = inbuf[:size]
         self.forgetgatex[self.time] = inbuf[size:size*(1+self.dimensions)]
         cellx = inbuf[size*(1+self.dimensions):size*(2+self.dimensions)]
         self.outgatex[self.time] = inbuf[size*(2+self.dimensions):size*(3+self.dimensions)]        
         laststates = inbuf[size*(3+self.dimensions):]
         
-        # peephole treatment
+        # Peephole treatment
         if self.peepholes and self.time > 0:
             self.ingatex[self.time] += self.ingatePeepWeights * self.state[self.time-1]
             self.forgetgatex[self.time] += self.forgetgatePeepWeights * laststates
@@ -182,16 +183,20 @@ class MDLSTMLayer(NeuronLayer, ParameterContainer):
                                                                   self.forgetgate[self.time, size*i:size*(i+1)])
             
     def meatSlice(self):
-        """ return a moduleslice that wraps the meat part of the layer """
-        return ModuleSlice(self, inSliceTo = self.dim*(3+self.dimensions), outSliceTo = self.dim)
+        """eturn a moduleslice that wraps the meat part of the layer."""
+        return ModuleSlice(self, 
+                           inSliceTo=self.dim * (3 + self.dimensions), 
+                           outSliceTo=self.dim)
     
     def stateSlice(self):
-        """ return a moduleslice that wraps the state transfer part of the layer """
-        return ModuleSlice(self, inSliceFrom = self.dim*(3+self.dimensions), outSliceFrom = self.dim)
+        """Return a moduleslice that wraps the state transfer part of the layer.
+        """
+        return ModuleSlice(self, 
+                           inSliceFrom=self.dim * (3 + self.dimensions), 
+                           outSliceFrom=self.dim)
             
-    def whichNeuron(self, inputIndex = None, outputIndex = None):
+    def whichNeuron(self, inputIndex=None, outputIndex=None):
         if inputIndex != None:
             return inputIndex % self.dim
         if outputIndex != None:
             return outputIndex % self.dim
-        

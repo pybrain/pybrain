@@ -14,8 +14,8 @@ class TanhLayer(NeuronLayer):
         outbuf[:] = tanh(inbuf)
         
     def _backwardImplementation(self, outerr, inerr, outbuf, inbuf):
-        inerr[:] = (1-outbuf**2)*outerr
+        inerr[:] = (1 - outbuf**2) * outerr
         
     @substitute('pybrain.pyrex._tanhlayer.TanhLayerforward')
-    def forward(self, time = None):
+    def forward(self, time=None):
         NeuronLayer.forward(self, time)

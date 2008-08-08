@@ -7,8 +7,8 @@ from pybrain.structure.parametercontainer import ParameterContainer
 
 
 class GaussianLayer(NeuronLayer, ParameterContainer):
-    """ A layer implementing a gaussian interpretation of the input. The mean is the input, 
-        the sigmas are stored in the module parameters. """
+    """ A layer implementing a gaussian interpretation of the input. The mean is
+    the input, the sigmas are stored in the module parameters."""
     
     def __init__(self, dim, name=None):
         NeuronLayer.__init__(self, dim, name)
@@ -19,7 +19,8 @@ class GaussianLayer(NeuronLayer, ParameterContainer):
         self.enabled = True
     
     def setSigma(self, sigma):
-        """ wrapper method to set the sigmas (the parameters of the module) to a certain value. """
+        """Wrapper method to set the sigmas (the parameters of the module) to a
+        certain value. """
         assert len(sigma) == self.indim
         self._params *= 0
         self._params += sigma

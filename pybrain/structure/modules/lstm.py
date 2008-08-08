@@ -9,7 +9,7 @@ from pybrain.tools.functions import sigmoid, sigmoidPrime, tanhPrime
 
 
 class LSTMLayer(NeuronLayer, ParameterContainer):
-    """ long short-term memory cell layer """
+    """Long short-term memory cell layer."""
 
     sequential = True
     peepholes = False
