@@ -89,13 +89,13 @@ if __name__ == '__main__':
     capturegame = False
     killer = True
     handicap = False
-    mlp = False
-    argsVars = {'size': [7,11],
+    mlp = True
+    argsVars = {'size': [5,9],
                 'hsize': [5,10],
                 'initScaling': [1,10],
                 }
     dir = '../temp/stats/'
-    repeat = 1
+    repeat = 100
     minData = 10
     plotting = True
     
@@ -125,7 +125,7 @@ if __name__ == '__main__':
         olds += sum(map(len, otherresults[k]))        
     print 'Old results:', olds, 'runs.'
     
-    for i in range(1):
+    for i in range(repeat):
         # produce new results
         for args in iterArgumentCombinations(argsVars):
             key = (args['size'], args['hsize'], args['initScaling'])

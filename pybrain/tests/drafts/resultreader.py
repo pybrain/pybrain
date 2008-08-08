@@ -59,11 +59,12 @@ if __name__ == '__main__':
     ext = '.xml'
     files = getTaggedFiles(dir, tag, ext)
     numPops = 2
-    avgOver = 5
+    avgOver = 15
     plotrelative = False
+    plotall = False
     selected = selectSome(files, [#'',
                                   #'6046',
-                                  #'8283',
+                                  '3351',
                                   'Compe',
                                   #'MultiPop'+str(numPops)
                                   ],  requireAll = True)
@@ -96,8 +97,9 @@ if __name__ == '__main__':
                 pylab.plot(range(avgOver/2, len(popfits) - avgOver/2),
                            slidingAverage(popfits, avgOver), 
                            hm[g%numPops], label = 'avg'+str(g+1))                
-                pylab.plot(popfits, 
-                           hm[g%numPops], label = 'abs'+str(g+1))                
+                if plotall:
+                    pylab.plot(popfits, 
+                               hm[g%numPops], label = 'abs'+str(g+1))                
             pylab.legend()
             
         if plotrelative and 'HoBestFitnesses' in otherdata[n]:
