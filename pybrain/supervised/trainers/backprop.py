@@ -38,7 +38,6 @@ class BackpropTrainer(Trainer):
         self.descent.alphadecay = lrdecay
         self.descent.init(module.params)
         
-        
     def train(self):
         """ Train the associated module for one epoch. """
         self.module.resetDerivatives()
@@ -53,7 +52,8 @@ class BackpropTrainer(Trainer):
             errors += e
             ponderation += p
             if not self.batchlearning:
-                self.module._setParameters(self.descent(self.module.derivs - self.weightdecay*self.module.params))
+                # self.module._setParameters(self.descent(self.module.derivs - self.weightdecay*self.module.params))
+                self.module.params[:] = self.descent(self.module.derivs - self.weightdecay*self.module.params)
                 self.module.resetDerivatives()
         if self.verbose:
             print "Total error:", errors/ponderation
@@ -68,9 +68,7 @@ class BackpropTrainer(Trainer):
         """ Calculate error function and back-propagate output errors to yield the gradient. """
         self.module.reset()        
         for time, sample in enumerate(seq):
-            input = sample[0]      
-            self.module.inputbuffer[time] = input
-            self.module.forward()
+            self.module.activate(sample[0])
         error = 0
         ponderation = 0.
         for time, sample in reversed(list(enumerate(seq))):
@@ -93,7 +91,8 @@ class BackpropTrainer(Trainer):
         return error, ponderation
             
     def _checkGradient(self, dataset = None, silent = False):
-        """ Numeric check of the computed gradient. To be used for debugging purposes. """
+        """ Numeric check of the computed gradient. To be used for debugging 
+        purposes. """
         if dataset:
             self.setData(dataset)
         res = []
