@@ -1,0 +1,658 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xode version="1.0r23" name="../models/ccrlPlate"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://tanksoftware.com/xode/1.0r23/xode.xsd">
+
+<world>
+	<space>
+		<body name="body">
+			<transform>
+				<position y="0" x="0" z="2.0"/>
+			</transform>
+			<mass>
+				<mass_shape density="0.0133928571429">
+					<box sizex="7.0" sizez="10.0" sizey="16.0"/>
+				</mass_shape>
+			</mass>
+			<geom>
+				<box sizex="7.0" sizez="10.0" sizey="16.0"/>
+			</geom>
+		</body>
+		<body name="shoulderUpRight">
+			<transform>
+				<position y="7.0" x="2.5" z="-3.5"/>
+				<rotation>
+					<euler y="90" x="0" aformat="degrees" z="0"/>
+				</rotation>
+			</transform>
+			<mass>
+				<mass_shape density="0.0682092613565">
+					<cappedCylinder length="2.0" radius="0.5"/>
+				</mass_shape>
+			</mass>
+			<geom>
+				<cappedCylinder length="2.0" radius="0.5"/>
+			</geom>
+		</body>
+		<body name="shoulderLRRight">
+			<transform>
+				<position y="6.0" x="3.5" z="-3.5"/>
+				<rotation>
+					<euler y="0" x="90" aformat="degrees" z="0"/>
+				</rotation>
+			</transform>
+			<mass>
+				<mass_shape density="0.0682092613565">
+					<cappedCylinder length="2.0" radius="0.5"/>
+				</mass_shape>
+			</mass>
+			<geom>
+				<cappedCylinder length="2.0" radius="0.5"/>
+			</geom>
+		</body>
+		<body name="shoulderPRRight">
+			<transform>
+				<position y="4.0" x="3.5" z="-3.5"/>
+				<rotation>
+					<euler y="0" x="90" aformat="degrees" z="0"/>
+				</rotation>
+			</transform>
+			<mass>
+				<mass_shape density="0.0682092613565">
+					<cappedCylinder length="2.0" radius="0.5"/>
+				</mass_shape>
+			</mass>
+			<geom>
+				<cappedCylinder length="2.0" radius="0.5"/>
+			</geom>
+		</body>
+		<body name="armUpRight">
+			<transform>
+				<position y="2.0" x="3.5" z="-3.5"/>
+				<rotation>
+					<euler y="0" x="90" aformat="degrees" z="0"/>
+				</rotation>
+			</transform>
+			<mass>
+				<mass_shape density="0.0682092613565">
+					<cappedCylinder length="2.0" radius="0.5"/>
+				</mass_shape>
+			</mass>
+			<geom>
+				<cappedCylinder length="2.0" radius="0.5"/>
+			</geom>
+		</body>
+		<body name="armPRRight">
+			<transform>
+				<position y="0.0" x="3.5" z="-3.5"/>
+				<rotation>
+					<euler y="0" x="90" aformat="degrees" z="0"/>
+				</rotation>
+			</transform>
+			<mass>
+				<mass_shape density="0.0682092613565">
+					<cappedCylinder length="2.0" radius="0.5"/>
+				</mass_shape>
+			</mass>
+			<geom>
+				<cappedCylinder length="2.0" radius="0.5"/>
+			</geom>
+		</body>
+		<body name="handUpRight">
+			<transform>
+				<position y="-2.0" x="3.5" z="-3.5"/>
+				<rotation>
+					<euler y="0" x="90" aformat="degrees" z="0"/>
+				</rotation>
+			</transform>
+			<mass>
+				<mass_shape density="0.0682092613565">
+					<cappedCylinder length="2.0" radius="0.5"/>
+				</mass_shape>
+			</mass>
+			<geom>
+				<cappedCylinder length="2.0" radius="0.5"/>
+			</geom>
+		</body>
+		<body name="palmRight">
+			<transform>
+				<position y="-3.0" x="3.5" z="-3.5"/>
+			</transform>
+			<mass>
+				<mass_shape density="0.533333333333">
+					<box sizex="1.5" sizez="0.5" sizey="0.25"/>
+				</mass_shape>
+			</mass>
+			<geom>
+				<box sizex="1.5" sizez="0.5" sizey="0.25"/>
+			</geom>
+		</body>
+		<body name="fingerRight1">
+			<transform>
+				<position y="-3.5" x="4.0" z="-3.5"/>
+			</transform>
+			<mass>
+				<mass_shape density="0.8">
+					<box sizex="0.25" sizez="0.5" sizey="1.0"/>
+				</mass_shape>
+			</mass>
+			<geom>
+				<box sizex="0.25" sizez="0.5" sizey="1.0"/>
+			</geom>
+		</body>
+		<body name="fingerRight2">
+			<transform>
+				<position y="-3.5" x="3.0" z="-3.5"/>
+			</transform>
+			<mass>
+				<mass_shape density="0.8">
+					<box sizex="0.25" sizez="0.5" sizey="1.0"/>
+				</mass_shape>
+			</mass>
+			<geom>
+				<box sizex="0.25" sizez="0.5" sizey="1.0"/>
+			</geom>
+		</body>
+		<body name="shoulderUpLeft">
+			<transform>
+				<position y="7.0" x="-2.5" z="-3.5"/>
+				<rotation>
+					<euler y="90" x="0" aformat="degrees" z="0"/>
+				</rotation>
+			</transform>
+			<mass>
+				<mass_shape density="0.0682092613565">
+					<cappedCylinder length="2.0" radius="0.5"/>
+				</mass_shape>
+			</mass>
+			<geom>
+				<cappedCylinder length="2.0" radius="0.5"/>
+			</geom>
+		</body>
+		<body name="shoulderLRLeft">
+			<transform>
+				<position y="6.0" x="-3.5" z="-3.5"/>
+				<rotation>
+					<euler y="0" x="90" aformat="degrees" z="0"/>
+				</rotation>
+			</transform>
+			<mass>
+				<mass_shape density="0.0682092613565">
+					<cappedCylinder length="2.0" radius="0.5"/>
+				</mass_shape>
+			</mass>
+			<geom>
+				<cappedCylinder length="2.0" radius="0.5"/>
+			</geom>
+		</body>
+		<body name="shoulderPRLeft">
+			<transform>
+				<position y="4.0" x="-3.5" z="-3.5"/>
+				<rotation>
+					<euler y="0" x="90" aformat="degrees" z="0"/>
+				</rotation>
+			</transform>
+			<mass>
+				<mass_shape density="0.0682092613565">
+					<cappedCylinder length="2.0" radius="0.5"/>
+				</mass_shape>
+			</mass>
+			<geom>
+				<cappedCylinder length="2.0" radius="0.5"/>
+			</geom>
+		</body>
+		<body name="armUpLeft">
+			<transform>
+				<position y="2.0" x="-3.5" z="-3.5"/>
+				<rotation>
+					<euler y="0" x="90" aformat="degrees" z="0"/>
+				</rotation>
+			</transform>
+			<mass>
+				<mass_shape density="0.0682092613565">
+					<cappedCylinder length="2.0" radius="0.5"/>
+				</mass_shape>
+			</mass>
+			<geom>
+				<cappedCylinder length="2.0" radius="0.5"/>
+			</geom>
+		</body>
+		<body name="armPRLeft">
+			<transform>
+				<position y="0.0" x="-3.5" z="-3.5"/>
+				<rotation>
+					<euler y="0" x="90" aformat="degrees" z="0"/>
+				</rotation>
+			</transform>
+			<mass>
+				<mass_shape density="0.0682092613565">
+					<cappedCylinder length="2.0" radius="0.5"/>
+				</mass_shape>
+			</mass>
+			<geom>
+				<cappedCylinder length="2.0" radius="0.5"/>
+			</geom>
+		</body>
+		<body name="handUpLeft">
+			<transform>
+				<position y="-2.0" x="-3.5" z="-3.5"/>
+				<rotation>
+					<euler y="0" x="90" aformat="degrees" z="0"/>
+				</rotation>
+			</transform>
+			<mass>
+				<mass_shape density="0.0682092613565">
+					<cappedCylinder length="2.0" radius="0.5"/>
+				</mass_shape>
+			</mass>
+			<geom>
+				<cappedCylinder length="2.0" radius="0.5"/>
+			</geom>
+		</body>
+		<body name="palmLeft">
+			<transform>
+				<position y="-3.0" x="-3.5" z="-3.5"/>
+			</transform>
+			<mass>
+				<mass_shape density="0.533333333333">
+					<box sizex="1.5" sizez="0.5" sizey="0.25"/>
+				</mass_shape>
+			</mass>
+			<geom>
+				<box sizex="1.5" sizez="0.5" sizey="0.25"/>
+			</geom>
+		</body>
+		<body name="fingerLeft1">
+			<transform>
+				<position y="-3.5" x="-4.0" z="-3.5"/>
+			</transform>
+			<mass>
+				<mass_shape density="0.8">
+					<box sizex="0.25" sizez="0.5" sizey="1.0"/>
+				</mass_shape>
+			</mass>
+			<geom>
+				<box sizex="0.25" sizez="0.5" sizey="1.0"/>
+			</geom>
+		</body>
+		<body name="fingerLeft2">
+			<transform>
+				<position y="-3.5" x="-3.0" z="-3.5"/>
+			</transform>
+			<mass>
+				<mass_shape density="0.8">
+					<box sizex="0.25" sizez="0.5" sizey="1.0"/>
+				</mass_shape>
+			</mass>
+			<geom>
+				<box sizex="0.25" sizez="0.5" sizey="1.0"/>
+			</geom>
+		</body>
+		<joint name="body_shoulderUpRight">
+			<link1 body="body"/>
+			<link2 body="shoulderUpRight"/>
+			<hinge>
+				<axis y="0" x="1" z="0"/>
+				<anchor y="7.0" x="2.5" z="-3.5" absolute="true"/>
+			</hinge>
+		</joint>
+		<joint name="shoulderUpRight_shoulderLRRight">
+			<link1 body="shoulderUpRight"/>
+			<link2 body="shoulderLRRight"/>
+			<hinge>
+				<axis y="0" x="0" z="1"/>
+				<anchor y="7.0" x="3.5" z="-3.5" absolute="true"/>
+			</hinge>
+		</joint>
+		<joint name="shoulderLRRight_shoulderPRRight">
+			<link1 body="shoulderLRRight"/>
+			<link2 body="shoulderPRRight"/>
+			<hinge>
+				<axis y="1" x="0" z="0"/>
+				<anchor y="5.0" x="3.5" z="-3.5" absolute="true"/>
+			</hinge>
+		</joint>
+		<joint name="shoulderPRRight_armUpRight">
+			<link1 body="shoulderPRRight"/>
+			<link2 body="armUpRight"/>
+			<hinge>
+				<axis y="0" x="1" z="0"/>
+				<anchor y="3.0" x="3.5" z="-3.5" absolute="true"/>
+			</hinge>
+		</joint>
+		<joint name="armUpRight_armPRRight">
+			<link1 body="armUpRight"/>
+			<link2 body="armPRRight"/>
+			<hinge>
+				<axis y="1" x="0" z="0"/>
+				<anchor y="1.0" x="3.5" z="-3.5" absolute="true"/>
+			</hinge>
+		</joint>
+		<joint name="armPRRight_handUpRight">
+			<link1 body="armPRRight"/>
+			<link2 body="handUpRight"/>
+			<hinge>
+				<axis y="0" x="1" z="0"/>
+				<anchor y="-1.0" x="3.5" z="-3.5" absolute="true"/>
+			</hinge>
+		</joint>
+		<joint name="handUpRight_palmRight">
+			<link1 body="handUpRight"/>
+			<link2 body="palmRight"/>
+			<hinge>
+				<axis y="1" x="0" z="0"/>
+				<anchor y="-3.0" x="3.5" z="-3.5" absolute="true"/>
+			</hinge>
+		</joint>
+		<joint name="palmRight_fingerRight1">
+			<link1 body="palmRight"/>
+			<link2 body="fingerRight1"/>
+			<fixed>
+			</fixed>
+		</joint>
+		<joint name="palmRight_fingerRight2">
+			<link1 body="palmRight"/>
+			<link2 body="fingerRight2"/>
+			<hinge>
+				<axis y="0" x="0" z="1"/>
+				<anchor y="-3.0" x="3.0" z="-3.5" absolute="true"/>
+			</hinge>
+		</joint>
+		<joint name="body_shoulderUpLeft">
+			<link1 body="body"/>
+			<link2 body="shoulderUpLeft"/>
+			<hinge>
+				<axis y="0" x="1" z="0"/>
+				<anchor y="7.0" x="-2.5" z="-3.5" absolute="true"/>
+			</hinge>
+		</joint>
+		<joint name="shoulderUpLeft_shoulderLRLeft">
+			<link1 body="shoulderUpLeft"/>
+			<link2 body="shoulderLRLeft"/>
+			<hinge>
+				<axis y="0" x="0" z="1"/>
+				<anchor y="7.0" x="-3.5" z="-3.5" absolute="true"/>
+			</hinge>
+		</joint>
+		<joint name="shoulderLRLeft_shoulderPRLeft">
+			<link1 body="shoulderLRLeft"/>
+			<link2 body="shoulderPRLeft"/>
+			<hinge>
+				<axis y="1" x="0" z="0"/>
+				<anchor y="5.0" x="-3.5" z="-3.5" absolute="true"/>
+			</hinge>
+		</joint>
+		<joint name="shoulderPRLeft_armUpLeft">
+			<link1 body="shoulderPRLeft"/>
+			<link2 body="armUpLeft"/>
+			<hinge>
+				<axis y="0" x="1" z="0"/>
+				<anchor y="3.0" x="-3.5" z="-3.5" absolute="true"/>
+			</hinge>
+		</joint>
+		<joint name="armUpLeft_armPRLeft">
+			<link1 body="armUpLeft"/>
+			<link2 body="armPRLeft"/>
+			<hinge>
+				<axis y="1" x="0" z="0"/>
+				<anchor y="1.0" x="-3.5" z="-3.5" absolute="true"/>
+			</hinge>
+		</joint>
+		<joint name="armPRLeft_handUpLeft">
+			<link1 body="armPRLeft"/>
+			<link2 body="handUpLeft"/>
+			<hinge>
+				<axis y="0" x="1" z="0"/>
+				<anchor y="-1.0" x="-3.5" z="-3.5" absolute="true"/>
+			</hinge>
+		</joint>
+		<joint name="handUpLeft_palmLeft">
+			<link1 body="handUpLeft"/>
+			<link2 body="palmLeft"/>
+			<hinge>
+				<axis y="1" x="0" z="0"/>
+				<anchor y="-3.0" x="-3.5" z="-3.5" absolute="true"/>
+			</hinge>
+		</joint>
+		<joint name="palmLeft_fingerLeft1">
+			<link1 body="palmLeft"/>
+			<link2 body="fingerLeft1"/>
+			<fixed>
+			</fixed>
+		</joint>
+		<joint name="palmLeft_fingerLeft2">
+			<link1 body="palmLeft"/>
+			<link2 body="fingerLeft2"/>
+			<hinge>
+				<axis y="0" x="0" z="1"/>
+				<anchor y="-3.0" x="-3.0" z="-3.5" absolute="true"/>
+			</hinge>
+		</joint>
+		<geom name="floor">
+			<plane a="0" c="0" b="1" d="-8.0"/>
+		</geom>
+		<body name="plate">
+			<transform>
+				<position y="0.5" x="-12.5" z="-14.0"/>
+			</transform>
+			<mass>
+				<mass_shape density="0.0166666666667">
+					<box sizex="15.0" sizez="8.0" sizey="1.0"/>
+				</mass_shape>
+			</mass>
+			<geom>
+				<box sizex="15.0" sizez="8.0" sizey="1.0"/>
+			</geom>
+		</body>
+		<body name="leg1">
+			<transform>
+				<position y="-4.0" x="-19.5" z="-17.5"/>
+			</transform>
+			<mass>
+				<mass_shape density="0.15">
+					<box sizex="0.5" sizez="0.5" sizey="8.0"/>
+				</mass_shape>
+			</mass>
+			<geom>
+				<box sizex="0.5" sizez="0.5" sizey="8.0"/>
+			</geom>
+		</body>
+		<joint name="plate_leg1">
+			<link1 body="plate"/>
+			<link2 body="leg1"/>
+			<fixed>
+			</fixed>
+		</joint>
+		<body name="leg2">
+			<transform>
+				<position y="-4.0" x="-5.5" z="-17.5"/>
+			</transform>
+			<mass>
+				<mass_shape density="0.15">
+					<box sizex="0.5" sizez="0.5" sizey="8.0"/>
+				</mass_shape>
+			</mass>
+			<geom>
+				<box sizex="0.5" sizez="0.5" sizey="8.0"/>
+			</geom>
+		</body>
+		<joint name="plate_leg2">
+			<link1 body="plate"/>
+			<link2 body="leg2"/>
+			<fixed>
+			</fixed>
+		</joint>
+		<body name="leg3">
+			<transform>
+				<position y="-4.0" x="-5.5" z="-10.5"/>
+			</transform>
+			<mass>
+				<mass_shape density="0.15">
+					<box sizex="0.5" sizez="0.5" sizey="8.0"/>
+				</mass_shape>
+			</mass>
+			<geom>
+				<box sizex="0.5" sizez="0.5" sizey="8.0"/>
+			</geom>
+		</body>
+		<joint name="plate_leg3">
+			<link1 body="plate"/>
+			<link2 body="leg3"/>
+			<fixed>
+			</fixed>
+		</joint>
+		<body name="leg4">
+			<transform>
+				<position y="-4.0" x="-19.5" z="-10.5"/>
+			</transform>
+			<mass>
+				<mass_shape density="0.15">
+					<box sizex="0.5" sizez="0.5" sizey="8.0"/>
+				</mass_shape>
+			</mass>
+			<geom>
+				<box sizex="0.5" sizez="0.5" sizey="8.0"/>
+			</geom>
+		</body>
+		<joint name="plate_leg4">
+			<link1 body="plate"/>
+			<link2 body="leg4"/>
+			<fixed>
+			</fixed>
+		</joint>
+		<body name="objectP00">
+			<transform>
+				<position y="1.02" x="-6.5" z="-11.0"/>
+			</transform>
+			<mass>
+				<mass_shape density="1.0">
+					<box sizex="1.0" sizez="1.0" sizey="0.05"/>
+				</mass_shape>
+			</mass>
+			<geom>
+				<box sizex="1.0" sizez="1.0" sizey="0.05"/>
+			</geom>
+		</body>
+		<body name="objectP01">
+			<transform>
+				<position y="1.13180339887" x="-7.22360679775" z="-11.0"/>
+				<rotation>
+					<euler y="0" x="0" aformat="degrees" z="22.5"/>
+				</rotation>
+			</transform>
+			<mass>
+				<mass_shape density="2.0">
+					<box sizex="0.5" sizez="1.0" sizey="0.05"/>
+				</mass_shape>
+			</mass>
+			<geom>
+				<box sizex="0.5" sizez="1.0" sizey="0.05"/>
+			</geom>
+		</body>
+		<joint name="objectP00_objectP01">
+			<link1 body="objectP00"/>
+			<link2 body="objectP01"/>
+			<fixed>
+			</fixed>
+		</joint>
+		<body name="objectP02">
+			<transform>
+				<position y="1.13180339887" x="-5.77639320225" z="-11.0"/>
+				<rotation>
+					<euler y="0" x="0" aformat="degrees" z="-22.5"/>
+				</rotation>
+			</transform>
+			<mass>
+				<mass_shape density="2.0">
+					<box sizex="0.5" sizez="1.0" sizey="0.05"/>
+				</mass_shape>
+			</mass>
+			<geom>
+				<box sizex="0.5" sizez="1.0" sizey="0.05"/>
+			</geom>
+		</body>
+		<joint name="objectP00_objectP02">
+			<link1 body="objectP00"/>
+			<link2 body="objectP02"/>
+			<fixed>
+			</fixed>
+		</joint>
+		<body name="objectP03">
+			<transform>
+				<position y="1.13180339887" x="-6.5" z="-10.2763932023"/>
+				<rotation>
+					<euler y="90" x="0" aformat="degrees" z="-22.5"/>
+				</rotation>
+			</transform>
+			<mass>
+				<mass_shape density="2.0">
+					<box sizex="0.5" sizez="1.0" sizey="0.05"/>
+				</mass_shape>
+			</mass>
+			<geom>
+				<box sizex="0.5" sizez="1.0" sizey="0.05"/>
+			</geom>
+		</body>
+		<joint name="objectP00_objectP03">
+			<link1 body="objectP00"/>
+			<link2 body="objectP03"/>
+			<fixed>
+			</fixed>
+		</joint>
+		<body name="objectP04">
+			<transform>
+				<position y="1.13180339887" x="-6.5" z="-11.7236067977"/>
+				<rotation>
+					<euler y="90" x="0" aformat="degrees" z="22.5"/>
+				</rotation>
+			</transform>
+			<mass>
+				<mass_shape density="2.0">
+					<box sizex="0.5" sizez="1.0" sizey="0.05"/>
+				</mass_shape>
+			</mass>
+			<geom>
+				<box sizex="0.5" sizez="1.0" sizey="0.05"/>
+			</geom>
+		</body>
+		<joint name="objectP00_objectP04">
+			<link1 body="objectP00"/>
+			<link2 body="objectP04"/>
+			<fixed>
+			</fixed>
+		</joint>
+	</space>
+</world>
+</xode>
+<!--odeenvironment parameters
+<passpairs>
+('armUpLeft', 'handUpLeft', 'armPRLeft')
+('handUpRight', 'fingerRight2', 'fingerRight1', 'palmRight')
+('shoulderUpRight', 'armUpRight', 'shoulderPRRight', 'shoulderLRRight')
+('objectP04', 'objectP02', 'objectP03', 'objectP00', 'objectP01')
+('armPRRight', 'handUpRight', 'armUpRight')
+('shoulderLRLeft', 'armUpLeft', 'shoulderUpLeft', 'shoulderPRLeft')
+('palmLeft', 'handUpLeft', 'fingerLeft1', 'fingerLeft2')
+('plate', 'leg2', 'leg3', 'leg4', 'leg1')
+('body', 'shoulderUpRight', 'shoulderUpLeft')
+<centerOn>
+body
+<colors>
+('body', (0.5, 0.5, 0.40000000000000002, 1.0))
+('palmRight', (0.59999999999999998, 0.59999999999999998, 0.29999999999999999, 1.0))
+('fingerRight1', (0.59999999999999998, 0.59999999999999998, 0.29999999999999999, 1.0))
+('fingerRight2', (0.59999999999999998, 0.59999999999999998, 0.29999999999999999, 1.0))
+('palmLeft', (0.59999999999999998, 0.59999999999999998, 0.29999999999999999, 1.0))
+('fingerLeft1', (0.59999999999999998, 0.59999999999999998, 0.29999999999999999, 1.0))
+('fingerLeft2', (0.59999999999999998, 0.59999999999999998, 0.29999999999999999, 1.0))
+('plate', (0.40000000000000002, 0.25, 0.0, 1.0))
+('leg1', (0.59999999999999998, 0.80000000000000004, 0.80000000000000004, 0.80000000000000004))
+('leg2', (0.59999999999999998, 0.80000000000000004, 0.80000000000000004, 0.80000000000000004))
+('leg3', (0.59999999999999998, 0.80000000000000004, 0.80000000000000004, 0.80000000000000004))
+('leg4', (0.59999999999999998, 0.80000000000000004, 0.80000000000000004, 0.80000000000000004))
+('objectP00', (0.59999999999999998, 0.59999999999999998, 0.80000000000000004, 0.94999999999999996))
+('objectP01', (0.59999999999999998, 0.59999999999999998, 0.80000000000000004, 0.94999999999999996))
+('objectP02', (0.59999999999999998, 0.59999999999999998, 0.80000000000000004, 0.94999999999999996))
+('objectP03', (0.59999999999999998, 0.59999999999999998, 0.80000000000000004, 0.94999999999999996))
+('objectP04', (0.59999999999999998, 0.59999999999999998, 0.80000000000000004, 0.94999999999999996))
+<end>
+-->

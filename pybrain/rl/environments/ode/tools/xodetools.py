@@ -624,10 +624,9 @@ class XODESLR(XODEfile):
         self.sensorElements = []
         self.sensorGroupName = None
 
-class XODELSRTableGlas(XODESLR): #XODESLR
+class XODELSRTable(XODESLR): #XODESLR
     def __init__(self, name, **kwargs):
-        XODESLR.__init__(self, name, **kwargs)
-        
+        XODESLR.__init__(self, name, **kwargs)        
         # create table
         self.insertBody('plate','box',[15.0,1.0,8.0],30,pos=[-12.5,0.5,-14.0], passSet=['table'], mass=2.0, color=(0.4, 0.25, 0.0, 1.0))
         self.insertBody('leg1','box',[0.5,8.0,0.5],30,pos=[-19.5,-4.0,-17.5], passSet=['table'], mass=0.3, color=(0.6, 0.8, 0.8, 0.8))
@@ -639,16 +638,52 @@ class XODELSRTableGlas(XODESLR): #XODESLR
         self.insertBody('leg4','box',[0.5,8.0,0.5],30,pos=[-19.5,-4.0,-10.5], passSet=['table'], mass=0.3, color=(0.6, 0.8, 0.8, 0.8))
         self.insertJoint('plate','leg4','fixed', axis={'x':0,'y':0,'z':0}, anchor=(-19.5,0.0,-10.5))
 
+class XODELSRGlas(XODELSRTable): #XODESLR
+    def __init__(self, name, **kwargs):
+        XODELSRTable.__init__(self, name, **kwargs)
         # create glass + coaster (necessary because cylinder collision has a bug)
-        self.insertBody('glas', 'cylinder', [0.2, 1], 30, pos=[-6.5, 1.51 ,-11.0], passSet=['glas'], mass=0.2, euler=[90, 0, 0], color=(0.6, 0.6, 0.8, 0.5))
-        self.insertBody('glas-coaster', 'box', [0.45, 0.02, 0.45], 30, pos=[-6.5, 1.01, -11.0], passSet=['glas'], mass=0.01)
-        self.insertBody('glas-top', 'box', [0.45, 0.02, 0.45], 30, pos=[-6.5, 2.01, -11.0], passSet=['glas'], mass=0.01)
-        self.insertJoint('glas','glas-coaster','fixed', axis={'x':0,'y':0,'z':0}, anchor=(-6.5,1.01,-11.0))
-        self.insertJoint('glas','glas-top','fixed', axis={'x':0,'y':0,'z':0}, anchor=(-6.5,2.01,-11.0))
+        self.insertBody('objectP00', 'cylinder', [0.2, 1], 30, pos=[-6.5, 1.51 ,-11.0], passSet=['object'], mass=0.2, euler=[90, 0, 0], color=(0.6, 0.6, 0.8, 0.5))
+        self.insertBody('objectP01', 'box', [0.45, 0.02, 0.45], 30, pos=[-6.5, 1.01, -11.0], passSet=['object'], mass=0.01)
+        self.insertBody('objectP02', 'box', [0.45, 0.02, 0.45], 30, pos=[-6.5, 2.01, -11.0], passSet=['object'], mass=0.01)
+        self.insertJoint('objectP00','objectP01','fixed', axis={'x':0,'y':0,'z':0}, anchor=(-6.5,1.01,-11.0))
+        self.insertJoint('objectP00','objectP02','fixed', axis={'x':0,'y':0,'z':0}, anchor=(-6.5,2.01,-11.0))
 
-if __name__ == '__main__' :
+class XODELSRPlate(XODELSRTable): #XODESLR
+    def __init__(self, name, **kwargs):
+        XODELSRTable.__init__(self, name, **kwargs)
+        # create plate
+        # plate ground
+        bX = 1.0 #width of plate floor
+        bY = 0.05 #height of plate floor
+        bZ = 1.0 #depth of plate floor
+        #plate sides
+        sX = 0.5 #width of plate side
+        sY = bY #height of plate side
+        sZ = 1.0 #depth of plate side
+        #position of plate
+        pX = -6.5
+        pY = 1.02
+        pZ = -11.0
+        #stuff
+        m = 0.05 #mass per part
+        c = (0.6, 0.6, 0.8, 0.95) #color of object
+        dif=sX/(2.0*sqrt(5)) #
 
-        table = XODELSRTableGlas('../models/ccrlTable')
+        self.insertBody('objectP00', 'box', [bX, bY, bZ], 30, pos=[pX, pY, pZ], passSet=['object'], mass=m, color=c)
+        self.insertBody('objectP01', 'box', [sX, sY, sZ], 30, pos=[pX-bX*0.5-2.0*dif, pY+dif, pZ], passSet=['object'], mass=m, euler=[0, 0, 22.5], color=c)
+        self.insertJoint('objectP00','objectP01','fixed', axis={'x':0,'y':0,'z':0}, anchor=(pX-bX*0.5,pY,pZ))
+        
+        self.insertBody('objectP02', 'box', [sX, sY, sZ], 30, pos=[pX+bX*0.5+2.0*dif, pY+dif, pZ], passSet=['object'], mass=m, euler=[0, 0, -22.5], color=c)
+        self.insertJoint('objectP00','objectP02','fixed', axis={'x':0,'y':0,'z':0}, anchor=(pX+bX*0.5,pY,pZ))
+
+        self.insertBody('objectP03', 'box', [sX, sY, sZ], 30, pos=[pX, pY+dif, pZ+bZ*0.5+2.0*dif], passSet=['object'], mass=m, euler=[0, 90, -22.5], color=c)
+        self.insertJoint('objectP00','objectP03','fixed', axis={'x':0,'y':0,'z':0}, anchor=(pX,pY,pZ+bZ*0.5))
+
+        self.insertBody('objectP04', 'box', [sX, sY, sZ], 30, pos=[pX, pY+dif, pZ-bZ*0.5-2.0*dif], passSet=['object'], mass=m, euler=[0, 90, 22.5], color=c)
+        self.insertJoint('objectP00','objectP04','fixed', axis={'x':0,'y':0,'z':0}, anchor=(pX,pY,pZ-bZ*0.5))
+        if __name__ == '__main__' :
+
+        table = XODELSRPlate('../models/ccrlPlate')
         
         #z = XODESLR('../models/slr')
         #z = XODEhand('hand_mal_10')

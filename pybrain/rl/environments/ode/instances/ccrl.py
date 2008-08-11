@@ -10,7 +10,7 @@ class CCRLEnvironment(ODEEnvironment):
         ODEEnvironment.__init__(self, renderer, realtime, ip, port, buf)
         # load model file
         self.pert=asarray([1.0,0.0,0.0])
-        self.loadXODE(imp.find_module('pybrain')[1]+"/rl/environments/ode/models/ccrlTable.xode")
+        self.loadXODE(imp.find_module('pybrain')[1]+"/rl/environments/ode/models/ccrlPlate.xode")
 
         # standard sensors and actuators    
         self.addSensor(sensors.JointSensor())
@@ -52,13 +52,15 @@ class CCRLEnvironment(ODEEnvironment):
 
         # Check if the objects do collide
         contacts = ode.collide(geom1, geom2)
-        if geom1.name == 'plate' and geom2.name != 'glas' and geom2.name != 'glas-coaster' and geom2.name != 'glas-top': 
+        tmpStr=geom2.name[:-2]
+        if geom1.name == 'plate' and tmpStr != 'objectP': 
             self.tableSum+=len(contacts)
-        if geom2.name == 'plate' and geom1.name != 'glas' and geom1.name != 'glas-coaster' and geom1.name != 'glas-top': 
-            self.tableSum+=len(contacts)
-        if geom1.name == 'glas' and (geom2.name == 'palmLeft' or geom2.name == 'fingerLeft1'  or geom2.name == 'fingerLeft2'): 
+        if tmpStr == 'objectP' and (geom1.name == 'palmLeft' or geom1.name == 'fingerLeft1'  or geom1.name == 'fingerLeft2'): 
             if len(contacts) > 0: self.glasSum+=1
-        if geom2.name == 'glas' and (geom1.name == 'palmLeft' or geom1.name == 'fingerLeft1'  or geom1.name == 'fingerLeft2'): 
+        tmpStr=geom1.name[:-2]
+        if geom2.name == 'plate' and tmpStr != 'objectP': 
+            self.tableSum+=len(contacts)
+        if tmpStr == 'objectP' and (geom2.name == 'palmLeft' or geom2.name == 'fingerLeft1'  or geom2.name == 'fingerLeft2'): 
             if len(contacts) > 0: self.glasSum+=1
         
         # Create contact joints
@@ -107,8 +109,9 @@ class CCRLEnvironment(ODEEnvironment):
         self._parseBodies(self.root)
 
         for (body,geom) in self.body_geom:
-            if hasattr(body, 'name'):                
-                if body.name == "glas" or body.name == "glas-coaster" or body.name == "glas-top": 
+            if hasattr(body, 'name'):  
+                tmpStr=body.name[:-2]              
+                if tmpStr == "objectP": 
                     body.setPosition(body.getPosition()+self.pert)
             
         if self.verbosity > 0:

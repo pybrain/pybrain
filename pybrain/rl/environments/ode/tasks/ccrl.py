@@ -32,7 +32,7 @@ class CCRLTask(EpisodicTask):
         self.target=array([-6.5,1.75,-10.5])
         self.grepRew=0.0
         self.tableFlag=0.0
-        self.env.addSensor(SpecificBodyPositionSensor(['glas'], "glasPos"))
+        self.env.addSensor(SpecificBodyPositionSensor(['objectP00'], "glasPos"))
         self.env.addSensor(SpecificBodyPositionSensor(['palmLeft'], "palmPos"))
         self.env.addSensor(SpecificBodyPositionSensor(['fingerLeft1'], "finger1Pos"))
         self.env.addSensor(SpecificBodyPositionSensor(['fingerLeft2'], "finger2Pos"))
@@ -141,9 +141,9 @@ class CCRLVarTask(CCRLTask):
     def pertGlasPos(self, num):
         if num == 0: self.env.pert=asarray([1.0, 0.0, 0.5])
         if num == 1: self.env.pert=asarray([-1.0, 0.0, 0.5])
-        if num == 2: self.env.pert=asarray([0.5, 0.0, 0.0])
-        if num == 3: self.env.pert=asarray([-0.5, 0.0, 0.0])
-        if num == 4: self.env.pert=asarray([0.0, 0.0, 0.5])
+        if num == 2: self.env.pert=asarray([1.0, 0.0, 0.0])
+        if num == 3: self.env.pert=asarray([-1.0, 0.0, 0.0])
+        if num == 4: self.env.pert=asarray([0.0, 0.0, 0.25])
                 
     def getReward(self):
         if self.env.glasSum >= 2: grip=1.0 
