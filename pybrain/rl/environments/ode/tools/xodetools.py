@@ -640,10 +640,11 @@ class XODELSRTableGlas(XODESLR): #XODESLR
         self.insertJoint('plate','leg4','fixed', axis={'x':0,'y':0,'z':0}, anchor=(-19.5,0.0,-10.5))
 
         # create glass + coaster (necessary because cylinder collision has a bug)
-        self.insertBody('glas', 'cylinder', [0.3, 1], 30, pos=[-6.5, 1.52 ,-10.5], passSet=['glas'], euler=[90, 0, 0], color=(0.6, 0.6, 0.8, 0.5))
-        self.insertBody('glas-coaster', 'box', [0.4, 0.02, 0.4], 30, pos=[-6.5, 1.01, -10.5], passSet=['glas'])
-        self.insertJoint('glas','glas-coaster','fixed', axis={'x':0,'y':0,'z':0}, anchor=(-6.5,1.01,-10.5))
-
+        self.insertBody('glas', 'cylinder', [0.2, 1], 30, pos=[-6.5, 1.51 ,-11.0], passSet=['glas'], mass=0.2, euler=[90, 0, 0], color=(0.6, 0.6, 0.8, 0.5))
+        self.insertBody('glas-coaster', 'box', [0.45, 0.02, 0.45], 30, pos=[-6.5, 1.01, -11.0], passSet=['glas'], mass=0.01)
+        self.insertBody('glas-top', 'box', [0.45, 0.02, 0.45], 30, pos=[-6.5, 2.01, -11.0], passSet=['glas'], mass=0.01)
+        self.insertJoint('glas','glas-coaster','fixed', axis={'x':0,'y':0,'z':0}, anchor=(-6.5,1.01,-11.0))
+        self.insertJoint('glas','glas-top','fixed', axis={'x':0,'y':0,'z':0}, anchor=(-6.5,2.01,-11.0))
 
 if __name__ == '__main__' :
 

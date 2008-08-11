@@ -3,12 +3,13 @@ from pybrain.rl.environments.serverInterface import GraphicalEnvironment
 from pybrain.rl.environments.ode import *
 from ode import collide
 import imp
-from scipy import array
+from scipy import array, asarray, clip, random
 
 class CCRLEnvironment(ODEEnvironment):
-  def __init__(self, renderer=True, realtime=False, ip="127.0.0.1", port="21590", buf='16384'):
+    def __init__(self, renderer=True, realtime=False, ip="127.0.0.1", port="21590", buf='16384'):
         ODEEnvironment.__init__(self, renderer, realtime, ip, port, buf)
         # load model file
+        self.pert=asarray([1.0,0.0,0.0])
         self.loadXODE(imp.find_module('pybrain')[1]+"/rl/environments/ode/models/ccrlTable.xode")
 
         # standard sensors and actuators    
@@ -26,32 +27,13 @@ class CCRLEnvironment(ODEEnvironment):
         self.cLowList=array([-1.0, -1.0, -1.0, -1.5, -1.0, -1.0, -1.0, -0.7, -1.0, 0.0, -1.0, -1.5, -1.0, -1.0, -1.0, 0.0],)
         self.stepsPerAction = 1
 
-  def step(self):
-        """ Here the ode physics is calculated by one step. """
-
-        # call additional callback functions for all kinds of tasks (e.g. printing)
-        self._printfunc()
-
+    def step(self):
         # Detect collisions and create contact joints
         self.tableSum=0
         self.glasSum=0
-        self.space.collide((self.world, self.contactgroup), self._near_callback)
-        #print self.tableSum,         
+        ODEEnvironment.step(self)
 
-        # Simulation step
-        self.world.step(float(self.dt))
-        # Remove all contact joints
-        self.contactgroup.empty()
-            
-        # update all sensors
-        for s in self.sensors:
-            s._update()
-        
-        # increase step counter
-        self.stepCounter += 1
-        return self.stepCounter
-
-  def _near_callback(self, args, geom1, geom2):
+    def _near_callback(self, args, geom1, geom2):
         """Callback function for the collide() method.
         This function checks if the given geoms do collide and
         creates contact joints if they do."""
@@ -70,9 +52,9 @@ class CCRLEnvironment(ODEEnvironment):
 
         # Check if the objects do collide
         contacts = ode.collide(geom1, geom2)
-        if geom1.name == 'plate' and geom2.name != 'glas': 
+        if geom1.name == 'plate' and geom2.name != 'glas' and geom2.name != 'glas-coaster' and geom2.name != 'glas-top': 
             self.tableSum+=len(contacts)
-        if geom2.name == 'plate' and geom1.name != 'glas': 
+        if geom2.name == 'plate' and geom1.name != 'glas' and geom1.name != 'glas-coaster' and geom1.name != 'glas-top': 
             self.tableSum+=len(contacts)
         if geom1.name == 'glas' and (geom2.name == 'palmLeft' or geom2.name == 'fingerLeft1'  or geom2.name == 'fingerLeft2'): 
             if len(contacts) > 0: self.glasSum+=1
@@ -94,7 +76,56 @@ class CCRLEnvironment(ODEEnvironment):
             j = ode.ContactJoint(self.world, self.contactgroup, c)
             j.name = None
             j.attach(geom1.getBody(), geom2.getBody())
+
+    def loadXODE(self, filename, reload=False):
+        """ loads an XODE file (xml format) and parses it. """
+        f = file(filename)
+        self._currentXODEfile = filename
+        p = xode.parser.Parser()
+        self.root = p.parseFile(f)
+        f.close()
+        try:
+            # filter all xode "world" objects from root, take only the first one
+            world = filter(lambda x: isinstance(x, xode.parser.World), self.root.getChildren())[0]
+        except IndexError:
+            # malicious format, no world tag found
+            print "no <world> tag found in " + filename + ". quitting."
+            sys.exit()
+        self.world = world.getODEObject()
+        self._setWorldParameters()
+        try:
+            # filter all xode "space" objects from world, take only the first one
+            space = filter(lambda x: isinstance(x, xode.parser.Space), world.getChildren())[0]
+        except IndexError:
+            # malicious format, no space tag found
+            print "no <space> tag found in " + filename + ". quitting."
+            sys.exit()
+        self.space = space.getODEObject()
                 
+        # load bodies and geoms for painting
+        self.body_geom = [] 
+        self._parseBodies(self.root)
+
+        for (body,geom) in self.body_geom:
+            if hasattr(body, 'name'):                
+                if body.name == "glas" or body.name == "glas-coaster" or body.name == "glas-top": 
+                    body.setPosition(body.getPosition()+self.pert)
+            
+        if self.verbosity > 0:
+            print "-------[body/mass list]-----"
+            for (body,geom) in self.body_geom:
+                try:
+                    print body.name, body.getMass()
+                except AttributeError:
+                    print "<Nobody>"
+
+        # now parse the additional parameters at the end of the xode file
+        self.loadConfig(filename, reload)
+
+    def reset(self):
+        ODEEnvironment.reset(self)
+        self.pert=asarray([1.0,0.0,0.0])
+
 if __name__ == '__main__' :
     w = CCRLEnvironment() 
     while True:

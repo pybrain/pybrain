@@ -521,17 +521,58 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocat
 		</joint>
 		<body name="glas">
 			<transform>
-				<position y="1.75" x="-6.5" z="-10.5"/>
+				<position y="1.51" x="-6.5" z="-11.0"/>
+				<rotation>
+					<euler y="0" x="90" aformat="degrees" z="0"/>
+				</rotation>
 			</transform>
 			<mass>
-				<mass_shape density="1.6">
-					<box sizex="0.25" sizez="0.25" sizey="1.5"/>
+				<mass_shape density="0.397887357868">
+					<cylinder length="1" radius="0.2"/>
 				</mass_shape>
 			</mass>
 			<geom>
-				<box sizex="0.25" sizez="0.25" sizey="1.5"/>
+				<cylinder length="1" radius="0.2"/>
 			</geom>
 		</body>
+		<body name="glas-coaster">
+			<transform>
+				<position y="1.01" x="-6.5" z="-11.0"/>
+			</transform>
+			<mass>
+				<mass_shape density="2.46913580247">
+					<box sizex="0.45" sizez="0.45" sizey="0.02"/>
+				</mass_shape>
+			</mass>
+			<geom>
+				<box sizex="0.45" sizez="0.45" sizey="0.02"/>
+			</geom>
+		</body>
+		<body name="glas-top">
+			<transform>
+				<position y="2.01" x="-6.5" z="-11.0"/>
+			</transform>
+			<mass>
+				<mass_shape density="2.46913580247">
+					<box sizex="0.45" sizez="0.45" sizey="0.02"/>
+				</mass_shape>
+			</mass>
+			<geom>
+				<box sizex="0.45" sizez="0.45" sizey="0.02"/>
+			</geom>
+		</body>
+		<joint name="glas_glas-coaster">
+			<link1 body="glas"/>
+			<link2 body="glas-coaster"/>
+			<fixed>
+			</fixed>
+		</joint>
+		<joint name="glas_glas-top">
+			<link1 body="glas"/>
+			<link2 body="glas-top"/>
+			<fixed>
+			</fixed>
+		</joint>
 	</space>
 </world>
 </xode>
@@ -542,6 +583,7 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocat
 ('shoulderUpRight', 'armUpRight', 'shoulderPRRight', 'shoulderLRRight')
 ('armPRRight', 'handUpRight', 'armUpRight')
 ('shoulderLRLeft', 'armUpLeft', 'shoulderUpLeft', 'shoulderPRLeft')
+('glas', 'glas-top', 'glas-coaster')
 ('palmLeft', 'handUpLeft', 'fingerLeft1', 'fingerLeft2')
 ('plate', 'leg2', 'leg3', 'leg4', 'leg1')
 ('body', 'shoulderUpRight', 'shoulderUpLeft')
