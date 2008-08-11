@@ -260,7 +260,7 @@ class SequenceClassificationDataSet(SequentialDataSet, ClassificationDataSet):
                     'inputPattSize':       self.indim,
                     'numLabels':           self.nClasses,
                     'numSeqs':             self.getNumSequences(),
-                    'maxLabelLength':      1 }
+                    'maxLabelLength':      2 }
         dims = {}
         for name, sz in dimsize.iteritems():
             dims[name] = d.def_dim(name, sz)
