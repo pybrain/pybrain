@@ -16,7 +16,7 @@ from pybrain import buildNetwork, TanhLayer, SigmoidLayer, MDLSTMLayer
 def randEval(size = 0, hsize = 0, opponent = None, handicap = False, mlp = False, 
              capturegame = True, initScaling = 1, 
              avgOver = 100, verbose = True, setParams = None, allReturn = False,
-             lstm = False):
+             lstm = False, numMovesCoeff = 0.0):
     if mlp:
         # comarison with simple MLP
         net = buildNetwork(2 * size**2, hsize * size**2, size**2, 
@@ -39,14 +39,14 @@ def randEval(size = 0, hsize = 0, opponent = None, handicap = False, mlp = False
             res = handicapTask(net)
         else:
             absoluteTask = CaptureGameTask(size, averageOverGames = avgOver, alternateStarting = True, 
-                                           opponent = opponent)
+                                           opponent = opponent, numMovesCoeff = numMovesCoeff)
             res = absoluteTask(net)
     else:
         # Gomoku#            del results[k]
     #    pickleDumpDict(fname, results)
     
         absoluteTask = GomokuTask(size, averageOverGames = avgOver, alternateStarting = True, 
-                                  opponent = opponent)
+                                  opponent = opponent, numMovesCoeff = numMovesCoeff)
         res = absoluteTask(net)
                     
     if verbose:
@@ -89,10 +89,10 @@ if __name__ == '__main__':
     capturegame = False
     killer = True
     handicap = False
-    mlp = True
+    mlp = False
     argsVars = {'size': [5,9],
-                'hsize': [5,10],
-                'initScaling': [1,10],
+                'hsize': [5],
+                'initScaling': [1],
                 }
     dir = '../temp/stats/'
     repeat = 100

@@ -55,7 +55,7 @@ def slidingAverage(a, avgOver = 5):
     
 if __name__ == '__main__':
     dir = '../temp/capturegame/1/'
-    tag = 'p0-'
+    tag = 'we1-'
     ext = '.xml'
     files = getTaggedFiles(dir, tag, ext)
     numPops = 2
@@ -64,7 +64,7 @@ if __name__ == '__main__':
     plotall = False
     selected = selectSome(files, [#'',
                                   #'6046',
-                                  '3351',
+                                  #'3351',
                                   'Compe',
                                   #'MultiPop'+str(numPops)
                                   ],  requireAll = True)

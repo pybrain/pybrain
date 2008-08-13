@@ -101,9 +101,9 @@ class CaptureGame(TwoPlayerGame):
         for i in range(self.size):
             for j in range(self.size):            
                 val = self.b[(i,j)]
-                if val == self.EMPTY: s += ' _'
-                elif val == self.BLACK: s += ' #'
-                elif val == self.WHITE: s += ' *'
+                if val == self.EMPTY: s += ' .'
+                elif val == self.BLACK: s += ' X'
+                elif val == self.WHITE: s += ' O'
                 else: s += ' '+str(val)
             s += '\n'
         if self.winner:

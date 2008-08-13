@@ -13,12 +13,12 @@ from pybrain.rl.agents.gomokuplayers.killing import KillingGomokuPlayer
 from scipy import array, average
     
 # task settings: opponent, averaging to reduce noise, board size, etc.
-capturegame = False
+capturegame = True
 size = 5
-hsize = 20
-evals = 2000
+hsize = 10
+evals = 1000
 avgover = 100
-population = 10
+population = 20
 mutationStd = 0.1
 
     

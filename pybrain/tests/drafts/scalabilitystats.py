@@ -13,14 +13,16 @@ from scipy.stats import pearsonr
 if __name__ == '__main__':
     # settings
     tag = 'x-'
-    lstm = False
-    capturegame = True
-    killer = False
-    handicap = False
+    capturegame = False
+    killer = True
+    
     if capturegame:
         sizes = [5,9,19]
     else:
-        sizes = [5,7,11,19]
+        sizes = [5,7,9,11]
+    
+    handicap = False
+    lstm = False
     argsVars = {'hsize': [5],
                 'initScaling': [1],
                 }
@@ -30,7 +32,7 @@ if __name__ == '__main__':
         argsVars['avgOver'] = [40]
                 
     dir = '../temp/stats/'
-    repeat = 0
+    repeat = 250
     minData = 0
     plotting = True
     

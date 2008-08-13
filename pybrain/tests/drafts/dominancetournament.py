@@ -35,11 +35,11 @@ def dominanceNumber(relEval, champions, verbose = True):
 
 if __name__ == '__main__':
     dir = '../temp/capturegame/1/'
-    tag = 'p0-'
+    tag = 'we1-'
     ext = '.xml'
     verbose = False
     files = getTaggedFiles(dir, tag, ext)
-    selected = selectSome(files, ['7194', '50323', '3788'], requireAll = False)
+    selected = selectSome(files, ['113959'], requireAll = False)
     for fname in selected:
         fname = fname[len(dir):]
         n, all = readNetAndParams(dir, fname)
@@ -66,4 +66,5 @@ if __name__ == '__main__':
         print fListToString(map(lambda g: all[g][0], domgens), 2)
         print
         
-        
+import pylab
+pylab.show()
