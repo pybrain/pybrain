@@ -3,7 +3,7 @@ from pybrain.rl.environments.ode.sensors import *
 from scipy import pi, ones, tanh, zeros, clip, array, random, sqrt, asarray
 from time import sleep
 
-#Basic class for all Johnnie tasks
+#Basic class for all ccrl tasks
 class CCRLTask(EpisodicTask):
     def __init__(self, env):
         EpisodicTask.__init__(self, env)
@@ -98,6 +98,31 @@ class CCRLTask(EpisodicTask):
         self.tableFlag=0.0
 
     def getReward(self):
+        #rewarded for approaching the object
+        dis=sqrt((self.dist[0:3]**2).sum())
+        return (25.0-dis)/float(self.epiLen)-float(self.env.tableSum)*0.1
+
+#Learn to grasp a glas at a fixed location
+class CCRLGlasTask(CCRLTask):
+    def __init__(self, env):
+        CCRLTask.__init__(self, env)
+        self.dif=array([0.0,0.0,0.0])
+        self.epiLen=1000 #suggestet episodic length for normal Johnnie tasks
+
+    def isFinished(self):
+        #returns true if episode timesteps has reached episode length and resets the task
+        if self.count > self.epiLen:
+            self.res()
+            return True
+        else:
+            if self.count == 1: self.pertGlasPos(0)
+            self.count += 1
+            return False
+
+    def pertGlasPos(self, num):
+        if num == 0: self.env.pert=asarray([0.0, 0.0, 0.5])
+                
+    def getReward(self):
         if self.env.glasSum >= 2: grip=1.0 + float(self.env.glasSum-2)
         else: grip = 0.0
         if self.env.tableSum > 0: self.tableFlag=10.0
@@ -110,9 +135,42 @@ class CCRLTask(EpisodicTask):
         else:
             return (25.0-dis)/float(self.epiLen)+(grip/nig-float(self.env.tableSum))*0.1 #+self.grepRew (10.0-dis)/float(self.epiLen)+
 
-class CCRLVarTask(CCRLTask):
+#Learn to grasp a plate at a fixed location
+class CCRLPlateTask(CCRLTask):
     def __init__(self, env):
         CCRLTask.__init__(self, env)
+        self.dif=array([0.0,0.2,0.8])
+        self.epiLen=1000 #suggestet episodic length for normal Johnnie tasks
+
+    def isFinished(self):
+        #returns true if episode timesteps has reached episode length and resets the task
+        if self.count > self.epiLen:
+            self.res()
+            return True
+        else:
+            if self.count == 1: self.pertGlasPos(0)
+            self.count += 1
+            return False
+
+    def pertGlasPos(self, num):
+        if num == 0: self.env.pert=asarray([0.0, 0.0, 0.5])
+                
+    def getReward(self):
+        if self.env.glasSum >= 2: grip=1.0 
+        else: grip = 0.0
+        if self.env.tableSum > 0: self.tableFlag=10.0
+        #self.dist[4]=0.0
+        #self.dist[8]=0.0
+        dis=sqrt((self.dist[0:3]**2).sum())
+        if self.count==self.epiLen:
+            return 25.0+grip-dis-self.tableFlag #/nig
+        else:
+            return (25.0-dis)/float(self.epiLen)+(grip-float(self.env.tableSum))*0.1 #/nig -(1.0+self.oldAction[15])
+
+#Learn to grasp a glas at 5 different locations
+class CCRLGlasVarTask(CCRLGlasTask):
+    def __init__(self, env):
+        CCRLGlasTask.__init__(self, env)
         self.epiLen=5000 #suggestet episodic length for normal Johnnie tasks
 
     def isFinished(self):
@@ -154,15 +212,18 @@ class CCRLVarTask(CCRLTask):
         dis=sqrt((self.dist**2).sum())
         nig=(abs(self.dist[4])+1.0)
         if self.count==self.epiLen or self.count==self.epiLen/5 or self.count==2*self.epiLen/5 or self.count==3*self.epiLen/5 or self.count==4*self.epiLen/5:
-            return 25.0+grip/nig-dis-self.tableFlag
+            return 25.0+grip/nig-dis-self.tableFlag #/nig
         else:
-            return (25.0-dis)/float(self.epiLen)+(grip/nig-float(self.env.tableSum))*0.1
+            return (25.0-dis)/float(self.epiLen)+(grip/nig-float(self.env.tableSum))*0.1 #/nig
 
-class CCRLVarRandTask(CCRLVarTask):
+#Learn to grasp a glas at random locations
+class CCRLGlasVarRandTask(CCRLGlasVarTask):
     def pertGlasPos(self, num):
         self.env.pert=asarray([random.random()*2.0-1.0, 0.0, random.random()*0.5+0.5])
 
-class CCRLPointTask(CCRLVarTask):
+
+#Some experimental stuff
+class CCRLPointTask(CCRLGlasVarTask):
     def __init__(self, env):
         CCRLVarTask.__init__(self, env)
         self.epiLen=1000 #suggestet episodic length for normal Johnnie tasks

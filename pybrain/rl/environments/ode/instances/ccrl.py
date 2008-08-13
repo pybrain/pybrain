@@ -6,11 +6,11 @@ import imp
 from scipy import array, asarray, clip, random
 
 class CCRLEnvironment(ODEEnvironment):
-    def __init__(self, renderer=True, realtime=False, ip="127.0.0.1", port="21590", buf='16384'):
+    def __init__(self, xodeFile="ccrlGlas.xode", renderer=True, realtime=False, ip="127.0.0.1", port="21590", buf='16384'):
         ODEEnvironment.__init__(self, renderer, realtime, ip, port, buf)
         # load model file
         self.pert=asarray([1.0,0.0,0.0])
-        self.loadXODE(imp.find_module('pybrain')[1]+"/rl/environments/ode/models/ccrlPlate.xode")
+        self.loadXODE(imp.find_module('pybrain')[1]+"/rl/environments/ode/models/"+xodeFile)
 
         # standard sensors and actuators    
         self.addSensor(sensors.JointSensor())
@@ -52,15 +52,17 @@ class CCRLEnvironment(ODEEnvironment):
 
         # Check if the objects do collide
         contacts = ode.collide(geom1, geom2)
-        tmpStr=geom2.name[:-2]
+        tmpStr = geom2.name[:-2]
+        handStr = geom1.name[:-1]
         if geom1.name == 'plate' and tmpStr != 'objectP': 
             self.tableSum+=len(contacts)
-        if tmpStr == 'objectP' and (geom1.name == 'palmLeft' or geom1.name == 'fingerLeft1'  or geom1.name == 'fingerLeft2'): 
+        if tmpStr == 'objectP' and handStr == 'pressLeft': 
             if len(contacts) > 0: self.glasSum+=1
         tmpStr=geom1.name[:-2]
+        handStr = geom2.name[:-1]
         if geom2.name == 'plate' and tmpStr != 'objectP': 
             self.tableSum+=len(contacts)
-        if tmpStr == 'objectP' and (geom2.name == 'palmLeft' or geom2.name == 'fingerLeft1'  or geom2.name == 'fingerLeft2'): 
+        if tmpStr == 'objectP' and handStr == 'pressLeft': 
             if len(contacts) > 0: self.glasSum+=1
         
         # Create contact joints

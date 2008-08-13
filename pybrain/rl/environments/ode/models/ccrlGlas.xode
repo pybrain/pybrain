@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xode version="1.0r23" name="../models/ccrlPlate"
+<xode version="1.0r23" name="../models/ccrlGlas"
 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://tanksoftware.com/xode/1.0r23/xode.xsd">
 
 <world>
@@ -559,31 +559,44 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocat
 		</joint>
 		<body name="objectP00">
 			<transform>
-				<position y="1.02" x="-6.5" z="-10.75"/>
+				<position y="1.51" x="-6.5" z="-11.0"/>
+				<rotation>
+					<euler y="0" x="90" aformat="degrees" z="0"/>
+				</rotation>
 			</transform>
 			<mass>
-				<mass_shape density="1.0">
-					<box sizex="1.0" sizez="1.0" sizey="0.05"/>
+				<mass_shape density="0.397887357868">
+					<cylinder length="1" radius="0.2"/>
 				</mass_shape>
 			</mass>
 			<geom>
-				<box sizex="1.0" sizez="1.0" sizey="0.05"/>
+				<cylinder length="1" radius="0.2"/>
 			</geom>
 		</body>
 		<body name="objectP01">
 			<transform>
-				<position y="1.13180339887" x="-7.22360679775" z="-10.75"/>
-				<rotation>
-					<euler y="0" x="0" aformat="degrees" z="22.5"/>
-				</rotation>
+				<position y="1.01" x="-6.5" z="-11.0"/>
 			</transform>
 			<mass>
-				<mass_shape density="2.0">
-					<box sizex="0.5" sizez="1.0" sizey="0.05"/>
+				<mass_shape density="2.46913580247">
+					<box sizex="0.45" sizez="0.45" sizey="0.02"/>
 				</mass_shape>
 			</mass>
 			<geom>
-				<box sizex="0.5" sizez="1.0" sizey="0.05"/>
+				<box sizex="0.45" sizez="0.45" sizey="0.02"/>
+			</geom>
+		</body>
+		<body name="objectP02">
+			<transform>
+				<position y="2.01" x="-6.5" z="-11.0"/>
+			</transform>
+			<mass>
+				<mass_shape density="2.46913580247">
+					<box sizex="0.45" sizez="0.45" sizey="0.02"/>
+				</mass_shape>
+			</mass>
+			<geom>
+				<box sizex="0.45" sizez="0.45" sizey="0.02"/>
 			</geom>
 		</body>
 		<joint name="objectP00_objectP01">
@@ -592,69 +605,9 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocat
 			<fixed>
 			</fixed>
 		</joint>
-		<body name="objectP02">
-			<transform>
-				<position y="1.13180339887" x="-5.77639320225" z="-10.75"/>
-				<rotation>
-					<euler y="0" x="0" aformat="degrees" z="-22.5"/>
-				</rotation>
-			</transform>
-			<mass>
-				<mass_shape density="2.0">
-					<box sizex="0.5" sizez="1.0" sizey="0.05"/>
-				</mass_shape>
-			</mass>
-			<geom>
-				<box sizex="0.5" sizez="1.0" sizey="0.05"/>
-			</geom>
-		</body>
 		<joint name="objectP00_objectP02">
 			<link1 body="objectP00"/>
 			<link2 body="objectP02"/>
-			<fixed>
-			</fixed>
-		</joint>
-		<body name="objectP03">
-			<transform>
-				<position y="1.13180339887" x="-6.5" z="-10.0263932023"/>
-				<rotation>
-					<euler y="90" x="0" aformat="degrees" z="-22.5"/>
-				</rotation>
-			</transform>
-			<mass>
-				<mass_shape density="2.0">
-					<box sizex="0.5" sizez="1.0" sizey="0.05"/>
-				</mass_shape>
-			</mass>
-			<geom>
-				<box sizex="0.5" sizez="1.0" sizey="0.05"/>
-			</geom>
-		</body>
-		<joint name="objectP00_objectP03">
-			<link1 body="objectP00"/>
-			<link2 body="objectP03"/>
-			<fixed>
-			</fixed>
-		</joint>
-		<body name="objectP04">
-			<transform>
-				<position y="1.13180339887" x="-6.5" z="-11.4736067977"/>
-				<rotation>
-					<euler y="90" x="0" aformat="degrees" z="22.5"/>
-				</rotation>
-			</transform>
-			<mass>
-				<mass_shape density="2.0">
-					<box sizex="0.5" sizez="1.0" sizey="0.05"/>
-				</mass_shape>
-			</mass>
-			<geom>
-				<box sizex="0.5" sizez="1.0" sizey="0.05"/>
-			</geom>
-		</body>
-		<joint name="objectP00_objectP04">
-			<link1 body="objectP00"/>
-			<link2 body="objectP04"/>
 			<fixed>
 			</fixed>
 		</joint>
@@ -666,7 +619,7 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocat
 ('armUpLeft', 'handUpLeft', 'armPRLeft')
 ('handUpRight', 'fingerRight2', 'fingerRight1', 'palmRight')
 ('shoulderUpRight', 'armUpRight', 'shoulderPRRight', 'shoulderLRRight')
-('objectP04', 'objectP02', 'objectP03', 'objectP00', 'objectP01')
+('objectP02', 'objectP00', 'objectP01')
 ('armPRRight', 'handUpRight', 'armUpRight')
 ('shoulderLRLeft', 'armUpLeft', 'shoulderUpLeft', 'shoulderPRLeft')
 ('palmLeft', 'handUpLeft', 'pressLeft1', 'pressLeft2', 'fingerLeft2', 'fingerLeft1')
@@ -689,10 +642,6 @@ body
 ('leg2', (0.59999999999999998, 0.80000000000000004, 0.80000000000000004, 0.80000000000000004))
 ('leg3', (0.59999999999999998, 0.80000000000000004, 0.80000000000000004, 0.80000000000000004))
 ('leg4', (0.59999999999999998, 0.80000000000000004, 0.80000000000000004, 0.80000000000000004))
-('objectP00', (0.59999999999999998, 0.59999999999999998, 0.80000000000000004, 0.94999999999999996))
-('objectP01', (0.59999999999999998, 0.59999999999999998, 0.80000000000000004, 0.94999999999999996))
-('objectP02', (0.59999999999999998, 0.59999999999999998, 0.80000000000000004, 0.94999999999999996))
-('objectP03', (0.59999999999999998, 0.59999999999999998, 0.80000000000000004, 0.94999999999999996))
-('objectP04', (0.59999999999999998, 0.59999999999999998, 0.80000000000000004, 0.94999999999999996))
+('objectP00', (0.59999999999999998, 0.59999999999999998, 0.80000000000000004, 0.5))
 <end>
 -->
