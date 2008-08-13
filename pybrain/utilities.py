@@ -180,7 +180,9 @@ class Serializable(object):
             # try to derive protocol from file extension
             format = formatFromExtension(filename)
         with file(filename) as fp:
-            return cls.loadFromFileLike(fp, format)
+            obj = cls.loadFromFileLike(fp, format)
+            obj.filename = filename
+            return obj
     
     def save_pickle(self, flo, protocol=0):
         pickle.dump(self, flo, protocol)
