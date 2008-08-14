@@ -6,15 +6,11 @@ def generateClassificationData(size):
     """ generate a set of points in 2D belonging to three different classes """
     means = [(-1,0),(2,4),(3,1)]
     cov = [p.diag([1,1]), p.diag([0.5,1.2]), p.diag([1.5,0.7])]
-    targets = []
-    inputs = []
-    for c in range(3):
-        xy = np.random.multivariate_normal(means[c],cov[c],size=size)
-        inputs.extend(xy)
-        targets.extend([c]*size)
     dataset = ClassificationDataSet(2, 1, nb_classes=3)
-    dataset.setField('input',  p.array(inputs))
-    dataset.setField('target', p.array(targets).reshape(size*3,1))
+    for n in xrange(size):
+        for klass in range(3):
+            input = np.random.multivariate_normal(means[c],cov[c])
+            dataset.addSample(input, [klass])
     return dataset
 
 def generateGridData(min, max, step):
