@@ -34,10 +34,7 @@ class Module(Named):
         self.indim = indim
         self.outdim = outdim
         # Those buffers are 2D arrays (time, dim)
-        self.inputbuffer = zeros((0,self.indim))
-        self.outputbuffer = zeros((0,self.outdim))
-        self.outputerror = zeros((0,self.outdim))
-        self.inputerror = zeros((0,self.indim))
+        self._resetBuffers()
         self._growBuffers()
         
     def _growBuffers(self):
@@ -49,17 +46,21 @@ class Module(Named):
         
     def _resetBuffers(self):
         """Reset buffers to a length (in time dimension) of 1."""
-        self.inputbuffer = zeros((1,self.indim))
-        self.outputbuffer = zeros((1,self.outdim))
-        self.outputerror = zeros((1,self.outdim))
-        self.inputerror = zeros((1,self.indim))
+        self.inputbuffer = zeros((128, self.indim))
+        self.outputbuffer = zeros((128, self.outdim))
+        self.outputerror = zeros((128, self.outdim))
+        self.inputerror = zeros((128, self.indim))
         
     def _resizeArray(self, a):
         """Increase the buffer size. It should always be one longer than the
         current sequence length and double on every growth step."""
-        dim = a.shape[1]
-        tmp = zeros(((self.seqlen + 1) * 2, dim))
-        tmp[0:self.seqlen] = a
+        oldsize, dim = a.shape
+        seqlen = max(self.seqlen, 1)
+        if seqlen < oldsize:
+            # No need to grow
+            return a
+        tmp = zeros((oldsize * 2, dim))
+        tmp[0:oldsize] = a
         return tmp
         
     def forward(self, time=None):
