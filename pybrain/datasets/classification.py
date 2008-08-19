@@ -75,10 +75,31 @@ class ClassificationDataSet(SupervisedDataSet):
         DS = cls(features, labels)
         return DS
  
+    def __add__(self, other):
+        """ adds the patterns of two datasets, if dimensions and type match """
+        if type(self) != type(other):
+            raise TypeError, 'DataSets to be added must agree in type'
+        elif self.indim != other.indim:
+            raise TypeError, 'DataSets to be added must agree in input dimensions'
+        elif self.outdim != 1 or other.outdim != 1:
+            raise TypeError, 'Cannot add DataSets in 1-of-k representation'
+        elif self.nClasses != other.nClasses:
+            raise IndexError, 'Number of classes does not agree'
+        else:
+            result = self.copy()
+            for pat in other:
+                result.addSample(*pat)
+            result.assignClasses()
+        return result
+    
     def assignClasses(self):
         """ ensure that the class field is properly defined, and nClasses is set. """
         if len(self['class']) < len(self['target']):
-            self.setField('class', self.getField('target') )
+            if self.outdim>1:
+                raise IndexError, 'Classes and 1-of-k representation out of sync!'
+            else:
+                self.setField('class', self.getField('target').astype(int) )
+                
         if self.nClasses <= 0:
             flat_labels = list( ravel(self['class']) )
             classes       = list(set( flat_labels ))
@@ -179,6 +200,10 @@ class SequenceClassificationDataSet(SequentialDataSet, ClassificationDataSet):
         # copy classes (targets may be changed into other representation)
         self.setField('class', self.getField('target') )
 
+    def __add__(self, other):
+        """ NOT IMPLEMENTED """
+        raise NotImplementedError
+    
     def stratifiedSplit(self, testfrac=0.15, evalfrac=0):
         """ Stratified random split of a sequence data set, i.e. (almost) same proportion of
         sequences in each class for all fragments. Returns (training, test[, eval]) data sets.
