@@ -10,7 +10,7 @@ import pickle
 
 from itertools import chain
 
-from scipy import zeros, resize, ravel, asarray
+from scipy import zeros, resize, ravel, asarray, array, copy
 
 from pybrain.utilities import abstractMethod, Serializable
 
@@ -296,12 +296,21 @@ class DataSet(Serializable):
     @classmethod
     def reconstruct(cls, filename ):
         """ read an incomplete data set (option arraysonly) into the given one. """
-        # FIXME: Provisional! Should be replaced once saving full arrays is working.
+        # FIXME: Obsolete! Kept here because of some old files...
         obj = cls(1,1)
         for key, val in pickle.load(file(filename)).iteritems():
             obj.setField(key, val)
         return obj
-                
+    
+    def save_pickle(self, flo, protocol=0, compact=False):
+        """ save data set as pickle, removing empty space if desired """
+        if compact:
+            # remove padding of zeros for each field
+            for field in self.getFieldNames():
+                temp = self[field][0:self.endmarker[field]+1,:]
+                self.setField(field, temp)
+        Serializable.save_pickle(self, flo, protocol)
+
     def __reduce__(self):
         def creator():
             obj = self.__class__()
