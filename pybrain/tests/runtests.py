@@ -49,9 +49,7 @@ def missingDependencies(target_module):
     return [i for i in dependencies if not testImport(i)]
 
 
-if __name__ == "__main__":
-    setUpLogging()
-    
+def make_test_suite():
     # The directory where the tests reside. Mind that this differs respecting 
     # to where the script is run from.
     testdir = "unittests/"
@@ -93,4 +91,9 @@ if __name__ == "__main__":
     for mod in modules:
         suite.addTest(doctest.DocTestSuite(mod, optionflags=optionflags))
     
-    runner.run(suite)
+    
+
+
+if __name__ == "__main__":
+    setUpLogging()
+    runner.run(make_test_suite())
