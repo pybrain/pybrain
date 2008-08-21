@@ -16,6 +16,8 @@ class Tournament(Named):
         self.startcolor = env.startcolor
         self.env = env
         self.agents = agents
+        for a in agents:
+            a.game = self.env        
         self.reset()
         
     def reset(self):
@@ -40,10 +42,12 @@ class Tournament(Named):
         players = (p1, p2)
         p1.color = self.startcolor
         p2.color = -p1.color
+        p1.newEpisode()
+        p2.newEpisode()
         i = 0
         while not self.env.gameOver():
             p = players[i]
-            i = (i+1)%2 # alternate            
+            i = (i+1)%2 # alternate      
             act = p.getAction()
             
             if self.forcedLegality:
@@ -54,7 +58,7 @@ class Tournament(Named):
                     act = p.getAction()                
                     if tries > 50:
                         raise Exception('No legal move produced!')
-            
+                
             self.env.performAction(act)            
             
         if players not in self.results: 

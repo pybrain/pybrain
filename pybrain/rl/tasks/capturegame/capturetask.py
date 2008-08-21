@@ -37,6 +37,8 @@ class CaptureGameTask(EpisodicTask, Named):
         elif isclass(opponent):
             # assume the agent can be initialized without arguments then.
             opponent = opponent(self.env)
+        else:
+            opponent.game = self.env
         if not self.opponentStart:
             opponent.color = CaptureGame.WHITE
         self.opponent = opponent
@@ -89,9 +91,12 @@ class CaptureGameTask(EpisodicTask, Named):
         else:
             raise NotImplementedError('Missing implementation for '+x.__class__.__name__+' evaluation')
         res = 0
+        agent.game = self.env
+        self.opponent.game = self.env
         for dummy in range(self.averageOverGames):
             agent.color = -self.opponent.color
-            res += EpisodicTask.__call__(self, agent)            
+            x = EpisodicTask.__call__(self, agent)           
+            res += x
         return res / float(self.averageOverGames)
     
     
