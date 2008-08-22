@@ -29,9 +29,13 @@ def abstractMethod():
     raise NotImplementedError('Method not implemented!')
 
 
-def combineLists(ls):
+def combineLists(lsts):
     """ combine a list of lists into a single list """
-    return reduce(lambda x,y: x+y, ls, [])
+    new = []
+    for lst in lsts:
+        for i in lst:
+            new.append(i)
+    return new
 
 
 def drawIndex(probs, tolerant = False):
@@ -91,6 +95,7 @@ def setAllArgs(obj, argdict):
     """ set all those internal variables which have the same name than an entry in the 
     given object's dictionnary. 
     This function can be useful for quick initializations. """
+    
     xmlstore = isinstance(obj, XMLBuildable)
     for n in argdict.keys():
         if hasattr(obj, n):
@@ -249,6 +254,13 @@ def confidenceIntervalSize(stdev, nbsamples):
     therfore on the two-sided interval: 95% """
     # CHECKME: for better precision, maybe get the percentile dynamically, from the scipy library?
     return 2*1.98*stdev/sqrt(nbsamples)   
+    
+    
+def trace(func):
+    def inner(*args, **kwargs):
+        print "%s: %s, %s" % (func.__name__, args, kwargs)
+        return func(*args, **kwargs)
+    return inner
     
     
 def threaded(callback=lambda *args, **kwargs: None, daemonic=False):
