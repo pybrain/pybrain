@@ -18,12 +18,12 @@ Construct a network, normally, and sort it
     ...    n.addConnection(c)
     ...
     >>> n.sortModules()
-    >>> ord = str(n.modules)        
+    >>> ord = str(n.modulesSorted)        
     
 Is the order the same, if we sort it again?
 
     >>> n.sortModules()
-    >>> ord2 = str(n.modules)
+    >>> ord2 = str(n.modulesSorted)
     >>> ord == ord2
     True
     
@@ -37,7 +37,7 @@ What if we construct it in a different order?
     ...    n.addConnection(c)
     ...
     >>> n.sortModules()
-    >>> ord3 = str(n.modules) 
+    >>> ord3 = str(n.modulesSorted) 
     >>> ord == ord3
     True
     

@@ -50,9 +50,10 @@ def missingDependencies(target_module):
 
 
 def make_test_suite():
-    # The directory where the tests reside. Mind that this differs respecting 
-    # to where the script is run from.
-    testdir = "unittests/"
+    # The directory where the tests reside relative to the directory of this 
+    # file.
+    test_path_list = list(os.path.split(__file__)[:-1]) + ['unittests/']
+    testdir = os.path.join(*test_path_list)
     
     # All unittest modules have to start with 'test_' and have to be, of 
     # course, python files
@@ -65,7 +66,8 @@ def make_test_suite():
         
     # "Magically" import the tests package and its test-modules that we've 
     # found
-    test_package = __import__(testdir[:-1], fromlist=module_names)
+    test_package_path = 'pybrain.tests.unittests'
+    test_package = __import__(test_package_path, fromlist=module_names)
     
     # Put the test modules in a list that can be passed to the testsuite
     modules = (getattr(test_package, n) for n in module_names)
@@ -83,17 +85,17 @@ def make_test_suite():
         logging.info("Tests found: %s" % m.__name__)
     
     # Build up the testsuite     
-    runner = TextTestRunner()
     suite = TestSuite([TestLoader().loadTestsFromModule(m) for m in modules])
     
     # Add doctests from the unittest modules to the suite
     optionflags = doctest.ELLIPSIS | doctest.NORMALIZE_WHITESPACE
     for mod in modules:
         suite.addTest(doctest.DocTestSuite(mod, optionflags=optionflags))
+        
+    return suite
     
-    
-
 
 if __name__ == "__main__":
     setUpLogging()
+    runner = TextTestRunner()
     runner.run(make_test_suite())

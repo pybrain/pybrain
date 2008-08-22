@@ -17,6 +17,17 @@ Check its gradient:
     >>> gradientCheck(n)
     Perfect gradient
     True
+    
+    >>> net = Network()
+    >>> l = LSTMLayer(1)
+    >>> net.addRecurrentConnection(FullConnection(l, l))
+    >>> net.addInputModule(l)
+    >>> net.outmodules.append(l)
+    >>> net.sortModules()
+    >>> gradientCheck(net)
+    Perfect gradient
+    True
+    
 
 Try writing it to an xml file, reread it and determine if it looks the same:
     
@@ -25,6 +36,9 @@ Try writing it to an xml file, reread it and determine if it looks the same:
     Same representation
     Same function
     Same class
+    
+    
+    
     
 """
 
