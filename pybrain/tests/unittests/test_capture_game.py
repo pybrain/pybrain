@@ -4,11 +4,11 @@ Initialize a capturegame
     >>> from pybrain.rl.environments.twoplayergames import CaptureGame    
     >>> c = CaptureGame(5)
     >>> print c
-     _ _ _ _ _
-     _ _ _ _ _
-     _ _ _ _ _
-     _ _ _ _ _
-     _ _ _ _ _
+     . . . . .
+     . . . . .
+     . . . . .
+     . . . . .
+     . . . . .
 
 
 Do some moves to produce a situation
@@ -35,11 +35,11 @@ White wins.
     
 Check if all the values are right:
     >>> print c
-     x # * _ _
-     # # * _ _
-     * * _ _ _
-     _ _ _ _ _
-     _ _ _ _ _
+     x X O . .
+     X X O . .
+     O O . . .
+     . . . . .
+     . . . . .
     Winner:-1 (moves done:8)
     
     >>> c.groups

@@ -42,7 +42,6 @@ class ModuleMesh(Named):
                 yield ModuleSlice(layer, insize*index, insize*(index+1), outsize*index, outsize*(index+1))
         c = slicer()
         return ModuleMesh(lambda: c.next(), dimensions, name)
-    
             
     def __iter__(self):
         for coord in iterCombinations(self.dims):

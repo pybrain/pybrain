@@ -4,13 +4,13 @@ Build a simple mdlstm network with peepholes:
 
     >>> n = buildSimpleMDLSTMNetwork(True)
     simpleMDLstmNet
-      Modules:
-        [<BiasUnit 'bias'>, <LinearLayer 'i'>, <MDLSTMLayer 'MDlstm'>, <LinearLayer 'o'>]
-      Connections:
-        [<FullConnection 'f2': 'bias' -> 'MDlstm'>, <FullConnection 'f1': 'i' -> 'MDlstm'>, <FullConnection 'f3': 'MDlstm' -> 'o'>]
-      Recurrent Connections:
+       Modules:
+        [<MDLSTMLayer 'MDlstm'>, <BiasUnit 'bias'>, <LinearLayer 'i'>, <LinearLayer 'o'>]
+       Connections:
+        [<FullConnection 'f1': 'i' -> 'MDlstm'>, <FullConnection 'f2': 'bias' -> 'MDlstm'>, <FullConnection 'f3': 'MDlstm' -> 'o'>]
+       Recurrent Connections:
         [<FullConnection 'r1': 'MDlstm' -> 'MDlstm'>, <IdentityConnection 'rstate': 'MDlstm' -> 'MDlstm'>]
-        
+
 Check its gradient:
 
     >>> from pybrain.tests import gradientCheck

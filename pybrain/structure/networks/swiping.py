@@ -44,7 +44,8 @@ class SwipingNetwork(Network):
         """ verify dimension matching between the meshes """
         assert self.dims == inmesh.dims
         assert outmesh.dims == self.dims
-        assert tuple(hiddenmesh.dims[:-1]) == self.dims
+        assert tuple(hiddenmesh.dims[:-1]) == self.dims, '%s <-> %s' % (
+                hiddenmesh.dims[:-1], self.dims)
         assert hiddenmesh.dims[-1] == self.swipes
         assert min(self.dims) > 1        
         

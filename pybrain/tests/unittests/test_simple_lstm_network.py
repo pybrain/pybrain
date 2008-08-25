@@ -4,12 +4,12 @@ Build a simple lstm network with peepholes:
 
     >>> n = buildSimpleLSTMNetwork(True)
     simpleLstmNet
-      Modules:
+       Modules:
         [<BiasUnit 'bias'>, <LinearLayer 'i'>, <LSTMLayer 'lstm'>, <LinearLayer 'o'>]
-      Connections:
-        [<FullConnection 'f2': 'bias' -> 'lstm'>, <FullConnection 'f1': 'i' -> 'lstm'>, <FullConnection 'r1': 'lstm' -> 'o'>]
-      Recurrent Connections:
-        [<FullConnection 'r1': 'lstm' -> 'lstm'>]        
+       Connections:
+        [<FullConnection 'f1': 'i' -> 'lstm'>, <FullConnection 'f2': 'bias' -> 'lstm'>, <FullConnection 'r1': 'lstm' -> 'o'>]
+       Recurrent Connections:
+        [<FullConnection 'r1': 'lstm' -> 'lstm'>]
         
 Check its gradient:
 

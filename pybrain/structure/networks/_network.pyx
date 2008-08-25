@@ -37,7 +37,7 @@ def Network_forwardImplementation(self, ndarray inbuf, ndarray outbuf):
             for c in self.recurrentConns:
                 c.forward(t-1, t)
         
-        for m in self.modules:
+        for m in self.modulesSorted:
             m.forward(t)
             for c in self.connections[m]:
                 c.forward(t)

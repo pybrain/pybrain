@@ -19,7 +19,8 @@ class Network(Module, ParameterContainer):
         ParameterContainer.__init__(self, **args)
         self.name = name
         # a sorted list of modules
-        self.modules = []
+        self.modules = set()
+        self.modulesSorted = []
         # the connections are stored in a dictionnary:  the key is the module where the
         # connection leaves from, the value is a list of the corresponding connections
         self.connections = {}
@@ -32,15 +33,23 @@ class Network(Module, ParameterContainer):
         self.sorted = False
         
     def __str__(self):
-        s = self.name
-        s += '\n  Modules:\n    '
-        s += repr(self.modules)
-        s += '\n  Connections:\n    '
-        s += str(combineLists(map(lambda m: self.connections[m], self.modules)))
-
-        if len(self.recurrentConns) > 0:
-            s += '\n  Recurrent Connections:\n    '
-            s += str(sorted(self.recurrentConns, key=lambda x: x.name))
+        sortedByName = lambda itr: sorted(itr, key=lambda i: i.name)
+        
+        sortedModules = sortedByName(self.modules)
+        params = {
+            'name': self.name,
+            'modules': sortedModules,
+            'connections': 
+                sortedByName(combineLists(
+                    [self.connections[m] for m in sortedModules])),
+            'recurrentConns': sortedByName(self.recurrentConns),
+        }
+        
+        s = ("%(name)s\n" +
+             "   Modules:\n    %(modules)s\n" +
+             "   Connections:\n    %(connections)s\n" + 
+             "   Recurrent Connections:\n    %(recurrentConns)s") % params
+        
         return s
         
     def __getitem__(self, name):
@@ -68,7 +77,7 @@ class Network(Module, ParameterContainer):
     def addModule(self, m):
         if isinstance(m, ModuleSlice): m = m.base
         if m not in self.modules:
-            self.modules.append(m)
+            self.modules.add(m)
         if not m in self.connections:
             self.connections[m] = []
         if m.paramdim > 0:
@@ -136,7 +145,7 @@ class Network(Module, ParameterContainer):
         
     @substitute('pybrain.pyrex._network.Network_forwardImplementation')
     def _forwardImplementation(self, inbuf, outbuf):
-        assert self.sorted
+        assert self.sorted, ".sortModules() has not been called"
         index = 0
         t = self.time
         for m in self.inmodules:
@@ -147,7 +156,7 @@ class Network(Module, ParameterContainer):
             for c in self.recurrentConns:
                 c.forward(t-1, t)
         
-        for m in self.modules:
+        for m in self.modulesSorted:
             m.forward(t)
             for c in self.connections[m]:
                 c.forward(t)
@@ -158,7 +167,7 @@ class Network(Module, ParameterContainer):
             index += m.outdim
             
     def _backwardImplementation(self, outerr, inerr, outbuf, inbuf):
-        assert self.sorted
+        assert self.sorted, ".sortModules() has not been called"
         index = 0
         t = self.time
         for m in self.outmodules:
@@ -169,7 +178,7 @@ class Network(Module, ParameterContainer):
             for c in self.recurrentConns:
                 c.backward(t, t+1)
         
-        for m in reversed(self.modules):
+        for m in reversed(self.modulesSorted):
             for c in self.connections[m]:
                 c.backward(t)
             m.backward(t)
@@ -205,11 +214,11 @@ class Network(Module, ParameterContainer):
         # a node may convert some of the node's direct children into roots.
         # Whenever that happens, we append the new roots to the list of
         # current roots.
-        self.modules = []
+        self.modulesSorted = []
         while len(roots) != 0:
             root = roots[0]
             roots = roots[1:]
-            self.modules.append(root)
+            self.modulesSorted.append(root)
             for child in graph[root][1:]:
                 graph[child][0] -= 1
                 if graph[child][0] == 0:
@@ -232,7 +241,6 @@ class Network(Module, ParameterContainer):
             #print self.connections[m]
         self.recurrentConns.sort(key=lambda x: x.name)
         self.motherconnections.sort(key=lambda x: x.name)
-            
             
         # create a single array with all parameters
         tmp = map(lambda pc: pc.params, self._containerIterator())
@@ -265,11 +273,6 @@ class Network(Module, ParameterContainer):
         Module.__init__(self, self.indim, self.outdim, name = self.name)
         self.sorted = True
         
-    def saveToFile(self, filename, protocol=0):
-        """Save the current dataset to the given filename."""
-        with file(filename, 'w+') as fp:
-            cPickle.dump(self, fp, protocol=protocol)
-            
     def _resetBuffers(self):
         Module._resetBuffers(self)
         for m in self.modules:
