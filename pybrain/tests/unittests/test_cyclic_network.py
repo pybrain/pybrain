@@ -5,7 +5,7 @@ Trying to build a cyclic network (should fail):
     >>> buildCyclicNetwork(False)
     Traceback (most recent call last):
         ...
-    Exception: There is a loop in the network!?
+    NetworkConstructionException: Loop in network graph.    
     
 If one connection is recurrent, it should work:
     

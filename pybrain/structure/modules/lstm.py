@@ -18,17 +18,17 @@ class LSTMLayer(NeuronLayer, ParameterContainer):
         self.setArgs(dim = dim, peepholes = peepholes)
         
         # internal buffers:
-        self.ingate = zeros((0,dim))
-        self.outgate = zeros((0,dim))
-        self.forgetgate = zeros((0,dim))
-        self.ingatex = zeros((0,dim))
-        self.outgatex = zeros((0,dim))
-        self.forgetgatex = zeros((0,dim))
-        self.state = zeros((0,dim))
-        self.ingateError = zeros((0,dim))
-        self.outgateError = zeros((0,dim))
-        self.forgetgateError = zeros((0,dim))
-        self.stateError = zeros((0,dim))
+        self.ingate = zeros((1, dim))
+        self.outgate = zeros((1, dim))
+        self.forgetgate = zeros((1, dim))
+        self.ingatex = zeros((1, dim))
+        self.outgatex = zeros((1, dim))
+        self.forgetgatex = zeros((1, dim))
+        self.state = zeros((1, dim))
+        self.ingateError = zeros((1, dim))
+        self.outgateError = zeros((1, dim))
+        self.forgetgateError = zeros((1, dim))
+        self.stateError = zeros((1, dim))
         
         Module.__init__(self, 4*dim, dim, name)
         if self.peepholes:
@@ -75,17 +75,17 @@ class LSTMLayer(NeuronLayer, ParameterContainer):
     def _resetBuffers(self):
         """ reset buffers to a length (in time dimension) of 1 """
         Module._resetBuffers(self)
-        self.ingate = zeros((1,self.dim))
-        self.outgate = zeros((1,self.dim))
-        self.forgetgate = zeros((1,self.dim))
-        self.ingatex = zeros((1,self.dim))
+        self.ingate = zeros((1, self.dim))
+        self.outgate = zeros((1, self.dim))
+        self.forgetgate = zeros((1, self.dim))
+        self.ingatex = zeros((1, self.dim))
         self.outgatex = zeros((1,self.dim))
-        self.forgetgatex = zeros((1,self.dim))
-        self.state = zeros((1,self.dim))
-        self.ingateError = zeros((1,self.dim))
-        self.outgateError = zeros((1,self.dim))
-        self.forgetgateError = zeros((1,self.dim))
-        self.stateError = zeros((1,self.dim))
+        self.forgetgatex = zeros((1, self.dim))
+        self.state = zeros((1, self.dim))
+        self.ingateError = zeros((1, self.dim))
+        self.outgateError = zeros((1, self.dim))
+        self.forgetgateError = zeros((1, self.dim))
+        self.stateError = zeros((1, self.dim))
         
     def reset(self):
         Module.reset(self)
@@ -104,7 +104,11 @@ class LSTMLayer(NeuronLayer, ParameterContainer):
     def _forwardImplementation(self, inbuf, outbuf):
         dim = self.outdim
         # slicing the input buffer into the 4 parts
-        self.ingatex[self.time] = inbuf[:dim]
+        try:
+            self.ingatex[self.time] = inbuf[:dim]
+        except IndexError:
+            raise str((self.time, self.ingatex.shape))
+        
         self.forgetgatex[self.time] = inbuf[dim:dim*2]
         cellx = inbuf[dim*2:dim*3]
         self.outgatex[self.time] = inbuf[dim*3:]

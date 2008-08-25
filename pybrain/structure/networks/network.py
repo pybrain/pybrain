@@ -1,9 +1,12 @@
 from __future__ import with_statement
 
+
 __author__ = 'Daan Wierstra and Tom Schaul'
 
+
 import cPickle
-from scipy import size
+
+import scipy
 
 from pybrain.structure.moduleslice import ModuleSlice
 from pybrain.structure.modules.module import Module
@@ -12,24 +15,32 @@ from pybrain.utilities import combineLists, substitute
 from pybrain.structure.connections.shared import SharedConnection
 from pybrain.structure.evolvables.evolvable import Evolvable
 
-class Network(Module, ParameterContainer):
-    """ A network is linking different modules with connections. """
 
-    def __init__(self, name = None, **args):
+class NetworkConstructionException(Exception):
+    """Exception that indicates that the structure of the network is invalid."""
+
+
+class Network(Module, ParameterContainer):
+    """A network is linking different modules with connections. """
+
+    def __init__(self, name=None, **args):
         ParameterContainer.__init__(self, **args)
         self.name = name
-        # a sorted list of modules
+        # Due to the necessity of regular testing for membership, modules are 
+        # stored in a set.
         self.modules = set()
         self.modulesSorted = []
-        # the connections are stored in a dictionnary:  the key is the module where the
-        # connection leaves from, the value is a list of the corresponding connections
+        # The connections are stored in a dictionary: the key is the module 
+        # where the connection leaves from, the value is a list of the 
+        # corresponding connections.
         self.connections = {}
         self.recurrentConns = []
         self.inmodules = []
         self.outmodules = []
-        # special treatment of weight-shared connections
+        # Special treatment of weight-shared connections.
         self.motherconnections = []
-        # this flag is used to make sure that the modules are reordered when new connections are added
+        # This flag is used to make sure that the modules are reordered when 
+        # new connections are added.
         self.sorted = False
         
     def __str__(self):
@@ -53,14 +64,17 @@ class Network(Module, ParameterContainer):
         return s
         
     def __getitem__(self, name):
-        """return the module with that name """
+        """Return the module with the given name."""
         for m in self.modules:
             if m.name == name:
                 return m
         return None
         
     def _containerIterator(self):
-        """ return an iterator over the parameter containers of the network, which are not empty. """
+        """Return an iterator over the non-empty ParameterContainers of the 
+        network.
+        
+        The order is not deterministic."""
         for m in self.modules:
             if m.paramdim:
                 yield m
@@ -75,7 +89,9 @@ class Network(Module, ParameterContainer):
                 yield mc
             
     def addModule(self, m):
-        if isinstance(m, ModuleSlice): m = m.base
+        """Add the given module to the network."""
+        if isinstance(m, ModuleSlice): 
+            m = m.base
         if m not in self.modules:
             self.modules.add(m)
         if not m in self.connections:
@@ -87,18 +103,24 @@ class Network(Module, ParameterContainer):
         self.sorted = False
 
     def addInputModule(self, m):
+        """Add the given module to the network and mark it as an input module.
+        """
         if isinstance(m, ModuleSlice): m = m.base
         if m not in self.inmodules:
             self.inmodules.append(m)
         self.addModule(m)
         
     def addOutputModule(self, m):
-        if isinstance(m, ModuleSlice): m = m.base
+        """Add the given module to the network and mark it as an output module.
+        """
+        if isinstance(m, ModuleSlice): 
+            m = m.base
         if m not in self.outmodules:
             self.outmodules.append(m)
         self.addModule(m)
         
     def addConnection(self, c):
+        """Add the given connection to the network."""
         if not c.inmod in self.connections:
             self.connections[c.inmod] = []
         self.connections[c.inmod].append(c)
@@ -111,6 +133,7 @@ class Network(Module, ParameterContainer):
         self.sorted = False
 
     def addRecurrentConnection(self, c):
+        """Add a connection to the network and mark it as a recurrent one."""
         self.sequential = True
         if isinstance(c, SharedConnection):
             if c.mother not in self.motherconnections:
@@ -122,7 +145,7 @@ class Network(Module, ParameterContainer):
         self.sorted = False
 
     def reset(self):
-        """ reset all component modules, and self. """
+        """Reset all component modules and the network."""
         Module.reset(self)
         for m in self.modules:
             m.reset()    
@@ -189,28 +212,29 @@ class Network(Module, ParameterContainer):
             index += m.indim
         
     def _topologicalSort(self):
-        """ update the network structure, and sort the modules topologically. """
+        """Update the network structure and make .modulesSorted a topologically
+        sorted list of the modules."""
         # Algorithm: R. E. Tarjan (1972), stolen from:
         #     http://www.bitformation.com/art/python_toposort.html
                 
-        # create a directed graph, including a counter of incoming connections
+        # Create a directed graph, including a counter of incoming connections.
         graph = {}
         for node in self.modules:
             if not graph.has_key(node):
-                # zero incoming connections
+                # Zero incoming connections.
                 graph[node] = [0]
         for c in combineLists(self.connections.values()):
             graph[c.inmod].append(c.outmod)
             # Update the count of incoming arcs in outnode.
             graph[c.outmod][0] +=1 
 
-        # find all roots (nodes with zero incoming arcs).
+        # Find all roots (nodes with zero incoming arcs).
         roots = [node for (node, nodeinfo) in graph.items() if nodeinfo[0] == 0]
         
-        # we want the same ordering on all runs
+        # Make sure the ordering on all runs is the same.
         roots.sort(key = lambda x: x.name)        
         
-        # repeatedly emit a root and remove it from the graph. Removing
+        # Repeatedly emit a root and remove it from the graph. Removing
         # a node may convert some of the node's direct children into roots.
         # Whenever that happens, we append the new roots to the list of
         # current roots.
@@ -225,51 +249,51 @@ class Network(Module, ParameterContainer):
                     roots.append(child)
             del graph[root]
 
-        if len(graph) != 0:
-            print graph
-            raise Exception, 'There is a loop in the network!?'
+        if graph:
+            raise NetworkConstructionException("Loop in network graph.")
         
     def sortModules(self):
-        """ this method needs to be called after the network structure has changed, before it can be used. """
+        """Prepare the network for activation by sorting the internal 
+        datastructure.
+        
+        Needs to be called before activation."""
         if self.sorted:
             return
-        # sort the modules
+        # Sort the modules.
         self._topologicalSort()
-        # also the connections
+        # Sort the connections by name.
         for m in self.modules:
             self.connections[m].sort(key=lambda x: x.name)
-            #print self.connections[m]
         self.recurrentConns.sort(key=lambda x: x.name)
         self.motherconnections.sort(key=lambda x: x.name)
             
-        # create a single array with all parameters
-        tmp = map(lambda pc: pc.params, self._containerIterator())
-        ParameterContainer.__init__(self, sum(map(size, tmp)))
-        # TODO: speed-optimize, maybe
-        index = 0
-        for x in tmp:
-            self.params[index:index+size(x)] = x
-            index += size(x)
+        # Create a single array with all parameters.
+        tmp = [pc.params for pc in self._containerIterator()]
+        total_size = sum(scipy.size(i) for i in tmp)
+        ParameterContainer.__init__(self, total_size)
+        self.params[:] = scipy.concatenate(tmp)
         self._setParameters(self.params)
         
-        # same thing for derivatives
-        tmp = map(lambda pc: pc.derivs, self._containerIterator())
+        # Create a single array with all derivatives.
+        tmp = [pc.derivs for pc in self._containerIterator()]
         self.resetDerivatives()
-        index = 0
-        for x in tmp:
-            self.derivs[index:index+size(x)] = x
-            index += size(x)
+        self.derivs[:] = scipy.concatenate(tmp)
         self._setDerivatives(self.derivs)
         
-        # determine the input and output dimensions of the network
+        # TODO: make this a property; indim and outdim are invalid before 
+        # .sortModules is called!
+        # Determine the input and output dimensions of the network.
+        self.indim = sum(m.indim for m in self.inmodules)
+        self.outdim = sum(m.outdim for m in self.outmodules)
+        
         self.indim = 0
         for m in self.inmodules:
             self.indim += m.indim
         self.outdim = 0
         for m in self.outmodules:
             self.outdim += m.outdim
-            
-        # initialize the network buffers
+        
+        # Initialize the network buffers.
         Module.__init__(self, self.indim, self.outdim, name = self.name)
         self.sorted = True
         

@@ -46,10 +46,10 @@ class Module(Named):
         
     def _resetBuffers(self):
         """Reset buffers to a length (in time dimension) of 1."""
-        self.inputbuffer = zeros((128, self.indim))
-        self.outputbuffer = zeros((128, self.outdim))
-        self.outputerror = zeros((128, self.outdim))
-        self.inputerror = zeros((128, self.indim))
+        self.inputbuffer = zeros((1, self.indim))
+        self.outputbuffer = zeros((1, self.outdim))
+        self.outputerror = zeros((1, self.outdim))
+        self.inputerror = zeros((1, self.indim))
         
     def _resizeArray(self, a):
         """Increase the buffer size. It should always be one longer than the
