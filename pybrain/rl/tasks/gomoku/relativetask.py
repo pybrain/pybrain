@@ -48,6 +48,8 @@ class RelativeGomokuTask(GomokuTask):
         else:
             assert isinstance(p1, GomokuPlayer)
             assert isinstance(p2, GomokuPlayer)
+            p1.game = self.task.env
+            p2.game = self.task.env
         p1.color = GomokuGame.BLACK
         p2.color = -p1.color
         self.player = p1

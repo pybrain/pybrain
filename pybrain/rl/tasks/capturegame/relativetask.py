@@ -55,6 +55,8 @@ class RelativeCaptureTask(CaptureGameTask):
         else:
             assert isinstance(p1, CapturePlayer)
             assert isinstance(p2, CapturePlayer)
+            p1.game = self.task.env
+            p2.game = self.task.env
         p1.color = CaptureGame.BLACK
         p2.color = -p1.color
         self.player = p1

@@ -137,6 +137,8 @@ class GomokuGame(TwoPlayerGame):
         """ alternate playing moves between players until the game is over. """
         assert p1.color == -p2.color
         i = 0
+        p1.game = self
+        p2.game = self
         players = [p1, p2]
         while not self.gameOver():
             p = players[i]

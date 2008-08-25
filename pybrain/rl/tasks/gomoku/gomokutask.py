@@ -91,6 +91,8 @@ class GomokuTask(EpisodicTask, Named):
         else:
             raise NotImplementedError('Missing implementation for '+x.__class__.__name__+' evaluation')
         res = 0
+        agent.game = self.env
+        self.opponent.game = self.env
         for dummy in range(self.averageOverGames):
             agent.color = -self.opponent.color
             res += EpisodicTask.__call__(self, agent)            
