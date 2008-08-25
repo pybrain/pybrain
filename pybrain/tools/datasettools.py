@@ -73,8 +73,74 @@ def windowSequenceEval(DS, winsz, result):
     print "total fraction of correct sequences: ", 100.*float((seq_res>=0.5).sum())/seq_res.size
         
     
+class DataSetNormalizer(object):
+    """ normalize a dataset according to a stored LIBSVM normalization file """
+    def __init__(self, meanstd=False, fname=None):
+        self.dim = 0
+        self.meanstd = meanstd
+        if fname is not None:
+            self.load(fname)
+            
+    def load(self, fname):
+        f = file(fname)
+        c = []
+        # the first line determines whether we interpret the file as 
+        # giving min/max of features or mean/std
+        x = f.readline()
+        self.meanstd = False if x == 'x' else True
+        
+        # the next line gives the normalization bounds 
+        bounds = pylab.array(f.readline().split()).astype(float)
+        for line in f:
+            c.append(pylab.array(line.split()).astype(float)[1:])
+        self.dim = len(c)
+        c = pylab.asarray(c)
+        self.par1 = c[:,0]
+        self.par2 = c[:,1]
+        self.scale = (bounds[1]-bounds[0])/(c[:,1]-c[:,0])
+        self.newmin = bounds[0]
+        self.newmax = bounds[1]
+
+        
+    def save(self, fname):
+        f = file(fname, "w+")
+        f.write('x\n')
+        f.write('%g %g'%(self.newmin, self.newmax))
+        for i in range(self.dim):
+            f.write('%d %g %g'%(i+1, self.par1[i], self.par2[i]))
+        f.close()
+        
+    def _normalizePattern(self, y):
+        return (y-self.par1)*self.scale + self.newmin
     
-    
+    def normalize(self, ds, field='input'):
+        """ normalize dataset or vector wrt. to stored min and max """
+        if self.dim <= 0:
+            raise IndexError, "No normalization parameters defined!"
+        dsdim = ds[field].shape[1]
+        if self.dim != dsdim:
+            raise IndexError, "Dimension of normalization params does not match DataSet field!"
+        newfeat = ds[field]
+        if self.meanstd:
+            for i in range(dsdim):
+                newfeat[:,i] = (newfeat[:,i]-self.par1[i])/self.par2[i]
+        else:
+            for i in range(dsdim):
+                newfeat[:,i] = (newfeat[:,i]-self.par1[i])*self.scale[i] + self.newmin
+        ds.setField(field, newfeat)
+        
+    def calculate(self, ds, bounds=[-1,1], field='input'):
+        self.dim = dsdim = ds[field].shape[1]
+        if self.meanstd:
+            self.par1 = ds[field].mean(axis=0)
+            self.par2 = ds[field].std(axis=0)
+        else:
+            self.par1 = ds[field].min(axis=0)
+            self.par2 = ds[field].max(axis=0)
+            self.scale = (bounds[1]-bounds[0])/(self.par2-self.par1)
+        self.newmin = bounds[0]
+        self.newmax = bounds[1]
+        
     
 if __name__ == "__main__":
     winsize = 5
