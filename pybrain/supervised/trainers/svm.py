@@ -1,5 +1,3 @@
-
-
 __author__ = 'Michael Isik'
 
 
@@ -7,7 +5,6 @@ import numpy
 from numpy            import array, zeros, empty, where, abs, inner, exp,  float, float64, int, Infinity
 from trainer          import Trainer
 from pybrain.datasets import SupervisedDataSet
-#from pybrain.examples.svm.svmtrainer import selectWorkingSet # zzzzzzzttttttt
 
 
 
