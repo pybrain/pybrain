@@ -13,7 +13,7 @@ class XORDataSet(SupervisedDataSet):
         
 
 class SequentialXORDataSet(ImportanceDataSet):
-    """ ame thing, but sequential, and having no importance on a second output"""
+    """ same thing, but sequential, and having no importance on a second output"""
     def __init__(self):
         ImportanceDataSet.__init__(self, 2, 2)
         self.addSample([0,0],[0, 1],  [1,0])
