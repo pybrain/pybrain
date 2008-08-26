@@ -16,10 +16,7 @@ from pybrain.structure.modules.mcsvm   import MCSVM
 
 from numpy import array
 
-import getopt, sys, scipy
-
-#import profile
-
+import getopt, sys
 
 
 
@@ -99,7 +96,8 @@ if __name__ == "__main__":
 
     for o, a in opts:
         if o == "-v":
-            incVerbosity()
+            #incVerbosity()
+            pass
         elif o in ("-t"):
             kernel_type = {
                 0:  KT.LINEAR,

@@ -5,12 +5,10 @@ __author__ = 'Michael Isik'
 
 from pybrain.tools.svmdata import SVMData
 from pybrain.datasets import SupervisedDataSet
-from pybrain.supervised.trainers.svm import MCSVMTrainer
+from pybrain.supervised.trainers.mcsvm import MCSVMTrainer
 from pybrain.structure.modules.svm import KT,MCSVM
 import getopt,sys
 
-
-from numpy import array
 
 def getUsage():
     return '''

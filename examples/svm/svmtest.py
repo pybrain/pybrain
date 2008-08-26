@@ -5,10 +5,8 @@ __author__ = 'Michael Isik'
 
 from pybrain.structure.modules.svm import SVM
 from pybrain.tools.svmdata import SVMData
-from numpy import empty,sum
+from numpy import sum
 import getopt,sys
-
-
 
 
 def getUsage():
