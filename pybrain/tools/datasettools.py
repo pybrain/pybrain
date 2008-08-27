@@ -75,7 +75,7 @@ def windowSequenceEval(DS, winsz, result):
     
 class DataSetNormalizer(object):
     """ normalize a dataset according to a stored LIBSVM normalization file """
-    def __init__(self, meanstd=False, fname=None):
+    def __init__(self, fname=None, meanstd=False):
         self.dim = 0
         self.meanstd = meanstd
         if fname is not None:
@@ -90,11 +90,11 @@ class DataSetNormalizer(object):
         self.meanstd = False if x == 'x' else True
         
         # the next line gives the normalization bounds 
-        bounds = pylab.array(f.readline().split()).astype(float)
+        bounds = array(f.readline().split()).astype(float)
         for line in f:
-            c.append(pylab.array(line.split()).astype(float)[1:])
+            c.append(array(line.split()).astype(float)[1:])
         self.dim = len(c)
-        c = pylab.asarray(c)
+        c = array(c)
         self.par1 = c[:,0]
         self.par2 = c[:,1]
         self.scale = (bounds[1]-bounds[0])/(c[:,1]-c[:,0])
@@ -110,7 +110,7 @@ class DataSetNormalizer(object):
             f.write('%d %g %g'%(i+1, self.par1[i], self.par2[i]))
         f.close()
         
-    def _normalizePattern(self, y):
+    def normalizePattern(self, y):
         return (y-self.par1)*self.scale + self.newmin
     
     def normalize(self, ds, field='input'):

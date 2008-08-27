@@ -127,7 +127,7 @@ def formatFromExtension(fname):
     if not ext: 
         return None
     try:
-        format = known_extensions[ext]
+        format = known_extensions[ext.replace('.','')]
     except KeyError:
         format = None
     return format

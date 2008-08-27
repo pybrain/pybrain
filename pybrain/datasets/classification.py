@@ -16,6 +16,7 @@ class ClassificationDataSet(SupervisedDataSet):
         @param class_labels: list of strings labelling the classes, defaults to target values """
          # FIXME: hard to keep nClasses synchronized if appendLinked() etc. is used.
         SupervisedDataSet.__init__(self, inp, target)
+        self.addField('class',1)
         self.nClasses = nb_classes
         if len(self) > 0:
             # calculate class histogram, if we already have data
