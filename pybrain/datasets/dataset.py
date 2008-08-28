@@ -322,7 +322,7 @@ class DataSet(Serializable):
             'link': self.link,
             'endmarker': self.endmarker,
         }
-        return creator, args, state, [], {}
+        return creator, args, state, iter([]), iter({})
         
     def copy(self):
         """ deep copy. """

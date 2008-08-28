@@ -149,7 +149,7 @@ class ClassificationDataSet(SupervisedDataSet):
         _, _, state, lst, dct = super(ClassificationDataSet, self).__reduce__()
         creator = self.__class__
         args = self.indim, self.outdim, self.nClasses, self.class_labels
-        return creator, args, state, [], {}
+        return creator, args, state, iter([]), iter({})
             
     def splitByClass(self, cls_select):
         """ produce two new datasets, the first one comprising only the class selected (0..nClasses-1),

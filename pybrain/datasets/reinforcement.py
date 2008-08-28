@@ -46,4 +46,4 @@ class ReinforcementDataSet(SequentialDataSet):
         _, _, state, lst, dct = DataSet.__reduce__(self)
         creator = self.__class__
         args = self.statedim, self.actiondim
-        return creator, args, state, [], {}
+        return creator, args, state, iter([]), iter({})

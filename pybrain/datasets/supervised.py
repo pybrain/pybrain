@@ -38,7 +38,7 @@ class SupervisedDataSet(DataSet):
         _, _, state, lst, dct = super(SupervisedDataSet, self).__reduce__()
         creator = self.__class__
         args = self.indim, self.outdim
-        return creator, args, state, [], {}
+        return creator, args, state, iter([]), iter({})
         
     def addSample(self, inp, target):
         """ adds a new sample consisting of input, target.
