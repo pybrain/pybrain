@@ -1,7 +1,7 @@
 from pybrain.rl.tasks import EpisodicTask
 from pybrain.rl.environments.ode.sensors import *
-from scipy import pi, ones, tanh, zeros, clip, array, random, sqrt, asarray
-from time import sleep
+from scipy import tanh, zeros, array, random, sqrt, asarray
+
 
 #Basic class for all ccrl tasks
 class CCRLTask(EpisodicTask):
@@ -225,7 +225,7 @@ class CCRLGlasVarRandTask(CCRLGlasVarTask):
 #Some experimental stuff
 class CCRLPointTask(CCRLGlasVarTask):
     def __init__(self, env):
-        CCRLVarTask.__init__(self, env)
+        CCRLGlasVarTask.__init__(self, env)
         self.epiLen=1000 #suggestet episodic length for normal Johnnie tasks
 
     def isFinished(self):

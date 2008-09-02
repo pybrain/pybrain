@@ -2,12 +2,12 @@
 __author__ = 'Michael Isik'
 
 from pybrain.rl.learners.blackboxoptimizers.evolution.filter     import Filter, SimpleMutation
-from pybrain.rl.learners.blackboxoptimizers.evolution.variate    import CauchyVariate, GaussianVariate
+from pybrain.rl.learners.blackboxoptimizers.evolution.variate    import CauchyVariate
 from pybrain.rl.learners.blackboxoptimizers.evolution.population import SimplePopulation
-from pybrain.tools.validation import Validator, ModuleValidator
+from pybrain.tools.validation import Validator
 from pybrain.tools.kwargsprocessor import KWArgsProcessor
 
-from numpy import zeros, empty, array, dot, append, concatenate, Infinity
+from numpy import array, dot, concatenate, Infinity
 from scipy.linalg import pinv2
 from copy import deepcopy
 
@@ -102,7 +102,6 @@ class EvolinoEvaluation(Filter):
         net = self.network
         dataset = self.dataset
         population.clearFitness()
-        best_individual = None
         best_W = None
         best_fitness = -Infinity
 

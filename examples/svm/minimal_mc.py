@@ -6,11 +6,7 @@ __author__ = 'Michael Isik'
 from pybrain.datasets import SupervisedDataSet
 from pybrain.supervised.trainers.mcsvm import MCSVMTrainer
 from pybrain.structure.modules.svm     import KT
-from pybrain.structure.modules.mcsvm   import MCSVM, MCSVMOneAgainstAll,MCSVMOneAgainstOne
-#from pybrain.examples.svm.debug import dbg,tracedm
-
-from numpy import array
-
+from pybrain.structure.modules.mcsvm   import MCSVMOneAgainstAll
 
 
 if __name__ == "__main__":

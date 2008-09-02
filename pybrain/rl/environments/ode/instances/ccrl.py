@@ -1,9 +1,6 @@
-from pybrain.rl.environments.serverInterface import GraphicalEnvironment
-#from renderInterface import JohnnieRenderInterface
 from pybrain.rl.environments.ode import *
-from ode import collide
 import imp
-from scipy import array, asarray, clip, random
+from scipy import array, asarray
 
 class CCRLEnvironment(ODEEnvironment):
     def __init__(self, xodeFile="ccrlGlas.xode", renderer=True, realtime=False, ip="127.0.0.1", port="21590", buf='16384'):

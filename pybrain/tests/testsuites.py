@@ -6,8 +6,6 @@ from doctest import DocTestSuite, ELLIPSIS, REPORT_ONLY_FIRST_FAILURE, \
 NORMALIZE_WHITESPACE
 from unittest import TestSuite, TestLoader, TextTestRunner
 
-from scipy import matrix, array
-
 
 def epsilonCheck(x, epsilon=1E-6):
     """Checks that x is in (-epsilon, epsilon)."""

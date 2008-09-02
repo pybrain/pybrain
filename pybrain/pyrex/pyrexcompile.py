@@ -1,3 +1,5 @@
+#@PydevCodeAnalysisIgnore
+
 __author__ = 'Tom Schaul, tom@idsia.ch'
 
 from distutils.core import setup

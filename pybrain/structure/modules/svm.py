@@ -5,6 +5,7 @@ from scipy import zeros,empty
 from numpy import dot,sqrt,exp,array,where,apply_along_axis
 import numpy
 import copy
+import collections
 
 from module import Module
 
@@ -125,7 +126,6 @@ class SVM(Module,Dumpable):
     def _setData( self, dataset ):
         """Set the training data needed by the kernel by supplying an instance
         of SupervisedDataSet."""
-        l = dataset.getLength()
         X = dataset.getField("input")
         Y = dataset.getField("target").flatten()
         self._setDataXY(X,Y)
@@ -166,7 +166,6 @@ class SVM(Module,Dumpable):
             - alpha : array of multiplier that were trained
             - beta  : trained threshold
         """
-        y = 0
         alpha = self._alpha
         k = self._kernel.k
         X = self._kernel._X
@@ -377,8 +376,8 @@ class MCSVMOneAgainstAll(AbstractMCSVM):
             where1, = where(Y != classes[i])
 
             sub_X = numpy.append(X[where0], X[where1], axis=0)
-            sub_Y = numpy.append([True for j in range(len(where0))], 
-                                 [False for j in range(len(where1))])
+            sub_Y = numpy.append([True for _ in range(len(where0))], 
+                                 [False for _ in range(len(where1))])
             sub_module._setDataXY(sub_X, sub_Y)
             sub_modules[classes[i]] = sub_module
 

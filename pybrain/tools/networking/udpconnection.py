@@ -17,7 +17,6 @@
 #############################################################################################################
 
 import socket
-from scipy import array
 
 # The server class
 class UDPServer(object):

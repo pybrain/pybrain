@@ -1,9 +1,8 @@
 __author__ = 'Frank Sehnke, sehnke@in.tum.de'
 
-from scipy import ones, zeros, mean, dot, ravel, sign, random, sqrt
+from scipy import ones, zeros, random
 from time import sleep
 from pybrain.rl.learners.finitedifference.fd import FDLearner
-from pybrain.rl.learners.finitedifference import FDBasic
 from pybrain.auxiliary import GradientDescent
 
 class SPLA(FDLearner):

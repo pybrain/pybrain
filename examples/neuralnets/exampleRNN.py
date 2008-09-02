@@ -5,11 +5,9 @@ __version__ = '$Id$'
 import pylab as p
 from pybrain.datasets            import SequenceClassificationDataSet
 from pybrain.structure.modules   import LSTMLayer, SoftmaxLayer
-from pybrain.supervised          import BackpropTrainer, RPropMinusTrainer
+from pybrain.supervised          import RPropMinusTrainer
 from pybrain.tools.validation    import testOnSequenceData
 from pybrain.tools.shortcuts     import buildNetwork
-from pybrain.utilities           import percentError
-#from pybrain.tests.helpers import sortedProfiling
 
 def dummyData( npoints, nseq, noise=0.3 ):
     """ construct a 2-class dummy dataset out of noisy sines """

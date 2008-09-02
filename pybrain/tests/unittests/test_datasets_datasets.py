@@ -5,6 +5,7 @@
     
     >>> from scipy import array
     >>> from pybrain import datasets
+    >>> from copy import deepcopy
     >>> d = datasets.dataset.DataSet()
     >>> d.addField('input', 2)
     >>> d.data['input']
@@ -126,7 +127,6 @@ ReinforcementDataSet
 __author__ = 'Justin Bayer, bayerj@in.tum.de'
 
 
-from copy import deepcopy
 from cStringIO import StringIO
 
 from pybrain.tests import runModuleTestSuite
@@ -149,9 +149,9 @@ def saveInvariant(dataset):
             equal = False
             break
         if not (v == v_).all():
-            print "Differing valiues for %s" % k
-            print i
-            print j
+            print "Differing values for %s" % k
+            print v
+            print v_
             equal = False
             break
             

@@ -1,8 +1,10 @@
+#@PydevCodeAnalysisIgnore
+
 __author__ = "Martin Felder, felder@in.tum.de"
 # $Id$
 
-from numpy import zeros, where, ravel, arange, r_, single
-from numpy.random import randint, permutation
+from numpy import zeros, where, ravel, r_, single
+from numpy.random import permutation
 from pybrain.datasets import SupervisedDataSet, SequentialDataSet
 
 class ClassificationDataSet(SupervisedDataSet):

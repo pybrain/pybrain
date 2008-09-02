@@ -1,7 +1,7 @@
 __author__ = 'Thomas Rueckstiess, ruecksti@in.tum.de'
 
 from policygradient import PolicyGradientLearner
-from scipy import mean, ravel, where
+from scipy import mean
 
 
 class Reinforce(PolicyGradientLearner):

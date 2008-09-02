@@ -1,3 +1,5 @@
+#@PydevCodeAnalysisIgnore
+
 __author__ = 'Tom Schaul, tom@idsia.ch'
 
 

@@ -1,7 +1,7 @@
 import sys
 from xmltools import XMLstruct
 from math import asin, cos, sin, pi, degrees, radians, pow
-from numpy import *
+from scipy import array, matrix, sqrt
 import random
 
 class XODEfile(XMLstruct):
@@ -320,7 +320,7 @@ class XODEfinger(XODEfile):
     def insertHapticSensorsRandom(self):
         """insert haptic sensors at random locations"""
         self.sensorGroupName = 'haptic'
-        for i in range(5):
+        for _ in range(5):
             self.insertHapticSensor(dx=random.uniform(-0.65,0.65),dz=random.uniform(-0.4,0.2))
         ##self.insertHapticSensor(dx=-0.055)
 
@@ -502,6 +502,7 @@ class HapticTestSetupWithSpirals(XODEfinger):
             name = 'sphere'+str(k)
             self.insertBody(name,'sphere',[0.2],5,pos=[x,0.5,z],passSet=['sam'])
             self.insertJoint('sample',name,'fixed')
+
 
 class HapticTestSetupWithSine(XODEfinger):
 

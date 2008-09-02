@@ -1,6 +1,6 @@
 from pybrain.rl.tasks import EpisodicTask
 from pybrain.rl.environments.ode.sensors import *
-from scipy import pi, ones, tanh, zeros, clip
+from scipy import  ones, tanh, clip
 
 #Basic class for all Johnnie tasks
 class JohnnieTask(EpisodicTask):

@@ -10,7 +10,7 @@ import numpy as np
 from pybrain.structure.modules import LinearLayer, BiasUnit, SigmoidLayer
 from pybrain.structure import FullConnection, Network
 from pybrain.datasets import SupervisedDataSet
-from pybrain.supervised.trainers.mixturedensity import RPropMinusTrainerMix, BackpropTrainerMix
+from pybrain.supervised.trainers.mixturedensity import RPropMinusTrainerMix
 from pybrain.structure.modules.mixturedensity import MixtureDensityLayer
 
 

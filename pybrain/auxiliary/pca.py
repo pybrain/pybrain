@@ -5,7 +5,7 @@
 __author__ = 'Justin S Bayer, bayerj@in.tum.de'
 
 
-from scipy import random, dot, asmatrix, cov
+from scipy import random, asmatrix, cov
 from scipy.linalg import inv, eig
 
 

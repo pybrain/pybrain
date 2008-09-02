@@ -6,7 +6,6 @@ from pybrain.structure.networks.network     import Network
 from pybrain.structure.modules.lstm         import LSTMLayer
 from pybrain.structure.modules.linearlayer  import LinearLayer
 from pybrain.structure.connections.full     import FullConnection
-from pybrain.structure.connections.identity import IdentityConnection
 from pybrain.structure.modules.module       import Module
 from pybrain.structure.modules.biasunit     import BiasUnit
 
@@ -105,7 +104,6 @@ class EvolinoNetwork(Module):
 
             washout_input      = input  [               : washout_steps ]
             washout_target     = target [               : washout_steps ]
-            calculation_input  = input  [ washout_steps :               ]
             calculation_target = target [ washout_steps :               ]
 
 
@@ -223,7 +221,6 @@ class EvolinoNetwork(Module):
         self._validateGenomeLayer(layer)
 
         dim = layer.outdim
-        layer_weights = []
 
         connections = self._getInputConnectionsOfLayer(layer)
 
@@ -300,21 +297,6 @@ class EvolinoNetwork(Module):
 
 
 
-
-
-
-
-
-
-
-
-
-from pybrain.structure.networks.network     import Network
-from pybrain.structure.modules.lstm         import LSTMLayer
-from pybrain.structure.modules.linearlayer  import LinearLayer
-from pybrain.structure.connections.full     import FullConnection
-from pybrain.structure.connections.identity import IdentityConnection
-
 from numpy import reshape
 from copy  import copy,deepcopy
 
@@ -385,7 +367,6 @@ class NetworkWrapper(object):
             See class description for more details.
         """
         weights=[]
-        network = self.network
         for layer in self.getHiddenLayers():
             if isinstance(layer, LSTMLayer):
 #                 if layer is not self._recurrence_layer:
@@ -437,7 +418,6 @@ class NetworkWrapper(object):
         self._validateGenomeLayer(layer)
 
         dim = layer.outdim
-        layer_weights = []
 
         connections = self._getInputConnectionsOfLayer(layer)
 

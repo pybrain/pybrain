@@ -1,3 +1,5 @@
+#@PydevCodeAnalysisIgnore
+
 ######################################################################
 # Python Open Dynamics Engine Wrapper
 # Copyright (C) 2004 PyODE developers (see file AUTHORS)

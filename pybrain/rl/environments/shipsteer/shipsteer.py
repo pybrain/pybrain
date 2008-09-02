@@ -1,9 +1,6 @@
 __author__ = 'Martin Felder, felder@in.tum.de'
 
-from math import sin, cos
-import time
-from scipy import random, eye, matrix, array
-from scipy import weave
+from scipy import random, array
 from pybrain.tools.networking.udpconnection import UDPServer
 import threading
 from pybrain.utilities import threaded

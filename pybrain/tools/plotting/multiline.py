@@ -1,5 +1,5 @@
 # $Id$
-import os, pylab, math, imp
+import pylab, math, imp
 from matplotlib.lines import Line2D
 
 __author__ = 'Martin Felder and Frank Sehnke'

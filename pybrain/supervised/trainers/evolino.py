@@ -9,13 +9,13 @@ from pybrain.rl.learners.blackboxoptimizers.evolino.population     import Evolin
 from pybrain.rl.learners.blackboxoptimizers.evolino.individual     import EvolinoSubIndividual
 from pybrain.rl.learners.blackboxoptimizers.evolino.filter         import EvolinoEvaluation, EvolinoSelection, EvolinoReproduction, EvolinoBurstMutation
 from pybrain.rl.learners.blackboxoptimizers.evolution.filter       import Randomization
-from pybrain.rl.learners.blackboxoptimizers.evolution.variate      import CauchyVariate, GaussianVariate
+from pybrain.rl.learners.blackboxoptimizers.evolution.variate      import CauchyVariate
 
 
 from pybrain.tools.kwargsprocessor import KWArgsProcessor
 
 
-from numpy import array, Infinity
+from numpy import Infinity
 
 
 

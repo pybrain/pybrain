@@ -2,8 +2,7 @@ __author__ = 'Thomas Rueckstiess, ruecksti@in.tum.de'
 
 from scipy import random, zeros
 from pybrain.rl.environments.graphical import GraphicalEnvironment
-# from renderer import SimpleRenderer
-from time import sleep
+
 
 class SimpleEnvironment(GraphicalEnvironment):
     def __init__(self, dim=1):

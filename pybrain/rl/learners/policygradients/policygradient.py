@@ -3,7 +3,7 @@ __author__ = 'Thomas Rueckstiess, ruecksti@in.tum.de'
 from pybrain.rl.learners.rllearner import RLLearner
 from pybrain.utilities import abstractMethod
 from pybrain.auxiliary import GradientDescent
-from scipy import ravel, clip
+from scipy import ravel
 
 class PolicyGradientLearner(RLLearner):
     """ The PolicyGradientLearner takes a ReinforcementDataSet which has been extended with the log likelihood

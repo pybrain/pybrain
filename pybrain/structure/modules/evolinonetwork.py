@@ -6,11 +6,10 @@ from pybrain.structure.networks.network import Network
 from pybrain.structure.modules.lstm import LSTMLayer
 from pybrain.structure.modules.linearlayer import LinearLayer
 from pybrain.structure.connections.full import FullConnection
-from pybrain.structure.connections.identity import IdentityConnection
 from pybrain.structure.modules.module import Module
 from pybrain.structure.modules.biasunit import BiasUnit
 
-from numpy import zeros, array, append, tanh, reshape
+from numpy import zeros, array, reshape
 from copy import copy, deepcopy
 
 

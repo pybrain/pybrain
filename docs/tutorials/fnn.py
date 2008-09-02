@@ -13,11 +13,14 @@ First we need to import the necessary components from PyBrain."""
 from pybrain.datasets            import ClassificationDataSet
 from pybrain.utilities           import percentError
 from pybrain.tools.shortcuts     import buildNetwork
-from pybrain.supervised.trainers import RPropMinusTrainer, BackpropTrainer
+from pybrain.supervised.trainers import BackpropTrainer
 from pybrain.structure.modules   import SoftmaxLayer
 
 """ Furthermore, pylab is needed for the graphical output. """
-import pylab
+import pylab as p
+import numpy
+
+from examples.neuralnets.datagenerator import generateGridData, plotData
 
 """ To have a nice dataset for visualization, we produce a set of 
 points in 2D belonging to three different classes. You could also
@@ -28,8 +31,8 @@ cov = [p.diag([1,1]), p.diag([0.5,1.2]), p.diag([1.5,0.7])]
 alldata = ClassificationDataSet(2, 1, nb_classes=3)
 for n in xrange(400):
     for klass in range(3):
-        input = p.npy.random.multivariate_normal(means[c],cov[c])
-        dataset.addSample(input, [klass])
+        input = numpy.random.multivariate_normal(means[n],cov[n])
+        alldata.addSample(input, [klass])
 
 """ Randomly split the dataset into 75% training and 25% test data sets. Of course, we
 could also have created two different datasets to begin with.""" 

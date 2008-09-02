@@ -1,6 +1,6 @@
 __author__ = 'Daan Wierstra and Tom Schaul'
 
-from scipy import dot, rand, ones, eye, zeros, outer, isnan, multiply, diag
+from scipy import dot, rand, ones, eye, zeros, outer, isnan, multiply
 from numpy.random import multivariate_normal
 from numpy import average
 

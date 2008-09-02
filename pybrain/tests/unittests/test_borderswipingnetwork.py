@@ -1,5 +1,7 @@
 """ A few tests for BorderSwipingNetworks
-
+    >>> from pybrain import MotherConnection
+    >>> from scipy import ones, array
+    
 We will use a simple 3-dimensional network:
    
     >>> dim = 3
@@ -67,8 +69,7 @@ __author__ = 'Tom Schaul, tom@idsia.ch'
 
 from pybrain.tests import runModuleTestSuite
 from pybrain.structure.networks import BorderSwipingNetwork
-from pybrain import ModuleMesh, LinearLayer, MotherConnection, TanhLayer
-from scipy import ones, array
+from pybrain import ModuleMesh, LinearLayer, TanhLayer
     
     
 def nearlyEqual(lst1, lst2, tolerance=0.001):

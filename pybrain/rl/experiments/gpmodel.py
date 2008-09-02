@@ -1,10 +1,7 @@
 from pybrain.datasets import SequentialDataSet
-from pybrain.supervised import BackpropTrainer
-from pybrain.tools.shortcuts import buildNetwork
 from pybrain.auxiliary import GaussianProcess
-from pybrain.structure import LSTMLayer
 from episodic import EpisodicExperiment
-from scipy import r_, c_, array, mgrid, floor, ravel
+from scipy import mgrid
 from pylab import *
 
 __author__ = 'Thomas Rueckstiess, ruecksti@in.tum.de'
@@ -19,7 +16,7 @@ class ModelExperiment(EpisodicExperiment):
         
         # create model and trainer
         self.modelds = SequentialDataSet(1, 1)
-        self.model = [GaussianProcess(indim=1, start=0, stop=500, step=20) for i in range(self.task.indim)]
+        self.model = [GaussianProcess(indim=1, start=0, stop=500, step=20) for _ in range(self.task.indim)]
         
         # change hyper parameters for all gps
         for m in self.model:
@@ -29,7 +26,6 @@ class ModelExperiment(EpisodicExperiment):
     def doEpisodes(self, number = 1):
         """ returns the rewards of each step as a list """
 
-        start = self.stepid
         all_rewards = []
 
         for dummy in range(number):

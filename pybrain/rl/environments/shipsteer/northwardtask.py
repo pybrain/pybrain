@@ -2,7 +2,7 @@ __author__ = 'Martin Felder, felder@in.tum.de'
 
 from pybrain.rl.tasks import EpisodicTask
 from shipsteer import ShipSteeringEnvironment
-from scipy import pi, dot, array
+
 
 class GoNorthwardTask(EpisodicTask):
 

@@ -1,9 +1,8 @@
 
 __author__ = 'Michael Isik'
 
-
-import collections
 from numpy import Infinity
+
 
 class Population:
     """ Abstract template for a minimal Population.
@@ -97,13 +96,13 @@ class SimplePopulation(Population):
 
     def clearFitness(self):
         """ Clears all stored fitness values """
-        for (ind, fit) in self._fitness.iteritems():
+        for (ind, _) in self._fitness.iteritems():
             self._fitness[ind] = -Infinity
 #        self._fitness.clear()
 
     def getFitnessMap(self):
         """ Returns the fitness dictionary """
-        return copy( self._fitness )
+        return self._fitness.copy()
 
     def getMaxFitness(self):
         """ Returns the maximal fitness value """

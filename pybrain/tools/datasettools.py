@@ -5,8 +5,8 @@ __author__ = "Martin Felder"
 __version__ = '$Id$' 
 from os.path import join
 from numpy import r_, array
-from pybrain.datasets import SupervisedDataSet, SequentialDataSet, ClassificationDataSet, SequenceClassificationDataSet
-import pylab as p
+from pybrain.datasets import SequentialDataSet, ClassificationDataSet, SequenceClassificationDataSet
+
 
 def convertSequenceToTimeWindows(DSseq, NewClass, winsize):
     """ Converts a sequential classification dataset into time windows of fixed length. 

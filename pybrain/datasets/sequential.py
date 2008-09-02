@@ -1,7 +1,7 @@
 __author__ = 'Thomas Rueckstiess, ruecksti@in.tum.de'
 # $Id$
-from os.path import splitext
-from scipy import ravel, r_, dot
+
+from scipy import ravel, r_
 from random import sample
 
 from supervised import SupervisedDataSet

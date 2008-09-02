@@ -42,6 +42,7 @@ begin = True
 # the following is an ugly hack - don't look at it!
 for line in f_in:
     linecomment = False
+    inblock = False
     # crop #-comments at start of file
     if line.startswith('#'):
         if begin:

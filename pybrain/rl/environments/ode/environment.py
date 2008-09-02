@@ -7,6 +7,7 @@ from tools.configgrab import ConfigGrabber
 import sensors, actuators
 from pybrain.utilities import threaded
 import threading
+import warnings
 from pybrain.tools.networking.udpconnection import UDPServer
 
 class ODEEnvironment(GraphicalEnvironment):

@@ -6,10 +6,9 @@ import numpy as np
 import pylab as p
 
 # load the necessary components
-from pybrain.datasets            import ClassificationDataSet
 from pybrain.utilities           import percentError
 from pybrain.tools.shortcuts     import buildNetwork
-from pybrain.supervised.trainers import RPropMinusTrainer, BackpropTrainer
+from pybrain.supervised.trainers import BackpropTrainer
 from pybrain.structure.modules   import SoftmaxLayer
 
 from datagenerator import generateGridData, generateClassificationData, plotData

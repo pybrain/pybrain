@@ -1,6 +1,6 @@
 import ode, xode
 from pybrain.utilities import Named
-import sensors
+import sys, warnings
 
 class Actuator(Named):
     """The base Actuator class. Every actuator has a name, and a list of values (even if it is

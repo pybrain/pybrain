@@ -1,6 +1,5 @@
+#@PydevCodeAnalysisIgnore
 from pybrain.datasets import SupervisedDataSet
-#import string
-from numpy import where
 
 
 class SVMData(SupervisedDataSet):

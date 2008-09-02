@@ -1,4 +1,4 @@
-from scipy import array, exp, tanh, clip, log, dot, sqrt, power, pi, tan, diag, zeros, ones, rand, eye
+from scipy import array, exp, tanh, clip, log, dot, sqrt, power, pi, tan, diag, rand
 from scipy.linalg import inv, det, svd
 
 

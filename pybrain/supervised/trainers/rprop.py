@@ -1,7 +1,7 @@
 # $Id$
 __author__ = 'Martin Felder'
 
-from scipy import zeros, dot, ones, argmax, sign, sqrt
+from scipy import dot, sqrt
 
 from pybrain.supervised.trainers import BackpropTrainer
 

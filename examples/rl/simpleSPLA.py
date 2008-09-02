@@ -16,7 +16,7 @@ from pybrain.rl.environments.simple import *
 from pybrain.rl.agents import FiniteDifferenceAgent
 from pybrain.rl.learners import *
 from pybrain.rl.experiments import EpisodicExperiment
-from scipy import array, mean, random
+from scipy import random
 
 numbExp=40
 for runs in range(numbExp):

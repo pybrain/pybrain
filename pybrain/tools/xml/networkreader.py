@@ -6,8 +6,6 @@ from handling import XMLHandling
 # those imports are necessary for the eval() commands to find the right classes
 import pybrain
 from scipy import array
-try: import newversion
-except: pass
 
 
 class NetworkReader(XMLHandling):

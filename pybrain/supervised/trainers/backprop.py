@@ -1,7 +1,7 @@
 # $Id$
 __author__ = 'Daan Wierstra and Tom Schaul'
 
-from scipy import zeros, dot, ones, argmax
+from scipy import dot, argmax
 from random import shuffle
 
 from trainer import Trainer
@@ -86,6 +86,7 @@ class BackpropTrainer(Trainer):
             target = sample[1]
             outerr = target - self.module.outputbuffer[time]
             if len(sample) > 2:
+                importance = sample[2]
                 self.module.outputerror[time] = outerr*importance
                 error += 0.5 * dot(importance, outerr**2)
                 ponderation += sum(importance)

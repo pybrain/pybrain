@@ -6,7 +6,7 @@ __version__ = "$Id$"
 
 import pylab as p
 import csv
-from numpy import array, zeros, Infinity
+from numpy import Infinity
 import logging
 
 from pybrain.datasets                  import ClassificationDataSet, SequentialDataSet
@@ -16,7 +16,6 @@ from pybrain.structure                 import SoftmaxLayer, LSTMLayer
 from pybrain.utilities                 import setAllArgs
 from pybrain.tools.plotting            import MultilinePlotter
 from pybrain.tools.validation          import testOnSequenceData, ModuleValidator, Validator
-from pybrain.utilities                 import abstractMethod
 
 class NNtools(object):
     """ Abstract class providing basic functionality to make neural network training more comfortable """

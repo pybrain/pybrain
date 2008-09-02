@@ -1,7 +1,7 @@
 # $Id$
 __author__ = 'Thomas Rueckstiess, ruecksti@in.tum.de'
 
-from scipy import zeros, clip, asarray, sign     
+from scipy import zeros, asarray, sign     
 from copy import deepcopy
 
 class GradientDescent(object):

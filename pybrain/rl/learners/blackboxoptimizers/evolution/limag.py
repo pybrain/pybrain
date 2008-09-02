@@ -1,6 +1,6 @@
 __author__ = 'Tom Schaul, tom@idsia.ch'
 
-from scipy import zeros, ones, mean, array, argmax, randn
+from scipy import zeros, ones, mean, array, argmax
 from random import choice, shuffle
 
 from ga import GA

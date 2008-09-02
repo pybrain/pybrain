@@ -1,6 +1,6 @@
 __author__ = 'Tom Schaul, tom@idsia.ch'
 
-from evolvable import Evolvable
+from pybrain.structure.evolvables.evolvable import Evolvable
 
 
 class IncrementableComplexity(Evolvable):

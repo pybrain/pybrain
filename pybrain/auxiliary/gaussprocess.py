@@ -1,8 +1,7 @@
 __author__ = 'Thomas Rueckstiess, ruecksti@in.tum.de; Christian Osendorfer, osendorf@in.tum.de'
 
 from scipy import *
-from scipy.linalg import cholesky, solve, inv
-from scipy.linalg.basic import norm
+from scipy.linalg import solve, inv
 from pybrain.datasets import SupervisedDataSet
 
 # for plotting

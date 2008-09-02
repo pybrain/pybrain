@@ -290,7 +290,7 @@ class GridSearchCostGamma(GridSearch2D):
             elif key in ("verbose", "ver", "v"):
                 self._verbosity = value
             else:
-                GridSearch.setArgs(self,**{key:value})
+                GridSearch2D.setArgs(self,**{key:value})
 
     def _validate(self, params):
         """ The overridden validate function, that uses cross-validation in order

@@ -1,8 +1,7 @@
 __author__ = 'Thomas Rueckstiess, ruecksti@in.tum.de'
 
 from pybrain.rl.tasks import EpisodicTask 
-from scipy import random
-from time import sleep
+
 
 class MinimizeTask(EpisodicTask):
     def __init__(self, environment):

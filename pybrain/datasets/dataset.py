@@ -5,14 +5,13 @@ from __future__ import with_statement
 __author__ = 'Thomas Rueckstiess, ruecksti@in.tum.de'
 
 import random
-import types
 import pickle
 
 from itertools import chain
 
-from scipy import zeros, resize, ravel, asarray, array, copy
+from scipy import zeros, resize, ravel, asarray
 
-from pybrain.utilities import abstractMethod, Serializable
+from pybrain.utilities import Serializable
 
 class OutOfSyncError(Exception): pass
 class VectorFormatError(Exception): pass

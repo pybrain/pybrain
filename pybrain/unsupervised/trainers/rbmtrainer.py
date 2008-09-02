@@ -6,7 +6,7 @@ __author__ = ('Christian Osendorfer, osendorf@in.tum.de;'
               'Justin S Bayer, bayerj@in.tum.de')
 
 
-from scipy import array, dot, random, outer
+from scipy import array, random, outer
 
 from pybrain.structure.networks.rbm import Rbm
 from pybrain.supervised.trainers import Trainer
@@ -23,7 +23,7 @@ class RbmTrainer(Trainer):
         return self._data
         
     def _setData(self, dataset):
-        if not dataset.indim == rbm.visible:
+        if not dataset.indim == self.rbm.visible:
             raise ValueError("Wrong dimension for dataset")   
         self._data = dataset
         

@@ -1,3 +1,4 @@
+#@PydevCodeAnalysisIgnore
 # $Id$
 # replace the function below in sphinx.ext.autodoc.py (tested with Sphinx version 0.4.1)
 __author__ = "Martin Felder"

@@ -15,7 +15,7 @@ from pybrain.rl.agents.learning import LearningAgent
 from pybrain.rl.learners import *
 from pybrain.rl.experiments import EpisodicExperiment
 from scipy import array, mean
-import os, sys
+import sys
 
 episodes = 100
 epilen = 200

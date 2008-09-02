@@ -4,9 +4,6 @@ __author__ = 'Martin Felder'
 from neuronlayer import NeuronLayer
 from pybrain.tools.functions import safeExp
 
-import numpy as np
-import pylab as p
-
     
 class MixtureDensityLayer(NeuronLayer):
     """ Mixture of Gaussians output layer (Bishop 2006, Ch. 5.6) with diagonal

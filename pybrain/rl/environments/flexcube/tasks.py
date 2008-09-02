@@ -15,10 +15,10 @@
 # 
 # Author: Frank Sehnke, sehnke@in.tum.de
 #########################################################################
-import random, math, os
+
 from time import * 
 from pybrain.rl.tasks import EpisodicTask
-from scipy import ones, array, c_, r_, sin, clip
+from scipy import array, r_,  clip
 import sensors
 
 #Task basis class        
@@ -78,7 +78,6 @@ class NoRewardTask(EpisodicTask):
         # scaling
         self.incStep()
         action=(action+1.0)/2.0*self.dif+self.env.fraktMin*self.env.dists[0]
-        actLen=len(action)
         #Clipping the maximal change in actions (max force clipping)
         action=clip(action, self.action-self.maxSpeed, self.action+self.maxSpeed)
         EpisodicTask.performAction(self, action)

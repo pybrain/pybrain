@@ -1,7 +1,7 @@
 __author__ = 'Thomas Rueckstiess, ruecksti@in.tum.de'
 
 from policygradient import PolicyGradientLearner
-from scipy import zeros, mean, ravel
+from scipy import zeros, mean
 
 ### NOT WORKING YET ###
 
@@ -23,7 +23,7 @@ class GPOMDP(PolicyGradientLearner):
 
         # calculcate individual baseline for each timestep and episode
         for seq in range(self.ds.getNumSequences()):
-            s, a, rewards, loglhs = self.ds.getSequence(seq)
+            _, _, rewards, loglhs = self.ds.getSequence(seq)
             for t in range(len(rewards)):
                 baselines[t,:] += mean(sum(loglhs[:t+1, :], 0)**2 * rewards[t,:], 0) / mean(sum(loglhs[:t+1, :], 0)**2, 0) 
                 seqcount[t,:] += 1
@@ -31,7 +31,7 @@ class GPOMDP(PolicyGradientLearner):
         baselines = baselines / seqcount
         # print baselines
         for seq in range(self.ds.getNumSequences()):
-            s, a, rewards, loglhs = self.ds.getSequence(seq)
+            _, _, rewards, loglhs = self.ds.getSequence(seq)
             for t in range(len(rewards)):
                 g[seq,:] += sum(loglhs[:t+1, :], 0) * (rewards[t,:] - baselines[t])
 

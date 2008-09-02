@@ -16,8 +16,7 @@ from pybrain.rl.environments.simple import *
 from pybrain.rl.agents import FiniteDifferenceAgent
 from pybrain.rl.learners import *
 from pybrain.rl.experiments import EpisodicExperiment
-from scipy import array, mean
-#from profile import run
+
 
 # for plotting
 from pylab import *

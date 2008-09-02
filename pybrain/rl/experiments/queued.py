@@ -1,6 +1,8 @@
 __author__ = 'Thomas Rueckstiess, ruecksti@in.tum.de'
 
 from episodic import EpisodicExperiment
+from scipy import arange
+
 
 class QueuedExperiment(EpisodicExperiment):
     """ This experiment type runs n episodes at the beginning, followed by a learning step.

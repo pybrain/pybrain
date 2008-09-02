@@ -1,6 +1,6 @@
 __author__ = 'Thomas Rueckstiess, ruecksti@in.tum.de'
 
-from scipy import ravel
+
 from learning import LearningAgent
 from policygradient import PolicyGradientAgent
 from pybrain.structure import StateDependentLayer, IdentityConnection
