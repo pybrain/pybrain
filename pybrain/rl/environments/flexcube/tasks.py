@@ -16,7 +16,7 @@
 # Author: Frank Sehnke, sehnke@in.tum.de
 #########################################################################
 
-from time import * 
+
 from pybrain.rl.tasks import EpisodicTask
 from scipy import array, r_,  clip
 import sensors

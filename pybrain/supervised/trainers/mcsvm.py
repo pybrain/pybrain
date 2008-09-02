@@ -46,11 +46,6 @@ class MCSVMTrainer(Trainer):
             This method creates a regular SVMTrainer for each of these sub modules,
             and calls its train method.
         """
-        X       = self.module._X
-        Y       = self.module._Y
-        classes = self.module._classes
-
-
         sub_modules = self.module.getSubModules()
         for sub_module in sub_modules:
             sub_trainer = self._trainer_class(sub_module, **self._sub_kwargs)
@@ -62,10 +57,6 @@ class MCSVMTrainer(Trainer):
 
 
     def trainEpochs(self,epochs=0):
-        X       = self.module._X
-        Y       = self.module._Y
-        classes = self.module._classes
-
         sub_modules = self.module.getSubModules()
         for sub_module in sub_modules:
             sub_trainer = SVMTrainer(sub_module, **self._sub_kwargs)

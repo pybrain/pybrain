@@ -168,8 +168,8 @@ class MCSVMOneAgainstAll(AbstractMCSVM):
             where1, = where(Y != classes[i])
 
             sub_X = numpy.append(X[where0], X[where1], axis=0)
-            sub_Y = numpy.append([True for j in range(len(where0))], 
-                                 [False for j in range(len(where1))])
+            sub_Y = numpy.append([True for _ in range(len(where0))], 
+                                 [False for _ in range(len(where1))])
             sub_module._setDataXY(sub_X, sub_Y)
             sub_modules[classes[i]] = sub_module
 

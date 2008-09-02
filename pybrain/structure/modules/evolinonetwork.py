@@ -101,7 +101,7 @@ class EvolinoNetwork(Module):
         
         Use .reset() and .washout() before."""
         generated_sequence = [] #empty(length)
-        for i in xrange(length):
+        for _ in xrange(length):
             backprojection  = self._getLastOutput()
             backprojection *= self.backprojectionFactor
             out = self._activateNetwork(backprojection)

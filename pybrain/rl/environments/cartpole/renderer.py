@@ -1,4 +1,5 @@
-from pylab import *
+from pylab import ion, figure, draw, Rectangle, Line2D
+from scipy import cos, sin
 from pybrain.rl.environments.renderer import Renderer
 import threading
 import time 

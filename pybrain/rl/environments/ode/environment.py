@@ -127,8 +127,8 @@ class ODEEnvironment(GraphicalEnvironment):
         # body.setPosition( (0.0, 3.0, 0.0) )
         # randomize orientation slightly
         theta = random.uniform(0,2*pi)
-        ct = cos (theta)
-        st = sin (theta)
+        #ct = cos (theta)
+        #st = sin (theta)
         # rotate body and append to (body,geom) tuple list
         # body.setRotation([ct, 0., -st, 0., 1., 0., st, 0., ct])
         self.body_geom.append((body,geom))
@@ -196,7 +196,7 @@ class ODEEnvironment(GraphicalEnvironment):
 
         if self.verbosity > 0:
             print "-------[body/mass list]-----"
-            for (body,geom) in self.body_geom:
+            for (body, _) in self.body_geom:
                 try:
                     print body.name, body.getMass()
                 except AttributeError:
@@ -248,7 +248,7 @@ class ODEEnvironment(GraphicalEnvironment):
         for coldefstring in self.config.getValue("colors")[:]:
             # ('name', (0.3,0.4,0.5))
             objname, coldef = eval(coldefstring)
-            for (body,geom) in self.body_geom:
+            for (body, _) in self.body_geom:
                 if hasattr(body, 'name'):
                     if objname == body.name:
                         body.color = coldef
@@ -381,7 +381,7 @@ class ODEEnvironment(GraphicalEnvironment):
             a._update(action[pointer:pointer+val])
             pointer += val
         
-        for i in range(self.stepsPerAction):
+        for _ in range(self.stepsPerAction):
             self.step()
         
     def getXODERoot(self):
@@ -410,7 +410,7 @@ class ODEEnvironment(GraphicalEnvironment):
         contacts = ode.collide(geom1, geom2)
         
         # Create contact joints
-        world,contactgroup = args
+        world, contactgroup = args
         for c in contacts:
             p = c.getContactGeomParams()
             # parameters from Niko Wolf
@@ -421,7 +421,7 @@ class ODEEnvironment(GraphicalEnvironment):
             c.setSlip1(0.02) #Set the coefficient of force-dependent-slip (FDS) for friction direction 1
             c.setSlip2(0.02) #Set the coefficient of force-dependent-slip (FDS) for friction direction 2
             c.setMu(self.FricMu) #Set the Coulomb friction coefficient
-            j = ode.ContactJoint(self.world, self.contactgroup, c)
+            j = ode.ContactJoint(world, contactgroup, c)
             j.name = None
             j.attach(geom1.getBody(), geom2.getBody())
 

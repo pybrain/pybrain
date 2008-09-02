@@ -6,7 +6,7 @@
 
 __author__ = 'Tom Schaul, tom@idsia.ch'
 
-from pybrain import *
+from pybrain import Network, LinearLayer, SigmoidLayer, FullConnection
 
 """ This tutorial will attempt to guide you for using one of PyBrain's most basic structural elements:
 Networks, and with them Modules and Connections. 

@@ -54,7 +54,7 @@ class SPLA(FDLearner):
         seqLen=self.ds.getNumSequences() #number of sequences done for learning
         for seq in range(seqLen):
             sym*=-1.0
-            state, action, reward = self.ds.getSequence(seq)
+            _, _, reward = self.ds.getSequence(seq)
             #add up the rewards of positive and negative perturbation role outs respectivly
             if sym==1.0: reward1+=sum(reward)
             else: reward2+=sum(reward)
@@ -114,7 +114,7 @@ class SPLANoSym(SPLA):
         self.change=self.original.copy()*0.0
         self.sigChange=self.sigList.copy()*0.0
         for seq in range(seqLen):
-            state, action, reward = self.ds.getSequence(seq)
+            _, _, reward = self.ds.getSequence(seq)
             #add up the rewards of positive and negative perturbation role outs respectivly
             self.reward=sum(reward)
 

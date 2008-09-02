@@ -43,7 +43,7 @@ class ReinforcementDataSet(SequentialDataSet):
     def __reduce__(self):
         # FIXME: This does actually not feel right: We have to use the DataSet
         # method here, although we inherit from sequential dataset. 
-        _, _, state, lst, dct = DataSet.__reduce__(self)
+        _, _, state, _, _ = DataSet.__reduce__(self)
         creator = self.__class__
         args = self.statedim, self.actiondim
         return creator, args, state, iter([]), iter({})

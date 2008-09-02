@@ -1,6 +1,7 @@
 import pylab as p
 import numpy as np
 from pybrain.datasets import ClassificationDataSet
+from numpy.random import multivariate_normal
 
 def generateClassificationData(size):
     """ generate a set of points in 2D belonging to three different classes """
@@ -9,7 +10,7 @@ def generateClassificationData(size):
     dataset = ClassificationDataSet(2, 1, nb_classes=3)
     for c in xrange(size):
         for klass in range(3):
-            input = np.random.multivariate_normal(means[c],cov[c])
+            input = multivariate_normal(means[c],cov[c])
             dataset.addSample(input, [klass])
     return dataset
 

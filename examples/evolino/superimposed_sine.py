@@ -6,7 +6,6 @@ import pylab
 from pylab import plot, show, ion, cla, subplot
 import numpy
 
-from pybrain.datasets.sequential              import SequentialDataSet
 from pybrain.structure.modules.evolinonetwork import EvolinoNetwork
 from pybrain.supervised.trainers.evolino      import EvolinoTrainer
 from lib.data_generator import generateSuperimposedSineData

@@ -126,7 +126,7 @@ class SVMTrainer(Trainer):
 
     def trainEpochs(self,epochs=0):
         if epochs>0:
-            for i in range(epochs):
+            for _ in range(epochs):
                 if not self.step(False): break
             self.updateBeta()
         else:
@@ -142,7 +142,6 @@ class SVMTrainer(Trainer):
         kernel = self.module._kernel
         l      = kernel.l
         Y      = kernel._Y
-        QD     = kernel._QD
 
 
         # initialize alpha array
@@ -163,15 +162,11 @@ class SVMTrainer(Trainer):
         self._free_num = 0
         self._ub_num   = 0
         for i in range(l): self._updateAlphaStatus(i)
-        UPPER_BOUND = self._UPPER_BOUND
-        LOWER_BOUND = self._LOWER_BOUND
-        FREE        = self._FREE
 
         # set active_size and active_set
         self._active_size = l
         active_size       = self._active_size
         self._active_set  = array(range(active_size),dtype=int)
-        active_set        = self._active_set
 
 
         # initialize gradient arrays
@@ -201,15 +196,9 @@ class SVMTrainer(Trainer):
 
         # kernel stuff
         kernel = self.module._kernel
-        l      = kernel.l
         Y      = kernel._Y
-        QD     = kernel._QD
         alpha = self.module._alpha
-        UPPER_BOUND = self._UPPER_BOUND
-        LOWER_BOUND = self._LOWER_BOUND
-        FREE        = self._FREE
         active_size       = self._active_size
-        active_set        = self._active_set
         G     = self._G
         G_bar = self._G_bar
 
@@ -341,11 +330,6 @@ class SVMTrainer(Trainer):
         Y  = self.module._kernel._Y
         G  = self._G
         QD = self.module._kernel._QD
-        active_size  = self._active_size
-        UPPER_BOUND  = self._UPPER_BOUND
-        LOWER_BOUND  = self._LOWER_BOUND
-        alpha_status = self._alpha_status
-
 
         # === find G_max1 and G_max_idx (=i)
         G_max11    = -Infinity
@@ -448,10 +432,8 @@ class SVMTrainer(Trainer):
 
         # determine mins and maxs
         if obj_diff_min1 <= obj_diff_min2:
-            obj_diff_min  = obj_diff_min1
             G_min_idx     = G_min_idx1
         else:
-            obj_diff_min  = obj_diff_min2
             G_min_idx     = G_min_idx2
 
         G_max2 = max(G_max21, G_max22)
@@ -525,7 +507,6 @@ class SVMTrainer(Trainer):
         """ Calculates and returns the Value of the Objective Function:
                 f(alpha) = 0.5 * alpha' * Q * alpha - sum(alpha)
         """
-        v = 0
         alpha = self.module._alpha
         G     = self._G
         v = sum( alpha * ( G - 1 ) ) / 2

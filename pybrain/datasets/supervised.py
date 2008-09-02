@@ -35,7 +35,7 @@ class SupervisedDataSet(DataSet):
         self.outdim = self.getDimension('target')
          
     def __reduce__(self):
-        _, _, state, lst, dct = super(SupervisedDataSet, self).__reduce__()
+        _, _, state, _, _ = super(SupervisedDataSet, self).__reduce__()
         creator = self.__class__
         args = self.indim, self.outdim
         return creator, args, state, iter([]), iter({})

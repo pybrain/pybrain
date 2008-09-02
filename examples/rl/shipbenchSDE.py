@@ -19,7 +19,7 @@ matplotlib.use('TkAgg')
 
 from pybrain.rl.environments.shipsteer import ShipSteeringEnvironment
 from pybrain.rl.environments.shipsteer import GoNorthwardTask
-from pybrain.rl import StateDependentAgent, ENAC, QueuedExperiment, EpisodicExperiment
+from pybrain.rl import StateDependentAgent, ENAC, EpisodicExperiment
 
 from pybrain.tools.shortcuts import buildNetwork
 from pybrain.tools.plotting import MultilinePlotter

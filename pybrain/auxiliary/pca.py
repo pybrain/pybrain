@@ -5,8 +5,9 @@
 __author__ = 'Justin S Bayer, bayerj@in.tum.de'
 
 
-from scipy import random, asmatrix, cov
+from scipy import asmatrix, cov
 from scipy.linalg import inv, eig
+from numpy.random import standard_normal
 
 
 def reduceDim(data, dim, func='pca'):
@@ -73,7 +74,7 @@ def pPca(data, dim):
     num = data.shape[1]
     data = asmatrix(makeCentered(data))
     # Pick a random reduction
-    W = asmatrix(random.standard_normal((num, dim)))
+    W = asmatrix(standard_normal((num, dim)))
     # Save for convergence check
     W_ = W[:]
     while True:

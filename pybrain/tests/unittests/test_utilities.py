@@ -93,7 +93,7 @@ Tests for Serializable
 """
 
 
-from pybrain.utilities import substitute, Serializable
+from pybrain.utilities import Serializable
 from pybrain.tests import runModuleTestSuite
 
 

@@ -10,16 +10,16 @@
 # 9 lines total marked as "for plotting"
 #########################################################################
 
-from pybrain import *
-from pybrain.tools.shortcuts import *
-from pybrain.rl.environments.simple import *
+from pybrain.tools.shortcuts import buildNetwork
+from pybrain.rl.environments.simple import SimpleEnvironment, MinimizeTask
 from pybrain.rl.agents import FiniteDifferenceAgent
-from pybrain.rl.learners import *
+from pybrain.rl.learners import FDBasic
 from pybrain.rl.experiments import EpisodicExperiment
+from scipy import array, mean
 
+from pylab import ion
 
 # for plotting
-from pylab import *
 ion()   
 
 # create environment

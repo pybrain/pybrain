@@ -1,11 +1,12 @@
 __author__ = 'Thomas Rueckstiess, ruecksti@in.tum.de; Christian Osendorfer, osendorf@in.tum.de'
 
-from scipy import *
+
+from scipy import r_, exp, zeros, eye, array, asarray, random, ravel, diag, sqrt, sin, cos, sort, mgrid, dot, c_
 from scipy.linalg import solve, inv
 from pybrain.datasets import SupervisedDataSet
 
 # for plotting
-from pylab import *
+from pylab import figure, clf, hold, plot, fill, title, show, norm, gcf
 from matplotlib import axes3d as a3
 
 class GaussianProcess:
@@ -145,7 +146,7 @@ class GaussianProcess:
             hold(True)
             if showSamples:
                 # plot samples (gray)
-                for i in range(5):
+                for _ in range(5):
                     plot(self.testx, self.pred_mean + random.multivariate_normal(zeros(len(self.testx)), self.pred_cov), color='gray')
             
             # plot training set

@@ -63,7 +63,7 @@ class CCRLEnvironment(ODEEnvironment):
             if len(contacts) > 0: self.glasSum+=1
         
         # Create contact joints
-        world,contactgroup = args
+        world, contactgroup = args
         for c in contacts:
             p = c.getContactGeomParams()
             # parameters from Niko Wolf
@@ -74,7 +74,7 @@ class CCRLEnvironment(ODEEnvironment):
             c.setSlip1(0.02) #Set the coefficient of force-dependent-slip (FDS) for friction direction 1
             c.setSlip2(0.02) #Set the coefficient of force-dependent-slip (FDS) for friction direction 2
             c.setMu(self.FricMu) #Set the Coulomb friction coefficient
-            j = ode.ContactJoint(self.world, self.contactgroup, c)
+            j = ode.ContactJoint(world, contactgroup, c)
             j.name = None
             j.attach(geom1.getBody(), geom2.getBody())
 
@@ -107,7 +107,7 @@ class CCRLEnvironment(ODEEnvironment):
         self.body_geom = [] 
         self._parseBodies(self.root)
 
-        for (body,geom) in self.body_geom:
+        for (body,_) in self.body_geom:
             if hasattr(body, 'name'):  
                 tmpStr=body.name[:-2]              
                 if tmpStr == "objectP": 
@@ -115,7 +115,7 @@ class CCRLEnvironment(ODEEnvironment):
             
         if self.verbosity > 0:
             print "-------[body/mass list]-----"
-            for (body,geom) in self.body_geom:
+            for (body,_) in self.body_geom:
                 try:
                     print body.name, body.getMass()
                 except AttributeError:

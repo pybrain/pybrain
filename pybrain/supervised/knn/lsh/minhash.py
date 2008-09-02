@@ -5,7 +5,8 @@ from __future__ import division
 
 from collections import defaultdict
 
-from scipy import array, random
+from scipy import array
+from numpy.random import permutation
 
 
 def arrayPermutation(permutation):
@@ -68,7 +69,7 @@ class MinHash(object):
         
         The number of buckets is dim * nPermutations."""
         self.dim = dim
-        self.permutations = array([random.permutation(dim)
+        self.permutations = array([permutation(dim)
                                    for _ in xrange(nPermutations)])
                                    
         self.buckets = defaultdict(lambda: [])

@@ -1,6 +1,6 @@
 __author__ = 'Martin Felder, felder@in.tum.de'
 
-from scipy import random, array
+from scipy import random
 from pybrain.tools.networking.udpconnection import UDPServer
 import threading
 from pybrain.utilities import threaded
@@ -48,7 +48,6 @@ class ShipSteeringEnvironment(GraphicalEnvironment):
         thrust = float(self.action[0])
         rudder = float(self.action[1])
         h, hdot, v = self.sensors
-        ret = array([0.0,0.0,0.0])
         rnd = random.normal(0,1.0, size=3)
         
         thrust = min(max(thrust,-1),+2)

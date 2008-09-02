@@ -64,7 +64,7 @@ class StandingTask(JohnnieTask):
         self.env.obsLen=len(self.env.getSensors())
 
         #normalization for the task spezific sensors
-        for i in range(self.env.obsLen-2*self.env.actLen):
+        for _ in range(self.env.obsLen-2*self.env.actLen):
             self.sensor_limits.append((-20, 20))
         self.epiLen=1000 #suggested episode length for this task        
         
@@ -134,7 +134,7 @@ class JumpingTask(JohnnieTask):
         self.env.obsLen=len(self.env.getSensors())
 
         #normalization for the task spezific sensors
-        for i in range(self.env.obsLen-2*self.env.actLen):
+        for _ in range(self.env.obsLen-2*self.env.actLen):
             self.sensor_limits.append((-20, 20))
         self.epiLen=400 #suggested episode length for this task 
         self.maxHight=4.0 #maximum hight reached during episode

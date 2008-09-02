@@ -67,12 +67,12 @@ class EvolinoPopulation(Population):
 
         individuals = set()
 
-        for i in range(self.nCombinations):
+        for _ in range(self.nCombinations):
             subIndividualsList = [ list(sp.getIndividuals()) for sp in self._subPopulations ]
 
             nIndividuals = len(subIndividualsList[0])
 
-            for j in range(nIndividuals):
+            for _ in range(nIndividuals):
                 subIndividualCombination = []
                 for subIndividuals in subIndividualsList:
                     sub_individual = subIndividuals.pop( randrange( len( subIndividuals ) ) )

@@ -18,7 +18,7 @@ from pybrain.structure.modules   import SoftmaxLayer
 
 """ Furthermore, pylab is needed for the graphical output. """
 import pylab as p
-import numpy
+from numpy.random import multivariate_normal
 
 from examples.neuralnets.datagenerator import generateGridData, plotData
 
@@ -31,7 +31,7 @@ cov = [p.diag([1,1]), p.diag([0.5,1.2]), p.diag([1.5,0.7])]
 alldata = ClassificationDataSet(2, 1, nb_classes=3)
 for n in xrange(400):
     for klass in range(3):
-        input = numpy.random.multivariate_normal(means[n],cov[n])
+        input = multivariate_normal(means[n],cov[n])
         alldata.addSample(input, [klass])
 
 """ Randomly split the dataset into 75% training and 25% test data sets. Of course, we

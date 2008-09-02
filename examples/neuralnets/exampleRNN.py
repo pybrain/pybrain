@@ -15,7 +15,7 @@ def dummyData( npoints, nseq, noise=0.3 ):
     y1 = p.sin(x+p.rand(1)*3.)
     y2 = p.sin(x/2.+p.rand(1)*3.)
     DS = SequenceClassificationDataSet(1,1, nb_classes=2)
-    for s in xrange(nseq):
+    for _ in xrange(nseq):
         DS.newSequence()
         buf = p.rand(npoints)*noise + y1 + (p.rand(1)-0.5)*noise
         for i in xrange(npoints):

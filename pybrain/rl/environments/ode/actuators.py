@@ -86,10 +86,10 @@ class JointActuator(Actuator):
             elif type(j) == ode.AMotor:
                 num = j.getNumAxes()
                 torques = []
-                for i in range(num):
+                for _ in range(num):
                     torques.append(action[0])
                     action = action[1:]
-                for i in range(3-num):
+                for _ in range(3-num):
                     torques.append(0)
                 (t1, t2, t3) = torques
                 j.addTorques(t1, t2, t3)
@@ -177,9 +177,9 @@ class CopyJointActuator(JointActuator):
             elif type(j) == ode.AMotor:
                 num = j.getNumAxes()
                 torques = []
-                for i in range(num):
+                for _ in range(num):
                     torques.append(action[0])
-                for i in range(3-num):
+                for _ in range(3-num):
                     torques.append(0)
                 (t1, t2, t3) = torques
                 j.addTorques(t1*10, t2*10, t3*10)

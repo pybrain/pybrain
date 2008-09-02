@@ -96,7 +96,7 @@ class XMLstruct:
 
     def up(self,steps=1):
         """traverse upward a number of steps in tag stack"""
-        for i in range(steps):
+        for _ in range(steps):
             if self.stack != []:
                 self.current = self.stack.pop()
 
