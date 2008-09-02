@@ -20,7 +20,8 @@ known_extensions = {
     'mat': 'matlab',
     'txt': 'ascii',
     'svm': 'libsvm',
-    'pkl': 'pickle' }
+    'pkl': 'pickle',
+    'nc' : 'netcdf' }
     
 def abstractMethod():
     """ This should be called when an abstract method is called that should have been 
@@ -174,6 +175,9 @@ class Serializable(object):
         
     def saveToFile(self, filename, format=None, **kwargs):
         """Save the object to file given by filename."""
+        if format is None:
+            # try to derive protocol from file extension
+            format = formatFromExtension(filename)
         with file(filename, 'w+') as fp:
             self.saveToFileLike(fp, format, **kwargs)
         
