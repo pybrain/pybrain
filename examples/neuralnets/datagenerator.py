@@ -7,7 +7,7 @@ def generateClassificationData(size):
     means = [(-1,0),(2,4),(3,1)]
     cov = [p.diag([1,1]), p.diag([0.5,1.2]), p.diag([1.5,0.7])]
     dataset = ClassificationDataSet(2, 1, nb_classes=3)
-    for n in xrange(size):
+    for c in xrange(size):
         for klass in range(3):
             input = np.random.multivariate_normal(means[c],cov[c])
             dataset.addSample(input, [klass])
@@ -18,7 +18,6 @@ def generateGridData(min, max, step):
     x = np.arange(min, max, step)
     y = np.arange(min, max, step)
     X, Y = np.meshgrid(x, y)
-    shape = X.shape
     # need column vectors in dataset, not arrays
     ds = ClassificationDataSet(2,1)
     ds.setField('input',  np.concatenate((X.reshape(X.size, 1),Y.reshape(X.size, 1)), 1))
@@ -30,7 +29,7 @@ def generateGridData(min, max, step):
 def plotData(ds):
     p.hold(True)
     for c in range(3):
-        here, dumm = np.where(ds['class']==c)
+        here, _ = np.where(ds['class']==c)
         p.plot(ds['input'][here,0],ds['input'][here,1],'o')
     
 if __name__ == '__main__':    

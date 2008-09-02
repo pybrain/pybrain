@@ -1,5 +1,6 @@
-__author__ = 'Tom Schaul, tom@idsia.ch'
+#@PydevCodeAnalysisIgnore
 
+__author__ = 'Tom Schaul, tom@idsia.ch'
 
 from scipy import array, sin, cos, randn
 import logging
