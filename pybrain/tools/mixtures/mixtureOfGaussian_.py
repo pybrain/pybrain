@@ -1,9 +1,8 @@
 __author__ = 'Frank Sehnke, sehnke@in.tum.de'
 
-# FIXME: filename in lowercase, please
 
 import pylab
-from scipy import random, zeros, ones, sqrt, exp, sin, cos
+from scipy import random, zeros, ones, sqrt, exp, sin, cos, log
 
 stND=zeros(1000)
 for i in range(1000):

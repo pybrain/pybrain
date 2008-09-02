@@ -1,8 +1,5 @@
 __author__ = 'Frank Sehnke, sehnke@in.tum.de'
 
-from pylab import exp, sqrt, cos, log
-from scipy import random, zeros, ones
-# FIXME: filename in lowercase, please
 
 from scipy import random, zeros, ones, exp, sqrt, cos
 
