@@ -37,6 +37,7 @@ class LearningAgent(HistoryAgent):
         return self.lastaction
         
     def newEpisode(self):
+        """ inidicates the beginning of a new episode in the training cycle. """
         if self.remember:
             self.history.newSequence()  
             

@@ -3,7 +3,6 @@ __author__ = 'Thomas Rueckstiess, ruecksti@in.tum.de'
 from learning import LearningAgent
 from history import HistoryAgent
 from pybrain.structure import GaussianLayer, IdentityConnection, Network
-import pdb
 
 # TODO: support for SoftMax output layers
 # TODO: support for more complex networks, which have more than a single output module

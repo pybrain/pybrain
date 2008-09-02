@@ -5,12 +5,16 @@ from pybrain.rl.learners.rllearner import RLLearner
 from scipy import zeros
 
 class FDLearner(RLLearner):
-    
+    """ FDLearner is the base class for all Finite Difference Learners. It 
+        implements basic common functionality for all FD learners, but 
+        can't be used by itself. """
+        
     def __init__(self):
         # store original parameters in here
         self.original = None
     
     def setData(self, ds):
+        """ sets the dataset for the learner. """
         RLLearner.setData(self, ds)
         # add the field for parameter deltas to the dataset (unlinked)
         if self.module:
@@ -29,13 +33,19 @@ class FDLearner(RLLearner):
         abstractMethod()
     
     def perturbate(self):
-        """ perturb the parameters. """
+        """ perturb the parameters. 
+            @note: has to be implemented by all subclasses. """
         pass
         
     def disableLearning(self):
+        """ disables learning and replaces the current (possibly perturbed)
+            parameters with the original ones. """
         self.module._setParameters(self.original)
     
     def enableLearning(self):
+        """ enables learning and changes the parameters back to how they were
+            before disabling learning (by adding the latest delta to the parameters). """
+            
         try:
             lastdelta = self.ds.getField('deltas')[-1,:]
         except IndexError:

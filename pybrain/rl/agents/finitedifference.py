@@ -20,8 +20,10 @@ class FiniteDifferenceAgent(LearningAgent):
         self.learning = False
 
     def setParameters(self, params):
+        """ change the parameters of the module (wrapper function). """
         self.module._setParameters(params)
 
     def newEpisode(self):
+        """ indicates a new episode in the training cycle. """
         LearningAgent.newEpisode(self)
         self.learner.perturbate()        
