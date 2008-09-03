@@ -23,11 +23,11 @@ class BackpropTrainerMix(BackpropTrainer):
         self.ds = dataset
         if dataset:
             assert dataset.indim == self.module.indim
-            assert dataset.outdim == self.module.modules[-1].nDims
+            assert dataset.outdim == self.module.modulesSorted[-1].nDims
 
     def _calcDerivs(self, seq):
         """ calculate derivatives assuming we have a Network with a MixtureDensityLayer as output """
-        assert isinstance(self.module.modules[-1], MixtureDensityLayer)
+        assert isinstance(self.module.modulesSorted[-1], MixtureDensityLayer)
         
         self.module.reset()       
         for time, sample in enumerate(seq):
@@ -35,8 +35,8 @@ class BackpropTrainerMix(BackpropTrainer):
             self.module.inputbuffer[time] = input
             self.module.forward()
         error = 0
-        nDims = self.module.modules[-1].nDims
-        nGauss = self.module.modules[-1].nGaussians
+        nDims = self.module.modulesSorted[-1].nDims
+        nGauss = self.module.modulesSorted[-1].nGaussians
         gamma = []
         means = []
         stddevs = []
