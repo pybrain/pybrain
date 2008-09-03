@@ -5,7 +5,6 @@ __author__ = 'Tom Schaul, tom@idsia.ch'
 from scipy import zeros, r_, cos, sin, pi, array, dot, sqrt, diag
 from scipy.linalg import svd
 import pylab as p
-import matplotlib.axes3d as p3
 
 from pybrain.rl.environments.functions import FunctionEnvironment
 from inspect import isclass
@@ -31,6 +30,7 @@ class FitnessPlotter:
         self.zs = self._generateValMap()        
         self.fig = p.figure()        
         if self.is3d:
+            import matplotlib.axes3d as p3
             self.fig = p3.Axes3D(self.fig)
             
     def _generateValMap(self):

@@ -7,7 +7,6 @@ from pybrain.datasets import SupervisedDataSet
 
 # for plotting
 from pylab import figure, clf, hold, plot, fill, title, show, norm, gcf
-from matplotlib import axes3d as a3
 
 class GaussianProcess:
 
@@ -160,6 +159,8 @@ class GaussianProcess:
             title('1D Gaussian Process with mean and variance')
             
         elif self.indim == 2:
+            from matplotlib import axes3d as a3
+            
             fig = gcf()
             fig.clear()
             ax = a3.Axes3D(fig)
