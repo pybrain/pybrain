@@ -2,7 +2,8 @@ __author__ = 'Daan Wierstra and Tom Schaul'
 
 from scipy import zeros
 
-from network import Network
+from pybrain.structure.networks.feedforward import FeedForwardNetwork
+from pybrain.structure.networks.recurrent import RecurrentNetwork
 from pybrain.structure.modules.neuronlayer import NeuronLayer
 from pybrain.structure.connections import FullConnection
 from pybrain.utilities import combineLists
@@ -10,7 +11,7 @@ from pybrain.utilities import combineLists
 # CHECKME: allow modules that do not inherit from NeuronLayer? and treat them as single neurons?
 
 
-class NeuronDecomposableNetwork(Network):
+class NeuronDecomposableNetwork(object):
     """ A Network, that allows accessing parameters decomposed by their 
     corresponding individual neuron. """
     
@@ -19,10 +20,10 @@ class NeuronDecomposableNetwork(Network):
     
     def addModule(self, m):
         assert isinstance(m, NeuronLayer)
-        Network.addModule(self, m)
+        super(NeuronDecomposableNetwork, self).addModule(m)
         
     def sortModules(self):
-        Network.sortModules(self)
+        super(NeuronDecomposableNetwork, self).sortModules()
         self._constructParameterInfo()
         
         # contains a list of lists of indices
@@ -87,17 +88,28 @@ class NeuronDecomposableNetwork(Network):
     @staticmethod
     def convertNormalNetwork(n):
         """ convert a normal network into a decomposable one """
-        res = NeuronDecomposableNetwork()
+        if isinstance(n, RecurrentNetwork):
+            res = RecurrentDecomposableNetwork()
+            for c in n.recurrentConns:
+                    res.addRecurrentConnection(c)
+        else:
+            res = FeedForwardDecomposableNetwork()
         for m in n.inmodules:
             res.addInputModule(m)
         for m in n.outmodules:
             res.addOutputModule(m)
         for m in n.modules:
             res.addModule(m)
-        for c in n.recurrentConns:
-            res.addRecurrentConnection(c)
         for c in combineLists(n.connections.values()):
             res.addConnection(c)
         res.name = n.name
         res.sortModules()
         return res
+        
+        
+class FeedForwardDecomposableNetwork(NeuronDecomposableNetwork, FeedForwardNetwork):
+    pass
+    
+    
+class RecurrentDecomposableNetwork(NeuronDecomposableNetwork, RecurrentNetwork):
+    pass

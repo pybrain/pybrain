@@ -1,6 +1,6 @@
 __author__ = 'Tom Schaul, tom@idsia.ch'
 
-from network import Network
+from pybrain.structure.networks.feedforward import FeedForwardNetwork
 from pybrain.structure.connections.shared import MotherConnection, SharedFullConnection
 from pybrain.utilities import iterCombinations
 
@@ -10,7 +10,7 @@ from pybrain.utilities import iterCombinations
 # TODO: special treatment for multi-dimensional lstm cells: identity connections on state buffers
 
 
-class SwipingNetwork(Network):
+class SwipingNetwork(FeedForwardNetwork):
     """ A network architecture that establishes shared connections between ModuleMeshes (of identical dimesnions)
     so that the behavior becomes equivalent to one unit (in+hidden+out components at the same coordinate) swiping
     over a multidimensional input space and producing a multidimensional output. """
@@ -26,7 +26,7 @@ class SwipingNetwork(Network):
             self.predefined = predefined
         else:
             self.predefined = {}
-        Network.__init__(self, **args)
+        super(SwipingNetwork, self).__init__(**args)
         
         # determine the dimensions 
         if inmesh != None:

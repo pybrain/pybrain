@@ -5,7 +5,7 @@ don't constrain a particular order.
 
 Build a number of modules and connections, to be used for all constructions
 
-    >>> from pybrain import Network
+    >>> from pybrain.structure.networks.network import Network
     >>> mods = buildSomeModules(10)
     >>> conns = buildSomeConnections(mods)
     

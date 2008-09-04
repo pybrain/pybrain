@@ -3,10 +3,16 @@ __author__ = 'Tom Schaul, tom@idsia.ch'
 from scipy import randn, zeros
 import profile, pstats
     
-from pybrain import Network
+from pybrain.structure.networks.network import Network
 from pybrain.datasets import SequentialDataSet, SupervisedDataSet
 from pybrain.supervised import BackpropTrainer
 from pybrain.tools.xml import NetworkWriter, NetworkReader
+
+
+def epsilonCheck(x, epsilon=1E-6):
+    """Checks that x is in (-epsilon, epsilon)."""
+    epsilon = abs(epsilon)
+    return -epsilon < x < epsilon
 
 
 def buildAppropriateDataset(module):

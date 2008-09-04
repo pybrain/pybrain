@@ -3,15 +3,12 @@ from __future__ import with_statement
 
 __author__ = 'Daan Wierstra and Tom Schaul'
 
-
-import cPickle
-
 import scipy
 
 from pybrain.structure.moduleslice import ModuleSlice
 from pybrain.structure.modules.module import Module
 from pybrain.structure.parametercontainer import ParameterContainer
-from pybrain.utilities import combineLists, substitute
+from pybrain.utilities import combineLists
 from pybrain.structure.connections.shared import SharedConnection
 from pybrain.structure.evolvables.evolvable import Evolvable
 
@@ -23,6 +20,21 @@ class NetworkConstructionException(Exception):
 class Network(Module, ParameterContainer):
     """A network is linking different modules with connections. """
 
+    
+    __offset = 0
+    
+    def __getOffset(self):
+        return self.__offset
+    
+    def __setOffset(self, x):
+        self.__offset = x
+        for m in self.modules:
+            m.offset = x
+    
+    offset = property(__getOffset, __setOffset)
+    
+    
+    
     def __init__(self, name=None, **args):
         ParameterContainer.__init__(self, **args)
         self.name = name
@@ -34,7 +46,6 @@ class Network(Module, ParameterContainer):
         # where the connection leaves from, the value is a list of the 
         # corresponding connections.
         self.connections = {}
-        self.recurrentConns = []
         self.inmodules = []
         self.outmodules = []
         # Special treatment of weight-shared connections.
@@ -53,13 +64,11 @@ class Network(Module, ParameterContainer):
             'connections': 
                 sortedByName(combineLists(
                     [self.connections[m] for m in sortedModules])),
-            'recurrentConns': sortedByName(self.recurrentConns),
         }
         
         s = ("%(name)s\n" +
              "   Modules:\n    %(modules)s\n" +
-             "   Connections:\n    %(connections)s\n" + 
-             "   Recurrent Connections:\n    %(recurrentConns)s") % params
+             "   Connections:\n    %(connections)s\n") % params
         
         return s
         
@@ -74,16 +83,13 @@ class Network(Module, ParameterContainer):
         """Return an iterator over the non-empty ParameterContainers of the 
         network.
         
-        The order is not deterministic."""
-        for m in self.modules:
+        The order IS deterministic."""
+        for m in self.modulesSorted:
             if m.paramdim:
                 yield m
             for c in self.connections[m]:
                 if c.paramdim and not isinstance(c, SharedConnection):
                     yield c
-        for c in self.recurrentConns:
-            if c.paramdim and not isinstance(c, SharedConnection):
-                yield c
         for mc in self.motherconnections:
             if mc.paramdim:
                 yield mc
@@ -132,17 +138,10 @@ class Network(Module, ParameterContainer):
             c.owner = self
         self.sorted = False
 
-    def addRecurrentConnection(self, c):
-        """Add a connection to the network and mark it as a recurrent one."""
-        self.sequential = True
-        if isinstance(c, SharedConnection):
-            if c.mother not in self.motherconnections:
-                self.motherconnections.append(c.mother)
-                c.mother.owner = self
-        elif c.paramdim > 0:
-            c.owner = self
-        self.recurrentConns.append(c)
-        self.sorted = False
+    def _growBuffers(self):
+        for m in self.modules:
+            m._growBuffers()
+        super(Network, self)._growBuffers()
 
     def reset(self):
         """Reset all component modules and the network."""
@@ -166,50 +165,11 @@ class Network(Module, ParameterContainer):
             x._setDerivatives(self.derivs[index:index+x.paramdim], self)
             index += x.paramdim
         
-    @substitute('pybrain.pyrex._network.Network_forwardImplementation')
     def _forwardImplementation(self, inbuf, outbuf):
-        assert self.sorted, ".sortModules() has not been called"
-        index = 0
-        t = self.time
-        for m in self.inmodules:
-            m.inputbuffer[t] = inbuf[index:index + m.indim]
-            index += m.indim
-        
-        if t > 0:
-            for c in self.recurrentConns:
-                c.forward(t-1, t)
-        
-        for m in self.modulesSorted:
-            m.forward(t)
-            for c in self.connections[m]:
-                c.forward(t)
-                
-        index = 0
-        for m in self.outmodules:
-            outbuf[index:index + m.outdim] = m.outputbuffer[t]
-            index += m.outdim
+        raise NotImplemented("Must be implemented by subclass.")
             
     def _backwardImplementation(self, outerr, inerr, outbuf, inbuf):
-        assert self.sorted, ".sortModules() has not been called"
-        index = 0
-        t = self.time
-        for m in self.outmodules:
-            m.outputerror[t] = outerr[index:index + m.outdim]
-            index += m.outdim
-        
-        if not self._isLastTimestep():
-            for c in self.recurrentConns:
-                c.backward(t, t+1)
-        
-        for m in reversed(self.modulesSorted):
-            for c in self.connections[m]:
-                c.backward(t)
-            m.backward(t)
-                
-        index = 0
-        for m in self.inmodules:
-            inerr[index:index + m.indim] = m.inputerror[t]
-            index += m.indim
+        raise NotImplemented("Must be implemented by subclass.")
         
     def _topologicalSort(self):
         """Update the network structure and make .modulesSorted a topologically
@@ -264,7 +224,6 @@ class Network(Module, ParameterContainer):
         # Sort the connections by name.
         for m in self.modules:
             self.connections[m].sort(key=lambda x: x.name)
-        self.recurrentConns.sort(key=lambda x: x.name)
         self.motherconnections.sort(key=lambda x: x.name)
             
         # Create a single array with all parameters.
@@ -294,13 +253,13 @@ class Network(Module, ParameterContainer):
             self.outdim += m.outdim
         
         # Initialize the network buffers.
-        Module.__init__(self, self.indim, self.outdim, name = self.name)
+        Module.__init__(self, self.indim, self.outdim, name=self.name)
         self.sorted = True
         
-    def _resetBuffers(self):
-        Module._resetBuffers(self)
+    def _resetBuffers(self, length=1):
+        super(Network, self)._resetBuffers(length)
         for m in self.modules:
-            m._resetBuffers()        
+            m._resetBuffers(length)
     
     def copy(self, keepBuffers = False):
         if not keepBuffers:

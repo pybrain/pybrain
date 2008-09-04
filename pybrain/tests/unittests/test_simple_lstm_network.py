@@ -18,7 +18,7 @@ Check its gradient:
     Perfect gradient
     True
     
-    >>> net = Network()
+    >>> net = RecurrentNetwork()
     >>> l = LSTMLayer(1)
     >>> net.addRecurrentConnection(FullConnection(l, l))
     >>> net.addInputModule(l)
@@ -45,12 +45,13 @@ Try writing it to an xml file, reread it and determine if it looks the same:
 
 __author__ = 'Tom Schaul, tom@idsia.ch'
 
-from pybrain import Network, LinearLayer, FullConnection, LSTMLayer, BiasUnit
+from pybrain.structure.networks.recurrent import RecurrentNetwork
+from pybrain import LinearLayer, FullConnection, LSTMLayer, BiasUnit
 from pybrain.tests import runModuleTestSuite
 
 
 def buildSimpleLSTMNetwork(peepholes = False):
-    N = Network('simpleLstmNet')  
+    N = RecurrentNetwork('simpleLstmNet')  
     i = LinearLayer(1, name = 'i')
     h = LSTMLayer(1, peepholes = peepholes, name = 'lstm')
     o = LinearLayer(1, name = 'o')

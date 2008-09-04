@@ -60,9 +60,3 @@ class SharedFullConnection(SharedConnection, FullConnection):
     
     def _backwardImplementation(self, outerr, inerr, inbuf):
         FullConnection._backwardImplementation(self, outerr, inerr, inbuf)
-        
-    @substitute('pybrain.pyrex._shared.SharedFullConnectionforward')
-    def forward(self, time, desttime = None):
-        Connection.forward(self, time, desttime)
-    
-    

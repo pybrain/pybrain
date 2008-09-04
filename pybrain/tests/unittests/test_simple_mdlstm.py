@@ -30,12 +30,13 @@ Try writing it to an xml file, reread it and determine if it looks the same:
 
 __author__ = 'Tom Schaul, tom@idsia.ch'
 
-from pybrain import Network, LinearLayer, FullConnection, MDLSTMLayer, BiasUnit, IdentityConnection
+from pybrain.structure.networks.recurrent import RecurrentNetwork
+from pybrain import LinearLayer, FullConnection, MDLSTMLayer, BiasUnit, IdentityConnection
 from pybrain.tests import runModuleTestSuite
 
 
 def buildSimpleMDLSTMNetwork(peepholes = False):
-    N = Network('simpleMDLstmNet')  
+    N = RecurrentNetwork('simpleMDLstmNet')  
     i = LinearLayer(1, name = 'i')
     dim = 1
     h = MDLSTMLayer(dim, peepholes = peepholes, name = 'MDlstm')

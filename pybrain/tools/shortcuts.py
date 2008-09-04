@@ -2,8 +2,17 @@ __author__ = 'Tom Schaul and Thomas Rueckstiess'
 
 
 from itertools import chain
+import logging 
+
 from sys import exit as errorexit
-from pybrain.structure.networks import Network
+
+try:
+    from arac.pybrainbridge import _RecurrentNetwork, _FeedForwardNetwork
+except ImportError:
+    logging.warning("No fast networks avaiable.")
+
+from pybrain.structure.networks.feedforward import FeedForwardNetwork
+from pybrain.structure.networks.recurrent import RecurrentNetwork
 from pybrain.structure.modules import BiasUnit, SigmoidLayer, LinearLayer, LSTMLayer
 from pybrain.structure.connections import FullConnection, IdentityConnection
 
@@ -21,7 +30,14 @@ def buildNetwork(*layers, **options):
             bias=True, hiddenclass=SigmoidLayer, outclass=LinearLayer, outputbias=True
     """
     # options
-    opt = { 'bias':True, 'hiddenclass':SigmoidLayer, 'outclass':LinearLayer, 'outputbias':True, 'peepholes':False }
+    opt = {'bias': True, 
+           'hiddenclass': SigmoidLayer,
+           'outclass': LinearLayer, 
+           'outputbias': True, 
+           'peepholes': False,
+           'recurrent': False,
+           'fast': False,
+    }
     for key in options:
         if key not in opt.keys():
             raise NetworkError('buildNetwork unknown option: %s' % key)
@@ -29,6 +45,18 @@ def buildNetwork(*layers, **options):
     
     if len(layers) < 2:
         raise NetworkError('buildNetwork needs 2 arguments for input and output layers at least.')
+        
+    # Bind the right class to the Network name
+    network_map = {
+        (False, False): FeedForwardNetwork,
+        (True, False): RecurrentNetwork,        
+    }
+    try:
+        network_map[(False, True)] = _FeedForwardNetwork
+        network_map[(True, True)] =  _RecurrentNetwork
+    except:
+        pass
+    Network = network_map[opt['recurrent'], opt['fast']]
     n = Network()
     # linear input layer
     n.addInputModule(LinearLayer(layers[0], name='in'))

@@ -2,7 +2,7 @@ __author__ = 'Thomas Rueckstiess, ruecksti@in.tum.de'
 
 from learning import LearningAgent
 from history import HistoryAgent
-from pybrain.structure import GaussianLayer, IdentityConnection, Network
+from pybrain.structure import GaussianLayer, IdentityConnection, FeedForwardNetwork
 
 # TODO: support for SoftMax output layers
 # TODO: support for more complex networks, which have more than a single output module
@@ -13,7 +13,7 @@ class PolicyGradientAgent(LearningAgent):
     """
     
     def __init__(self, module, learner = None):
-        assert isinstance(module, Network)
+        assert isinstance(module, FeedForwardNetwork)
         assert len(module.outmodules) == 1
         
         LearningAgent.__init__(self, module, learner)
@@ -66,7 +66,6 @@ class PolicyGradientAgent(LearningAgent):
         self.module.backward()
         self.loglh = self.module.derivs.copy()
         
-        self.module.time += 1 
         d = self.module.derivs
         d *= 0
         self.module.reset()

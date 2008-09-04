@@ -24,85 +24,69 @@ class Module(Named):
     # Flag which at the same time provides info on how many trainable parameters
     # the module might contain.
     paramdim = 0
-        
+    
+    # An offset that is added upon any array access. Useful for implementing 
+    # things like time.
+    offset = 0
+    
+    bufferlist = None
+    
     def __init__(self, indim, outdim, name=None, **args):
         """Create a Module with an input dimension of indim and an output 
         dimension of outdim."""
         self.setArgs(name=name, **args)
-        self.time = 0
-        self.seqlen = 0
+        
+        # Make sure that it does not matter wether Module.__init__ is called
+        # before or after adding elements to bufferlist in subclasses.
+        self.bufferlist = [] if not self.bufferlist else self.bufferlist
+        self.bufferlist += [('inputbuffer', indim), 
+                            ('inputerror', indim), 
+                            ('outputbuffer', outdim), 
+                            ('outputerror', outdim), 
+                ]
+                
         self.indim = indim
         self.outdim = outdim
         # Those buffers are 2D arrays (time, dim)
         self._resetBuffers()
-        self._growBuffers()
+        
+    def _resetBuffers(self, length=1):
+        """Reset buffers to a length (in time dimension) of 1."""
+        for buffername, dim in self.bufferlist:
+            setattr(self, buffername, zeros((length, dim)))
         
     def _growBuffers(self):
-        """Increase the buffer sizes."""
-        self.inputbuffer = self._resizeArray(self.inputbuffer)
-        self.inputerror = self._resizeArray(self.inputerror)
-        self.outputbuffer = self._resizeArray(self.outputbuffer)
-        self.outputerror = self._resizeArray(self.outputerror)
+        """Double the size of the modules buffers in its first dimension and 
+        keep the current values."""
+        currentlength = getattr(self, self.bufferlist[0][0]).shape[0]
+        # Save the current buffers
+        tmp = [getattr(self, n) for n, _ in self.bufferlist]
+
+        Module._resetBuffers(self, currentlength * 2)
         
-    def _resetBuffers(self):
-        """Reset buffers to a length (in time dimension) of 1."""
-        self.inputbuffer = zeros((1, self.indim))
-        self.outputbuffer = zeros((1, self.outdim))
-        self.outputerror = zeros((1, self.outdim))
-        self.inputerror = zeros((1, self.indim))
+        for previous, (buffername, dim) in zip(tmp, self.bufferlist):
+            buffer_ = getattr(self, buffername)
+            buffer_[:currentlength] = previous
+            
+    def forward(self):
+        """Produce the output from the input."""
+        self._forwardImplementation(self.inputbuffer[self.offset], 
+                                    self.outputbuffer[self.offset])
         
-    def _resizeArray(self, a):
-        """Increase the buffer size. It should always be one longer than the
-        current sequence length and double on every growth step."""
-        oldsize, dim = a.shape
-        seqlen = max(self.seqlen, 1)
-        if seqlen < oldsize:
-            # No need to grow
-            return a
-        tmp = zeros((oldsize * 2, dim))
-        tmp[0:oldsize] = a
-        return tmp
+    def backward(self):
+        """Produce the input error from the output error."""
+        self._backwardImplementation(self.outputerror[self.offset], 
+                                     self.inputerror[self.offset], 
+                                     self.outputbuffer[self.offset], 
+                                     self.inputbuffer[self.offset])        
         
-    def forward(self, time=None):
-        """Produce the output from the input at the specified time.
-        
-        By default, time is an self incrementing counter."""
-        if time is not None:
-            self.time = time
-        self._forwardImplementation(self.inputbuffer[self.time], 
-                                    self.outputbuffer[self.time])
-        self.time += 1
-        if self.time > self.seqlen:
-            self.seqlen = self.time
-        if self.time >= self.outputbuffer.shape[0]:
-            self._growBuffers()
-        
-    def backward(self, time = None):
-        """Produce the input error from the output error at the specified time.
-        
-        By default, time is an self incrementing counter."""
-        if time is not None:
-            self.time = time
-        else:
-            self.time -= 1
-        self._backwardImplementation(self.outputerror[self.time], self.inputerror[self.time], 
-                                     self.outputbuffer[self.time], self.inputbuffer[self.time])        
-        
-    @substitute('pybrain.pyrex._module.Modulereset')
     def reset(self):
         """Set all buffers, past and present, to zero."""
-        self.time = 0
-        self.seqlen = 0
-        self.inputbuffer *= 0
-        self.outputbuffer *= 0
-        self.inputerror *= 0
-        self.outputerror *= 0
+        self.offset = 0
+        for buffername, _ in self.bufferlist:
+            buf = getattr(self, buffername)
+            buf *= 0
         
-    def _isLastTimestep(self):
-        """Tell wether the current timestep is the last timestep."""
-        # CHECKME
-        return self.time == self.seqlen-1
-    
     def activateOnDataset(self, dataset):
         """Run the module's forward pass on the given dataset unconditionally
         and return the output."""        
@@ -116,29 +100,18 @@ class Module(Named):
         dataset.reset()
         return out
         
-    def activate(self, input = None, time = None):
-        """Do one transformation of an input and return the result at the given
-        time.
-        
-        By default, time is an self incrementing counter."""
-        if time is not None:
-            self.time = time
-        if input is not None:
-            self.inputbuffer[self.time] = input
+    def activate(self, inpt):
+        """Do one transformation of an input and return the result."""
+        self.inputbuffer[self.offset] = inpt
         self.forward()
-        return self.outputbuffer[self.time - 1].copy()
+        return self.outputbuffer[self.offset].copy()
     
-    def backActivate(self, outerr = None, time = None):
+    def backActivate(self, outerr):
         """Do one transformation of an output error outerr backward and return 
-        the result on the input at the given time.
-
-        By default, time is an self incrementing counter."""
-        if time is not None:
-            self.time = time
-        if outerr is not None:
-            self.outputerror[self.time - 1] = outerr
+        the error on the input."""
+        self.outputerror[self.offset] = outerr
         self.backward()
-        return self.inputerror[self.time].copy()
+        return self.inputerror[self.offset].copy()
         
     def _forwardImplementation(self, inbuf, outbuf):
         """Actual forward transformation function. To be overwritten in 

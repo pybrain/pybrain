@@ -39,7 +39,6 @@ class EvolinoTrainer(Trainer):
 #    burstMutation        = property(lambda self: self._burstMutation)
     backprojectionFactor = property(lambda self: self._backprojectionFactor)
 
-
     def __init__(self, evolino_network, dataset, **kwargs):
         """
             @param subPopulationSize: Size of the subpopulations.
@@ -98,9 +97,6 @@ class EvolinoTrainer(Trainer):
         ap.add( 'burstMutation', default=EvolinoBurstMutation() )
         ap.add( 'evaluation',    default=EvolinoEvaluation(evolino_network, self.ds, **kwargs) )
 
-
-
-
         self.selection.nParents = self.nParents
 
         self._population = EvolinoPopulation(
@@ -109,8 +105,6 @@ class EvolinoTrainer(Trainer):
             self._nCombinations,
             self._weightInitializer
             )
-
-
 
         filters = []
         filters.append( self.evaluation   )
@@ -123,20 +117,12 @@ class EvolinoTrainer(Trainer):
         self._max_fitness = self.evaluation.max_fitness
         self._max_fitness_epoch = self.totalepochs
 
-
-
     def setDataset(self, dataset):
-#        self.setData(dataset)
         self.evaluation.dataset = dataset
-
-
-
-
 
     def trainOnDataset(self,*args,**kwargs):
         """ Not implemented """
         raise NotImplementedError()
-
 
     def train(self):
         """ Evolve for one epoch. """
@@ -158,14 +144,5 @@ class EvolinoTrainer(Trainer):
         else:
             if self.verbosity: print "DIDN'T GAIN FITNESS:", "best =", self._max_fitness, "    current-best = ", self.evaluation.max_fitness, "\n"
 
-
-
     def burstMutate(self):
         self.burstMutation.apply(self._population)
-
-
-
-
-
-
-

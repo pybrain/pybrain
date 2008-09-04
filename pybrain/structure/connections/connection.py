@@ -64,29 +64,32 @@ class Connection(Named):
             self.setArgs(outSliceTo = self.outSliceTo)
         
         
-    def forward(self, time, desttime = None):
-        """ propagate the information from the incoming module's output buffer, adding it to 
-            the outgoing node's input buffer, and possibly transforming it on the way. 
-            @param time: timestep used for inmod
-            @param desttime: timestep used for outmod (default = time)
-        """
-        if not desttime:
-            desttime = time
-        self._forwardImplementation(self.inmod.outputbuffer[time, self.inSliceFrom:self.inSliceTo],
-                                    self.outmod.inputbuffer[desttime, self.outSliceFrom:self.outSliceTo])
+    def forward(self, inmodOffset=0, outmodOffset=0):
+        """Propagate the information from the incoming module's output buffer, 
+        adding it to the outgoing node's input buffer, and possibly transforming
+        it on the way. 
+        
+        For this transformation use inmodOffset as an offset for the inmod and
+        outmodOffset as an offset for the outmodules offset."""
+        self._forwardImplementation(
+            self.inmod.outputbuffer[inmodOffset, self.inSliceFrom:self.inSliceTo],
+            self.outmod.inputbuffer[outmodOffset, self.outSliceFrom:self.outSliceTo])
 
-    def backward(self, time, desttime = None):
-        """ propagate the error found at the outgoing module, adding it to the incoming module' 
-            output-error buffer and doing the inverse transformation of forward propagation. 
-            If appropriate, also compute the parameter derivatives.
-            @param time: timestep used for inmod
-            @param desttime: timestep used for outmod (default = time)
-        """
-        if not desttime:
-            desttime = time
-        self._backwardImplementation(self.outmod.inputerror[desttime, self.outSliceFrom:self.outSliceTo],
-                                     self.inmod.outputerror[time, self.inSliceFrom:self.inSliceTo],
-                                     self.inmod.outputbuffer[time, self.inSliceFrom:self.inSliceTo])
+
+    def backward(self, inmodOffset=0, outmodOffset=0):
+        """Propagate the error found at the outgoing module, adding it to the 
+        incoming module's output-error buffer and doing the inverse 
+        transformation of forward propagation. 
+        
+        For this transformation use inmodOffset as an offset for the inmod and
+        outmodOffset as an offset for the outmodules offset.
+
+        If appropriate, also compute the parameter derivatives. """
+        
+        self._backwardImplementation(
+            self.outmod.inputerror[outmodOffset, self.outSliceFrom:self.outSliceTo],
+            self.inmod.outputerror[inmodOffset, self.inSliceFrom:self.inSliceTo],
+            self.inmod.outputbuffer[inmodOffset, self.inSliceFrom:self.inSliceTo])
 
     def _forwardImplementation(self, inbuf, outbuf):
         abstractMethod()
@@ -95,7 +98,8 @@ class Connection(Named):
         abstractMethod()
 
     def __repr__(self):
-        """ A simple representation (this should probably be expanded by subclasses). """
+        """A simple representation (this should probably be expanded by 
+        subclasses). """
         params = {
             'class': self.__class__.__name__,
             'name': self.name,

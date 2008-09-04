@@ -12,6 +12,8 @@ class CheaplyCopiable(ParameterContainer, Module):
         self._params = module.params.copy()
         self.paramdim = module.paramdim    
         self.name = module.name+'-COPY'
+        self.indim = module.indim
+        self.outdim = module.outdim
         
     def copy(self):
         self.__stored._params[:] = self._params
@@ -20,11 +22,11 @@ class CheaplyCopiable(ParameterContainer, Module):
             
     @property
     def derivs(self): 
-        self.__stored.derivs
+        return self.__stored.derivs
     
     @property
     def _derivs(self): 
-        self.__stored.derivs        
+        return self.__stored.derivs        
     
     def reset(self):
         self.__stored.reset()
@@ -59,5 +61,7 @@ class CheaplyCopiable(ParameterContainer, Module):
     def getBase(self):
         self.__stored._params[:] = self._params
         return self.__stored
+    
+    
         
         

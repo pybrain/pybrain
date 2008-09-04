@@ -15,11 +15,9 @@ class FullConnection(Connection, ParameterContainer):
         Connection.__init__(self, *args, **kwargs)
         ParameterContainer.__init__(self, self.indim*self.outdim)
     
-    @substitute('pybrain.pyrex._full.FullConnection_forwardImplementation')
     def _forwardImplementation(self, inbuf, outbuf):
         outbuf += dot(reshape(self.params, (self.outdim, self.indim)), inbuf)
     
-    @substitute('pybrain.pyrex._full.FullConnection_backwardImplementation')
     def _backwardImplementation(self, outerr, inerr, inbuf):
         inerr += dot(reshape(self.params, (self.outdim, self.indim)).T, outerr)
         ds = self.derivs
@@ -29,12 +27,3 @@ class FullConnection(Connection, ParameterContainer):
         """ returns the index of the input module's output buffer, and
         the output module's input buffer, for the given weight.  """
         return paramIndex % self.inmod.outdim, paramIndex / self.inmod.outdim
-    
-    @substitute('pybrain.pyrex._full.FullConnectionforward')
-    def forward(self, time, desttime = None):
-        Connection.forward(self, time, desttime)
-    
-    @substitute('pybrain.pyrex._full.FullConnectionbackward')
-    def backward(self, time, desttime = None):
-        Connection.backward(self, time, desttime)
-    

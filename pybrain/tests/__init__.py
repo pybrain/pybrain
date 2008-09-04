@@ -1,2 +1,3 @@
-from helpers import gradientCheck, buildAppropriateDataset, xmlInvariance
-from testsuites import runModuleTestSuite, epsilonCheck
+from helpers import gradientCheck, buildAppropriateDataset, xmlInvariance, \
+    epsilonCheck
+from testsuites import runModuleTestSuite

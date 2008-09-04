@@ -2,7 +2,7 @@
 __author__ = 'Michael Isik'
 
 
-from pybrain.structure.networks.network import Network
+from pybrain.structure.networks.recurrent import RecurrentNetwork
 from pybrain.structure.modules.lstm import LSTMLayer
 from pybrain.structure.modules.linearlayer import LinearLayer
 from pybrain.structure.connections.full import FullConnection
@@ -22,7 +22,7 @@ class EvolinoNetwork(Module):
         indim = 0
         Module.__init__(self, indim, outdim)
 
-        self._network = Network()
+        self._network = RecurrentNetwork()
         self._in_layer = LinearLayer(indim + outdim)
         self._hid_layer = LSTMLayer(hiddim)
         self._out_layer = LinearLayer(outdim)
@@ -50,7 +50,7 @@ class EvolinoNetwork(Module):
         self._network.sortModules()
         self._network.reset()
 
-        self.time = self._network.time
+        self.offset = self._network.offset
         self.backprojectionFactor = 0.01
 
     def reset(self):
@@ -79,7 +79,7 @@ class EvolinoNetwork(Module):
         """ Run the activate method of the underlying network."""
         assert len(input) == self._network.indim
         output = array(self._network.activate(input))
-        self.time = self._network.time
+        self.offset = self._network.offset
         return output
 
     def activate(self, input):
@@ -111,14 +111,14 @@ class EvolinoNetwork(Module):
 
     def _getLastOutput(self):
         """Return the current output of the linear output layer."""
-        if self.time == 0:
+        if self.offset == 0:
             return zeros(self.outdim)
         else:
-            return self._out_layer.outputbuffer[self.time-1]
+            return self._out_layer.outputbuffer[self.offset - 1]
 
     def _setLastOutput(self, output):
         """Force the current output of the linear output layer to 'output'."""
-        self._out_layer.outputbuffer[self.time-1][:] = output
+        self._out_layer.outputbuffer[self.offset - 1][:] = output
 
     #
     # Genome related 
@@ -200,7 +200,7 @@ class EvolinoNetwork(Module):
         """Return the current output of the RNN. This is needed for linear
         regression, which calculates the weight matrix of the linear output 
         layer."""
-        return copy(self._hid_layer.outputbuffer[self.time-1])
+        return copy(self._hid_layer.outputbuffer[self.offset - 1])
 
     #
     # Topology Helper

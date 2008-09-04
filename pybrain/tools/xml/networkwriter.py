@@ -4,7 +4,8 @@ from inspect import isclass
 
 from handling import XMLHandling
 from pybrain.structure.connections.shared import SharedConnection
-from pybrain import Network
+from pybrain.structure.networks.network import Network 
+from pybrain.structure.networks.recurrent import RecurrentNetwork
 from pybrain.utilities import canonicClassString
 
 # TODO: higher precision on writing parameters
@@ -61,8 +62,9 @@ class NetworkWriter(XMLHandling):
         for m in net.modules:
             for c in net.connections[m]:
                 self.writeConnection(conns, c, False)
-        for c in net.recurrentConns:
-            self.writeConnection(conns, c, True)
+        if isinstance(net, RecurrentNetwork):
+            for c in net.recurrentConns:
+                self.writeConnection(conns, c, True)
             
     def writeModule(self, rootnode, m, inmodule, outmodule):
         if isinstance(m, Network):

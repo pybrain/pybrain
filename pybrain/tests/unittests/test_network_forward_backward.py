@@ -4,7 +4,8 @@ Test the forward and backward passes through a linear network.
 
     >>> from scipy import array
     >>> from pybrain import LinearLayer, buildNetwork
-    >>> n = buildNetwork(2, 4, 3, bias = False, hiddenclass = LinearLayer)
+    >>> n = buildNetwork(2, 4, 3, bias = False, hiddenclass = LinearLayer, recurrent=True)
+
     
 The forward passes (2 timesteps), by two different but equivalent methods
     >>> input = array([1,2])
