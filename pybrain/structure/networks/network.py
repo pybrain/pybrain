@@ -230,14 +230,15 @@ class Network(Module, ParameterContainer):
         tmp = [pc.params for pc in self._containerIterator()]
         total_size = sum(scipy.size(i) for i in tmp)
         ParameterContainer.__init__(self, total_size)
-        self.params[:] = scipy.concatenate(tmp)
-        self._setParameters(self.params)
+        if total_size > 0:
+            self.params[:] = scipy.concatenate(tmp)
+            self._setParameters(self.params)
         
-        # Create a single array with all derivatives.
-        tmp = [pc.derivs for pc in self._containerIterator()]
-        self.resetDerivatives()
-        self.derivs[:] = scipy.concatenate(tmp)
-        self._setDerivatives(self.derivs)
+            # Create a single array with all derivatives.
+            tmp = [pc.derivs for pc in self._containerIterator()]
+            self.resetDerivatives()
+            self.derivs[:] = scipy.concatenate(tmp)
+            self._setDerivatives(self.derivs)
         
         # TODO: make this a property; indim and outdim are invalid before 
         # .sortModules is called!

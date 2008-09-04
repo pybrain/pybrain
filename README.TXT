@@ -3,9 +3,9 @@ Requirements:
 - SciPy 0.6
 
 Other, optional dependencies:
-- matplotlib 0.9.1
+- matplotlib 0.9
 - OpenGL
-- 
+- ODE
 
 Setup: 
 have the PYTHONPATH variable include this directory.
