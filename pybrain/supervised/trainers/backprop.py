@@ -92,7 +92,7 @@ class BackpropTrainer(Trainer):
                 ponderation += sum(importance)
             else:
                 self.module.outputerror[time] = outerr
-                error += 0.5 * outerr**2
+                error += sum(0.5 * outerr**2)
                 ponderation += len(target)
                         
             self.module.backward()
