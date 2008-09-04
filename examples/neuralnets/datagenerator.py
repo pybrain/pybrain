@@ -1,12 +1,13 @@
-import pylab as p
 import numpy as np
 from pybrain.datasets import ClassificationDataSet
 from numpy.random import multivariate_normal
+from scipy import diag
+from pylab import show, hold, plot #@UnresolvedImport
 
 def generateClassificationData(size):
     """ generate a set of points in 2D belonging to three different classes """
     means = [(-1,0),(2,4),(3,1)]
-    cov = [p.diag([1,1]), p.diag([0.5,1.2]), p.diag([1.5,0.7])]
+    cov = [diag([1,1]), diag([0.5,1.2]), diag([1.5,0.7])]
     dataset = ClassificationDataSet(2, 1, nb_classes=3)
     for _ in xrange(size):
         for c in range(3):
@@ -28,11 +29,11 @@ def generateGridData(min, max, step):
     
 
 def plotData(ds):
-    p.hold(True)
+    hold(True)
     for c in range(3):
         here, _ = np.where(ds['class']==c)
-        p.plot(ds['input'][here,0],ds['input'][here,1],'o')
+        plot(ds['input'][here,0],ds['input'][here,1],'o')
     
 if __name__ == '__main__':    
     plotData(generateClassificationData(150))
-    p.show()
+    show()

@@ -1,4 +1,4 @@
-from pylab import *
+from pylab import plot, figure, ion, Line2D, draw, arange #@UnresolvedImport
 from pybrain.rl.environments.renderer import Renderer
 import threading
 import time 

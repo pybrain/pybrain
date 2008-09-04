@@ -3,13 +3,13 @@ __author__ = 'Tom Schaul, tom@idsia.ch and Daan Wierstra'
 
 from datasets import AnBnCnDataSet
 from pybrain.supervised import BackpropTrainer
-from pybrain import FullConnection, Network, TanhLayer, LinearLayer
+from pybrain.structure import FullConnection, RecurrentNetwork, TanhLayer, LinearLayer
 
 
 def testTraining():
     d = AnBnCnDataSet()
     hsize = 2
-    n = Network()
+    n = RecurrentNetwork()
     n.addModule(TanhLayer(hsize, name = 'h'))
     n.addModule(BiasUnit(name = 'bias'))
     n.addOutputModule(LinearLayer(1, name = 'out'))

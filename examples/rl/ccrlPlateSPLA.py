@@ -23,8 +23,8 @@
 # Author: Frank Sehnke, sehnke@in.tum.de
 #########################################################################
 
-from pybrain.rl.environments.ode import *
-from pybrain.rl.environments.ode.tasks import *
+from pybrain.rl.environments.ode import CCRLEnvironment
+from pybrain.rl.environments.ode.tasks import CCRLPlateTask
 from pybrain.structure.modules.tanhlayer import TanhLayer
 from pybrain import buildNetwork
 from pybrain.rl.agents.finitedifference import FiniteDifferenceAgent

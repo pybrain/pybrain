@@ -2,7 +2,8 @@
 __author__ = "Martin Felder"
 __version__ = '$Id$' 
 
-import pylab as p
+from pylab import plot, hold, show #@UnresolvedImport
+from scipy import sin, rand, arange
 from pybrain.datasets            import SequenceClassificationDataSet
 from pybrain.structure.modules   import LSTMLayer, SoftmaxLayer
 from pybrain.supervised          import RPropMinusTrainer
@@ -11,17 +12,17 @@ from pybrain.tools.shortcuts     import buildNetwork
 
 def dummyData( npoints, nseq, noise=0.3 ):
     """ construct a 2-class dummy dataset out of noisy sines """
-    x = p.arange(npoints)/float(npoints) * 20.
-    y1 = p.sin(x+p.rand(1)*3.)
-    y2 = p.sin(x/2.+p.rand(1)*3.)
+    x = arange(npoints)/float(npoints) * 20.
+    y1 = sin(x+rand(1)*3.)
+    y2 = sin(x/2.+rand(1)*3.)
     DS = SequenceClassificationDataSet(1,1, nb_classes=2)
     for _ in xrange(nseq):
         DS.newSequence()
-        buf = p.rand(npoints)*noise + y1 + (p.rand(1)-0.5)*noise
+        buf = rand(npoints)*noise + y1 + (rand(1)-0.5)*noise
         for i in xrange(npoints):
             DS.addSample([buf[i]],[0])
         DS.newSequence()
-        buf = p.rand(npoints)*noise + y2 + (p.rand(1)-0.5)*noise
+        buf = rand(npoints)*noise + y2 + (rand(1)-0.5)*noise
         for i in xrange(npoints):
             DS.addSample([buf[i]],[1])
     return DS
@@ -34,10 +35,10 @@ tstdata = dummyData(50, 20)
 tstdata._convertToOneOfMany( bounds=[0.,1.] )
 
 # plot the first 5 timeseries
-p.plot(trndata['input'][0:250,:],'-o')
-p.hold(True)
-p.plot(trndata['target'][0:250,0])
-p.show()
+plot(trndata['input'][0:250,:],'-o')
+hold(True)
+plot(trndata['target'][0:250,0])
+show()
 
 # construct LSTM network - note the missing output bias
 rnn = buildNetwork( trndata.indim, 5, trndata.outdim, hiddenclass=LSTMLayer, outclass=SoftmaxLayer, outputbias=False )

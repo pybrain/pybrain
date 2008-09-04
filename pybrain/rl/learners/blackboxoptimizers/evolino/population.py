@@ -147,7 +147,7 @@ class EvolinoSubPopulation(SimplePopulation):
         self.setArgs(**kwargs)
 
 
-        for i in range(maxNIndividuals):
+        for _ in range(maxNIndividuals):
             self.addIndividual(self._prototype.copy())
         self._valueInitializer.apply(self)
 

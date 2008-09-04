@@ -29,8 +29,7 @@
 
 from pybrain.structure.modules.tanhlayer import TanhLayer
 from pybrain import buildNetwork
-from pybrain.rl.environments.flexcube import *
-#from pybrain.rl.agents import FiniteDifferenceAgent
+from pybrain.rl.environments.flexcube import FlexCubeEnvironment, WalkTask
 from pybrain.rl.agents.finitedifference import FiniteDifferenceAgent
 from pybrain.rl.learners.finitedifference.spla import SPLA
 from pybrain.rl.experiments import EpisodicExperiment

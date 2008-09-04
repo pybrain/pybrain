@@ -8,12 +8,14 @@ __author__ = 'Tom Schaul, tom@idsia.ch'
 
 """ A script that attempts to illustrate a large variety of use-cases for Learners """
 
-from pybrain import *
+from pybrain import buildNetwork
 from pybrain.utilities import storeCallResults
+from pybrain.structure import FullConnection
 from pybrain.structure.parametercontainer import ParameterContainer
 from pybrain.structure.evolvables.cheaplycopiable import CheaplyCopiable
-from pybrain.rl.learners import * 
-from pybrain.rl.learners.meta import *
+from pybrain.structure.networks.network import Network
+from pybrain.rl.learners import * #@UnusedWildImport
+from pybrain.rl.learners.meta import * #@UnusedWildImport
 from pybrain.rl.agents.finitedifference import FiniteDifferenceAgent
 from pybrain.rl.tasks.episodic import EpisodicTask
 from pybrain.rl.environments.functions import SphereFunction

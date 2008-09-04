@@ -25,7 +25,6 @@ class GradualRewardTask(EpisodicTask):
         jointSense = self.env.getSensorByName('JointSensor')
         veloSense = self.env.getSensorByName('JointVelocitySensor')
         
-        reward = 0
         j = jointSense[0]
         v = veloSense[0] 
         

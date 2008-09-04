@@ -23,8 +23,8 @@ plotting = True
 
 
 if plotting:
-    import pylab    
-    pylab.ion()   
+    from pylab import draw, ion, title, plot, figure, clf #@UnresolvedImport
+    ion()   
 
 # create environment
 env = SimpleEnvironment()
@@ -65,13 +65,12 @@ for updates in range(1000):
 
     print "\nmean return %f\n" % (mean(ret))    
     if plotting and updates > 1:
-        pylab.figure(1)
-        pylab.clf()
-        pylab.title('Reward (averaged over '+str(agent.history.getNumSequences())+' seqs)')
-        pylab.plot(plots[0:updates, 0])
-        pylab.figure(2)
-        pylab.clf()
-        pylab.title('Weight value')
-        pylab.plot(plots[0:updates, 1])
-        pylab.draw()  
-           
+        figure(1)
+        clf()
+        title('Reward (averaged over '+str(agent.history.getNumSequences())+' seqs)')
+        plot(plots[0:updates, 0])
+        figure(2)
+        clf()
+        title('Weight value')
+        plot(plots[0:updates, 1])
+        draw()  

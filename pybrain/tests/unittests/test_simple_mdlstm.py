@@ -3,6 +3,7 @@
 Build a simple mdlstm network with peepholes:
 
     >>> n = buildSimpleMDLSTMNetwork(True)
+    >>> print n
     simpleMDLstmNet
        Modules:
         [<MDLSTMLayer 'MDlstm'>, <BiasUnit 'bias'>, <LinearLayer 'i'>, <LinearLayer 'o'>]
@@ -52,7 +53,6 @@ def buildSimpleMDLSTMNetwork(peepholes = False):
     N.addRecurrentConnection(IdentityConnection(h, h, inSliceFrom = dim, outSliceFrom = 4*dim, name = 'rstate'))
     N.addConnection(FullConnection(h, o, inSliceTo = dim, name = 'f3'))
     N.sortModules()
-    print N
     return N
         
         

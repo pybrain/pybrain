@@ -3,7 +3,7 @@ __author__ = 'Daan Wierstra and Tom Schaul'
 
 from scipy import zeros
 
-from pybrain.utilities import abstractMethod, substitute, Named
+from pybrain.utilities import abstractMethod, Named
 
 
 class Module(Named):
@@ -64,7 +64,7 @@ class Module(Named):
 
         Module._resetBuffers(self, currentlength * 2)
         
-        for previous, (buffername, dim) in zip(tmp, self.bufferlist):
+        for previous, (buffername, _dim) in zip(tmp, self.bufferlist):
             buffer_ = getattr(self, buffername)
             buffer_[:currentlength] = previous
             

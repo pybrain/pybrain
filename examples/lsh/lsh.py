@@ -11,7 +11,7 @@ import logging
 
 from random import shuffle
 
-import pylab
+from pylab import show, plot, clf #@UnresolvedImport
 from pybrain.supervised.knn.lsh.nearoptimal import MultiDimHash
 from scipy import random, array, dot, zeros
 from scipy.linalg import orth
@@ -89,7 +89,7 @@ if __name__ == '__main__':
     # Visualize it
     visualize = True
     if visualize:
-        pylab.clf()
+        clf()
         result = [((x, y), color) 
                   for (x, y), color in result 
                   if color is not None]
@@ -99,9 +99,9 @@ if __name__ == '__main__':
         xs_blue = [x for ((x, y), color) in result if color == 'blue']
         ys_blue = [y for ((x, y), color) in result if color == 'blue']
     
-        pylab.plot(xs_red, ys_red, 'ro')
-        pylab.plot(xs_blue, ys_blue, 'bo')
-        pylab.show()
+        plot(xs_red, ys_red, 'ro')
+        plot(xs_blue, ys_blue, 'bo')
+        show()
         
     ballsizes = (len(ball) for ball in m.balls.itervalues())
     logging.info("Sizes of the balls: " + " ".join(str(i) for i in ballsizes))

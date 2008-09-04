@@ -1,12 +1,13 @@
 __author__ = 'Thomas Rueckstiess, ruecksti@in.tum.de; Christian Osendorfer, osendorf@in.tum.de'
 
 
-from scipy import r_, exp, zeros, eye, array, asarray, random, ravel, diag, sqrt, sin, cos, sort, mgrid, dot, c_
+from scipy import r_, exp, zeros, eye, array, asarray, random, ravel, diag, sqrt, sin, cos, sort, mgrid, dot
+from scipy import  c_ #@UnusedImport
 from scipy.linalg import solve, inv
 from pybrain.datasets import SupervisedDataSet
 
 # for plotting
-from pylab import figure, clf, hold, plot, fill, title, show, norm, gcf
+from pylab import figure, clf, hold, plot, fill, title, show, norm, gcf #@UnresolvedImport
 
 class GaussianProcess:
 
@@ -29,7 +30,7 @@ class GaussianProcess:
     
     def _kernel(self, a, b):
         """ kernel function, here RBF kernel """
-        (l, sigma_f, sigma_n) = self.hyper
+        (l, sigma_f, _sigma_n) = self.hyper
         r = sigma_f**2*exp(-1.0/(2*l**2)*norm(a-b, 2)**2)
         # if a == b:
         #   r += sigma_n**2
@@ -163,7 +164,7 @@ class GaussianProcess:
             
             fig = gcf()
             fig.clear()
-            ax = a3.Axes3D(fig)
+            ax = a3.Axes3D(fig) #@UndefinedVariable
             
             # plot training set
             ax.plot3D(ravel(self.trainx[:,0]), ravel(self.trainx[:,1]), ravel(self.trainy), 'ro')

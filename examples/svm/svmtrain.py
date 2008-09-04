@@ -166,18 +166,6 @@ if __name__ == "__main__":
     trainer.setData(dataset)
 
 
-
-    if visualize:
-        print "\n=== Initializing visualization ==="
-        if not multiclass:
-            from lib.svmtrainer_visualizer import SVMTrainerVisualizer
-            SVMTrainerVisualizer(trainer)
-        else:
-            print "Visualization not possible in multiclass mode"
-            print "Skipping"
-
-
-
     print "\n=== Entering training loop ==="
 #    profile.run("trainer.train()");exit(0)
     trainer.train()

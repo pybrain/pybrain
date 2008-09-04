@@ -71,7 +71,7 @@ class CartPoleEnvironment(GraphicalEnvironment):
             derivative at time t.
         """
         F = self.action
-        (theta, theta_, s, s_) = x
+        (theta, theta_, _s, s_) = x
         u = theta_
         sin_theta = sin(theta)
         cos_theta = cos(theta)

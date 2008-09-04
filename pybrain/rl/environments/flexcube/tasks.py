@@ -56,14 +56,14 @@ class NoRewardTask(EpisodicTask):
         aktSensors=self.env.getSensors()
         output=array([])
         for i in aktSensors:
-          for j in self.obsSensors:
-            if i[0]==j:
-              momSense=i[2]
-              output=r_[output, momSense]
-          if i[0]==self.rewardSensor[0]:
-            self.rawReward=i[2][0]
-          if i[0]=="EdgesReal":
-            self.EdgeL=momSense.copy()
+            for j in self.obsSensors:
+                if i[0]==j:
+                    momSense=i[2]
+                    output=r_[output, momSense]
+            if i[0]==self.rewardSensor[0]:
+                self.rawReward=i[2][0]
+            if i[0]=="EdgesReal":
+                self.EdgeL=momSense.copy()
         return output[:]  
 
     #An agent can find easily the resonance frequency of the cube

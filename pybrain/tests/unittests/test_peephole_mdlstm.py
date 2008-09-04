@@ -1,4 +1,11 @@
 """
+    >>> from pybrain.tests.helpers import epsilonCheck
+    >>> from pybrain.tools.functions import tanh
+    >>> from pybrain.utilities import fListToString
+    >>> from test_peephole_lstm import predictOutcome
+    >>> from scipy import arctanh
+    >>> from random import random
+
 Test the MDLSTMLayer behavior when using peepholes.
 
     >>> N = buildMinimalMDLSTMNetwork()
@@ -46,12 +53,7 @@ __author__ = 'Tom Schaul, tom@idsia.ch'
 
 from pybrain.tests import runModuleTestSuite
 from pybrain.structure import LinearLayer, IdentityConnection, MDLSTMLayer, RecurrentNetwork
-from pybrain.tests.helpers import epsilonCheck
-from pybrain.tools.functions import tanh
-from pybrain.utilities import fListToString
-from test_peephole_lstm import predictOutcome
-from scipy import arctanh
-from random import random
+
 
 def buildMinimalMDLSTMNetwork():
     N = RecurrentNetwork('simpleMdLstmNet')  

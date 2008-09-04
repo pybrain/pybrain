@@ -40,9 +40,8 @@ class CMAES(BlackBoxOptimizer):
         mucov = mueff                   # size of mu used for calculating learning rate ccov
         ccov = ((1/mucov) * 2/(N+1.4)**2 + (1-1/mucov) *   # learning rate for
                  ((2*mueff-1)/((N+2)**2+2*mueff)))         # covariance matrix
-        damps = 1 + 2*max(0, sqrt((mueff-1)/(N+1))-1) + cs # damping for sigma 
-                                                         # usually close to 1
-                                                         # former damp == damps/cs    
+        damps = 1 + 2*max(0, sqrt((mueff-1)/(N+1))-1) + cs 
+        # damping for sigma usually close to 1 former damp == damps/cs    
     
         # Initialize dynamic (internal) strategy parameters and constants
         pc = zeros((N,1))
@@ -50,8 +49,8 @@ class CMAES(BlackBoxOptimizer):
         B = eye(N,N)                      # B defines the coordinate system
         D = eye(N,N)                      # diagonal matrix D defines the scaling
         C = B*D*(B*D).T                   # covariance matrix
-        chiN=N**0.5*(1-1./(4.*N)+1/(21.*N**2)) # expectation of 
-                                          #   ||N(0,I)|| == norm(randn(N,1))
+        chiN=N**0.5*(1-1./(4.*N)+1/(21.*N**2)) 
+        # expectation of ||N(0,I)|| == norm(randn(N,1))
       
         # -------------------- Generation Loop --------------------------------
         counteval = 0 # the next 40 lines contain the 20 lines of interesting code 

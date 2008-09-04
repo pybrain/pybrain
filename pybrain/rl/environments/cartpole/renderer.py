@@ -1,4 +1,4 @@
-from pylab import ion, figure, draw, Rectangle, Line2D
+from pylab import ion, figure, draw, Rectangle, Line2D #@UnresolvedImport
 from scipy import cos, sin
 from pybrain.rl.environments.renderer import Renderer
 import threading

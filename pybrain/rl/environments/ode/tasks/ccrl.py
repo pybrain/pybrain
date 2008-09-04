@@ -1,5 +1,5 @@
 from pybrain.rl.tasks import EpisodicTask
-from pybrain.rl.environments.ode.sensors import *
+from pybrain.rl.environments.ode.sensors import SpecificBodyPositionSensor
 from scipy import tanh, zeros, array, random, sqrt, asarray
 
 

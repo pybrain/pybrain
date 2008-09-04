@@ -2,7 +2,6 @@ __author__ = 'Tom Schaul, tom@idsia.ch'
 
 from neuronlayer import NeuronLayer
 from pybrain.tools.functions import sigmoid
-from pybrain.utilities import substitute
 
 
 class SigmoidLayer(NeuronLayer):

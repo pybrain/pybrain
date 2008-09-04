@@ -20,7 +20,7 @@ class QueuedExperiment(EpisodicExperiment):
                 # indefinite learning
                 self._stepQueueLoop()
         else:
-            for i in arange(learningcycles):
+            for _ in arange(learningcycles):
                 # learn the given number of times
                 self._stepQueueLoop()
         

@@ -188,9 +188,7 @@ class GridSearchDOE:
             settings by calling the abstract _validate() method.
         """
         self._n_params = len(self._min_params)
-        param_min = self._min_params
-        param_max = self._max_params
-
+        
         center = self._min_params + self._range / 2.
         for level in range(self._n_iterations):
             grid = self._calcGrid( center, level)
@@ -202,7 +200,6 @@ class GridSearchDOE:
                 print
                 print "Found maximum at:", center, "   performance = ", local_perf[max_idx]
                 print
-
 
         return center
 

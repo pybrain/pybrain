@@ -255,7 +255,7 @@ class Coevolution(Named):
             s += ','+str(self.populationSize)
         s += ')'
         if self.parentChildAverage < 1:
-             s += ' p_c_avg='+str(self.parentChildAverage)
+            s += ' p_c_avg='+str(self.parentChildAverage)
         return s
                                      
     def _numSelected(self):

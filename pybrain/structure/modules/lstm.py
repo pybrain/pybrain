@@ -1,6 +1,6 @@
 __author__ = 'Daan Wierstra and Tom Schaul'
 
-from scipy import zeros, tanh
+from scipy import tanh
 
 from neuronlayer import NeuronLayer
 from module import Module

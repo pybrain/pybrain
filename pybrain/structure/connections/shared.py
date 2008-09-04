@@ -3,7 +3,6 @@ __author__ = 'Tom Schaul, tom@idsia.ch'
 from pybrain.structure.parametercontainer import ParameterContainer
 from connection import Connection
 from full import FullConnection
-from pybrain.utilities import substitute
 
 
 class OwnershipViolation(Exception):

@@ -4,8 +4,7 @@ __author__ = 'Tom Schaul, tom@idsia.ch'
 
 from scipy import zeros, r_, cos, sin, pi, array, dot, sqrt, diag
 from scipy.linalg import svd
-import pylab as p
-
+from pylab import figure, plot, show, meshgrid, contour, savefig #@UnresolvedImport
 from pybrain.rl.environments.functions import FunctionEnvironment
 from inspect import isclass
 
@@ -28,10 +27,10 @@ class FitnessPlotter:
         self.xs = r_[xmin:xmax:self.precision*1j]
         self.ys = r_[ymin:ymax:self.precision*1j]
         self.zs = self._generateValMap()        
-        self.fig = p.figure()        
+        self.fig = figure()        
         if self.is3d:
             import matplotlib.axes3d as p3
-            self.fig = p3.Axes3D(self.fig)
+            self.fig = p3.Axes3D(self.fig) #@UndefinedVariable
             
     def _generateValMap(self):
         """ generate the function fitness values for the current grid of x and y """
@@ -44,11 +43,11 @@ class FitnessPlotter:
     def plotAll(self, levels = 50, popup = True):
         """ @param levels: how many fitness levels should be drawn."""
         if self.is3d:
-            X, Y = p.meshgrid(self.xs, self.ys)    
+            X, Y = meshgrid(self.xs, self.ys)    
             self.fig.contour3D(X, Y, self.zs, levels)                 
         else:
-            p.contour(self.xs, self.ys, self.zs, levels)
-        if popup: p.show()
+            contour(self.xs, self.ys, self.zs, levels)
+        if popup: show()
     
     def addSamples(self, samples, rescale = True, color = ''):
         """plot some sample points on the fitness landscape. 
@@ -69,7 +68,7 @@ class FitnessPlotter:
         if self.is3d:
             self.fig.plot3D(sx, sy, sz, color+'+')
         else:
-            p.plot(sx, sy, color+'+')
+            plot(sx, sy, color+'+')
     
     def _rescale(self, xmin, xmax, ymin, ymax):
         self.xs = r_[min(xmin*1.1, min(self.xs)):max(xmax*1.1, max(self.xs)):self.precision*1j]
@@ -101,11 +100,11 @@ class FitnessPlotter:
             self.fig.plot3D([center[0]], [center[1]], [cz], color+'+')
             self.fig.plot3D(ex, ey, ez, color+'-')
         else:
-            p.plot([center[0]], [center[1]], color+'+')
-            p.plot(ex, ey, color+'-')
+            plot([center[0]], [center[1]], color+'+')
+            plot(ex, ey, color+'-')
         
         
     def saveAs(self, filename, format = '.jpg'):
-        p.savefig(filename+format)
+        savefig(filename+format)
         
     

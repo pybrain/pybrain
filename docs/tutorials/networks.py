@@ -6,7 +6,8 @@
 
 __author__ = 'Tom Schaul, tom@idsia.ch'
 
-from pybrain import Network, LinearLayer, SigmoidLayer, FullConnection
+from pybrain.structure import FeedForwardNetwork, LinearLayer, SigmoidLayer, FullConnection, RecurrentNetwork
+from pybrain import buildNetwork
 
 """ This tutorial will attempt to guide you for using one of PyBrain's most basic structural elements:
 Networks, and with them Modules and Connections. 
@@ -15,7 +16,7 @@ Let us start with a simple example, building a multi-layer-perceptron (MLP).
 
 First we make a new network object: """
 
-n = Network()
+n = FeedForwardNetwork()
 
 """ Next, we're constructing the input, hidden and output layers. """
 
@@ -69,7 +70,7 @@ more readable printouts, and a very concise way of accessing them.
 
 We now build an equivalent network to the one before, but with a more concise syntax:
 """
-n2 = Network(name = 'net2')
+n2 = RecurrentNetwork(name = 'net2')
 n2.addInputModule(LinearLayer(2, name = 'in'))
 n2.addModule(SigmoidLayer(3, name = 'h'))
 n2.addOutputModule(LinearLayer(1, name = 'out'))

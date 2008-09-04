@@ -23,7 +23,7 @@ class KWArgDsc(object):
 
 class KWArgsProcessor(object):
     def __init__(self, obj, kwargs):
- #       self.argDscs = []
+#       self.argDscs = []
         self._object  = obj
         self._obj_kwargs  = kwargs
 

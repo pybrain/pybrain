@@ -86,4 +86,3 @@ class PolicyGradientAgent(LearningAgent):
 
         self.lastobs = None
         self.lastaction = None
-   

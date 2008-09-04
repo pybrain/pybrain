@@ -50,7 +50,7 @@ __author__ = 'Tom Schaul, tom@idsia.ch'
 import scipy
 
 from pybrain.structure.networks.feedforward import FeedForwardNetwork
-from pybrain import LinearLayer, SigmoidLayer, SharedFullConnection, MotherConnection
+from pybrain import LinearLayer, SharedFullConnection, MotherConnection
 from pybrain.tests import runModuleTestSuite
 
 

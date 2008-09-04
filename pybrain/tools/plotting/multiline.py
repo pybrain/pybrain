@@ -1,6 +1,7 @@
 # $Id$
-import pylab, math, imp
+import math, imp
 from matplotlib.lines import Line2D
+from pylab import clf, plot, axes, show, xlabel, ylabel, savefig, ioff, draw_if_interactive #@UnresolvedImport
 
 __author__ = 'Martin Felder and Frank Sehnke'
 
@@ -34,8 +35,8 @@ class MultilinePlotter:
         self.dataList = []
         self.Lines = []
         self.autoscale = autoscale
-        pylab.clf()
-        self.Axes = pylab.axes(**kwargs)
+        clf()
+        self.Axes = axes(**kwargs)
         self.nbLines = 0
         self.defaultLineStyle = {}
         self._checkMaxId(maxLines-1)
@@ -167,7 +168,7 @@ class MultilinePlotter:
             self.Axes.set_ylim( tuple(yr) )
             #self.Axes.draw()
         #pylab.show()
-        pylab.draw_if_interactive()
+        draw_if_interactive()
         self.replot = False
 
 
@@ -177,18 +178,18 @@ class MultilinePlotter:
     @param xLable: The label for the x-axis
     @param yLable: The label for the y-axis
     @param popup: also produce a popup window with the image?"""
-        pylab.clf()
+        clf()
         for i in range(self.nbLines):
-            pylab.plot(self.indexList[i], self.dataList[i])
-        pylab.xlabel(xLabel)
-        pylab.ylabel(yLabel)
-        pylab.title(title)
+            plot(self.indexList[i], self.dataList[i])
+        xlabel(xLabel)
+        ylabel(yLabel)
+        title(title)
         if imgfile == None:
             imgfile = imp.find_module('pybrain')[1]+"/tools/plotting/plot.png"
-        pylab.savefig(imgfile)
+        savefig(imgfile)
         if popup:
-            pylab.ioff()
-            pylab.show()    
+            ioff()
+            show()    
 
 
 """Small example to demonstrate how the plot class can be used"""

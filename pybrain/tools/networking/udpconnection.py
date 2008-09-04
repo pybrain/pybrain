@@ -109,11 +109,11 @@ class UDPClient(object):
             data = self.UDPInSock.recv(self.buf)
 
             try:              
-              arrayList=eval(data)
-              return arrayList
+                arrayList=eval(data)
+                return arrayList
             except:
-              print "Unsupported data format received from", self.outAddr, "!"
-              return None
+                print "Unsupported data format received from", self.outAddr, "!"
+                return None
     
         except:
             print "Server has quit!"

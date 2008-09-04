@@ -3,6 +3,7 @@
 Build a simple lstm network with peepholes:
 
     >>> n = buildSimpleLSTMNetwork(True)
+    >>> print n
     simpleLstmNet
        Modules:
         [<BiasUnit 'bias'>, <LinearLayer 'i'>, <LSTMLayer 'lstm'>, <LinearLayer 'o'>]
@@ -65,7 +66,6 @@ def buildSimpleLSTMNetwork(peepholes = False):
     N.addRecurrentConnection(FullConnection(h, h, name = 'r1'))
     N.addConnection(FullConnection(h, o, name = 'r1'))
     N.sortModules()
-    print N
     return N
         
 

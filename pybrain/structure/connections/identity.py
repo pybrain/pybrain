@@ -1,6 +1,5 @@
 __author__ = 'Tom Schaul, tom@idsia.ch'
 
-from pybrain.utilities import substitute
 from connection import Connection
 
 

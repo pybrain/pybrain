@@ -17,7 +17,8 @@ from pybrain.supervised.trainers import BackpropTrainer
 from pybrain.structure.modules   import SoftmaxLayer
 
 """ Furthermore, pylab is needed for the graphical output. """
-import pylab as p
+from pylab import ion, ioff, figure, draw, contourf, clf, show #@UnresolvedImport
+from scipy import diag
 from numpy.random import multivariate_normal
 
 from examples.neuralnets.datagenerator import generateGridData, plotData
@@ -27,11 +28,11 @@ points in 2D belonging to three different classes. You could also
 read in your data from a file, e.g. using pylab.load(). """
 
 means = [(-1,0),(2,4),(3,1)]
-cov = [p.diag([1,1]), p.diag([0.5,1.2]), p.diag([1.5,0.7])]
+cov = [diag([1,1]), diag([0.5,1.2]), diag([1.5,0.7])]
 alldata = ClassificationDataSet(2, 1, nb_classes=3)
 for n in xrange(400):
     for klass in range(3):
-        input = multivariate_normal(means[n],cov[n])
+        input = multivariate_normal(means[klass],cov[klass])
         alldata.addSample(input, [klass])
 
 """ Randomly split the dataset into 75% training and 25% test data sets. Of course, we
@@ -98,15 +99,15 @@ for i in range(20):
     out = out.reshape(X.shape)
     
     """ plot the test data and the underlying grid as a filled contour """
-    p.figure(1)
-    p.ioff()  # interactive graphics off
-    p.clf()
+    figure(1)
+    ioff()  # interactive graphics off
+    clf()
     plotData(tstdata)
     if out.max()!=out.min():
-        CS = p.contourf(X, Y, out)
-    p.ion()   # interactive graphics on
-    p.draw()  # update the plot
+        CS = contourf(X, Y, out)
+    ion()   # interactive graphics on
+    draw()  # update the plot
     
 """ show the plot until user kills it """
-p.ioff()
-p.show()  
+ioff()
+show()  

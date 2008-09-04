@@ -120,7 +120,7 @@ def _buildNetwork(*layers, **options):
     """
     bias = options['bias'] if 'bias' in options else False
     
-    net = Network()
+    net = FeedForwardNetwork()
     layerParts = iter(layers)
     firstPart = iter(layerParts.next())
     firstLayer = firstPart.next()

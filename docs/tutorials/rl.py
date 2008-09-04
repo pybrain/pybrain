@@ -12,7 +12,7 @@ what they do.
 
 But first of all, we need to import the RL components from pybrain:
 """ 
-from pybrain.rl import *
+from pybrain.rl import PolicyGradientAgent, ENAC
 from pybrain.rl.environments.cartpole import BalanceTask, CartPoleEnvironment
 from pybrain import buildNetwork
 

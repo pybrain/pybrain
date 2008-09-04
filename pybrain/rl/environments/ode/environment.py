@@ -1,6 +1,7 @@
 import sys, time
-from scipy import sin, cos, pi, random, asarray
-import ode, xode.parser, xode.body, xode.geom
+from scipy import random, asarray
+import xode.parser, xode.body, xode.geom #@Reimport @UnusedImport
+import ode
 
 from pybrain.rl.environments.graphical import GraphicalEnvironment
 from tools.configgrab import ConfigGrabber
@@ -126,7 +127,7 @@ class ODEEnvironment(GraphicalEnvironment):
         body.setPosition( (random.normal(-6.5, 0.5), 6.0, random.normal(-6.5, 0.5)) )
         # body.setPosition( (0.0, 3.0, 0.0) )
         # randomize orientation slightly
-        theta = random.uniform(0,2*pi)
+        #theta = random.uniform(0,2*pi)
         #ct = cos (theta)
         #st = sin (theta)
         # rotate body and append to (body,geom) tuple list

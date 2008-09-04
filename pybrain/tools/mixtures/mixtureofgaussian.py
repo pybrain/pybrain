@@ -1,8 +1,8 @@
 __author__ = 'Frank Sehnke, sehnke@in.tum.de'
 
 
-import pylab
 from scipy import random, zeros, ones, sqrt, exp, sin, cos, log
+from pylab import show, plot, scatter, legend, axis #@UnresolvedImport
 
 stND=zeros(1000)
 for i in range(1000):
@@ -52,7 +52,7 @@ class MixtureOfGaussians:
             x=float(i)*1.5*self.distRange/1000.0+self.rangeMin*1.5
             xList.append(x)
             ret.append(self.getGaus(self.alpha, self.mue, self.sigma, x)*scal)
-        pylab.plot(xList, ret, col)
+        plot(xList, ret, col)
 
     #get mixture for point x
     def getGaus(self, alpha, mue, sigma, x):
@@ -132,7 +132,7 @@ class MixtureOfGaussians:
             x=float(i)*1.5*self.distRange/1000.0+self.rangeMin*1.5
             xList.append(x)
             yList.append(self.testRewardFunction(x, self.typ))
-        pylab.plot(xList, yList, col)
+        plot(xList, yList, col)
 
     def getSample(self, dm="max"):
         sampleX = self.drawSample(dm)
@@ -160,14 +160,14 @@ class MixtureOfGaussians:
 
         if plt:
             self.plotGaussian('k', dm)
-            pylab.scatter(xList, yList, 1)
+            scatter(xList, yList, 1)
             v = [-30.5, 30.5, -0.5, 1.5]
-            pylab.axis(v) 
+            axis(v) 
             s4 = repr(wi/4)+'Sample'
             s2 = repr(wi/2)+'Sample'
             s1 = repr(wi)+'Sample'
-            pylab.legend(('meanReward', 'InitMixture', s4, s2, s1), loc=0, shadow=True)
-            pylab.show()
+            legend(('meanReward', 'InitMixture', s4, s2, s1), loc=0, shadow=True)
+            show()
 
 if __name__ == '__main__':
     #m=MixtureOfGaussians("rastrigin", 20)

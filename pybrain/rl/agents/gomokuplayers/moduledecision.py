@@ -66,4 +66,3 @@ class ModuleDecidingPlayer(RandomGomokuPlayer):
         pass
     
 
- 

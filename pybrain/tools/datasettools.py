@@ -130,7 +130,7 @@ class DataSetNormalizer(object):
         ds.setField(field, newfeat)
         
     def calculate(self, ds, bounds=[-1,1], field='input'):
-        self.dim = dsdim = ds[field].shape[1]
+        self.dim = ds[field].shape[1]
         if self.meanstd:
             self.par1 = ds[field].mean(axis=0)
             self.par2 = ds[field].std(axis=0)
@@ -154,4 +154,3 @@ if __name__ == "__main__":
     DSwin = convertSequenceToTimeWindows(DSseq, ClassificationDataSet, winsize)
     DSwin.saveToFile(join(pathtodata,fname+'_win%d.pkl'%winsize), protocol=-1, arraysonly=True)
     print "indim win:", DSwin.indim
-   

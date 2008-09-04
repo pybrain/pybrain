@@ -5,10 +5,10 @@
 # This example reproduces Fig. 5.21 from Bishop (2006).
 __author__ = 'Martin Felder'
 
-import pylab as p
+from pylab import hold, scatter, subplot, title, contourf, plot, xlim, ylim, show #@UnresolvedImport
 import numpy as np
 from pybrain.structure.modules import LinearLayer, BiasUnit, SigmoidLayer
-from pybrain.structure import FullConnection, Network
+from pybrain.structure import FullConnection, FeedForwardNetwork
 from pybrain.datasets import SupervisedDataSet
 from pybrain.supervised.trainers.mixturedensity import RPropMinusTrainerMix
 from pybrain.structure.modules.mixturedensity import MixtureDensityLayer
@@ -23,7 +23,7 @@ def multigaussian(x, mean, stddev):
 
 if __name__ == '__main__':    
     # build a network
-    n = Network()
+    n = FeedForwardNetwork()
     # linear input layer
     n.addInputModule(LinearLayer(1, name='in'))
     # output layer of type 'outclass'
@@ -55,7 +55,7 @@ if __name__ == '__main__':
     trainer.trainEpochs(200)
    
     # plot the density and other stuff
-    p.subplot(223)
+    subplot(223)
     dens = []
     #newx = np.arange(x.min(), x.max(), 0.01)
     newx = np.arange(0.0, 1.0, 0.01)
@@ -68,25 +68,25 @@ if __name__ == '__main__':
         
     newx = newx.flatten()
     dens = np.array(dens).transpose()
-    p.contourf(newx,newx,dens,30)
-    p.title("cond. probab. dens.")
+    contourf(newx,newx,dens,30)
+    title("cond. probab. dens.")
     
-    p.subplot(221)
+    subplot(221)
     out = np.array(out)
-    p.plot(newx,out[:,0:3])
-    p.title("mixing coefficient")
+    plot(newx,out[:,0:3])
+    title("mixing coefficient")
 
-    p.subplot(222)
-    p.plot(newx,out[:,6:9])
-    p.title("means of Gaussians")
+    subplot(222)
+    plot(newx,out[:,6:9])
+    title("means of Gaussians")
 
-    p.subplot(224)
-    p.scatter(x.flatten(),y.flatten(),marker='o',edgecolor='g',facecolors='none')
-    p.hold(True)
+    subplot(224)
+    scatter(x.flatten(),y.flatten(),marker='o',edgecolor='g',facecolors='none')
+    hold(True)
     cmode = dens.argmax(axis=0)
-    p.plot(newx,newx[cmode],"or",markersize=3)
-    p.xlim(0,1)
-    p.ylim(0,1)
-    p.title("data and cond. mode")
-    p.show()
+    plot(newx,newx[cmode],"or",markersize=3)
+    xlim(0,1)
+    ylim(0,1)
+    title("data and cond. mode")
+    show()
     

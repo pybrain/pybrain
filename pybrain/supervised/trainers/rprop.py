@@ -36,7 +36,6 @@ class RPropMinusTrainer(BackpropTrainer):
         """ Train the network for one epoch """
         self.module.resetDerivatives()
         error = 0
-        ponderation = 0.
         for seq in self.ds._provideSequences():
             e, dummy = self._calcDerivs(seq)
             error += e

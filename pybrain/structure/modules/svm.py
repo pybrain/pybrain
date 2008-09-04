@@ -25,7 +25,7 @@ class Dumpable(object):
     def _importCPickle(cls):
         try: cPickle
         except NameError:
-            import cPickle
+            import cPickle #@UnusedImport
             global cPickle
 
     def dumpToFile( self, filename ):

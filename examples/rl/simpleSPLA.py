@@ -10,11 +10,10 @@
 # 9 lines total marked as "for plotting"
 #########################################################################
 
-from pybrain import *
-from pybrain.tools.shortcuts import *
-from pybrain.rl.environments.simple import *
+from pybrain import buildNetwork
+from pybrain.rl.environments.simple import SimpleEnvironment, MinimizeTask
 from pybrain.rl.agents import FiniteDifferenceAgent
-from pybrain.rl.learners import *
+from pybrain.rl.learners import SPLA
 from pybrain.rl.experiments import EpisodicExperiment
 from scipy import random
 

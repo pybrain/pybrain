@@ -124,7 +124,7 @@ def percentError(out, true):
 
 def formatFromExtension(fname):
     """Tries to infer a protocol from the file extension."""
-    base, ext = os.path.splitext(fname)
+    _base, ext = os.path.splitext(fname)
     if not ext: 
         return None
     try:
@@ -368,7 +368,7 @@ def substitute(target):
         try:
             module = _import(".".join(module_path))
             opt_func = getattr(module, func_name)
-        except (ImportError, AttributeError), e:
+        except (ImportError, AttributeError), _e:
             #print e
             logging.info("Could not find substitution for %s. (Tried: %s)" 
                          % (func.__name__, target))

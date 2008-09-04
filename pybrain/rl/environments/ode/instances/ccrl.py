@@ -1,5 +1,8 @@
-from pybrain.rl.environments.ode import *
+from pybrain.rl.environments.ode import ODEEnvironment, sensors, actuators
 import imp
+import xode
+import ode
+import sys
 from scipy import array, asarray
 
 class CCRLEnvironment(ODEEnvironment):

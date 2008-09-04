@@ -2,8 +2,8 @@
 # Example script for feed-forward network usage in PyBrain.
 
 # import most frequently used components with shortened namespaces
-import numpy as np
-import pylab as p
+import numpy as np #@UnusedImport
+from pylab import figure, ioff, clf, contourf, ion, draw, show #@UnresolvedImport
 
 # load the necessary components
 from pybrain.utilities           import percentError
@@ -57,15 +57,16 @@ for i in range(20):
     out = out.reshape(X.shape)
     
     # plot the test data and the underlying grid as a filled contour
-    p.figure(1)
-    p.ioff()  # interactive graphics off
-    p.clf()
+    figure(1)
+    ioff()  # interactive graphics off
+    clf()
     plotData(tstdata)
     if out.max()!=out.min():
-        CS = p.contourf(X, Y, out)
-    p.ion()   # interactive graphics on
-    p.draw()  # update the plot
+        CS = contourf(X, Y, out)
+    ion()   # interactive graphics on
+    draw()  # update the plot
     
 # show the plot until user kills it
-p.ioff()
-p.show()  
+ioff()
+show()  
+

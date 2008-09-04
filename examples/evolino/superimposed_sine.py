@@ -2,8 +2,7 @@
 
 __author__ = 'Michael Isik'
 
-import pylab
-from pylab import plot, show, ion, cla, subplot
+from pylab import plot, show, ion, cla, subplot, title, figlegend, draw #@UnresolvedImport
 import numpy
 
 from pybrain.structure.modules.evolinonetwork import EvolinoNetwork
@@ -97,7 +96,7 @@ for i in range(3000):
     # plot training data
     sp = subplot(211) # switch to the first subplot
     cla() # clear the subplot
-    pylab.title("Training Set") # set the subplot's title
+    title("Training Set") # set the subplot's title
     sp.set_autoscale_on( True ) # enable autoscaling
     targetline = plot(trnSequenceTarget,"r-") # plot the targets
     sp.set_autoscale_on( False ) # disable autoscaling
@@ -107,17 +106,17 @@ for i in range(3000):
     # plot test data
     sp = subplot(212)
     cla()
-    pylab.title("Test Set")
+    title("Test Set")
     sp.set_autoscale_on( True )
     plot(tstSequenceTarget,"r-")
     sp.set_autoscale_on( False )
     plot(tstSequenceOutput,"b-")
 
     # create a legend
-    pylab.figlegend((targetline, outputline),('target','output'),('upper right'))
+    figlegend((targetline, outputline),('target','output'),('upper right'))
 
     # draw everything
-    pylab.draw()
+    draw()
 
 
 show()

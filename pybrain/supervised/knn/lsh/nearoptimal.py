@@ -116,9 +116,9 @@ class MultiDimHash(object):
                 
     def _findLocalBall_inline(self, point):
         """Return the index of the ball that the point lies in."""
-        balls = self.gridBalls
-        nBalls, dim = balls.shape
-        radiusSquared = self.radiusSquared
+        balls = self.gridBalls 
+        nBalls, dim = balls.shape #@UnusedVariable
+        radiusSquared = self.radiusSquared #@UnusedVariable
         
         code = """  
             #line 121 "nearoptimal.py"

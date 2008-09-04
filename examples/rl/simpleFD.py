@@ -17,7 +17,7 @@ from pybrain.rl.learners import FDBasic
 from pybrain.rl.experiments import EpisodicExperiment
 from scipy import array, mean
 
-from pylab import ion
+from pylab import ion #@UnresolvedImport
 
 # for plotting
 ion()   

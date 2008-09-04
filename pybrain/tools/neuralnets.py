@@ -4,7 +4,7 @@
 __author__ = "Martin Felder"
 __version__ = "$Id$"
 
-import pylab as p
+from pylab import ion, figure, draw #@UnresolvedImport
 import csv
 from numpy import Infinity
 import logging
@@ -38,9 +38,9 @@ class NNtools(object):
         """ initialize the graphics output window, and return a handle to the plot """
         if xmax<0:
             xmax = self.maxepochs
-        p.figure(figsize=[12,8])
-        p.ion()
-        p.draw()
+        figure(figsize=[12,8])
+        ion()
+        draw()
         #self.Graph = MultilinePlotter(autoscale=1.2 ) #xlim=[0, self.maxepochs], ylim=[0, ymax])
         self.Graph = MultilinePlotter(xlim=[0, xmax], ylim=[0, ymax])
         self.Graph.setLineStyle([0,1],linewidth=2)

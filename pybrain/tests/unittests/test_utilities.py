@@ -1,6 +1,6 @@
 """
     
-    >>> from pybrain.utilities import threaded
+    >>> from pybrain.utilities import threaded, substitute
     >>> import threading
     
     >>> result = None
@@ -93,7 +93,7 @@ Tests for Serializable
 """
 
 
-from pybrain.utilities import Serializable, substitute
+from pybrain.utilities import Serializable
 from pybrain.tests import runModuleTestSuite
 
 

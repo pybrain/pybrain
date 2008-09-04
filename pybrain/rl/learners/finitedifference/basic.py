@@ -43,7 +43,7 @@ class FDBasic(FDLearner):
         
         # calculate the gradient with pseudo inverse
         for seq in range(self.ds.getNumSequences()):
-            state, action, reward = self.ds.getSequence(seq)
+            _state, _action, reward = self.ds.getSequence(seq)
             D[seq,:-1] = deltas[seq,:]
             R[seq,:] = mean(reward)
         

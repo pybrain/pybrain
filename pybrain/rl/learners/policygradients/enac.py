@@ -22,7 +22,7 @@ class ENAC(PolicyGradientLearner):
 
         # collect sufficient statistics
         for n in range(self.ds.getNumSequences()):
-            state, action, reward, loglh = self.ds.getSequence(n)
+            _state, _action, reward, loglh = self.ds.getSequence(n)
             X[n, :-1] = sum(loglh, 0)
             R[n, 0] = sum(reward, 0)
         

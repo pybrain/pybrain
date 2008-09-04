@@ -8,11 +8,11 @@ __author__ = ('Christian Osendorfer, osendorf@in.tum.de;'
 
 from pybrain.structure.modules import BiasUnit, SigmoidLayer, LinearLayer
 from pybrain.structure.connections import FullConnection
-from pybrain.structure.networks import Network
+from pybrain.structure.networks import FeedForwardNetwork
 from pybrain.structure.modules.module import Module
 
 
-class Rbm(Network):
+class Rbm(FeedForwardNetwork):
 
     def __init__(self, visibledim, hiddendim):
         super(Rbm, self).__init__()

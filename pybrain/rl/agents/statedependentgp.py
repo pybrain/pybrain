@@ -5,7 +5,7 @@ from learning import LearningAgent
 from policygradient import PolicyGradientAgent
 from pybrain.structure import StateDependentLayer, IdentityConnection
 from pybrain import buildNetwork
-from pylab import ion
+from pylab import ion #@UnresolvedImport
 from pybrain.auxiliary import GaussianProcess
 
 class StateDependentAgent(PolicyGradientAgent):

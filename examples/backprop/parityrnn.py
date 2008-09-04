@@ -1,10 +1,11 @@
 """ A simple recurrent neural network that detects parity for arbitrary sequences. """
-from pybrain.supervised.trainers.backprop import BackpropTrainer
 
 __author__ = 'Tom Schaul (tom@idsia.ch)'
 
 from pybrain.structure import RecurrentNetwork, LinearLayer, TanhLayer, BiasUnit, FullConnection
-from examples.datasets import ParityDataSet
+from datasets import ParityDataSet
+from pybrain.supervised.trainers.backprop import BackpropTrainer
+
 
 def buildParityNet():
     net = RecurrentNetwork()
@@ -44,19 +45,19 @@ def evalRnnOnSeqDataset(net, verbose = False, silent = False):
         print 'MSE:', r
     return r
 
-
-N = buildParityNet()    
-DS = ParityDataSet()
-evalRnnOnSeqDataset(N, verbose = True)
-print '(preset weights)'
-N.randomize()
-evalRnnOnSeqDataset(N)
-print '(random weights)'
-
-
-# Backprop improves the network performance, and sometimes even finds the global optimum.
-N.reset()
-bp = BackpropTrainer(N, DS, verbose = True)
-bp.trainEpochs(5000)
-evalRnnOnSeqDataset(N)
-print '(backprop-trained weights)'
+if __name__ == "__main__":
+    N = buildParityNet()    
+    DS = ParityDataSet()
+    evalRnnOnSeqDataset(N, verbose = True)
+    print '(preset weights)'
+    N.randomize()
+    evalRnnOnSeqDataset(N)
+    print '(random weights)'
+    
+    
+    # Backprop improves the network performance, and sometimes even finds the global optimum.
+    N.reset()
+    bp = BackpropTrainer(N, DS, verbose = True)
+    bp.trainEpochs(5000)
+    evalRnnOnSeqDataset(N)
+    print '(backprop-trained weights)'

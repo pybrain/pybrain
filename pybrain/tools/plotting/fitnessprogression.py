@@ -2,7 +2,7 @@
 
 __author__ = 'Tom Schaul, tom@idsia.ch'
 
-import pylab
+from pylab import xlabel, ylabel, legend, plot, semilogy #@UnresolvedImport
 from scipy import array, zeros
 
 
@@ -66,15 +66,15 @@ def plotFitnessProgession(fitdict, batchsize = 1, show = True, semilog = True,
         yPlot = paddedClipped(summed / len(flist), longestRun)
         
         if semilog:
-            pylab.semilogy()
+            semilogy()
         
         if varyplotsymbols:
             psymbol = plotsymbols[i%len(plotsymbols)]
         
-        pylab.plot(xAxis, yPlot, psymbol, label = name)
+        plot(xAxis, yPlot, psymbol, label = name)
         
-    pylab.ylabel('fitness')
-    pylab.xlabel('number of evaluations')
-    pylab.legend()
-    pylab.show()
+    ylabel('fitness')
+    xlabel('number of evaluations')
+    legend()
+    show()
     

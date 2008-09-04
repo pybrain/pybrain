@@ -45,5 +45,5 @@ if __name__ == '__main__':
     h2 = x+20*sqrt(x)
     def evo(x, y):
         return x-y    
-    from pylab import cm
+    from pylab import cm #@UnresolvedImport
     p = CiaoPlot(evo, h1, h2, cmap = cm.hot).show()

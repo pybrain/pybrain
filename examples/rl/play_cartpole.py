@@ -8,11 +8,9 @@
 ###########################################################################
 __author__ = 'Thomas Rueckstiess, ruecksti@in.tum.de'
 
-from pybrain import *
-from pybrain.tools.shortcuts import *
-from pybrain.rl.environments.cartpole import *
+from pybrain import buildNetwork
+from pybrain.rl.environments.cartpole import CartPoleEnvironment, CartPoleRenderer, BalanceTask
 from pybrain.rl.agents.learning import LearningAgent
-from pybrain.rl.learners import *
 from pybrain.rl.experiments import EpisodicExperiment
 from scipy import array, mean
 import sys

@@ -21,7 +21,7 @@ from pybrain.rl.agents.finitedifference import FiniteDifferenceAgent
 from pybrain.rl.learners.finitedifference.spla import SPLA
 from pybrain.rl.experiments import EpisodicExperiment
 from pybrain.tools.plotting import MultilinePlotter
-from pylab import figure, ion
+from pylab import figure, ion #@UnresolvedImport
 from cPickle import load, dump
 from scipy import random
 

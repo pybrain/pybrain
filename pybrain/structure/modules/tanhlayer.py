@@ -3,7 +3,6 @@ __author__ = 'Tom Schaul, tom@idsia.ch'
 from scipy import tanh
 
 from neuronlayer import NeuronLayer
-from pybrain.utilities import substitute
 
 
 class TanhLayer(NeuronLayer):

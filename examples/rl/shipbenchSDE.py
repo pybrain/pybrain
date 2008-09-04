@@ -24,7 +24,8 @@ from pybrain.rl import StateDependentAgent, ENAC, EpisodicExperiment
 from pybrain.tools.shortcuts import buildNetwork
 from pybrain.tools.plotting import MultilinePlotter
 
-from pylab import figure, ion, mean
+from pylab import figure, ion #@UnresolvedImport
+from scipy import mean
 import sys
 
 if len(sys.argv) > 1:

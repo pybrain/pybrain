@@ -255,7 +255,7 @@ class XODEfile(XMLstruct):
         if self._nSensorElements > 0:
             f.write('<sensors>\n')
             f.write("SpecificJointSensor("+str(self.sensorElements)+",name='PressureElements')\n")
-         # compile all sensor commands
+        # compile all sensor commands
         for sensor in self.sensors:
             outstr = sensor[0]+"("
             for val in sensor[1]:
@@ -355,7 +355,8 @@ class XODEfinger(XODEfile):
         rot = [90,degrees(alpha),0]
         # ERP = h kp / (h kp + kd)
         # CFM = 1 / (h kp + kd) = ERP / h kp
-        h = 0.01  # temporal stepwidth
+        _h = 0.01  # temporal stepwidth
+        # CHECKME: unused!
         # for assumed mass of finger of 0.5kg, kp=10, kd=4.5 is approx. the non-oscillatory case
         self.insertBody(name,'cappedCylinder',[0.08,0.5],7,pos=[ctr[0]+pos[0],ctr[1]+pos[1],ctr[2]+pos[2]],\
             euler=rot, passSet=['haptic'])

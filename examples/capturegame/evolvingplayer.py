@@ -45,6 +45,6 @@ print 'New net on big board score:', newtask(bignew)
 
 
 # plot the progression
-import pylab
-pylab.plot(res)
-pylab.show()
+from pylab import plot, show #@UnresolvedImport
+plot(res)
+show()

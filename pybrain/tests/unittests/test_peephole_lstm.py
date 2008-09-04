@@ -1,4 +1,10 @@
 """
+
+    >>> from pybrain.tools.functions import tanh
+    >>> from pybrain.utilities import fListToString
+    >>> from scipy import arctanh
+    >>> from random import random
+    
 Test the LSTMLayer behavior when using peepholes.
 
     >>> N = buildMinimalLSTMNetwork()
@@ -48,10 +54,7 @@ __author__ = 'Tom Schaul, tom@idsia.ch'
 from pybrain.tests import runModuleTestSuite
 from pybrain.structure import LinearLayer, IdentityConnection, LSTMLayer, RecurrentNetwork
 from pybrain.tests.helpers import epsilonCheck
-from pybrain.tools.functions import tanh
-from pybrain.utilities import fListToString
-from scipy import arctanh
-from random import random
+
 
 def buildMinimalLSTMNetwork():
     N = RecurrentNetwork('simpleLstmNet')  

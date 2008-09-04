@@ -66,4 +66,3 @@ class ModuleDecidingPlayer(RandomCapturePlayer):
         pass
     
 
- 

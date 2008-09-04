@@ -550,8 +550,8 @@ class NetworkWrapper(object):
         layers = []
         network = self.network
         for m in network.modules:
-             if m not in network.inmodules and m not in network.outmodules:
-                 layers.append(m)
+            if m not in network.inmodules and m not in network.outmodules:
+                layers.append(m)
         return layers
 
 
