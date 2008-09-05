@@ -1,3 +1,5 @@
+__author__ = 'Frank Sehnke, sehnke@in.tum.de'
+
 #@PydevCodeAnalysisIgnore
 
 import sys

@@ -1,3 +1,5 @@
+__author__ = 'Frank Sehnke, sehnke@in.tum.de'
+
 #########################################################################
 # The sensors that are available for the FlexCube Environment 
 #
@@ -13,9 +15,6 @@
 # - Target: distance and angle to target
 # - Time: time dependend cyclic signals
 #
-# Requirements: scipy
-#
-# Author: Frank Sehnke, sehnke@in.tum.de
 #########################################################################
 
 from scipy import sqrt, zeros, array, clip, sin

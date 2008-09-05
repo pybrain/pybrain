@@ -1,3 +1,5 @@
+__author__ = 'Thomas Rueckstiess, ruecksti@in.tum.de'
+
 import ode, xode
 from pybrain.utilities import Named
 import sys, warnings

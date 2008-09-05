@@ -1,4 +1,3 @@
-# $Id$
 __author__ = 'Daan Wierstra and Tom Schaul'
 
 from scipy import zeros

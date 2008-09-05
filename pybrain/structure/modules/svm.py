@@ -1,4 +1,3 @@
-# $Id$
 __author__ = 'Michael Isik'
 
 from scipy import zeros,empty

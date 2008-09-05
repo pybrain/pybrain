@@ -1,3 +1,6 @@
+__author__ = 'Frank Sehnke, sehnke@in.tum.de'
+
+
 class MArray:
     def __init__(self):
         self.field={}

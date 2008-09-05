@@ -1,7 +1,6 @@
 #! /usr/bin/env python2.5
 # -*- coding: utf-8 -*-
 
-
 __author__ = ('Christian Osendorfer, osendorf@in.tum.de;'
               'Justin S Bayer, bayerj@in.tum.de')
 

@@ -1,3 +1,5 @@
+__author__ = 'Julian Togelius, julian@idsia.ch'
+
 from pybrain.rl.tasks import EpisodicTask
 from simpleracetcp import SimpleraceEnvironment
 

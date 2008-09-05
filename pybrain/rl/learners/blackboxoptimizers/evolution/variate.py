@@ -1,6 +1,4 @@
-
 __author__ = 'Michael Isik'
-
 
 
 from random import uniform, random, gauss

@@ -1,3 +1,5 @@
+__author__ = 'Michael Isik'
+
 #@PydevCodeAnalysisIgnore
 from pybrain.datasets import SupervisedDataSet
 

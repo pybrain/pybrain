@@ -1,3 +1,5 @@
+__author__ = 'Thomas Rueckstiess, ruecksti@in.tum.de'
+
 import ode, sys, xode
 import warnings
 from scipy.linalg import norm

@@ -1,9 +1,9 @@
-from pybrain.rl.environments.twoplayergames.capturegame import CaptureGame
 __author__ = 'Tom Schaul, tom@idsia.ch'
 
 from capturetask import CaptureGameTask
 from pybrain.rl.agents.capturegameplayers.captureplayer import CapturePlayer
 from pybrain.rl.agents.capturegameplayers import ModuleDecidingPlayer
+from pybrain.rl.environments.twoplayergames.capturegame import CaptureGame
 
 # TODO: parametrize hard-coded variables.
 # TODO: also allow handicap-advantage

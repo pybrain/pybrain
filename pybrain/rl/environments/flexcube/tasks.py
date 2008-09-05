@@ -1,3 +1,5 @@
+__author__ = 'Frank Sehnke, sehnke@in.tum.de'
+
 #########################################################################
 # The tasks availabele in the FlexCube Environment 
 #
@@ -10,10 +12,7 @@
 # - WalkTask, agent has to maximize the distance to the starting point
 # - WalkDirectionTask, agent has to minimize the distance to a target point.
 # - TargetTask, like the previous task but with several target points
-# 
-# Requirements: scipy for the environment and the learner.
-# 
-# Author: Frank Sehnke, sehnke@in.tum.de
+#
 #########################################################################
 
 

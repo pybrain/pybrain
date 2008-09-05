@@ -1,10 +1,10 @@
+__author__ = 'Thomas Rueckstiess, ruecksti@in.tum.de'
+
 from pybrain.datasets import SequentialDataSet
 from pybrain.auxiliary import GaussianProcess
 from episodic import EpisodicExperiment
 from scipy import mgrid, array, floor, ceil
 
-
-__author__ = 'Thomas Rueckstiess, ruecksti@in.tum.de'
 
 class ModelExperiment(EpisodicExperiment):
     """ An experiment that learns a model of its (action, state) pair

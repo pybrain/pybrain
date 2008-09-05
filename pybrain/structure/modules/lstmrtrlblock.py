@@ -1,3 +1,5 @@
+__author__ = 'Daan Wierstra, daan@idsia.ch'
+
 from scipy import zeros, tanh
 
 from module import Module

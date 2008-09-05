@@ -1,3 +1,5 @@
+__author__ = 'Thomas Rueckstiess, ruecksti@in.tum.de'
+
 import sys
 from xmltools import XMLstruct
 from math import asin, cos, sin, pi, degrees, radians, pow

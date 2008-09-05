@@ -1,3 +1,5 @@
+__author__ = 'Frank Sehnke, sehnke@in.tum.de'
+
 #@PydevCodeAnalysisIgnore
 #########################################################################
 # OpenGL viewer for the FlexCube Environment 
@@ -19,9 +21,8 @@
 # Changing the point and angle of view is possible by using the mouse 
 # while button 1 or 2 pressed.
 # 
-# Requirements: OpenGL, time, scipy and udpconnection.
+# Requirements: OpenGL
 #
-# Author: Frank Sehnke, sehnke@in.tum.de
 #########################################################################
 
 from OpenGL.GLUT import *

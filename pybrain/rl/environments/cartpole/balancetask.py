@@ -1,6 +1,6 @@
-from pybrain.rl.environments.cartpole.nonmarkovpole import NonMarkovPoleEnvironment
 __author__ = 'Thomas Rueckstiess and Tom Schaul'
 
+from pybrain.rl.environments.cartpole.nonmarkovpole import NonMarkovPoleEnvironment
 from pybrain.rl.tasks import EpisodicTask
 from cartpole import CartPoleEnvironment
 from scipy import pi, dot, array

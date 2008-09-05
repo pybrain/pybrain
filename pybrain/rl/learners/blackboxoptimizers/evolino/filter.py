@@ -1,4 +1,3 @@
-
 __author__ = 'Michael Isik'
 
 from pybrain.rl.learners.blackboxoptimizers.evolution.filter     import Filter, SimpleMutation

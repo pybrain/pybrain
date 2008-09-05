@@ -1,4 +1,3 @@
-
 __author__ = 'Michael Isik'
 
 from numpy import Infinity

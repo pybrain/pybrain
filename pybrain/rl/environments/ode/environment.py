@@ -1,3 +1,5 @@
+__author__ = 'Thomas Rueckstiess, ruecksti@in.tum.de'
+
 import sys, time
 from scipy import random, asarray
 import xode.parser, xode.body, xode.geom #@Reimport @UnusedImport

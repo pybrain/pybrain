@@ -1,7 +1,4 @@
-
-
 __author__ = 'Michael Isik'
-
 
 
 class KWArgDsc(object):

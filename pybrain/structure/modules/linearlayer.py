@@ -1,3 +1,5 @@
+__author__ = 'Tom Schaul, tom@idsia.ch'
+
 from neuronlayer import NeuronLayer
 
 

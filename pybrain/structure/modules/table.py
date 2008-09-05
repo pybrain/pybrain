@@ -1,3 +1,5 @@
+__author__ = 'Thomas Rueckstiess, ruecksti@in.tum.de'
+
 from scipy import zeros
 from module import Module
 

@@ -1,3 +1,6 @@
+__author__ = 'Martin Felder, felder@in.tum.de'
+
+
 #@PydevCodeAnalysisIgnore
 from OpenGL.GL import *
 from OpenGL.GLU import *

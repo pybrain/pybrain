@@ -1,3 +1,5 @@
+# TODO - reduntant file, and functionality, as we use scipy!
+
 import math
 def dotproduct(p, q):
 	return p[0]*q[0] + p[1]*q[1] + p[2]*q[2]

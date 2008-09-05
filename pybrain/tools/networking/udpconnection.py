@@ -1,3 +1,5 @@
+__author__ = 'Frank Sehnke, sehnke@in.tum.de'
+
 #############################################################################################################
 # UDP Connection classes                                                                                    #
 #                                                                                                           #
@@ -13,7 +15,6 @@
 # Requirements: sockets and scipy.                                                                          #
 # Example: FlexCubeEnvironment and FlexCubeRenderer (env sends data to renderer for OpenGL output)          #
 #                                                                                                           #
-# Author: Frank Sehnke, sehnke@in.tum.de                                                                    #
 #############################################################################################################
 
 import socket

@@ -3,18 +3,17 @@ __author__ = 'Tom Schaul and Thomas Rueckstiess'
 
 from itertools import chain
 import logging 
-
 from sys import exit as errorexit
+from pybrain.structure.networks.feedforward import FeedForwardNetwork
+from pybrain.structure.networks.recurrent import RecurrentNetwork
+from pybrain.structure.modules import BiasUnit, SigmoidLayer, LinearLayer, LSTMLayer
+from pybrain.structure.connections import FullConnection, IdentityConnection
 
 try:
     from arac.pybrainbridge import _RecurrentNetwork, _FeedForwardNetwork
 except ImportError:
     logging.warning("No fast networks avaiable.")
 
-from pybrain.structure.networks.feedforward import FeedForwardNetwork
-from pybrain.structure.networks.recurrent import RecurrentNetwork
-from pybrain.structure.modules import BiasUnit, SigmoidLayer, LinearLayer, LSTMLayer
-from pybrain.structure.connections import FullConnection, IdentityConnection
 
 
 class NetworkError(Exception): pass

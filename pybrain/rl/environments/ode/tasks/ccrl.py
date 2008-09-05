@@ -1,3 +1,5 @@
+__author__ = 'Frank Sehnke, sehnke@in.tum.de'
+
 from pybrain.rl.tasks import EpisodicTask
 from pybrain.rl.environments.ode.sensors import SpecificBodyPositionSensor
 from scipy import tanh, zeros, array, random, sqrt, asarray

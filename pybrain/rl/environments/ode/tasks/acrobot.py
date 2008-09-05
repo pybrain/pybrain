@@ -1,3 +1,5 @@
+__author__ = 'Thomas Rueckstiess, ruecksti@in.tum.de'
+
 from pybrain.rl.tasks import EpisodicTask
 from scipy import pi
 

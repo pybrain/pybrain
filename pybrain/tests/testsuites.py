@@ -2,6 +2,9 @@
 Contains several utilities for testing.
 """
 
+__author__ = 'Justin Bayer, bayer.justin@googlemail.com'
+
+
 from doctest import DocTestSuite, ELLIPSIS, REPORT_ONLY_FIRST_FAILURE, \
 NORMALIZE_WHITESPACE
 from unittest import TestSuite, TestLoader, TextTestRunner

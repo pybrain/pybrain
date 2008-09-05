@@ -1,3 +1,5 @@
+__author__ = 'Tom Schaul, tom@idsia.ch'
+
 from scipy import ones, dot
 
 from sequential import SequentialDataSet

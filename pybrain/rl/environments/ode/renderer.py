@@ -1,3 +1,5 @@
+__author__ = 'Thomas Rueckstiess, ruecksti@in.tum.de'
+
 #@PydevCodeAnalysisIgnore
 
 from OpenGL.GL import *

@@ -1,10 +1,10 @@
-#! /usr/bin/env python 2.5
-# -*- coding: utf-8 -*-
-
 from __future__ import division
 
-from collections import defaultdict
+#! /usr/bin/env python 2.5
+# -*- coding: utf-8 -*-
+__author__ = 'Justin Bayer, bayer.justin@googlemail.com'
 
+from collections import defaultdict
 from scipy import array
 from numpy.random import permutation
 

@@ -1,8 +1,8 @@
 # This tool converts a sequential data set into a number of equally sized windows, 
 # to be used for supervised training.
-
 __author__ = "Martin Felder"
 __version__ = '$Id$' 
+
 from os.path import join
 from numpy import r_, array
 from pybrain.datasets import SequentialDataSet, ClassificationDataSet, SequenceClassificationDataSet

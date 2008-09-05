@@ -1,3 +1,5 @@
+__author__ = 'Julian Togelius, julian@idsia.ch'
+
 from pybrain.rl.environments import Environment
 from math import sqrt
 import socket

@@ -2,10 +2,6 @@
 #! /usr/bin/env python2.5
 # -*- coding: utf-8 -*-
 
-
-from __future__ import division
-
-
 """This module provides functionality to use pybrain with rlglue and to use it
 for the rlcompetition.
 
@@ -20,6 +16,7 @@ code.
 
 __author__ = 'Justin Bayer, bayerj@in.tum.de'
 
+from __future__ import division
 
 import copy
 import datetime

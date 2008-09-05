@@ -1,7 +1,6 @@
 __author__ = 'Michael Isik'
 
 
-
 from numpy.random import permutation
 from numpy import array,array_split, apply_along_axis, concatenate, ones, dot, delete, append, zeros, argmax
 import copy
