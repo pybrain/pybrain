@@ -1,6 +1,5 @@
 __author__ = 'Michael Isik'
 
-#@PydevCodeAnalysisIgnore
 from pybrain.datasets import SupervisedDataSet
 
 
@@ -47,7 +46,7 @@ class SVMData(SupervisedDataSet):
     def loadMATdata(self, fname):
         """ read Matlab file containing one variable called 'data' which is an array
             nSamples x nFeatures+1 and contains the class in the first column """
-        from mlabwrap import mlab
+        from mlabwrap import mlab #@UnresolvedImport
         from numpy import float
         d=mlab.load(fname)
         self.nSamples = d.data.shape[0]
@@ -83,7 +82,7 @@ class SVMData(SupervisedDataSet):
                 # construct list of features, taking care of sparsity
                 (idx,val) = r.split(':')
                 idx = int(idx)
-                for k in range(nextidx,idx):
+                for _ in range(nextidx,idx):
                     feat.append(0) # zzzzwar hier ein bug??
                 feat.append(float(val))
                 nextidx = idx+1
@@ -95,7 +94,6 @@ class SVMData(SupervisedDataSet):
             self.nSamples += 1
 
         for xi in x:
-            len_xi = len(xi)
             while len(xi) < nFeatMax:
                 xi.append(0.)
 

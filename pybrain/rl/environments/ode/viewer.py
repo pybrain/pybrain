@@ -1,21 +1,15 @@
 __author__ = 'Martin Felder, felder@in.tum.de'
 
+from OpenGL.GL import * #@UnusedWildImport
+from OpenGL.GLU import * #@UnusedWildImport
+from OpenGL.GLUT import * #@UnusedWildImport
 
-#@PydevCodeAnalysisIgnore
-from OpenGL.GL import *
-from OpenGL.GLU import *
-from OpenGL.GLUT import *
-
-from math import *
-from tools.mathhelpers import *
-from pybrain.rl.environments.renderer import Renderer 
-
-from tools.mathhelpers import *
+from math import acos, pi, sqrt
+from tools.mathhelpers import crossproduct, norm, dotproduct
            
-import ode, xode.parser, xode.body, xode.geom
-import time, sys
+import time
+import Image 
 
-import Image, os 
 from pybrain.tools.networking.udpconnection import UDPClient
 
 
@@ -170,9 +164,9 @@ class ODEViewer(object):
         if item['type'] in ['GeomBox', 'GeomSphere', 'GeomCylinder', 'GeomCCylinder']:
             # set color of object (currently dark gray)
             if item.has_key('color'): 
-               glEnable (GL_BLEND)
-               glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
-               glColor4f(*(item['color']))
+                glEnable (GL_BLEND)
+                glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
+                glColor4f(*(item['color']))
             else: glColor3f(0.1, 0.1, 0.1)
 
             # transform (rotate, translate) body accordingly
@@ -247,6 +241,7 @@ class ODEViewer(object):
 
         glPopMatrix()
     
+    @staticmethod
     def _loadTexture(textureFile):
         image = open(textureFile)
         ix = image.size[0]
@@ -351,24 +346,24 @@ class ODEViewer(object):
         are already in the directory."""
 
         if self.counter == self.frameT:
-          self.counter=1
-          dir = os.path.join(path_prefix, 'screenshots')
-          if not os.path.exists(dir):
-              os.makedirs(dir)
+            self.counter=1
+            dir = os.path.join(path_prefix, 'screenshots')
+            if not os.path.exists(dir):
+                os.makedirs(dir)
  
-          num_present = len(os.listdir(dir))
-          num_digits = len(str(num_present))
-          index = '0' * (5-num_digits) + str(num_present) 
+            num_present = len(os.listdir(dir))
+            num_digits = len(str(num_present))
+            index = '0' * (5-num_digits) + str(num_present) 
 
-          path = os.path.join(dir, 'shot' + index +'.'+format.lower())
-          glPixelStorei(GL_PACK_ALIGNMENT, 1)
-          data = glReadPixels(0, 0, self.width, self.height, GL_RGB, GL_UNSIGNED_BYTE)
-          image = Image.fromstring("RGB", (self.width, self.height), data)
-          image = image.transpose( Image.FLIP_TOP_BOTTOM)
-          image.save(path, format)
-          print 'Image saved to %s'% (os.path.basename(path))
+            path = os.path.join(dir, 'shot' + index +'.'+format.lower())
+            glPixelStorei(GL_PACK_ALIGNMENT, 1)
+            data = glReadPixels(0, 0, self.width, self.height, GL_RGB, GL_UNSIGNED_BYTE)
+            image = Image.fromstring("RGB", (self.width, self.height), data)
+            image = image.transpose( Image.FLIP_TOP_BOTTOM)
+            image.save(path, format)
+            print 'Image saved to %s'% (os.path.basename(path))
         else:
-          self.counter+=1
+            self.counter+=1
         
         self.isCapturing = False
 

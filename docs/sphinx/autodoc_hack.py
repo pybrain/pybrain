@@ -1,5 +1,3 @@
-#@PydevCodeAnalysisIgnore
-# $Id$
 # replace the function below in sphinx.ext.autodoc.py (tested with Sphinx version 0.4.1)
 __author__ = "Martin Felder"
 
@@ -30,5 +28,5 @@ def prepare_docstring(s):
         return [s.strip(), '']
     # The first line may be indented differently...
     firstline = s[:nl].strip()
-    otherlines = textwrap.dedent(s[nl+1:])
+    otherlines = textwrap.dedent(s[nl+1:]) #@UndefinedVariable
     return [firstline] + otherlines.splitlines() + ['']

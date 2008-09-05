@@ -1,3 +1,4 @@
+#@PydevCodeAnalysisIgnore
 __author__ = 'Daan Wierstra, daan@idsia.ch'
 
 from scipy import zeros, tanh
@@ -128,11 +129,11 @@ class LSTMRTRLBlock(Module, ParameterContainer):
         self.forgetgateError *= 0
         self.stateError *= 0
         self.Sin *=0
-        self.Sforget = *=0
-        self.Scell = *=0
+        self.Sforget *= 0
+        self.Scell *= 0
         self.SinRec *=0
-        self.SforgetRec = *=0
-        self.ScellRec = *=0
+        self.SforgetRec *=0
+        self.ScellRec *=0
         if self.peep:
             self.Sin_peep *=0
             self.Scell_peep *= 0
@@ -176,7 +177,7 @@ class LSTMRTRLBlock(Module, ParameterContainer):
         
         if self.time > 0:
             self.Scell[self.time] = self.Scell[self.time - 1]*self.forgetgate[self.time] + \
-                                  self.gprime(self.cellx[self.time]) * self.ingate[self.time] *
+                                  self.gprime(self.cellx[self.time]) * self.ingate[self.time] 
         
     
     def _backwardImplementation(self, outerr, inerr, outbuf, inbuf):

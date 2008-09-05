@@ -1,22 +1,18 @@
 __author__ = 'Thomas Rueckstiess, ruecksti@in.tum.de'
 
-#@PydevCodeAnalysisIgnore
+from OpenGL.GL import * #@UnusedWildImport
+from OpenGL.GLU import * #@UnusedWildImport
+from OpenGL.GLUT import * #@UnusedWildImport
 
-from OpenGL.GL import *
-from OpenGL.GLU import *
-from OpenGL.GLUT import *
-
-from math import *
-from tools.mathhelpers import *
+from math import pi, acos, sqrt
+from tools.mathhelpers import dotproduct, crossproduct, norm
 from pybrain.rl.environments.renderer import Renderer 
-
-from tools.mathhelpers import *
            
-import ode, xode.parser, xode.body, xode.geom
-import time, sys
+import ode
+import time
 import threading 
 
-import Image, os 
+import Image
 
 
 class ODERenderer(Renderer):
@@ -273,6 +269,7 @@ class ODERenderer(Renderer):
 
         glPopMatrix()
     
+    @staticmethod
     def _loadTexture(textureFile):
         image = open(textureFile)
         ix = image.size[0]
@@ -367,24 +364,24 @@ class ODERenderer(Renderer):
         are already in the directory."""
 
         if self.counter == self.frameT:
-          self.counter=1
-          dir = os.path.join(path_prefix, 'screenshots')
-          if not os.path.exists(dir):
-              os.makedirs(dir)
+            self.counter=1
+            dir = os.path.join(path_prefix, 'screenshots')
+            if not os.path.exists(dir):
+                os.makedirs(dir)
  
-          num_present = len(os.listdir(dir))
-          num_digits = len(str(num_present))
-          index = '0' * (5-num_digits) + str(num_present) 
+            num_present = len(os.listdir(dir))
+            num_digits = len(str(num_present))
+            index = '0' * (5-num_digits) + str(num_present) 
 
-          path = os.path.join(dir, 'shot' + index +'.'+format.lower())
-          glPixelStorei(GL_PACK_ALIGNMENT, 1)
-          data = glReadPixels(0, 0, self.width, self.height, GL_RGB, GL_UNSIGNED_BYTE)
-          image = Image.fromstring("RGB", (self.width, self.height), data)
-          image = image.transpose( Image.FLIP_TOP_BOTTOM)
-          image.save(path, format)
-          print 'Image saved to %s'% (os.path.basename(path))
+            path = os.path.join(dir, 'shot' + index +'.'+format.lower())
+            glPixelStorei(GL_PACK_ALIGNMENT, 1)
+            data = glReadPixels(0, 0, self.width, self.height, GL_RGB, GL_UNSIGNED_BYTE)
+            image = Image.fromstring("RGB", (self.width, self.height), data)
+            image = image.transpose( Image.FLIP_TOP_BOTTOM)
+            image.save(path, format)
+            print 'Image saved to %s'% (os.path.basename(path))
         else:
-          self.counter+=1
+            self.counter+=1
         
         self.isCapturing = False
 

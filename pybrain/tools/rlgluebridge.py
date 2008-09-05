@@ -1,4 +1,4 @@
-#@PydevCodeAnalysisIgnore
+from __future__ import division
 #! /usr/bin/env python2.5
 # -*- coding: utf-8 -*-
 
@@ -16,26 +16,19 @@ code.
 
 __author__ = 'Justin Bayer, bayerj@in.tum.de'
 
-from __future__ import division
 
-import copy
-import datetime
 import exceptions
 import logging
 import os
-import sys
-import time
 
-from itertools import izip
-from signal import SIGINT, SIGKILL
+from signal import SIGKILL
 from subprocess import Popen, PIPE
 
-from rlglue.agent.ClientAgent import ClientAgent
-from rlglue.network.Network import kRetryTimeout as CLIENT_TIMEOUT
-from rlglue.network.Network import kDefaultPort as DEFAULT_PORT
-from rlglue.network.Network import kLocalHost as DEFAULT_HOST
-from rlglue.types import Action as RLGlueAction
-from rlglue.types import Observation as RLGlueObservation
+from rlglue.agent.ClientAgent import ClientAgent #@UnresolvedImport
+from rlglue.network.Network import kRetryTimeout as CLIENT_TIMEOUT #@UnresolvedImport
+from rlglue.network.Network import kDefaultPort as DEFAULT_PORT #@UnresolvedImport
+from rlglue.network.Network import kLocalHost as DEFAULT_HOST #@UnresolvedImport
+from rlglue.types import Action as RLGlueAction #@UnresolvedImport
 from scipy import array
 
 from pybrain.structure.modules.module import Module

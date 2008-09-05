@@ -1,13 +1,11 @@
-#@PydevCodeAnalysisIgnore
-
 __author__ = 'Tom Schaul, tom@idsia.ch'
 
 
 from handling import XMLHandling
 
 # those imports are necessary for the eval() commands to find the right classes
-import pybrain
-from scipy import array
+import pybrain #@UnusedImport
+from scipy import array #@UnusedImport
 
 
 class NetworkReader(XMLHandling):
@@ -32,7 +30,7 @@ class NetworkReader(XMLHandling):
     
     def readNetwork(self, node):
         # TODO: why is this necessary?
-        import pybrain.structure.networks.custom
+        import pybrain.structure.networks.custom #@Reimport @UnusedImport
         nclass = eval(str(node.getAttribute('class')))        
         argdict = self.readArgs(node)  
         n = nclass(**argdict)

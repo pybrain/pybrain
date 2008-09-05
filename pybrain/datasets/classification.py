@@ -1,7 +1,5 @@
-#@PydevCodeAnalysisIgnore
-
-__author__ = "Martin Felder, felder@in.tum.de"
 # $Id$
+__author__ = "Martin Felder, felder@in.tum.de"
 
 from numpy import zeros, where, ravel, r_, single
 from numpy.random import permutation
@@ -16,7 +14,7 @@ class ClassificationDataSet(SupervisedDataSet):
         @param target: dimension of target vector (should be 1!)
         @param nb_classes: Number of classes is normally inferred from the targets. If not all possible classes are present, use this to set classes manually.
         @param class_labels: list of strings labelling the classes, defaults to target values """
-         # FIXME: hard to keep nClasses synchronized if appendLinked() etc. is used.
+        # FIXME: hard to keep nClasses synchronized if appendLinked() etc. is used.
         SupervisedDataSet.__init__(self, inp, target)
         self.addField('class',1)
         self.nClasses = nb_classes
@@ -36,7 +34,7 @@ class ClassificationDataSet(SupervisedDataSet):
     def load_matlab(cls, fname):
         """ read Matlab file containing one variable called 'data' which is an array
         nSamples x nFeatures+1 and contains the class in the first column """
-        from mlabwrap import mlab
+        from mlabwrap import mlab #@UnresolvedImport
         d=mlab.load(fname)
         return cls(d.data[:,0], d.data[:,1:])
     
@@ -66,11 +64,11 @@ class ClassificationDataSet(SupervisedDataSet):
                 # construct list of features, taking care of sparsity
                 (idx,val) = r.split(':')
                 idx = int(idx)
-                for k in range(nextidx,idx):
+                for _ in range(nextidx,idx):
                     feat.append(0.0)
                 feat.append(float(val))
                 nextidx = idx+1
-            for k in range(nextidx,nFeat+1):
+            for _ in range(nextidx,nFeat+1):
                 feat.append(0.0)
             features.append(feat[:])    # [:] causes copy
             labels.append([label])
@@ -148,7 +146,7 @@ class ClassificationDataSet(SupervisedDataSet):
         self.setField('target', newtarg)
                   
     def __reduce__(self):
-        _, _, state, lst, dct = super(ClassificationDataSet, self).__reduce__()
+        _, _, state, _lst, _dct = super(ClassificationDataSet, self).__reduce__()
         creator = self.__class__
         args = self.indim, self.outdim, self.nClasses, self.class_labels
         return creator, args, state, iter([]), iter({})
@@ -161,7 +159,6 @@ class ClassificationDataSet(SupervisedDataSet):
         leftDs = self.copy()
         leftDs.clear()
         rightDs = leftDs.copy()
-        index = 0
         # need to synchronize input, target, and class fields
         for field in ['input','target','class']:
             leftDs.setField(field, self[field][leftIndices,:])
@@ -227,7 +224,7 @@ class SequenceClassificationDataSet(SequentialDataSet, ClassificationDataSet):
             perm = permutation(nCls).tolist()
             nTst, nVal = (int(testfrac*nCls), int(evalfrac*nCls))
             for count, ds in zip([nTst,nVal,nCls-nTst-nVal], [tstDs,valDs,trnDs]):
-                for i in range(count):
+                for _ in range(count):
                     feat = self.getSequence(idx[perm.pop()])[0]
                     ds.newSequence()
                     for s in feat:
@@ -268,7 +265,6 @@ class SequenceClassificationDataSet(SequentialDataSet, ClassificationDataSet):
         if self.nClasses > 10:
             raise 
         from pycdf import CDF, NC
-        from os.path import splitext, join
 
         # need to regenerate the file name
         filename = flo.name

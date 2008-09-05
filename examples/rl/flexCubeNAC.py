@@ -1,5 +1,3 @@
-#@PydevCodeAnalysisIgnore
-
 #########################################################################
 # Reinforcement Learning with Policy Gradients on the SimpleEnvironment 
 #
@@ -12,19 +10,16 @@
 # 5 lines marked as "for plotting"
 #########################################################################
 
-from pybrain import *
-from pybrain.tools.shortcuts import *
-from pybrain.rl.environments.cartpole import *
-from pybrain.rl.environments.simple import *
-from pybrain.rl.environments.flexcube import *
-from pybrain.rl.agents import PolicyGradientAgent, StateDependentAgent
+from pybrain.tools.shortcuts import buildNetwork
+from pybrain.rl.environments.flexcube import FlexCubeEnvironment, GrowTask
 from pybrain.rl.agents import FiniteDifferenceAgent
-
-from pybrain.rl.learners import *
+from pybrain.rl.learners import SPLA
 from pybrain.rl.experiments import EpisodicExperiment
+from scipy import mean
 
 # for plotting
-from pylab import *
+from pylab import ion,clf, plot, draw #@UnresolvedImport
+
 ion() 
 
 # create environment
