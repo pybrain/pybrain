@@ -57,13 +57,12 @@ class Network(Module, ParameterContainer):
     def __str__(self):
         sortedByName = lambda itr: sorted(itr, key=lambda i: i.name)
         
-        sortedModules = sortedByName(self.modules)
         params = {
             'name': self.name,
-            'modules': sortedModules,
+            'modules': self.modulesSorted,
             'connections': 
                 sortedByName(combineLists(
-                    [self.connections[m] for m in sortedModules])),
+                    [sortedByName(self.connections[m]) for m in self.modulesSorted])),
         }
         
         s = ("%(name)s\n" +

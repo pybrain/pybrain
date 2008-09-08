@@ -43,6 +43,7 @@ class CaptureGameNetwork(BorderSwipingNetwork):
         if 'size' in args:
             self.size = args['size']      
         args['dims'] = (self.size, self.size)  
+        assert self.size > 1, 'Minimal board size is 2.'
         BorderSwipingNetwork.__init__(self, **args)
         
         if not self.rebuilt:

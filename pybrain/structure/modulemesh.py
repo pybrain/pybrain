@@ -34,6 +34,7 @@ class ModuleMesh(Named):
     @staticmethod
     def viewOnFlatLayer(layer, dimensions, name = None):
         """  """
+        assert max(dimensions) > 1, "At least one dimension needs to be larger than one."
         def slicer():            
             nbunits = reduce(lambda x, y: x*y, dimensions, 1)
             insize = layer.indim / nbunits

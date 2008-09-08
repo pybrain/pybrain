@@ -10,11 +10,11 @@ Build a CaptureGameNetwork with LSTM cells
     
 Check it's string representation
     >>> print n
-    CaptureGameNetwork-s2-h1-MDLSTMLayer-combbn1--...
+    CaptureGameNetwork-s2-h1-MDLSTMLayer--...
       Modules:
         [<BiasUnit 'bias'>, <LinearLayer 'input'>, <MDLSTMLayer 'hidden(0, 0, 0)'>, ... <MDLSTMLayer 'hidden(0, 0, 3)'>, <SigmoidLayer 'output'>]
       Connections:
-        [<SharedFullConnection 'bconn0(0,)': 'bias' -> 'hidden(0, 0, 0)'>, ..., <SharedFullConnection 'outconn': 'hidden(0, 0, 3)' -> 'output'>]
+        [<IdentityConnection ...
 
 
 Check some of the connections dimensionalities
