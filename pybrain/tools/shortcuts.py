@@ -55,6 +55,10 @@ def buildNetwork(*layers, **options):
         network_map[(True, True)] =  _RecurrentNetwork
     except:
         pass
+    if opt['hiddenclass'].sequential or opt['outclass'].sequential:
+        if not opt['recurrent']:
+            # CHECKME: a warning here?
+            opt['recurrent'] = True
     Network = network_map[opt['recurrent'], opt['fast']]
     n = Network()
     # linear input layer

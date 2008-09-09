@@ -47,15 +47,14 @@ class RPropMinusTrainer(BackpropTrainer):
 
      
     def _calcDerivs(self, seq):
+        # TODO: this does not work with ImportanceDataSets! FIX by synchronizing with BackPropTrainer.
         self.module.reset()        
-        for time, sample in enumerate(seq):
-            input = sample[0]      
-            self.module.inputbuffer[time] = input
-            self.module.forward()
+        for sample in seq:
+            self.module.activate(sample[0])
         error = 0
         for time, sample in reversed(list(enumerate(seq))):
-            dummy, target = sample
-            self.module.outputerror[time] = (target - self.module.outputbuffer[time])
-            self.module.backward()
-            error += 0.5 * dot(self.module.outputerror[time], self.module.outputerror[time])
+            _, target = sample
+            outerror = target - self.module.outputbuffer[time]
+            self.module.backActivate(outerror)
+            error += 0.5 * dot(outerror, outerror)
         return error, 1.0

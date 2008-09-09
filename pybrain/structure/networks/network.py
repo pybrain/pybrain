@@ -4,6 +4,7 @@ from __future__ import with_statement
 __author__ = 'Daan Wierstra and Tom Schaul'
 
 import scipy
+import logging
 
 from pybrain.structure.moduleslice import ModuleSlice
 from pybrain.structure.modules.module import Module
@@ -103,8 +104,8 @@ class Network(Module, ParameterContainer):
             self.connections[m] = []
         if m.paramdim > 0:
             m.owner = self
-        if m.sequential:
-            self.sequential = True
+        if m.sequential and not self.sequential:
+            logging.warning("Module "+str(m)+" is sequential, and added to a FFN. Are you sure you know what you're doing?")
         self.sorted = False
 
     def addInputModule(self, m):

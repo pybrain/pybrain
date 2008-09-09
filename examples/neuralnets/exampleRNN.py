@@ -38,6 +38,8 @@ tstdata._convertToOneOfMany( bounds=[0.,1.] )
 plot(trndata['input'][0:250,:],'-o')
 hold(True)
 plot(trndata['target'][0:250,0])
+
+# TODO: This blocks the rest of the execution! FIX!
 show()
 
 # construct LSTM network - note the missing output bias

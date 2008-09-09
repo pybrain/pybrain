@@ -75,7 +75,7 @@ class BackpropTrainer(Trainer):
         """Calculate error function and backpropagate output errors to yield 
         the gradient."""
         self.module.reset()        
-        for time, sample in enumerate(seq):
+        for sample in seq:
             self.module.activate(sample[0])
         error = 0
         ponderation = 0.
@@ -87,15 +87,14 @@ class BackpropTrainer(Trainer):
             outerr = target - self.module.outputbuffer[time]
             if len(sample) > 2:
                 importance = sample[2]
-                self.module.outputerror[time] = outerr*importance
                 error += 0.5 * dot(importance, outerr**2)
                 ponderation += sum(importance)
+                self.module.backActivate(outerr*importance)                
             else:
-                self.module.outputerror[time] = outerr
                 error += sum(0.5 * outerr**2)
                 ponderation += len(target)
+                self.module.backActivate(outerr)
                         
-            self.module.backward()
         return error, ponderation
             
     def _checkGradient(self, dataset=None, silent=False):

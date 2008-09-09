@@ -26,7 +26,16 @@ class CheaplyCopiable(ParameterContainer, Module):
     
     @property
     def _derivs(self): 
-        return self.__stored.derivs        
+        return self.__stored.derivs  
+    
+    @property
+    def outputbuffer(self): 
+        return self.__stored.outputbuffer
+    
+    @property
+    def inputerror(self): 
+        return self.__stored.inputerror
+            
     
     def reset(self):
         self.__stored.reset()
@@ -62,6 +71,7 @@ class CheaplyCopiable(ParameterContainer, Module):
         self.__stored._params[:] = self._params
         return self.__stored
     
-    
+    def resetDerivatives(self):
+        self.__stored.resetDerivatives()
         
         

@@ -12,7 +12,7 @@ Test the MDLSTMLayer behavior when using peepholes.
     >>> N.params[:] = [.3,.4,.5]
 
     >>> s1 = 0.4
-    >>> s2 = 0.415
+    >>> s2 = 0.414
     >>> s3 = -0.305
     >>> big = 10000
 
@@ -45,7 +45,7 @@ and therefore dividing the provided output by 2. Also clearing the old state.
     
 List all the states again, explicitly (buffer size is 8 by now).
     >>> fListToString(N['mdlstm'].outputbuffer[:,1], 3)
-    '[  0.400  0.400  0.815  0.407 -0.152 -0.152  0.000  0.000]'
+    '[  0.400  0.400  0.814  0.407 -0.152 -0.152  0.000  0.000]'
     
 """
 
