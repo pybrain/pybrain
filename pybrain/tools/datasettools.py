@@ -4,7 +4,7 @@ __author__ = "Martin Felder"
 __version__ = '$Id$' 
 
 from os.path import join
-from numpy import r_, array
+from numpy import r_, array, isfinite, any
 from pybrain.datasets import SequentialDataSet, ClassificationDataSet, SequenceClassificationDataSet
 
 
@@ -100,8 +100,7 @@ class DataSetNormalizer(object):
         self.scale = (bounds[1]-bounds[0])/(c[:,1]-c[:,0])
         self.newmin = bounds[0]
         self.newmax = bounds[1]
-
-        
+      
     def save(self, fname):
         f = file(fname, "w+")
         f.write('x\n')
@@ -123,10 +122,12 @@ class DataSetNormalizer(object):
         newfeat = ds[field]
         if self.meanstd:
             for i in range(dsdim):
-                newfeat[:,i] = (newfeat[:,i]-self.par1[i])/self.par2[i]
+                divisor = self.par2[i] if self.par2[i]>0 else 1.0
+                newfeat[:,i] = (newfeat[:,i]-self.par1[i])/divisor
         else:
             for i in range(dsdim):
-                newfeat[:,i] = (newfeat[:,i]-self.par1[i])*self.scale[i] + self.newmin
+                scale = self.scale[i] if isfinite(self.scale[i]) else 1.0
+                newfeat[:,i] = (newfeat[:,i]-self.par1[i])*scale + self.newmin
         ds.setField(field, newfeat)
         
     def calculate(self, ds, bounds=[-1,1], field='input'):
