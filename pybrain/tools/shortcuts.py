@@ -11,8 +11,8 @@ from pybrain.structure.connections import FullConnection, IdentityConnection
 
 try:
     from arac.pybrainbridge import _RecurrentNetwork, _FeedForwardNetwork
-except ImportError:
-    logging.warning("No fast networks avaiable.")
+except ImportError, e:
+    logging.warning("No fast networks avaiable: %s" % e)
 
 
 
@@ -53,8 +53,9 @@ def buildNetwork(*layers, **options):
     try:
         network_map[(False, True)] = _FeedForwardNetwork
         network_map[(True, True)] =  _RecurrentNetwork
-    except:
-        pass
+    except NameError:
+        if opt['fast']:
+            raise NetworkError("No fast networks available.")
     if opt['hiddenclass'].sequential or opt['outclass'].sequential:
         if not opt['recurrent']:
             # CHECKME: a warning here?
