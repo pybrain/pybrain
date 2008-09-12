@@ -1,9 +1,8 @@
-from pybrain.structure.modules.biasunit import BiasUnit
 __author__ = 'Tom Schaul, tom@idsia.ch and Daan Wierstra'
 
 from datasets import AnBnCnDataSet
 from pybrain.supervised import BackpropTrainer
-from pybrain.structure import FullConnection, RecurrentNetwork, TanhLayer, LinearLayer
+from pybrain.structure import FullConnection, RecurrentNetwork, TanhLayer, LinearLayer, BiasUnit
 
 
 def testTraining():

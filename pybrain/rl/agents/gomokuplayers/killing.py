@@ -6,8 +6,7 @@ from randomplayer import RandomGomokuPlayer
 
 
 class KillingGomokuPlayer(RandomGomokuPlayer):
-    """ do random moves, but always instant-kill if possible, 
-    and never suicide, if avoidable. """
+    """ do random moves, but always instant-kill if possible. """
     def getAction(self):
         p = self.game.getKilling(self.color)
         if len(p) > 0:

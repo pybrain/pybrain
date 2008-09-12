@@ -9,7 +9,7 @@ from pybrain.utilities import drawGibbs
 
 
 class ModuleDecidingPlayer(RandomGomokuPlayer):
-    """ A Capture-game player that plays according to the rules, but choosing its moves
+    """ A Go-Moku player that plays according to the rules, but choosing its moves
     according to the output of a module that takes as input the current state of the board. """
 
     greedySelection = False

@@ -4,6 +4,7 @@ from pybrain.datasets import SupervisedDataSet, ImportanceDataSet
 
 
 class XORDataSet(SupervisedDataSet):
+    """ A dataset for the XOR function."""
     def __init__(self):
         SupervisedDataSet.__init__(self, 2, 1)
         self.addSample([0,0],[0])

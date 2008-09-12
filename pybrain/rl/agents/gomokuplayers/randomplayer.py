@@ -6,7 +6,7 @@ from gomokuplayer import GomokuPlayer
 
 
 class RandomGomokuPlayer(GomokuPlayer):
-    """ do random moves in the capture game"""
+    """ do random moves in Go-Moku"""
         
     def getAction(self):
         return [self.color, choice(self.game.getLegals(self.color))]
