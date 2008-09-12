@@ -49,14 +49,14 @@ def saveWeights(filename, w):
     filepointer.close()
 
 hiddenUnits = 4
-loadNet=True
+loadNet=False
 saveNet=False
-saveName="target4.wgt"
+saveName="walk.wgt"
 numbExp=1 #number of experiments
 for runs in range(numbExp):
     # create environment
     #Options: Bool(OpenGL), Bool(Realtime simu. while client is connected), ServerIP(default:localhost), Port(default:21560)
-    env = FlexCubeEnvironment(True, True, "131.159.60.203")
+    env = FlexCubeEnvironment()
     # create task
     task = WalkTask(env)
     # create controller network
@@ -72,7 +72,7 @@ for runs in range(numbExp):
     if loadNet:
         agent.learner.original=loadWeights("walk.wgt")
         agent.learner.gd.init(agent.learner.original)
-        agent.learner.epsilon=0.000000002
+        agent.learner.epsilon=0.2
         agent.learner.initSigmas()
 
     batch=2 #number of samples per gradient estimate
@@ -84,7 +84,7 @@ for runs in range(numbExp):
     #actual roll outs
     for updates in range(epis):
         for i in range(prnts):
-            experiment.doEpisodes(batch) #execute #batch episodes
+            experiment.doEpisodes(batch) #execute batch episodes
             agent.learn() #learn from the gather experience
             agent.reset() #reset agent and environment
         #print out related data

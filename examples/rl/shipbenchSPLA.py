@@ -57,8 +57,8 @@ for runs in range(numbExp):
     # create agent with controller and learner
     agent = FiniteDifferenceAgent(net, SPLA())
     # learning options
-    agent.learner.gd.alpha = 0.8 #step size of \mu adaption
-    agent.learner.gdSig.alpha = 0.4 #step size of \sigma adaption
+    agent.learner.gd.alpha = 0.3 #step size of \mu adaption
+    agent.learner.gdSig.alpha = 0.15 #step size of \sigma adaption
     agent.learner.gd.momentum = 0.0
     batch=2 #number of samples per gradient estimate (was: 2; more here due to stochastic setting)
     #create experiment

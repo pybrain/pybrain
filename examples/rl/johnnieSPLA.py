@@ -51,13 +51,13 @@ def saveWeights(filename, w):
 
 hiddenUnits = 4
 loadNet=False
-saveNet=True
+saveNet=False
 saveName="stand.wgt"
 numbExp=1 #number of experiments
 for runs in range(numbExp):
     # create environment
     #Options: Bool(OpenGL), Bool(Realtime simu. while client is connected), ServerIP(default:localhost), Port(default:21560)
-    env = JohnnieEnvironment(True, True, "131.159.60.203") #
+    env = JohnnieEnvironment() 
     # create task
     task = StandingTask(env)
     # create controller network
@@ -71,9 +71,9 @@ for runs in range(numbExp):
     
     #Loading weights
     if loadNet:
-        agent.learner.original=loadWeights("walk.wgt")
+        agent.learner.original=loadWeights("stand.wgt")
         agent.learner.gd.init(agent.learner.original)
-        agent.learner.epsilon=0.000000002
+        agent.learner.epsilon=0.2
         agent.learner.initSigmas()
 
     batch=2 #number of samples per gradient estimate
@@ -85,7 +85,7 @@ for runs in range(numbExp):
     #actual roll outs
     for updates in range(epis):
         for i in range(prnts):
-            experiment.doEpisodes(batch) #execute #batch episodes
+            experiment.doEpisodes(batch) #execute batch episodes
             agent.learn() #learn from the gather experience
             agent.reset() #reset agent and environment
         #print out related data
