@@ -1,3 +1,5 @@
+.. _classificationdataset:
+
 :mod:`classification` -- Datasets for Supervised Classification Training
 ========================================================================
 

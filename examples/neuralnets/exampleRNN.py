@@ -43,7 +43,7 @@ plot(trndata['target'][0:250,0])
 show()
 
 # construct LSTM network - note the missing output bias
-rnn = buildNetwork( trndata.indim, 5, trndata.outdim, hiddenclass=LSTMLayer, outclass=SoftmaxLayer, outputbias=False )
+rnn = buildNetwork( trndata.indim, 5, trndata.outdim, hiddenclass=LSTMLayer, outclass=SoftmaxLayer, outputbias=False, recurrent=True)
 
 #trainer = BackpropTrainer( rnn, dataset=trndata, verbose=True, momentum=0.9, learningrate=0.00001 )
 trainer = RPropMinusTrainer( rnn, dataset=trndata, verbose=True )

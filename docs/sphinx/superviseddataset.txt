@@ -1,3 +1,5 @@
+.. _superviseddataset:
+
 :mod:`supervised` -- Dataset for Supervised Regression Training
 ===============================================================
 

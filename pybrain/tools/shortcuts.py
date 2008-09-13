@@ -12,8 +12,7 @@ from pybrain.structure.connections import FullConnection, IdentityConnection
 try:
     from arac.pybrainbridge import _RecurrentNetwork, _FeedForwardNetwork
 except ImportError, e:
-    logging.warning("No fast networks avaiable: %s" % e)
-
+    logging.warning("No fast networks available: %s" % e)
 
 
 class NetworkError(Exception): pass

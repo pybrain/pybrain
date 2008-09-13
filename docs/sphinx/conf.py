@@ -41,9 +41,9 @@ copyright = '2008, CogBotLab'
 # other places throughout the built documents.
 #
 # The short X.Y version.
-version = 'pre-0.1'
+version = '0.1'
 # The full version, including alpha/beta/rc tags.
-release = 'pre-0.1'
+release = '0.1pre'
 
 # There are two options for replacing |today|: either, you set today to some
 # non-false value, then it is used:
