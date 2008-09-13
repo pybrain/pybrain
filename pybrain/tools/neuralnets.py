@@ -16,6 +16,8 @@ from pybrain.structure                 import SoftmaxLayer, LSTMLayer
 from pybrain.utilities                 import setAllArgs
 from pybrain.tools.plotting            import MultilinePlotter
 from pybrain.tools.validation          import testOnSequenceData, ModuleValidator, Validator
+from pybrain.tools.xml                 import NetworkWriter
+
 
 class NNtools(object):
     """ Abstract class providing basic functionality to make neural network training more comfortable """
@@ -64,6 +66,12 @@ class NNtools(object):
             writer.writerow([self.trainCurve[k][i] for k in range(nDataSets)])
         learnf.close()
 
+    def saveNetwork(self, fname):
+        """ save the trained network to a file """
+        NetworkWriter.writeToFile(self.Trainer.module, fname) 
+        logging.info("Network saved to: "+fname)
+        
+        
 #=======================================================================================================
 
 class NNregression(NNtools):
