@@ -6,9 +6,13 @@ __author__ = 'Justin S Bayer, bayer.justin@googlemail.com'
 
 
 import os
+import sys
 
 from setuptools import setup, find_packages
 from distutils.ccompiler import new_compiler
+
+
+class AracCompileError(Exception): pass
 
 
 def compileArac():
@@ -34,15 +38,16 @@ def compileArac():
     if sys.platform.startswith('linux') or sys.platform == 'darwin':
         # Workaround for distutils to recognize .c files as c++files.
         compiler.language_map['.c'] = 'c++'
-        executables = {'preprocessor' : None,
-                   'compiler'     : ["g++"],
-                   'compiler_so'  : ["g++"],
-                   'compiler_cxx' : ["g++"],
-                   'linker_so'    : ["g++", "-shared"],
-                   'linker_exe'   : ["g++"],
-                   'archiver'     : ["ar", "-cr"],
-                   'ranlib'       : None,
-                  }
+        executables = {
+            'preprocessor': None,
+            'compiler': ["g++"],
+            'compiler_so': ["g++"],
+            'compiler_cxx': ["g++"],
+            'linker_so': ["g++", "-shared"],
+            'linker_exe': ["g++"],
+            'archiver': ["ar", "-cr"],
+            'ranlib': None,
+        }
         compiler.set_executables(**executables)
         # Add some directories, this should maybe more sophisticated
         compiler.add_include_dir('/usr/local/include')
@@ -53,9 +58,9 @@ def compileArac():
         compiler.add_library_dir('/usr/lib')
         output_dir = '/usr/local/lib'
     elif sys.platform.startswith('win'):
-        raise NotImplementedError("No support for arac on windows yet.")
+        raise AracCompileError("No support for arac on windows yet.")
     else:
-        raise NotImplementedError("Unknown platform: %s." % sys.platform)        
+        raise AracCompileError("Unknown platform: %s." % sys.platform)        
         
     compiler.add_library('m')
     compiler.add_library('blas')
@@ -68,6 +73,12 @@ def compileArac():
                              output_dir=output_dir)
 
 
+try:
+    compileArac()
+except AracCompileError, e:
+    print "Fast networks are not available: %s" % e
+
+
 setup(
     name="PyBrain",
     version="0.2pre",
@@ -76,8 +87,10 @@ setup(
     keywords="Neural Networks Machine Learning",
     url="http://pybrain.org",
     
-    packages=find_packages(exclude=['examples', 'docs']),
+    packages=find_packages(exclude=['examples', 'docs']) + 
+             find_packages('./arac/src/python'),
     include_package_data=True,
+    package_dir={'arac': './arac/src/python/arac/'},
     
     test_suite='pybrain.tests.runtests.make_test_suite',
 )
