@@ -159,8 +159,13 @@ class ClassificationDataSet(SupervisedDataSet):
         leftDs = self.copy()
         leftDs.clear()
         rightDs = leftDs.copy()
+        # check which fields to split
+        splitThis = []
+        for f in ['input','target','class','importance','aux']:
+            if self.hasField(f):
+                splitThis.append(f)
         # need to synchronize input, target, and class fields
-        for field in ['input','target','class']:
+        for field in splitThis:
             leftDs.setField(field, self[field][leftIndices,:])
             leftDs.endmarker[field] = len(leftIndices)
             rightDs.setField(field, self[field][rightIndices,:])
@@ -173,7 +178,10 @@ class ClassificationDataSet(SupervisedDataSet):
         """ Converts data set into a SupervisedDataSet, for regression. Classes are used as indices into
         the value array given."""
         regDs = SupervisedDataSet(self.indim, 1)
-        regDs.setField('input', self['input'])
+        fields = self.getFieldNames()
+        fields.remove('target')
+        for f in fields:
+                regDs.setField(f, self[f])
         regDs.setField('target', values[self['class'].astype(int)])
         return regDs
     
