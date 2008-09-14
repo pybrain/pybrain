@@ -20,7 +20,6 @@ make_bias_layer()
 
 void layer_forward(Layer* layer_p, BiasLayer* bl_p)
 {
-    assert(layer_p->inputs.size == 1);
     layer_p->outputs.contents_p[0] = 1.0;
 }
 

@@ -27,7 +27,7 @@ class c_parameter_container(Structure):
     _fields_ = [
         ('size', c_int),
         ('contents_p', c_double_p),
-        ('errors_p', c_double_p),
+        ('error_p', c_double_p),
     ]
     
     def __init__(self, contents, errors):
@@ -40,7 +40,7 @@ class c_parameter_container(Structure):
             raise ValueError("Buffers have to be of the same size.")
         self.size = contents.shape[0]
         self.contents_p = contents.ctypes.data_as(c_double_p)
-        self.errors_p = errors.ctypes.data_as(c_double_p)
+        self.error_p = errors.ctypes.data_as(c_double_p)
         
         # Keep references so the arrays are not collected.
         self.__contents = contents

@@ -8,6 +8,7 @@ import ctypes
 
 from itertools import chain
 
+import scipy
 
 from pybrain.structure.networks.network import Network
 from pybrain.structure.networks.feedforward import \
@@ -65,11 +66,7 @@ class _Network(Network):
             
     def sortModules(self):
         super(_Network, self).sortModules()
-        self.rebuild()
-        
-    def reset(self):
-        super(_Network, self).sortModules()
-        self.rebuild()
+        self._rebuild()
         
     def _growBuffers(self):
         self.growBuffersOnNetwork(self)
@@ -83,19 +80,17 @@ class _Network(Network):
                 module.maxoffset = self.maxoffset
                 module._growBuffers()
         
-    def rebuild(self):
+    def _rebuild(self):
         self.buildCStructure()
         # The modules are sorted in the modules list in the right way. We create
         # an array with the corresponding cmodules in the same order.
         ordered_modules = [self.cmodules[m.name] for m in self.modulesSorted]
         c_modulearray = c_layer * len(self.cmodules)
-        self.outmodule_buffer_pointer = self.outmodules[0].outputbuffer[0].ctypes.data
         self.modulearray = c_modulearray(*ordered_modules)
-        self.mustRebuild = False
 
     def buildCStructure(self):
         """Build up a module-graph of c structs in memory."""
-        # First make a struct for every module
+        # First make a struct for every module.
         root = None
         for module in self.modules:
             if not isinstance(module, NeuronLayer):
@@ -112,7 +107,7 @@ class _Network(Network):
             key = '%s-%i' % (connection.name, id(connection))
             self.cconnections[key] = struct_connection
         
-        self.cstruct = root   
+        self.cstruct = root
         
     def buildCStructForLayer(self, layer):
         struct = c_layer.from_layer(layer)
@@ -133,7 +128,9 @@ class _Network(Network):
         return struct
         
     def activate(self, inputbuffer):
+        super(_Network, self).reset()
         start = 0
+
         for inmodule in self.inmodules:
             end = start + inmodule.indim
             inmodule.inputbuffer[self.offset][:] = inputbuffer[start:end]
@@ -147,19 +144,27 @@ class _Network(Network):
         self.maxoffset = \
             self.offset if self.offset > self.maxoffset else self.maxoffset
 
-        # The outputbuffer of the first module in the list is the we decide upon
-        # wether we have to grow the buffers.
+        # The outputbuffer of the first module in the list is which we decide
+        # upon wether we have to grow the buffers.
         # This relies upon the fact, that all buffers of the network have the 
-        # same size.
+        # same size (in terms of timesteps).
         indicating_buffer = self.inmodules[0].outputbuffer
         if self.offset >= indicating_buffer.shape[0]:
             self._growBuffers()
-            self.rebuild()
+            self.sortModules()
             
-        return [m.outputbuffer[self.offset - 1] for m in self.outmodules] 
+        outbuffers = [m.outputbuffer[self.offset - 1] for m in self.outmodules]
+        return scipy.concatenate(outbuffers)
         
     def backActivate(self, outerr):
-        self.outputerror[self.offset - 1] = outerr
+        # Function libarac.calc_derivs decrements the offset, so we have to
+        # compensate for that here first.
+        start = 0
+        for outmodule in self.outmodules:
+            end = start + outmodule.outdim
+            outmodule.outputerror[self.offset - 1][:] = outerr[start:end]
+            start = end
+
         libarac.calc_derivs(self.modulearray, len(self.modules))
         return self.inputerror[self.offset].copy()
         
@@ -174,7 +179,7 @@ class _FeedForwardNetwork(FeedForwardNetworkComponent, _Network):
     # this.
     
     def activate(self, inputbuffer):
-        result = _Network.activate(self, inputbuffer)#
+        result = _Network.activate(self, inputbuffer)
         self.offset -= 1
         return result
         

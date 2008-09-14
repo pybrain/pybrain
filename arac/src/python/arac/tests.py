@@ -3,7 +3,7 @@
 
 """
 
-    >>> from scipy import array
+    >>> from scipy import array, ones, zeros
 
 
 Construction of a layer structure
@@ -21,6 +21,7 @@ Construction of a connection structure
 
     TODO
 
+
 Construction of a Network from Pybrain structures
 -------------------------------------------------    
     
@@ -37,9 +38,100 @@ Construction of a Network from Pybrain structures
     True
 
     >>> net.activate(array((1.2, -2.25, 5.0)))
-    [array([ 20.75, -18.15])]
+    array([ 20.75, -18.15])
+
+
+Growing of buffers and making sure that nothing is lost
+-------------------------------------------------------
+
+    >>> net = _FeedForwardNetwork()
+    >>> in_ = LinearLayer(1, 'in')
+    >>> out = LinearLayer(1, 'out')
+    >>> net.addInputModule(in_)
+    >>> net.addOutputModule(out)
+    >>> net.sortModules()
+
+    >>> net['in'].inputbuffer[:] = array((0.5))
+    >>> net['in'].outputbuffer[:] = array((1.5))
+    >>> net['in'].inputerror[:] = array((0.2))
+    >>> net['in'].outputerror[:] = array((1.2))
+
+    >>> net['out'].inputbuffer[:] = array((0.3))
+    >>> net['out'].outputbuffer[:] = array((1.3))
+    >>> net['out'].inputerror[:] = array((0.4))
+    >>> net['out'].outputerror[:] = array((1.4))
+
+    >>> net._growBuffers()
+    >>> net.sortModules()
     
-    
+    >>> net['in'].inputbuffer
+    array([[ 0.5],
+           [ 0. ]])
+
+    >>> net['in'].outputbuffer
+    array([[ 1.5],
+           [ 0. ]])
+
+    >>> net['in'].inputerror
+    array([[ 0.2],
+           [ 0. ]])
+
+    >>> net['in'].outputerror
+    array([[ 1.2],
+           [ 0. ]])
+
+    >>> net['out'].inputbuffer
+    array([[ 0.3],
+           [ 0. ]])
+
+    >>> net['out'].outputbuffer
+    array([[ 1.3],
+           [ 0. ]])
+
+    >>> net['out'].inputerror
+    array([[ 0.4],
+           [ 0. ]])
+
+    >>> net['out'].outputerror
+    array([[ 1.4],
+           [ 0. ]])
+
+   >>> net._growBuffers()
+
+   >>> net['in'].inputbuffer
+   array([[ 0.5],
+          [ 0. ]])
+
+   >>> net['in'].outputbuffer
+   array([[ 1.5],
+          [ 0. ]])
+
+   >>> net['in'].inputerror
+   array([[ 0.2],
+          [ 0. ]])
+
+   >>> net['in'].outputerror
+   array([[ 1.2],
+          [ 0. ]])
+
+   >>> net['out'].inputbuffer
+   array([[ 0.3],
+          [ 0. ]])
+
+   >>> net['out'].outputbuffer
+   array([[ 1.3],
+          [ 0. ]])
+
+   >>> net['out'].inputerror
+   array([[ 0.4],
+          [ 0. ]])
+
+   >>> net['out'].outputerror
+   array([[ 1.4],
+          [ 0. ]])
+
+
+
 Construction of a Network containing a single LstmLayer
 -------------------------------------------------------
 

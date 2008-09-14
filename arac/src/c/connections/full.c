@@ -122,10 +122,10 @@ void connection_backward(Connection* con_p, FullConnection* fc_p)
     int bi_in = indim * timestep;
     int bi_out = outdim * timestep;
     
-    double* inerror_p = from_p->outputs.error_p;
-    double* outerror_p = to_p->inputs.error_p;
-    double* inbuffer_p = from_p->outputs.contents_p;
-    double* weights_p = fc_p->weights.contents_p;
+    double* inerror_p = from_p->outputs.error_p + bi_in;
+    double* outerror_p = to_p->inputs.error_p + bi_out;
+    double* inbuffer_p = from_p->outputs.contents_p + bi_in;
+    double* weights_p = fc_p->weights.contents_p + bi_out;
     
     assert(fc_p->weights.size == indim * outdim);
     

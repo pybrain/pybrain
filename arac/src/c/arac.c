@@ -9,26 +9,41 @@ extern "C"
 {
 
 
-void print_layer(Layer* layer)
+void print_layer(Layer* layer_p)
 {
     
-    std::cout << "Layer at #" << layer << std::endl
-              << "  Input-Dim: " << layer->inputs.size << std::endl
-              << "  Output-Dim: " << layer->outputs.size << std::endl
-              << "  #Incoming: " << layer->incoming_n << std::endl
-              << "  #Outgoing: " << layer->outgoing_n << std::endl;
+    std::cout << "Layer at #" << layer_p << std::endl
+              << "  Input-Dim: " << layer_p->inputs.size << std::endl
+              << "  Output-Dim: " << layer_p->outputs.size << std::endl
+              << "  #Incoming: " << layer_p->incoming_n << std::endl
+              << "  #Outgoing: " << layer_p->outgoing_n << std::endl;
 
-    std::cout << "  Inputs at #" << layer->inputs.contents_p << ": ";
-    for (int i = 0; i < layer->inputs.size; i++) 
+    std::cout << "  Inputs at #" << (int) layer_p->inputs.contents_p << ": ";
+    for (int i = 0; i < layer_p->inputs.size; i++)
     {
-        std::cout << "  " << layer->inputs.contents_p[i] << " ";
+        std::cout << "  " << layer_p->inputs.contents_p[i] << " ";
     }
     std::cout << std::endl;
 
-    std::cout << "  Outputs at #" << layer->inputs.contents_p << ": ";
-    for (int i = 0; i < layer->outputs.size; i++) 
+    std::cout << "  Outputs at #" << (int) layer_p->outputs.contents_p << ": ";
+    for (int i = 0; i < layer_p->outputs.size; i++)
     {
-        std::cout << "  " << layer->outputs.contents_p[i] << " ";
+        std::cout << "  " << layer_p->outputs.contents_p[i] << " ";
+    }
+    std::cout << std::endl;
+
+
+    std::cout << "  Inputerrors at #" << (int) layer_p->inputs.error_p << ": ";
+    for (int i = 0; i < layer_p->inputs.size; i++)
+    {
+        std::cout << "  " << (double) layer_p->inputs.error_p[i] << " ";
+    }
+    std::cout << std::endl;
+
+    std::cout << "  Outputerrors at #" << (int) layer_p->outputs.error_p << ": ";
+    for (int i = 0; i < layer_p->outputs.size; i++)
+    {
+        std::cout << "  " << (double) layer_p->outputs.error_p[i] << " ";
     }
     
     std::cout << std::endl;
@@ -44,11 +59,28 @@ void print_connection(Connection* con_p)
               << "  Input-Layer at #" << con_p->inlayer_p << std::endl
               << "  Output-Layer at #" << con_p->outlayer_p << std::endl
               << "  Output-Layer-Dim: " << con_p->outlayer_p->inputs.size << std::endl
-              << "  Output-Layer-Dim: " << con_p->outlayer_p->inputs.size << std::endl
+              << "  Output-Layer-Dim: " << con_p->outlayer_p->inputs.size << std::endl;
               // << "  #Incoming: " << layer->incoming_n << std::endl
               // << "  #Outgoing: " << layer->outgoing_n 
-              << std::endl;
 
+    if (con_p->type == FULL_CONNECTION)
+    {
+        std::cout << "Weights: ";
+        for(int i = 0; i < con_p->internal.full_connection_p->weights.size; i++)
+        {
+            std::cout << con_p->internal.full_connection_p->weights.contents_p[i] << " ";
+        }
+        std::cout << std::endl;
+
+        std::cout << "Derivs: ";
+        for(int i = 0; i < con_p->internal.full_connection_p->weights.size; i++)
+        {
+            std::cout << con_p->internal.full_connection_p->weights.error_p[i] << " ";
+        }
+        std::cout << std::endl;
+    }
+
+    std::cout << std::endl;
     std::cout.flush();
 }
 
@@ -83,6 +115,16 @@ void calc_derivs(Layer* layer_p, int n_layers) {
     }
     (*(layer_p->timestep_p))--;
 
+    // for (int i = 0; i < n_layers; i++)
+    // {
+    //     Layer* current_layer_p = &layer_p[i];
+    //     print_layer(current_layer_p);
+    //     for (int i = 0; i < current_layer_p->incoming_n; i++)
+    //     {
+    //         Connection& cur_con = current_layer_p->incoming_p[i];
+    //         print_connection(&cur_con);
+    //     }
+    // }
 }
 
 
