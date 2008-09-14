@@ -4,7 +4,8 @@ __author__ = 'Thomas Rueckstiess, ruecksti@in.tum.de'
 from learning import LearningAgent
 from policygradient import PolicyGradientAgent
 from pybrain.structure import StateDependentLayer, IdentityConnection
-from pybrain import buildNetwork
+from pybrain.tools.shortcuts import buildNetwork
+
 
 class StateDependentAgent(PolicyGradientAgent):
     """ StateDependentAgent is a learning agent, that adds a GaussianLayer to its module and stores its

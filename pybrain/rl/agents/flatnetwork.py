@@ -1,7 +1,7 @@
 __author__ = 'Thomas Rueckstiess, ruecksti@in.tum.de'
 
 from learning import LearningAgent
-from pybrain import buildNetwork
+from pybrain.tools.shortcuts import buildNetwork
 
 
 class FlatNetworkAgent(LearningAgent):

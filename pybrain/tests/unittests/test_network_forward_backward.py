@@ -3,7 +3,8 @@
 Test the forward and backward passes through a linear network.
 
     >>> from scipy import array
-    >>> from pybrain import LinearLayer, buildNetwork
+    >>> from pybrain import LinearLayer
+    >>> from pybrain.tools.shortcuts import buildNetwork
     >>> n = buildNetwork(2, 4, 3, bias = False, hiddenclass = LinearLayer, recurrent=True)
 
     

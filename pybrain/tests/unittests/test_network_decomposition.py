@@ -55,7 +55,7 @@ __author__ = 'Tom Schaul, tom@idsia.ch'
 from scipy import ones
 
 from pybrain.structure.networks import NeuronDecomposableNetwork
-from pybrain import buildNetwork
+from pybrain.tools.shortcuts import buildNetwork
 from pybrain.tests import runModuleTestSuite
 
 
