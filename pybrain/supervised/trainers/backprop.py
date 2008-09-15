@@ -91,7 +91,7 @@ class BackpropTrainer(Trainer):
                 ponderation += sum(importance)
                 self.module.backActivate(outerr*importance)                
             else:
-                error += sum(0.5 * outerr**2)
+                error += 0.5 * sum(outerr**2)
                 ponderation += len(target)
                 self.module.backActivate(outerr)
                         

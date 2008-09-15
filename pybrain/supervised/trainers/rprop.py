@@ -35,26 +35,18 @@ class RPropMinusTrainer(BackpropTrainer):
     def train(self):
         """ Train the network for one epoch """
         self.module.resetDerivatives()
-        error = 0
+        errors = 0
+        ponderation = 0
         for seq in self.ds._provideSequences():
-            e, dummy = self._calcDerivs(seq)
-            error += e
+            e, p = self._calcDerivs(seq)
+            errors += e
+            ponderation += p
         if self.verbose:
-            print "epoch %6d  total error %12.5g   avg weight  %12.5g" % (self.epoch, error, sqrt((self.module.params**2).mean()))
+            print "epoch %6d  total error %12.5g   avg weight  %12.5g" % (self.epoch, errors/ponderation, 
+                                                                          sqrt((self.module.params**2).mean()))
         self.module._setParameters(self.descent(self.module.derivs - self.weightdecay*self.module.params))
         self.epoch += 1
         self.totalepochs += 1
+        return errors/ponderation
 
-     
-    def _calcDerivs(self, seq):
-        # TODO: this does not work with ImportanceDataSets! FIX by synchronizing with BackPropTrainer.
-        self.module.reset()        
-        for sample in seq:
-            self.module.activate(sample[0])
-        error = 0
-        for time, sample in reversed(list(enumerate(seq))):
-            _, target = sample
-            outerror = target - self.module.outputbuffer[time]
-            self.module.backActivate(outerror)
-            error += 0.5 * dot(outerror, outerror)
-        return error, 1.0
+    
