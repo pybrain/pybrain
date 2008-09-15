@@ -1,3 +1,5 @@
+# obsolete - should be deleted if there are no objections.
+
 __author__ = 'Thomas Rueckstiess, ruecksti@in.tum.de'
 
 from pybrain.utilities import abstractMethod
