@@ -1,71 +1,62 @@
 __author__ = 'Thomas Rueckstiess, ruecksti@in.tum.de'
 
 from scipy import ravel, diag, where, random
-from learning import LearningAgent
-from policygradient import PolicyGradientAgent
-from pybrain.structure import StateDependentLayer, IdentityConnection
-from pybrain import buildNetwork
-from pylab import ion #@UnresolvedImport
-from pybrain.auxiliary import GaussianProcess
 
-class StateDependentAgent(PolicyGradientAgent):
+from pybrain.auxiliary import GaussianProcess
+from statedependent import StateDependentAgent
+from learning import LearningAgent
+# from pylab import ion, show, draw, gcf, hold
+# from matplotlib import axes3d as a3
+
+class StateDependentGPAgent(StateDependentAgent):
     """ StateDependentAgent is a learning agent, that adds a GaussianLayer to its module and stores its
-        deterministic inputs (mu) in the dataset.
+        deterministic inputs (mu) in the dataset. It also trains a GaussianProcess with the drawn
+        exploration weights and the reward as target for choosing the next exploration sample.
     """
     
     def __init__(self, module, learner = None):
-        ion()
-        LearningAgent.__init__(self, module, learner)
-        
-        # exploration module (linear flat network)
-        self.explorationmodule = buildNetwork(self.indim, self.outdim, bias=False)
-        
-        # state dependent exploration layer
-        self.explorationlayer = StateDependentLayer(self.outdim, self.explorationmodule, 'explore')
-                
-        # add exploration layer to top of network through identity connection
-        out = self.module.outmodules.pop()
-        self.module.addOutputModule(self.explorationlayer)
-        self.module.addConnection(IdentityConnection(out, self.module['explore'], self.module))
-        self.module.sortModules()
-        
-        # tell learner the new module
-        self.learner.setModule(self.module)
-        
-        # add the log likelihood (loglh) to the dataset and link it to the others
-        self.history.addField('loglh', self.module.paramdim)
-        self.history.link.append('loglh')
-        self.loglh = None
-        
-        # if this flag is set to True, random weights are drawn after each reward,
-        # effectively acting like the vanilla policy gradient alg.
-        self.actaspg = False
+        StateDependentAgent.__init__(self, module, learner)
 
         # gaussian process
-        self.gp = GaussianProcess(1, -5, 5, 0.1)
-        self.gp.autonoise = True
-        self.gp.mean = -3
-
+        self.gp = GaussianProcess(self.explorationlayer.module.paramdim, -2, 2, 1)
+        self.gp.mean = -1.5
+        self.gp.hyper = (2.0, 2.0, 0.1)
+        #ion()
+        
     def newEpisode(self):
-        params = ravel(self.explorationlayer.module.params)
-        target = ravel(sum(self.history.getSequence(self.history.getNumSequences()-1)[2]) / 500)
-        if target != 0.0:
-            self.gp.addSample(params, target)
-            # self.gp.noise += 0.01
-            self.gp.plotCurves()                
-        LearningAgent.newEpisode(self)
+        if self.learning:
+            params = ravel(self.explorationlayer.module.params)
+            target = ravel(sum(self.history.getSequence(self.history.getNumSequences()-1)[2]) / 500)
         
-        indices = where(diag(self.gp.pred_cov) == diag(self.gp.pred_cov).max())[0]
-        new_param = self.gp.testx[indices[random.randint(len(indices))]]
-        self.explorationlayer.module._setParameters([new_param])
-    
+            if target != 0.0:
+                self.gp.addSample(params, target)
+                if len(self.gp.trainx) > 20:
+                    self.gp.trainx = self.gp.trainx[-20:, :]
+                    self.gp.trainy = self.gp.trainy[-20:]
+                    self.gp.noise = self.gp.noise[-20:]
+                    
+                self.gp._calculate()
+                # ax = self.gp.plotCurves()
+                        
+                # get new parameters where mean was highest
+                max_cov = diag(self.gp.pred_cov).max()
+                indices = where(diag(self.gp.pred_cov) == max_cov)[0]
+                pick = indices[random.randint(len(indices))]
+                new_param = self.gp.testx[pick]
+            
+                # check if that one exists already in gp training set
+                if len(where(self.gp.trainx == new_param)[0]) > 0:
+                   # add some normal noise to it
+                   new_param += random.normal(0, 1, len(new_param))
 
-    def getAction(self):
-        self.explorationlayer.setState(self.lastobs)
-        action = PolicyGradientAgent.getAction(self)
-        return action
+                self.explorationlayer.module._setParameters(new_param)
+
+                # plot new sample coordinate
+                # ax.plot3D([new_param[0]], [new_param[1]], [self.gp.pred_mean[pick]], 'bo')
+                # draw()
+            
+            else:
+                self.explorationlayer.drawRandomWeights()
         
-    def giveReward(self, r):
-        PolicyGradientAgent.giveReward(self, r)
-        if self.actaspg:
-            self.explorationlayer.drawRandomWeights()
+        # don't call StateDependentAgent.newEpisode() because it randomizes the params
+        LearningAgent.newEpisode(self)
