@@ -352,8 +352,8 @@ TEST(TestForwardPass, TestFullConnectionPass1) {
 
     activate(layers_p, 2);
     
-    EXPECT_EQ(outlayer_p->outputs.contents_p[0], 20.75);
-    EXPECT_EQ(outlayer_p->outputs.contents_p[1], -18.15);
+    EXPECT_EQ(outlayer_p->outputs.contents_p[0], 1.25);
+    EXPECT_EQ(outlayer_p->outputs.contents_p[1], -20.4);
     
     // free(layers_p);
 }
@@ -378,8 +378,8 @@ TEST(TestForwardPass, TestFullConnectionPass2) {
     activate(layers_p, 2);
     
     EXPECT_EQ(outlayer_p->outputs.contents_p[0], -3.75);
-    EXPECT_EQ(outlayer_p->outputs.contents_p[1], -5.4);
-    EXPECT_EQ(outlayer_p->outputs.contents_p[2], 7.95);
+    EXPECT_EQ(outlayer_p->outputs.contents_p[1], -5.55);
+    EXPECT_EQ(outlayer_p->outputs.contents_p[2], 11.55);
     
     // free(layers_p);
 }

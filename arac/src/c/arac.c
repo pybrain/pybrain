@@ -12,7 +12,7 @@ extern "C"
 void print_layer(Layer* layer_p)
 {
     
-    std::cout << "Layer at #" << layer_p << std::endl
+    std::cout << "Layer at #" << (int) layer_p << std::endl
               << "  Input-Dim: " << layer_p->inputs.size << std::endl
               << "  Output-Dim: " << layer_p->outputs.size << std::endl
               << "  #Incoming: " << layer_p->incoming_n << std::endl
@@ -55,11 +55,16 @@ void print_layer(Layer* layer_p)
 void print_connection(Connection* con_p)
 {
     
-    std::cout << "Connection at #" << con_p << std::endl
-              << "  Input-Layer at #" << con_p->inlayer_p << std::endl
-              << "  Output-Layer at #" << con_p->outlayer_p << std::endl
+    std::cout << "Connection at #" << (int) con_p << std::endl
+              << "  Input-Layer at #" << (int) con_p->inlayer_p << std::endl
+              << "  Output-Layer at #" << (int) con_p->outlayer_p << std::endl
+              << "  Input-Layer-Dim: " << con_p->inlayer_p->inputs.size << std::endl
               << "  Output-Layer-Dim: " << con_p->outlayer_p->inputs.size << std::endl
-              << "  Output-Layer-Dim: " << con_p->outlayer_p->inputs.size << std::endl;
+              << "  Slices: " << con_p->inlayerstart << " "
+                              << con_p->inlayerstop << " "
+                              << con_p->outlayerstart << " "
+                              << con_p->outlayerstop << " "
+              << std::endl;
               // << "  #Incoming: " << layer->incoming_n << std::endl
               // << "  #Outgoing: " << layer->outgoing_n 
 

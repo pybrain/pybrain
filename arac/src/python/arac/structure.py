@@ -12,7 +12,6 @@ from pybrain.structure import LinearLayer, BiasUnit, SigmoidLayer, LSTMLayer, \
     MDLSTMLayer, IdentityConnection, FullConnection
 from pybrain.structure.connections.shared import SharedFullConnection
 
-
 from arac.util import is_power_of_two
 
 libarac = CDLL('../libarac.so')     # This is like an import.
@@ -20,6 +19,7 @@ libarac = CDLL('../libarac.so')     # This is like an import.
 c_double_p = POINTER(c_double)
 c_int_p = POINTER(c_int)
 c_mapfunc_p = CFUNCTYPE(c_double, c_double)
+
 
 class c_parameter_container(Structure):
     """ctypes representation of the arac ParameterContainer struct."""
@@ -41,10 +41,6 @@ class c_parameter_container(Structure):
         self.size = contents.shape[0]
         self.contents_p = contents.ctypes.data_as(c_double_p)
         self.error_p = errors.ctypes.data_as(c_double_p)
-        
-        # Keep references so the arrays are not collected.
-        self.__contents = contents
-        self.__errors = errors
 
 
 class c_identity_layer(Structure):

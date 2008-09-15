@@ -128,6 +128,15 @@ class _Network(Network):
         return struct
         
     def activate(self, inputbuffer):
+        # The outputbuffer of the first module in the list is which we decide
+        # upon wether we have to grow the buffers.
+        # This relies upon the fact, that all buffers of the network have the
+        # same size (in terms of timesteps).
+        indicating_buffer = self.inmodules[0].outputbuffer
+        if self.offset == indicating_buffer.shape[0]:
+            self._growBuffers()
+            self.sortModules()
+
         super(_Network, self).reset()
         start = 0
 
@@ -144,17 +153,9 @@ class _Network(Network):
         self.maxoffset = \
             self.offset if self.offset > self.maxoffset else self.maxoffset
 
-        # The outputbuffer of the first module in the list is which we decide
-        # upon wether we have to grow the buffers.
-        # This relies upon the fact, that all buffers of the network have the 
-        # same size (in terms of timesteps).
-        indicating_buffer = self.inmodules[0].outputbuffer
-        if self.offset >= indicating_buffer.shape[0]:
-            self._growBuffers()
-            self.sortModules()
-            
         outbuffers = [m.outputbuffer[self.offset - 1] for m in self.outmodules]
-        return scipy.concatenate(outbuffers)
+        self.outputbuffer[self.offset - 1][:] = scipy.concatenate(outbuffers)
+        return self.outputbuffer[self.offset - 1]
         
     def backActivate(self, outerr):
         # Function libarac.calc_derivs decrements the offset, so we have to
@@ -192,3 +193,11 @@ class _RecurrentNetwork(RecurrentNetworkComponent, _Network):
     def __init__(self, *args, **kwargs):
         _Network.__init__(self, *args, **kwargs)        
         RecurrentNetworkComponent.__init__(self, *args, **kwargs)
+
+    def activate(self, inputbuffer):
+        result = _Network.activate(self, inputbuffer)
+        return result
+
+    def backActivate(self, outerr):
+        result = _Network.backActivate(self, outerr)
+        return result

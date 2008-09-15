@@ -79,17 +79,17 @@ connection_forward(Connection* con_p, FullConnection* fc_p)
     int outdim = con_p->outlayerstop - con_p->outlayerstart;
     
     cblas_dgemv(CblasRowMajor, 
-                // Transpose the matrix since we want to multiply from right
-                CblasTrans,             
+                // Transpose the matrix since we want to multiply from the right
+                CblasNoTrans,
                 // Dimensions of the matrix
-                indim,     
                 outdim,        
+                indim,
                 // Scalar for the matrix
                 1.0,                    
                 // Pointer to the matrix
                 fc_p->weights.contents_p,    
                 // Dimension of the vector
-                outdim,       
+                indim,
                 // Pointer to the vector
                 from_p->outputs.contents_p + bi_from,   
                 // ??? some incrementer
