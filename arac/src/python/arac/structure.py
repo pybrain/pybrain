@@ -41,7 +41,7 @@ class c_parameter_container(Structure):
         self.size = contents.shape[0]
         self.contents_p = contents.ctypes.data_as(c_double_p)
         self.error_p = errors.ctypes.data_as(c_double_p)
-        
+
 
 class c_identity_layer(Structure):
     """ctypes representation of the arac IdentityLayer struct."""
@@ -81,7 +81,7 @@ class c_mdlstm_layer(Structure):
     
     def __init__(self):
         self.gate_squasher = cast(libarac.sigmoid, c_mapfunc_p)
-        self.gate_squasher_prim = cast(libarac.sigmoid_prime, c_mapfunc_p)
+        self.gate_squasher_prime = cast(libarac.sigmoid_prime, c_mapfunc_p)
         self.cell_squasher = cast(libarac.tanh, c_mapfunc_p)
         self.cell_squasher_prime = cast(libarac.tanh_prime, c_mapfunc_p)
         self.output_squasher = cast(libarac.tanh, c_mapfunc_p)
@@ -216,7 +216,7 @@ class c_layer(Structure):
         
     def make_mdlstm_layer(self, layer):
         mdlstm_layer = c_mdlstm_layer()
-    
+
         mdlstm_layer.input_squashed_p = layer.state.ctypes.data_as(c_double_p)
         mdlstm_layer.input_gate_squashed_p = \
             layer.ingate.ctypes.data_as(c_double_p)
@@ -230,7 +230,7 @@ class c_layer(Structure):
             layer.forgetgate.ctypes.data_as(c_double_p)
         mdlstm_layer.forget_gate_unsquashed_p = \
             layer.forgetgatex.ctypes.data_as(c_double_p)
-        
+
         self.type = 4
         self.internal.mdlstm_layer_p = pointer(mdlstm_layer)
         # TODO: add peephole weights
