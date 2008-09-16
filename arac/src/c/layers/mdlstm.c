@@ -77,9 +77,9 @@ void make_mdlstm_layer(Layer* layer_p, int dim, int timedim, bool use_peepholes)
     
     lstm_p->gate_squasher = sigmoid;
     lstm_p->gate_squasher_prime = sigmoid_prime;
-    lstm_p->cell_squasher = tanh;
+    lstm_p->cell_squasher = tanh_;
     lstm_p->cell_squasher_prime = tanh_prime;
-    lstm_p->output_squasher = tanh;
+    lstm_p->output_squasher = tanh_;
     lstm_p->output_squasher_prime = tanh_prime;
 }
 
