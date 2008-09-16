@@ -41,7 +41,7 @@ class c_parameter_container(Structure):
         self.size = contents.shape[0]
         self.contents_p = contents.ctypes.data_as(c_double_p)
         self.error_p = errors.ctypes.data_as(c_double_p)
-
+        
 
 class c_identity_layer(Structure):
     """ctypes representation of the arac IdentityLayer struct."""
@@ -216,9 +216,28 @@ class c_layer(Structure):
         
     def make_mdlstm_layer(self, layer):
         mdlstm_layer = c_mdlstm_layer()
+    
+        mdlstm_layer.input_squashed_p = layer.state.ctypes.data_as(c_double_p)
+        mdlstm_layer.input_gate_squashed_p = \
+            layer.ingate.ctypes.data_as(c_double_p)
+        mdlstm_layer.input_gate_unsquashed_p = \
+            layer.ingatex.ctypes.data_as(c_double_p)
+        mdlstm_layer.output_gate_squashed_p = \
+            layer.outgate.ctypes.data_as(c_double_p)
+        mdlstm_layer.output_gate_unsquashed_p = \
+            layer.outgatex.ctypes.data_as(c_double_p)
+        mdlstm_layer.forget_gate_squashed_p = \
+            layer.forgetgate.ctypes.data_as(c_double_p)
+        mdlstm_layer.forget_gate_unsquashed_p = \
+            layer.forgetgatex.ctypes.data_as(c_double_p)
+        
         self.type = 4
         self.internal.mdlstm_layer_p = pointer(mdlstm_layer)
         # TODO: add peephole weights
+        # ('peephole_input_weights', c_parameter_container),
+        # ('peephole_forget_weights', c_parameter_container),
+        # ('peephole_output_weights', c_parameter_container),
+
     
     def add_outgoing_connection(self, con):
         """Add the connection to this layer as an outgoing connection."""
