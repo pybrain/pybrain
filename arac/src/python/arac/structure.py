@@ -85,7 +85,7 @@ class c_mdlstm_layer(Structure):
         self.cell_squasher = cast(libarac.tanh, c_mapfunc_p)
         self.cell_squasher_prime = cast(libarac.tanh_prime, c_mapfunc_p)
         self.output_squasher = cast(libarac.tanh, c_mapfunc_p)
-        self.output_squasher = cast(libarac.tanh_prime, c_mapfunc_p)
+        self.output_squasher_prime = cast(libarac.tanh_prime, c_mapfunc_p)
 
     
 class c_lstm_layer(Structure):
