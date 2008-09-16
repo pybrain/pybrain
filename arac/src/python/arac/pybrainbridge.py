@@ -25,7 +25,7 @@ from arac.structure import c_parameter_container, c_bias_layer, \
 from ctypes import c_int, pointer
     
 
-libarac = ctypes.CDLL('../libarac.so')     # This is like an import.
+libarac = ctypes.CDLL('libarac.so')     # This is like an import.
 
 
 class _Network(Network):

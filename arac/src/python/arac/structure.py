@@ -14,7 +14,7 @@ from pybrain.structure.connections.shared import SharedFullConnection
 
 from arac.util import is_power_of_two
 
-libarac = CDLL('../libarac.so')     # This is like an import.
+libarac = CDLL('libarac.so')     # This is like an import.
 
 c_double_p = POINTER(c_double)
 c_int_p = POINTER(c_int)
