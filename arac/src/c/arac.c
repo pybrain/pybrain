@@ -12,9 +12,7 @@ extern "C"
 
 void print_layer(Layer* layer_p)
 {
-    std::cout << "I am there!" << std::endl;
     std::cout << "Layer at #" << layer_p << std::endl;
-    std::cout << "This is never executed!";
     std::cout << "  Input-Dim: " << layer_p->inputs.size << std::endl
               << "  Output-Dim: " << layer_p->outputs.size << std::endl
               << "  #Incoming: " << layer_p->incoming_n << std::endl
@@ -94,37 +92,29 @@ void print_connection(Connection* con_p)
 
 void activate(Layer* layer_p, int n_layers)
 {
-    std::cout << "Printing stuff now!" << std::endl;
-    std::cout.flush();
-    Layer* mylayer = make_linear_layer(2);
-    print_layer(mylayer);
-
-    std::cout << layer_p->inputs.size;
-    print_layer(layer_p);
-    std::cout << "But it continues here!" << std::endl;
-    for (int i = 0; i < n_layers; i++)
-    {
-        Layer* current_layer_p = &layer_p[i];
-        print_layer(current_layer_p);
-        for (int i = 0; i < current_layer_p->incoming_n; i++)
-        {
-            Connection& cur_con = current_layer_p->incoming_p[i];
-            print_connection(&cur_con);
-        }
-    }
-
     // for (int i = 0; i < n_layers; i++)
     // {
     //     Layer* current_layer_p = &layer_p[i];
-    //     forward(current_layer_p);
-    //     for (int j = 0; j < current_layer_p->outgoing_n; j++)
+    //     print_layer(current_layer_p);
+    //     for (int i = 0; i < current_layer_p->incoming_n; i++)
     //     {
-    //         Connection& cur_con = current_layer_p->outgoing_p[j];
-    //         forward(&cur_con);
+    //         Connection& cur_con = current_layer_p->incoming_p[i];
+    //         print_connection(&cur_con);
     //     }
     // }
 
-    // (*(layer_p->timestep_p))++;
+    for (int i = 0; i < n_layers; i++)
+    {
+        Layer* current_layer_p = &layer_p[i];
+        forward(current_layer_p);
+        for (int j = 0; j < current_layer_p->outgoing_n; j++)
+        {
+            Connection& cur_con = current_layer_p->outgoing_p[j];
+            forward(&cur_con);
+        }
+    }
+
+    (*(layer_p->timestep_p))++;
 }
 
 
@@ -141,16 +131,16 @@ void calc_derivs(Layer* layer_p, int n_layers) {
     }
     (*(layer_p->timestep_p))--;
 
-    for (int i = 0; i < n_layers; i++)
-    {
-        Layer* current_layer_p = &layer_p[i];
-        print_layer(current_layer_p);
-        for (int i = 0; i < current_layer_p->incoming_n; i++)
-        {
-            Connection& cur_con = current_layer_p->incoming_p[i];
-            print_connection(&cur_con);
-        }
-    }
+    // for (int i = 0; i < n_layers; i++)
+    // {
+    //     Layer* current_layer_p = &layer_p[i];
+    //     print_layer(current_layer_p);
+    //     for (int i = 0; i < current_layer_p->incoming_n; i++)
+    //     {
+    //         Connection& cur_con = current_layer_p->incoming_p[i];
+    //         print_connection(&cur_con);
+    //     }
+    // }
 }
 
 

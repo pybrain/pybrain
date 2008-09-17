@@ -79,12 +79,11 @@ class BackpropTrainer(Trainer):
             self.module.activate(sample[0])
         error = 0
         ponderation = 0.
-        for time, sample in reversed(list(enumerate(seq))):
-            
+        for offset, sample in reversed(list(enumerate(seq))):
             # need to make a distinction here between datasets containing
             # importance, and others
             target = sample[1]
-            outerr = target - self.module.outputbuffer[time]
+            outerr = target - self.module.outputbuffer[offset]
             if len(sample) > 2:
                 importance = sample[2]
                 error += 0.5 * dot(importance, outerr**2)

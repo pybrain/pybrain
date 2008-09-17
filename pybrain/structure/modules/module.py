@@ -60,9 +60,8 @@ class Module(Named):
         currentlength = getattr(self, self.bufferlist[0][0]).shape[0]
         # Save the current buffers
         tmp = [getattr(self, n) for n, _ in self.bufferlist]
-
         Module._resetBuffers(self, currentlength * 2)
-        
+
         for previous, (buffername, _dim) in zip(tmp, self.bufferlist):
             buffer_ = getattr(self, buffername)
             buffer_[:currentlength] = previous

@@ -33,18 +33,19 @@ def compileArac():
         'arac/src/c/layers/sigmoid.c',
     ]
     
-    compiler = new_compiler(verbose=True)
+    compiler = new_compiler(verbose=1)
 
     if sys.platform.startswith('linux') or sys.platform == 'darwin':
         # Workaround for distutils to recognize .c files as c++files.
         compiler.language_map['.c'] = 'c++'
+        compiler_cmd = 'g++'
         executables = {
             'preprocessor': None,
-            'compiler': ["g++"],
-            'compiler_so': ["g++"],
-            'compiler_cxx': ["g++"],
-            'linker_so': ["g++", "-shared"],
-            'linker_exe': ["g++"],
+            'compiler': [compiler_cmd],
+            'compiler_so': [compiler_cmd],
+            'compiler_cxx': [compiler_cmd],
+            'linker_so': [compiler_cmd, "-shared"],
+            'linker_exe': [compiler_cmd],
             'archiver': ["ar", "-cr"],
             'ranlib': None,
         }
@@ -67,10 +68,14 @@ def compileArac():
     compiler.add_library('c')
     compiler.add_library('stdc++')
     objects = compiler.compile(sources)
+    
+    extra_postargs = ['-dynamiclib'] if sys.platform == 'darwin' else None
+    
     compiler.link_shared_lib(objects=objects, 
                              output_libname='arac', 
                              target_lang='c++', 
-                             output_dir=output_dir)
+                             output_dir=output_dir,
+                             extra_postargs=extra_postargs)
 
 
 try:
