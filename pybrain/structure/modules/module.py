@@ -83,7 +83,7 @@ class Module(Named):
         self.offset = 0
         for buffername, l  in self.bufferlist:
             buf = getattr(self, buffername)
-            buf[:] = zeros
+            buf[:] = zeros(l)
         
     def activateOnDataset(self, dataset):
         """Run the module's forward pass on the given dataset unconditionally
