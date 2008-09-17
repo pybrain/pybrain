@@ -35,7 +35,6 @@ class c_parameter_container(Structure):
         
         Arrays have to be of the same size. Size for the struct is infered by 
         that size."""
-        super(Structure, self).__init__()
         if contents.shape[0] != errors.shape[0]:
             raise ValueError("Buffers have to be of the same size.")
         self.size = contents.shape[0]
@@ -59,6 +58,8 @@ class c_mdlstm_layer(Structure):
     """ctypes representation of the arac MdLstmLayer struct."""
     
     _fields_ = [
+        ('timedim', c_int),
+
         ('peephole_input_weights', c_parameter_container),
         ('peephole_forget_weights', c_parameter_container),
         ('peephole_output_weights', c_parameter_container),
@@ -90,10 +91,6 @@ class c_mdlstm_layer(Structure):
     
 class c_lstm_layer(Structure):
     """ctypes representation of the arac LstmLayer struct."""
-    
-    def __init__(self):
-        super(Structure, self).__init__()
-        # TODO: populate mdlstm thing
     
     
 class c_any_layer(Union):
@@ -149,8 +146,7 @@ class c_layer(Structure):
         The struct is not fully functional afterwards. You have to set the type
         and the type specific union internal.
         """
-        super(Structure, self).__init__()
-        
+
         self.inputs = c_parameter_container(input_, inerror)
         self.outputs = c_parameter_container(output, outerror)
 
@@ -203,10 +199,12 @@ class c_layer(Structure):
     def make_lstm_layer(self, layer):
         """Make this an MdLstmLayer."""
         lstm_layer = c_lstm_layer()
-        # Create the encapsulated MdLstmLayer
-        pybrain_mdlstmlayer = MDLSTMLayer(layer.dim)
-        mdlstmlayer = c_layer.from_layer(pybrain_mdlstmlayer)
-        # raise "%s" % mdlstmlayer.type
+
+        # Create the encapsulated MdLstmLayer and store it in the class, so it
+        # is not garbage collected
+        self.__mdlstmlayer = MDLSTMLayer(layer.dim)
+
+        mdlstmlayer = c_layer.from_layer(self.__mdlstmlayer)
         lstm_layer.mdlstm_p = pointer(mdlstmlayer)
         # Set other variables
         self.type = 5
@@ -216,7 +214,9 @@ class c_layer(Structure):
         
     def make_mdlstm_layer(self, layer):
         mdlstm_layer = c_mdlstm_layer()
+        self.__mdlstm_layer = mdlstm_layer
 
+        mdlstm_layer.timedim = 1
         mdlstm_layer.input_squashed_p = layer.state.ctypes.data_as(c_double_p)
         mdlstm_layer.input_gate_squashed_p = \
             layer.ingate.ctypes.data_as(c_double_p)
@@ -283,8 +283,6 @@ class c_connection(Structure):
     
     def __init__(self, inlayer, outlayer):
         """Create a c_connection by two c_layers. (Not pybrain layers!)"""
-        super(Structure, self).__init__()
-        
         self.inlayer_p = c_layer_p(inlayer)
         self.outlayer_p = c_layer_p(outlayer)
         

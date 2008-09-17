@@ -38,7 +38,7 @@ Construction of a Network from Pybrain structures
     True
 
     >>> net.activate(array((1.2, -2.25, 5.0)))
-    array([ 20.75, -18.15])
+    array([  1.25, -20.4 ])
 
 
 Growing of buffers and making sure that nothing is lost
@@ -100,34 +100,50 @@ Growing of buffers and making sure that nothing is lost
 
    >>> net['in'].inputbuffer
    array([[ 0.5],
+          [ 0. ],
+          [ 0. ],
           [ 0. ]])
 
    >>> net['in'].outputbuffer
    array([[ 1.5],
+          [ 0. ],
+          [ 0. ],
           [ 0. ]])
 
    >>> net['in'].inputerror
    array([[ 0.2],
+          [ 0. ],
+          [ 0. ],
           [ 0. ]])
 
    >>> net['in'].outputerror
    array([[ 1.2],
+          [ 0. ],
+          [ 0. ],
           [ 0. ]])
 
    >>> net['out'].inputbuffer
    array([[ 0.3],
+          [ 0. ],
+          [ 0. ],
           [ 0. ]])
 
    >>> net['out'].outputbuffer
    array([[ 1.3],
+          [ 0. ],
+          [ 0. ],
           [ 0. ]])
 
    >>> net['out'].inputerror
    array([[ 0.4],
+          [ 0. ],
+          [ 0. ],
           [ 0. ]])
 
    >>> net['out'].outputerror
    array([[ 1.4],
+          [ 0. ],
+          [ 0. ],
           [ 0. ]])
 
 

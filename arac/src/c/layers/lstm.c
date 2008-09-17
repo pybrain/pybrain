@@ -1,5 +1,6 @@
 #include "lstm.h"
 #include <cstring>
+#include <iostream>
 #include <cstdlib>
 
 Layer* make_lstm_layer(int dim)
@@ -45,6 +46,7 @@ void layer_forward(Layer* layer_p, LstmLayer* ll_p)
     
     // Copy the input buffer to the right place
     offset = (*layer_p->timestep_p) * size;
+    mdlstm_p->inputs.contents_p[0] = 1;
     memcpy((void*) mdlstm_p->inputs.contents_p, 
            (void*) (layer_p->inputs.contents_p + offset), 
            sizeof(double) * layer_p->inputs.size);

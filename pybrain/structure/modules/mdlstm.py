@@ -63,8 +63,8 @@ class MDLSTMLayer(NeuronLayer, ParameterContainer):
         self.fprime = sigmoidPrime
         self.g = tanh
         self.gprime = tanhPrime
-        self.h = self.g
-        self.hprime = self.gprime
+        self.h = tanh
+        self.hprime = tanhPrime
         
     def _setParameters(self, p, owner=None):
         ParameterContainer._setParameters(self, p, owner)
