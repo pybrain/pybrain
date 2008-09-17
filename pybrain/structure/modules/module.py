@@ -81,9 +81,9 @@ class Module(Named):
     def reset(self):
         """Set all buffers, past and present, to zero."""
         self.offset = 0
-        for buffername, _ in self.bufferlist:
+        for buffername, l  in self.bufferlist:
             buf = getattr(self, buffername)
-            buf *= 0
+            buf[:] = zeros
         
     def activateOnDataset(self, dataset):
         """Run the module's forward pass on the given dataset unconditionally
