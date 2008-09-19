@@ -3,12 +3,13 @@
 #
 # Requirements: 
 #   pybrain (tested on rev. 1195, ship env rev. 1202)
+# Author: Frank Sehnke, sehnke@in.tum.de
 #########################################################################
 __author__ = "Martin Felder, Frank Sehnke"
 __version__ = '$Id: shipbenchSPLA.py 1305 2008-06-10 11:51:18Z sehnke $' 
 
 from pybrain.structure.modules.tanhlayer import TanhLayer
-from pybrain import buildNetwork
+from pybrain.tools.shortcuts import buildNetwork
 from pybrain.rl.environments.shipsteer import ShipSteeringEnvironment
 from pybrain.rl.environments.shipsteer import GoNorthwardTask
 from pybrain.rl.agents.finitedifference import FiniteDifferenceAgent

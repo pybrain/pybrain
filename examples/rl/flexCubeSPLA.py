@@ -28,7 +28,7 @@
 #########################################################################
 
 from pybrain.structure.modules.tanhlayer import TanhLayer
-from pybrain import buildNetwork
+from pybrain.tools.shortcuts import buildNetwork
 from pybrain.rl.environments.flexcube import FlexCubeEnvironment, WalkTask
 from pybrain.rl.agents.finitedifference import FiniteDifferenceAgent
 from pybrain.rl.learners.finitedifference.spla import SPLA

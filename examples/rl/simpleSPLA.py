@@ -8,9 +8,10 @@
 
 # Requirements: pylab (for plotting only). If not available, comment the
 # 9 lines total marked as "for plotting"
+# Author: Frank Sehnke, sehnke@in.tum.de
 #########################################################################
 
-from pybrain import buildNetwork
+from pybrain.tools.shortcuts import buildNetwork
 from pybrain.rl.environments.simple import SimpleEnvironment, MinimizeTask
 from pybrain.rl.agents import FiniteDifferenceAgent
 from pybrain.rl.learners import SPLA

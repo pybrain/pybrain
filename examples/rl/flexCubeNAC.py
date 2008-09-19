@@ -8,6 +8,7 @@
 # -2.6
 # Requirements: pylab (for plotting only). If not available, comment the
 # 5 lines marked as "for plotting"
+# Author: Frank Sehnke, sehnke@in.tum.de
 #########################################################################
 
 from pybrain.tools.shortcuts import buildNetwork
