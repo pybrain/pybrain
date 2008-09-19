@@ -38,7 +38,7 @@ for runs in range(numbExp):
     batch=16
     prnts=10
     epis=50000/batch/prnts
-    save=True
+    save=False
 
     rl=[]
     for updates in range(epis):
