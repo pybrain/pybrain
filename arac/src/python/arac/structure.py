@@ -9,7 +9,7 @@ from ctypes import Structure, Union, cast, CDLL, pointer
 from ctypes import c_int, c_double, POINTER, CFUNCTYPE
 
 from pybrain.structure import LinearLayer, BiasUnit, SigmoidLayer, LSTMLayer, \
-    MDLSTMLayer, IdentityConnection, FullConnection
+    MDLSTMLayer, IdentityConnection, FullConnection, TanhLayer, SoftmaxLayer
 from pybrain.structure.connections.shared import SharedFullConnection
 
 from arac.util import is_power_of_two
@@ -91,6 +91,14 @@ class c_mdlstm_layer(Structure):
     
 class c_lstm_layer(Structure):
     """ctypes representation of the arac LstmLayer struct."""
+
+
+class c_softmax_layer(Structure):
+    """ctypes representation of the arac SoftmaxLayer struct."""
+
+
+class c_tanh_layer(Structure):
+    """ctypes representation of the arac TanhLayer struct."""
     
     
 class c_any_layer(Union):
@@ -102,6 +110,8 @@ class c_any_layer(Union):
         ('lstm_layer_p', POINTER(c_lstm_layer)),
         ('mdlstm_layer_p', POINTER(c_mdlstm_layer)),
         ('sigmoid_layer_p', POINTER(c_sigmoid_layer)),
+        ('softmax_layer_p', POINTER(c_softmax_layer)),
+        ('tanh_layer_p', POINTER(c_tanh_layer)),
     ]
     
     
@@ -137,6 +147,8 @@ class c_layer(Structure):
         MDLSTMLayer: 'mdlstm',
         LSTMLayer: 'lstm',
         BiasUnit: 'bias',
+        TanhLayer: 'tanh',
+        SoftmaxLayer: 'softmax',
     }
     
     def __init__(self, input_dim, output_dim, 
@@ -191,10 +203,22 @@ class c_layer(Structure):
         self.internal.identity_layer_p = pointer(identity_layer)
         
     def make_sigmoid_layer(self, layer):
-        """Make this an IdentityLayer."""
+        """Make this a SigmoidLayer."""
         sigmoid_layer = c_sigmoid_layer()
         self.type = 2
         self.internal.sigmoid_layer_p = pointer(sigmoid_layer)
+
+    def make_softmax_layer(self, layer):
+        """Make this a SoftmaxLayer."""
+        softmax_layer = c_softmax_layer()
+        self.type = 6
+        self.internal.softmax_layer_p = pointer(softmax_layer)
+
+    def make_tanh_layer(self, layer):
+        """Make this a TanhLayer."""
+        tanh_layer = c_tanh_layer()
+        self.type = 3
+        self.internal.tanh_layer_p = pointer(tanh_layer)
         
     def make_lstm_layer(self, layer):
         """Make this an MdLstmLayer."""

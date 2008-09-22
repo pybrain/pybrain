@@ -147,7 +147,6 @@ Growing of buffers and making sure that nothing is lost
           [ 0. ]])
 
 
-
 Construction of a Network containing a single LstmLayer
 -------------------------------------------------------
 
@@ -159,6 +158,32 @@ Construction of a Network containing a single LstmLayer
     >>> net.sortModules()
     
     
+Construction of a Network with a TanhLayer
+------------------------------------------
+
+    >>> from pybrain.structure import TanhLayer
+    >>> net = _FeedForwardNetwork()
+    >>> l = TanhLayer(2)
+    >>> net.addInputModule(l)
+    >>> net.outmodules.append(l)
+    >>> net.sortModules()
+    >>> net.activate((2, 3))
+    array([ 0.96402758,  0.99505475])
+
+
+Construction of a Network with a SoftmaxLayer
+------------------------------------------
+
+    >>> from pybrain.structure import SoftmaxLayer
+    >>> net = _FeedForwardNetwork()
+    >>> l = SoftmaxLayer(2)
+    >>> net.addInputModule(l)
+    >>> net.outmodules.append(l)
+    >>> net.sortModules()
+    >>> net.activate((2, 3))
+    array([ 0.26894142,  0.73105858])
+
+
 Using a backprop trainer on a CNetwork
 --------------------------------------
 

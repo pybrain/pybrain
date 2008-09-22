@@ -104,7 +104,9 @@ class Network(Module, ParameterContainer):
         if m.paramdim > 0:
             m.owner = self
         if m.sequential and not self.sequential:
-            logging.warning("Module "+str(m)+" is sequential, and added to a FFN. Are you sure you know what you're doing?")
+            logging.warning(
+                ("Module %s is sequential, and added to a FFN. Are you sure " + 
+                "you know what you're doing?") % m)
         self.sorted = False
 
     def addInputModule(self, m):

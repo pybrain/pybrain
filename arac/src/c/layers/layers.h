@@ -18,6 +18,8 @@
 #include "sigmoid.h"
 #include "mdlstm.h"
 #include "lstm.h"
+#include "softmax.h"
+#include "tanh.h"
 
 
 // 

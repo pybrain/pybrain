@@ -31,6 +31,8 @@ def compileArac():
         'arac/src/c/layers/lstm.c',
         'arac/src/c/layers/mdlstm.c',
         'arac/src/c/layers/sigmoid.c',
+        'arac/src/c/layers/softmax.c',
+        'arac/src/c/layers/tanh.c',
     ]
     
     compiler = new_compiler(verbose=1)
@@ -67,9 +69,11 @@ def compileArac():
     compiler.add_library('blas')
     compiler.add_library('c')
     compiler.add_library('stdc++')
-    objects = compiler.compile(sources)
+    objects = compiler.compile(sources, 
+                               extra_postargs=['-O3', '-g0', '-DNDEBUG'])
     
-    extra_postargs = ['-dynamiclib'] if sys.platform == 'darwin' else None
+    extra_postargs = ['-dynamiclib'] if sys.platform == 'darwin' else []
+    extra_postargs += ['-O3']
     
     compiler.link_shared_lib(objects=objects, 
                              output_libname='arac', 

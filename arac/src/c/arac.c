@@ -152,5 +152,4 @@ void setTimestepPointer(Layer* layer_p, int n_layers, int* target)
     }
 }
 
-
 } // Extern

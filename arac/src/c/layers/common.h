@@ -18,6 +18,7 @@
 #define TANH_LAYER 3
 #define MDLSTM_LAYER 4
 #define LSTM_LAYER 5
+#define SOFTMAX_LAYER 6
 
 
 // Forward declarations
@@ -26,6 +27,8 @@ struct LinearLayer;
 struct LstmLayer;
 struct MdLstmLayer;
 struct SigmoidLayer;
+struct SoftmaxLayer;
+struct TanhLayer;
 
 
 union AnyLayer {
@@ -34,6 +37,8 @@ union AnyLayer {
     LstmLayer* lstm_layer_p;
     MdLstmLayer* mdlstm_layer_p;
     SigmoidLayer* sigmoid_layer_p;
+    SoftmaxLayer* softmax_layer_p;
+    TanhLayer* tanh_layer_p;
 };
 
 

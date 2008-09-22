@@ -40,6 +40,7 @@ void calc_derivs(Layer* layer_p, int n_layers);
 // Set the timestep pointers of the layers to the same memory address.
 void setTimestepPointer(Layer* layer_p, int n_layers, int* target);
 
+
 } // Extern
 
 

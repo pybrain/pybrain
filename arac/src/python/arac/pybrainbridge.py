@@ -20,7 +20,7 @@ from pybrain.structure.modules.neuronlayer import NeuronLayer
 
 from arac.structure import c_parameter_container, c_bias_layer, \
     c_identity_layer, c_sigmoid_layer, c_lstm_layer, c_identity_connection, \
-    c_full_connection, c_layer, c_connection
+    c_full_connection, c_layer, c_connection, c_double_p
     
 from ctypes import c_int, pointer
     
@@ -79,7 +79,7 @@ class _Network(Network):
                 module.offset = self.offset
                 module.maxoffset = self.maxoffset
                 module._growBuffers()
-        
+
     def _rebuild(self):
         self.buildCStructure()
         # The modules are sorted in the modules list in the right way. We create
@@ -137,7 +137,6 @@ class _Network(Network):
             self._growBuffers()
             self.sortModules()
 
-        super(_Network, self).reset()
         start = 0
 
         for inmodule in self.inmodules:

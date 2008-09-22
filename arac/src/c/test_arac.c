@@ -284,6 +284,67 @@ TEST(TestBackwardPass, TestLstmLayerPass)
 }
 
 
+TEST(TestForwardPass, TestSoftmaxLayerPass) {
+    Layer* layer_p = make_softmax_layer(2);
+
+    layer_p[0].inputs.contents_p = (double*) malloc(sizeof(double) * 2);
+    layer_p[0].outputs.contents_p = (double*) malloc(sizeof(double) * 2);
+
+    layer_p[0].inputs.contents_p[0] = 2.0;
+    layer_p[0].inputs.contents_p[1] = 3.0;
+
+    activate(layer_p, 1);
+
+    EXPECT_TRUE(abs(layer_p->outputs.contents_p[0] - 0.268941) < 0.0001)
+        << layer_p->outputs.contents_p[0] << " should be " << "0.269841";
+
+    EXPECT_TRUE(abs(layer_p->outputs.contents_p[1] - 0.731059) < 0.0001)
+        << layer_p->outputs.contents_p[1] << " should be " << "0.731059";
+}
+
+
+TEST(TestForwardPass, TestTanhLayerPass) {
+    Layer* layer_p = make_tanh_layer(2);
+
+    layer_p[0].inputs.contents_p = (double*) malloc(sizeof(double) * 2);
+    layer_p[0].outputs.contents_p = (double*) malloc(sizeof(double) * 2);
+
+    layer_p[0].inputs.contents_p[0] = 2.0;
+    layer_p[0].inputs.contents_p[1] = 3.0;
+
+    activate(layer_p, 1);
+
+    EXPECT_TRUE(abs(layer_p->outputs.contents_p[0] - 0.964027) < 0.0001)
+        << layer_p->outputs.contents_p[0] << " should be " << "0.964027";
+
+    EXPECT_TRUE(abs(layer_p->outputs.contents_p[1] - 0.995054) < 0.0001)
+        << layer_p->outputs.contents_p[1] << " should be " << "0.995054";
+}
+
+
+TEST(TestBackwardPass, TestTanhLayerPass) {
+    Layer* layer_p = make_tanh_layer(2);
+
+    layer_p->inputs.contents_p = (double*) malloc(sizeof(double) * 2);
+    layer_p->inputs.error_p = (double*) malloc(sizeof(double) * 2);
+    layer_p->outputs.contents_p = (double*) malloc(sizeof(double) * 2);
+    layer_p->outputs.error_p = (double*) malloc(sizeof(double) * 2);
+
+    layer_p->inputs.contents_p[0] = 2.0;
+    layer_p->inputs.contents_p[1] = 3.0;
+    layer_p->outputs.error_p[0] = 0.3;
+    layer_p->outputs.error_p[1] = 5.0;
+
+    activate(layer_p, 1);
+
+    EXPECT_TRUE(abs(layer_p->inputs.error_p[0] - 0.021195) < 0.0001)
+        << layer_p->inputs.error_p[0] << " should be " << "0.021195";
+
+    EXPECT_TRUE(abs(layer_p->inputs.error_p[1] - 0.049330) < 0.0001)
+        << layer_p->inputs.error_p[1] << " should be " << "0.049330";
+}
+
+
 TEST(TestForwardPass, TestForkedIdentityPass) {
     Layer* layers_p = (Layer*) malloc(sizeof(Layer) * 4);
 
@@ -329,8 +390,6 @@ TEST(TestForwardPass, TestForkedIdentityPass) {
 
     EXPECT_EQ(layers_p[3].inputs.contents_p[0], 3.0);
     EXPECT_EQ(layers_p[3].outputs.contents_p[0], 3.0);
-    
-    // free(layers_p);
 }
 
 
@@ -354,8 +413,6 @@ TEST(TestForwardPass, TestFullConnectionPass1) {
     
     EXPECT_EQ(outlayer_p->outputs.contents_p[0], 1.25);
     EXPECT_EQ(outlayer_p->outputs.contents_p[1], -20.4);
-    
-    // free(layers_p);
 }
 
 
@@ -380,8 +437,6 @@ TEST(TestForwardPass, TestFullConnectionPass2) {
     EXPECT_EQ(outlayer_p->outputs.contents_p[0], -3.75);
     EXPECT_EQ(outlayer_p->outputs.contents_p[1], -5.55);
     EXPECT_EQ(outlayer_p->outputs.contents_p[2], 11.55);
-    
-    // free(layers_p);
 }
 
 
@@ -400,8 +455,6 @@ TEST(TestForwardPass, TestSigmoidIdentityLayerConnected)
     EXPECT_TRUE(abs(layers_p[1].outputs.contents_p[0] - 0.3678) < 0.001);
     EXPECT_TRUE(abs(layers_p[1].outputs.contents_p[1] - 0.6065) < 0.001);
     EXPECT_TRUE(abs(layers_p[1].outputs.contents_p[2] - 1.0) < 0.001);
-    
-    // free(layers_p);
 }
 
 
@@ -433,8 +486,6 @@ TEST(TestForwardPass, TestSlicedIdentityConnection)
     EXPECT_EQ(layers_p[2].outputs.contents_p[0], 4);
     EXPECT_EQ(layers_p[2].outputs.contents_p[1], 5);
     EXPECT_EQ(layers_p[2].outputs.contents_p[2], 6);
-    
-    // free(layers_p);
 }
 
 TEST(TestForwardPass, TestSlicedFullConnection)
@@ -469,8 +520,6 @@ TEST(TestForwardPass, TestSlicedFullConnection)
     EXPECT_EQ(layers_p[2].outputs.contents_p[0], 4);
     EXPECT_EQ(layers_p[2].outputs.contents_p[1], 10);
     EXPECT_EQ(layers_p[2].outputs.contents_p[2], 0);
-    
-    // free(layers_p);
 }
 
 
@@ -490,8 +539,6 @@ TEST(TestBackwardPass, TestIdentityLayer)
     EXPECT_EQ(layer_p->inputs.error_p[0], 2);
     EXPECT_EQ(layer_p->inputs.error_p[1], 0);
     EXPECT_EQ(layer_p->inputs.error_p[2], 1);
-    
-    // free(layer_p);
 }
 
 
@@ -513,8 +560,6 @@ TEST(TestBackwardPass, TestSigmoidLayer)
         << layer_p->inputs.error_p[1] << " should be " << "0.705011";
     EXPECT_TRUE(abs(layer_p->inputs.error_p[2] - 0.104994) < 0.0001)
         << layer_p->inputs.error_p[2] << " should be " << "0.104994";
-    
-    // free(layer_p);
 }
 
 
@@ -547,8 +592,6 @@ TEST(TestBackwardPass, TestIdentityConnection)
     EXPECT_EQ(layers_p[0].inputs.error_p[0], 2);
     EXPECT_EQ(layers_p[0].inputs.error_p[1], 3);
     EXPECT_EQ(layers_p[0].inputs.error_p[2], 1);
-    
-    // free(layers_p);
 }
 
 
@@ -582,8 +625,6 @@ TEST(TestBackwardPass, TestFullConnection)
     EXPECT_EQ(con_p->internal.full_connection_p->weights.error_p[3], -14);
     EXPECT_EQ(con_p->internal.full_connection_p->weights.error_p[4], -2);
     EXPECT_EQ(con_p->internal.full_connection_p->weights.error_p[5], 4);
-    
-    // free(layers_p);
 }
 
 }  // namespace
