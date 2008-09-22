@@ -1,6 +1,6 @@
 """
 
-    >>> from pybrain import buildNetwork
+    >>> from pybrain.tools.shortcuts import buildNetwork
     >>> from test_peephole_lstm import buildMinimalLSTMNetwork
     >>> from test_peephole_mdlstm import buildMinimalMDLSTMNetwork
     >>> from test_nested_network import buildNestedNetwork

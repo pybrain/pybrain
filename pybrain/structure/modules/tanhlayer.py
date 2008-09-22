@@ -6,7 +6,7 @@ from neuronlayer import NeuronLayer
 
 
 class TanhLayer(NeuronLayer):
-    """ A layer implementing the sigmoid squashing function. """
+    """ A layer implementing the tanh squashing function. """
     
     def _forwardImplementation(self, inbuf, outbuf):
         outbuf[:] = tanh(inbuf)
