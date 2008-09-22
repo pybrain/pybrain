@@ -133,12 +133,19 @@ class CaptureGameNetwork(BorderSwipingNetwork):
         if newsize == self.size:
             return self.copy()
         else:
-            # copy the connections from the self.predefined dictionnary:
             import copy
+            # TODO: ugly hack!
+            # remove recurrent references
+            for mc in self.motherconnections:
+                mc.owner = None
+            # copy the connections from the self.predefined dictionnary:
             cdict = copy.deepcopy(self.predefined)
             args = self.argdict.copy()
             args['size'] = newsize
             del args['rebuilt']
+            # put the references back in
+            for mc in self.motherconnections:
+                mc.owner = self
             return CaptureGameNetwork(predefined = cdict, **args)
     
     
