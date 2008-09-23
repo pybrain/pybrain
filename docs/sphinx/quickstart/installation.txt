@@ -1,0 +1,86 @@
+.. _installation:
+
+Installing PyBrain and its dependencies
+=======================================
+
+There are several requirements for PyBrain and we will go through them step by
+step.
+
+
+Python
+------
+
+On most Unix systems as Linux or Mac OS X, Python is already
+installed, but you should check if it is the right version - otherwise you will
+get weird errors. One way to do this is on the commandline::
+
+   $ python --version
+   Python 2.5.2
+
+.. note::
+   
+   Most command line examples will have a Unix look, but all of them are usable
+   on Windows systems, too.
+   
+If you have not installed Python, you should go to the `official Python download
+page <http://wiki.python.org/moin/BeginnersGuide/Download>`_ and follow the
+instructions there.
+   
+   
+Setuptools
+----------
+   
+Setuptools is a package that contains Python's package manager and makes 
+installation of python packages easier. We will use this for the requirements.
+
+First, download this `bootstrap script 
+<http://peak.telecommunity.com/dist/ez_setup.py>`_
+and run it::
+
+   $ python ez_setup.py
+
+.. note::
+   
+   On Unix systems, you will possibly have to run these commands as a superuser!
+   
+   
+Scipy and Matplotlib
+--------------------
+   
+This will install the python package manager Easy Install for you. Afterwards, 
+you can do::
+
+   $ easy_install scipy
+   $ easy_install matplotlib
+   
+This might take longer, since scipy will also compile different things.
+   
+   
+PyBrain
+-------
+   
+There are two ways of installing PyBrain: you can either go with our stable 
+release on `the webpage <http://pybrain.org/pages/download>`_ or the bleeding 
+edge from our SVN repository. 
+
+To check out the PyBrain repository run::
+
+   $ svn co http://pybrain-svn.informatik.tu-muenchen.de pybrain-trunk
+   
+Change into the directory Pybrain directory after either checking out SVN or 
+downloading and extracting the archive. There you run (possibly as a superuser 
+on Unix systems)::
+
+   $ python setup.py install
+   
+Now everything should be installed. To test if it works fine, go into Python and
+import PyBrain. You should see something like this::
+
+   $ python
+   Python 2.5.2 (r252:60911, Sep 17 2008, 11:21:23) 
+   [GCC 4.0.1 (Apple Inc. build 5465)] on darwin
+   Type "help", "copyright", "credits" or "license" for more information.
+   >>> import pybrain
+   >>> 
+   
+If this works, you are set.
