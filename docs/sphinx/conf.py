@@ -35,15 +35,15 @@ master_doc = 'index'
 
 # General substitutions.
 project = 'PyBrain'
-copyright = '2008, CogBotLab'
+copyright = '2008, CogBotLab & Idsia'
 
 # The default replacements for |version| and |release|, also used in various
 # other places throughout the built documents.
 #
 # The short X.Y version.
-version = '0.1'
+version = '0.2'
 # The full version, including alpha/beta/rc tags.
-release = '0.1pre'
+release = '0.2pre'
 
 # There are two options for replacing |today|: either, you set today to some
 # non-false value, then it is used:
