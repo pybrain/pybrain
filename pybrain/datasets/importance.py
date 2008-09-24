@@ -11,6 +11,7 @@ from pybrain.utilities import fListToString
 
 
 class ImportanceDataSet(SequentialDataSet):
+    """ Allows setting an importance value for each of the targets of a sample. """
     
     def __init__(self, indim, targetdim):
         SequentialDataSet.__init__(self, indim, targetdim)
@@ -43,3 +44,4 @@ class ImportanceDataSet(SequentialDataSet):
                 print     'importance:', fListToString(importance)
                 print     'error: % .8f' % e
         return totalError, ponderation
+    

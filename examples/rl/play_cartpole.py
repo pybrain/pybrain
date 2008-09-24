@@ -8,7 +8,7 @@
 ###########################################################################
 __author__ = 'Thomas Rueckstiess, ruecksti@in.tum.de'
 
-from pybrain import buildNetwork
+from pybrain.tools.shortcuts import buildNetwork
 from pybrain.rl.environments.cartpole import CartPoleEnvironment, CartPoleRenderer, BalanceTask
 from pybrain.rl.agents.learning import LearningAgent
 from pybrain.rl.experiments import EpisodicExperiment

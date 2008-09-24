@@ -8,7 +8,7 @@ __author__ = 'Tom Schaul, tom@idsia.ch'
 
 """ A script that attempts to illustrate a large variety of use-cases for Learners """
 
-from pybrain import buildNetwork
+from pybrain.tools.shortcuts import buildNetwork
 from pybrain.utilities import storeCallResults
 from pybrain.structure import FullConnection
 from pybrain.structure.parametercontainer import ParameterContainer

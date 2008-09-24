@@ -10,7 +10,7 @@
 # change the 'plotting' flag to False
 #########################################################################
 
-from pybrain import buildNetwork
+from pybrain.tools.shortcuts import buildNetwork
 from pybrain.rl.environments.simple import SimpleEnvironment, MinimizeTask
 from pybrain.rl.agents import PolicyGradientAgent
 from pybrain.rl.learners import ENAC

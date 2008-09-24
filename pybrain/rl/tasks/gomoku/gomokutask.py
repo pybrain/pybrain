@@ -10,7 +10,7 @@ from pybrain.structure.modules.module import Module
 
 
 class GomokuTask(EpisodicTask, Named):
-    """  """
+    """ The task of winning the maximal number of Gomoku games against a fixed opponent. """
     
     # first game, opponent is black
     opponentStart = True

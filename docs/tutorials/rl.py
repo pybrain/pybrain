@@ -14,7 +14,7 @@ But first of all, we need to import the RL components from pybrain:
 """ 
 from pybrain.rl import PolicyGradientAgent, ENAC
 from pybrain.rl.environments.cartpole import BalanceTask, CartPoleEnvironment
-from pybrain import buildNetwork
+from pybrain.tools.shortcuts import buildNetwork
 
 """
 The Environment is the world, in which the agent acts. It receives input

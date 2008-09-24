@@ -19,7 +19,8 @@ res = storeCallResults(task)
 
 if simplenet:
     # simple network
-    from pybrain import buildNetwork, SigmoidLayer
+    from pybrain.tools.shortcuts import buildNetwork
+    from pybrain import SigmoidLayer
     net = buildNetwork(task.outdim, task.indim, outclass = SigmoidLayer)
 else:
     # specialized mdrnn variation

@@ -1,5 +1,6 @@
-__author__ = 'Tom Schaul, tom@idsia.ch'
+""" The functions implemented here are standard benchmarks from literature. """
 
+__author__ = 'Tom Schaul, tom@idsia.ch'
 
 from scipy import ones
 
@@ -42,6 +43,7 @@ class ElliFunction(FunctionEnvironment):
         
                 
 class DiffPowFunction(FunctionEnvironment):
+    """ DIfference of powers."""
     def f(self, x):
         s = 0
         for i in range(len(x)):
@@ -50,7 +52,7 @@ class DiffPowFunction(FunctionEnvironment):
     
     
 class RosenbrockFunction(FunctionEnvironment):
-    
+    """ Banana-shaped function with a tricky optimum in the valley at 1,1. """
     def __init__(self, xdim = 2, xopt = None):
         assert xdim >= self.xdimMin and not (self.xdimMax != None and xdim > self.xdimMax)
         self.xdim = xdim

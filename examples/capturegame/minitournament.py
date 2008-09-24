@@ -10,7 +10,8 @@ from pybrain.rl.environments.twoplayergames import CaptureGame
 from pybrain.rl.agents.capturegameplayers import RandomCapturePlayer, KillingPlayer, ModuleDecidingPlayer
 from pybrain.rl.agents.capturegameplayers.clientwrapper import ClientCapturePlayer
 from pybrain.rl.experiments import Tournament
-from pybrain import buildNetwork, SigmoidLayer
+from pybrain.tools.shortcuts import buildNetwork
+from pybrain import SigmoidLayer
 
 game = CaptureGame(5)
 randAgent = RandomCapturePlayer(game, name = 'rand')

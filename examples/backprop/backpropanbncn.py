@@ -6,7 +6,10 @@ from pybrain.structure import FullConnection, RecurrentNetwork, TanhLayer, Linea
 
 
 def testTraining():
+    # the AnBnCn dataset (sequential)
     d = AnBnCnDataSet()
+    
+    # build a recurrent network to be trained
     hsize = 2
     n = RecurrentNetwork()
     n.addModule(TanhLayer(hsize, name = 'h'))
@@ -16,11 +19,12 @@ def testTraining():
     n.addConnection(FullConnection(n['h'], n['out']))
     n.addRecurrentConnection(FullConnection(n['h'], n['h']))
     n.sortModules()
-    assert n.indim == 0
-    assert n.outdim == 1
-    assert n.paramdim == hsize*(hsize+2)
+
+    # initialize the backprop trainer and train
     t = BackpropTrainer(n, learningrate = 0.1, momentum = 0.0, verbose = True)
     t.trainOnDataset(d, 200)
+    
+    # the resulting weights are in the network:
     print 'Final weights:', n.params
 
 if __name__ == '__main__':

@@ -1,3 +1,5 @@
+""" The functions implemented here are standard benchmarks from literature. """
+
 __author__ = 'Tom Schaul, tom@idsia.ch'
 
 from scipy import power, exp, cos, sqrt, rand, sin, floor
@@ -7,12 +9,12 @@ from function import FunctionEnvironment
 
 
 class MultiModalFunction(FunctionEnvironment):
-    
+    """ A function with more than one local optima. """
     xdimMin = 2
       
 
 class RastriginFunction(MultiModalFunction):        
-    
+    """ A classical multimodal benchmark with plenty of local minima, globally arranged on a bowl. """
     def __init__(self, xdim = 1, a = 1, xopt = None):
         # additional parameter
         self.a = a

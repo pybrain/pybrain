@@ -15,11 +15,14 @@ def plotFitnessProgession(fitdict, batchsize = 1, show = True, semilog = True,
                           onlysuccessful = True,
                           title = None, verbose = True,
                           varyplotsymbols = False):
-    """ @param fitdict: a dictionnary mapping a name to a list of fitness-arrays 
+    """ Plot multiple fitness curves on a single figure, with the following customizations:
+    
+        @param fitdict: a dictionnary mapping a name to a list of fitness-arrays 
         @param batchsize: the number of evaluations between two points in fitness-arrays 
         @param targetcutoff: this gives the cutoff point at the best fitness
         @param onlysuccessful: ignore the runs that did not hit the target
-        ...
+        @param title: specify a title.
+        @param varyplotsymbols: used different line types for each curve.
         """
         
     def isSuccessful(l):

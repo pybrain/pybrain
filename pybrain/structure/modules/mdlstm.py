@@ -12,6 +12,9 @@ from pybrain.structure.moduleslice import ModuleSlice
 class MDLSTMLayer(NeuronLayer, ParameterContainer):
     """Multi-dimensional long short-term memory cell layer.
     
+    The cell-states are explicitly passed on through a part of 
+    the input/output buffers (which should be connected correctly with IdentityConnections).
+    
     The input consists of 4 parts, in the following order:
     - input gate
     - forget gates (1 per dim)
@@ -26,7 +29,8 @@ class MDLSTMLayer(NeuronLayer, ParameterContainer):
     
     Attention: this module has to be used with care: it's last <size> input and
     outputs are reserved for transmitting internal states on flattened recursive
-    multi-dim networks, and so int's connections have always to be sliced!""" 
+    multi-dim networks, and so its connections have always to be sliced!
+    """ 
     
     peepholes = False
     dimensions = 1   
