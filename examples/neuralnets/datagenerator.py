@@ -28,6 +28,23 @@ def generateGridData(min, max, step):
     return (ds, X, Y)
     
 
+def generateNoisySines( npoints, nseq, noise=0.3 ):
+    """ construct a 2-class dataset out of noisy sines """
+    x = arange(npoints)/float(npoints) * 20.
+    y1 = sin(x+rand(1)*3.)
+    y2 = sin(x/2.+rand(1)*3.)
+    DS = SequenceClassificationDataSet(1,1, nb_classes=2)
+    for _ in xrange(nseq):
+        DS.newSequence()
+        buf = rand(npoints)*noise + y1 + (rand(1)-0.5)*noise
+        for i in xrange(npoints):
+            DS.addSample([buf[i]],[0])
+        DS.newSequence()
+        buf = rand(npoints)*noise + y2 + (rand(1)-0.5)*noise
+        for i in xrange(npoints):
+            DS.addSample([buf[i]],[1])
+    return DS
+
 def plotData(ds):
     hold(True)
     for c in range(3):

@@ -1,17 +1,15 @@
 #!/usr/bin/env python
 # Example script for feed-forward network usage in PyBrain.
+__author__ = "Martin Felder"
+__version__ = '$Id: exampleRNN.py 1503 2008-09-13 15:25:06Z bayerj $' 
 
-# import most frequently used components with shortened namespaces
-import numpy as np #@UnusedImport
-from pylab import figure, ioff, clf, contourf, ion, draw, show #@UnresolvedImport
-
-# load the necessary components
+from pylab import figure, ioff, clf, contourf, ion, draw, show 
 from pybrain.utilities           import percentError
 from pybrain.tools.shortcuts     import buildNetwork
 from pybrain.supervised.trainers import BackpropTrainer
 from pybrain.structure.modules   import SoftmaxLayer
 
-from datagenerator import generateGridData, generateClassificationData, plotData
+from datasets import generateGridData, generateClassificationData, plotData
 
 # load the training data set 
 trndata = generateClassificationData(250)
@@ -27,8 +25,6 @@ tstdata._convertToOneOfMany( bounds=[0,1] )
 # build a feed-forward network with 20 hidden units, plus 
 # a corresponding trainer
 fnn = buildNetwork( trndata.indim, 5, trndata.outdim, outclass=SoftmaxLayer )
-
-#trainer = RPropMinusTrainer( fnn, dataset=trndata, verbose=True, weightdecay=0.0)
 trainer = BackpropTrainer( fnn, dataset=trndata, momentum=0.1, verbose=True, weightdecay=0.01)
 
 # generate a grid of data points for visualization
@@ -60,7 +56,9 @@ for i in range(20):
     figure(1)
     ioff()  # interactive graphics off
     clf()
+    # plot the datapoints
     plotData(tstdata)
+    # overlay a contour plot of the functional margin
     if out.max()!=out.min():
         CS = contourf(X, Y, out)
     ion()   # interactive graphics on
