@@ -10,8 +10,21 @@ from pybrain.datasets import SupervisedDataSet
 from pylab import figure, clf, hold, plot, fill, title, show, norm, gcf #@UnresolvedImport
 
 class GaussianProcess:
+    """ This class represents a basic n-dimensional Gaussian Process. The implementation
+        follows the book 'Gaussian Processes for Machine Learning' by Carl E. Rasmussen
+        (an online version is available at: http://www.gaussianprocess.org/gpml/chapters/).
+        The hyper parameters of the GP can be adjusted by setting the self.hyper varible,
+        which must be a tuple of size 3.
+    """
 
     def __init__(self, indim, start=0, stop=1, step=0.1):
+        """ initializes the gaussian process object.
+            @param indim: input dimension
+            @param start: start of interval for sampling the GP. 
+            @param stop: stop of interval for sampling the GP.
+            @param step: stepsize for sampling interval.
+            @note: start, stop, step can either be scalars or tuples of size 'indim'.
+        """
         self.mean = 0
         self.start = start
         self.stop = stop

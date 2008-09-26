@@ -8,10 +8,8 @@ class GradientDescent(object):
         
     def __init__(self):
         """ initialise algorithms with standard parameters (typical values given in parentheses)"""
-        #-------<common parameters>--------
-        #-------</common parameters>-------
         
-        #-------<BackProp>-----------------
+        # --- BackProp parameters ---
         # learning rate (0.1-0.001, down to 1e-7 for RNNs)
         self.alpha = 0.1
         
@@ -21,9 +19,9 @@ class GradientDescent(object):
         # momentum parameters (0.1 or 0.9)
         self.momentum = 0.0
         self.momentumvector = None
-        #-------</BackProp>----------------
+ 
 
-        #-------<RProp>--------------------
+        # --- RProp parameters ---
         self.rprop = False
         # maximum step width (1 - 20)
         self.deltamax = 5.0
@@ -34,7 +32,6 @@ class GradientDescent(object):
         self.etaplus = 1.2
         self.etaminus = 0.5
         self.lastgradient = None
-        #-------</RProp>-------------------
         
     
         
