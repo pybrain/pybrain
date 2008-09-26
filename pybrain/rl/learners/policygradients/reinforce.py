@@ -5,6 +5,12 @@ from scipy import mean
 
 
 class Reinforce(PolicyGradientLearner):
+    """ Reinforce is a gradient estimator technique by Williams (see
+        "Simple Statistical Gradient-Following Algorithms for
+        Connectionist Reinforcement Learning"). It uses optimal
+        baselines and calculates the gradient with the log likelihoods
+        of the taken actions. """ 
+         
     def __init__(self):
         PolicyGradientLearner.__init__(self)
 

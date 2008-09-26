@@ -7,7 +7,9 @@ from scipy.linalg import pinv
 
 
 class ENAC(PolicyGradientLearner):
-    """ Episodic Natural Actor-Critic"""
+    """ Episodic Natural Actor-Critic. See J. Peters "Natural Actor-Critic", 2005.
+        Estimates natural gradient with regression of log likelihoods to rewards.
+    """
     
     def __init__(self):
         PolicyGradientLearner.__init__(self)

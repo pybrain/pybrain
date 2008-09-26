@@ -9,7 +9,10 @@ from pybrain.tools.shortcuts import buildNetwork
 
 class StateDependentAgent(PolicyGradientAgent):
     """ StateDependentAgent is a learning agent, that adds a GaussianLayer to its module and stores its
-        deterministic inputs (mu) in the dataset.
+        deterministic inputs (mu) in the dataset. It keeps the weights of the exploration network
+        constant for a whole episode which creates smooth trajectories rather than independent random 
+        perturbations at each timestep. See "State-Dependent Exploration for Policy Gradient Methods",
+        ECML PKDD 2008.
     """
     
     def __init__(self, module, learner = None):

@@ -9,7 +9,8 @@ from pybrain.structure import GaussianLayer, IdentityConnection, FeedForwardNetw
 
 class PolicyGradientAgent(LearningAgent):
     """ PolicyGradientAgent is a learning agent, that adds a GaussianLayer to
-        its module and stores the log likelihoods (loglh) in the dataset.
+        its module and stores the log likelihoods (loglh) in the dataset. It is used
+        for rllearners like enac, reinforce, gpomdp, ...
     """
     
     def __init__(self, module, learner = None):
@@ -37,22 +38,27 @@ class PolicyGradientAgent(LearningAgent):
         self.loglh = None
     
     def enableLearning(self):
+        """ activate learning """
         LearningAgent.enableLearning(self)
         self.explorationlayer.enabled = True
     
     def disableLearning(self):
+        """ deactivate learning """
         LearningAgent.disableLearning(self)
         self.explorationlayer.enabled = False
         
     def setSigma(self, sigma):
+        """ sets variance in the exploration layer """
         assert len(sigma) == self.explorationlayer.paramdim
         # change the parameters of the exploration layer (owner is self.module)
         self.explorationlayer._setParameters(sigma, self.module)
     
     def getSigma(self):
+        """ returns the variance from the exploration layer """
         return self.explorationlayer.params
                
     def setParameters(self, params):
+        """ sets the parameters of the module """
         self.module._setParameters(params)
         # update parameters for learner
         self.learner.setModule(self.module)
