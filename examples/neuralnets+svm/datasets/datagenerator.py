@@ -1,38 +1,54 @@
-import numpy as np
-from pybrain.datasets import ClassificationDataSet
-from numpy.random import multivariate_normal
-from scipy import diag
-from pylab import show, hold, plot #@UnresolvedImport
+# generates some simple example data sets
+__author__ = "Martin Felder"
+__version__ = '$Id$' 
 
-def generateClassificationData(size):
-    """ generate a set of points in 2D belonging to three different classes """
-    means = [(-1,0),(2,4),(3,1)]
+import numpy as np
+from numpy.random import multivariate_normal, rand
+from scipy import diag
+from pylab import show, hold, plot 
+
+from pybrain.datasets import ClassificationDataSet
+
+def generateClassificationData(size, nClasses=3):
+    """ generate a set of points in 2D belonging to two or three different classes """
+    if nClasses==3:
+        means = [(-1,0),(2,4),(3,1)]
+    else:
+        means = [(-2,0),(2,1),(6,0)]
+
     cov = [diag([1,1]), diag([0.5,1.2]), diag([1.5,0.7])]
-    dataset = ClassificationDataSet(2, 1, nb_classes=3)
+    dataset = ClassificationDataSet(2, 1, nb_classes=nClasses)
     for _ in xrange(size):
         for c in range(3):
             input = multivariate_normal(means[c],cov[c])
-            dataset.addSample(input, [c])
+            dataset.addSample(input, [c%nClasses])
+    dataset.assignClasses()
     return dataset
 
-def generateGridData(min, max, step):
-    """ generates a dataset containing a regular square grid of points """
-    x = np.arange(min, max, step)
-    y = np.arange(min, max, step)
+
+def generateGridData(x,y, return_ticks=False):
+    """ Generates a dataset containing a regular grid of points. The x and y arguments
+    contain start, end, and step each. Returns the dataset and the x and y mesh or ticks."""
+    x = np.arange(x[0], x[1], x[2])
+    y = np.arange(y[0], y[1], y[2])
     X, Y = np.meshgrid(x, y)
+    shape = X.shape
     # need column vectors in dataset, not arrays
     ds = ClassificationDataSet(2,1)
     ds.setField('input',  np.concatenate((X.reshape(X.size, 1),Y.reshape(X.size, 1)), 1))
     ds.setField('target', np.zeros([X.size,1]))
     ds._convertToOneOfMany()
-    return (ds, X, Y)
-    
+    if return_ticks:        
+        return (ds, x, y)
+    else:
+        return (ds, X, Y)
+        
 
 def generateNoisySines( npoints, nseq, noise=0.3 ):
     """ construct a 2-class dataset out of noisy sines """
-    x = arange(npoints)/float(npoints) * 20.
-    y1 = sin(x+rand(1)*3.)
-    y2 = sin(x/2.+rand(1)*3.)
+    x = np.arange(npoints)/float(npoints) * 20.
+    y1 = np.sin(x+rand(1)*3.)
+    y2 = np.sin(x/2.+rand(1)*3.)
     DS = SequenceClassificationDataSet(1,1, nb_classes=2)
     for _ in xrange(nseq):
         DS.newSequence()
@@ -47,10 +63,11 @@ def generateNoisySines( npoints, nseq, noise=0.3 ):
 
 def plotData(ds):
     hold(True)
-    for c in range(3):
+    for c in range(ds.nClasses):
         here, _ = np.where(ds['class']==c)
         plot(ds['input'][here,0],ds['input'][here,1],'o')
-    
+
+
 if __name__ == '__main__':    
     plotData(generateClassificationData(150))
     show()

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # Example script for feed-forward network usage in PyBrain.
 __author__ = "Martin Felder"
-__version__ = '$Id: exampleRNN.py 1503 2008-09-13 15:25:06Z bayerj $' 
+__version__ = '$Id$' 
 
 from pylab import figure, ioff, clf, contourf, ion, draw, show 
 from pybrain.utilities           import percentError
@@ -28,7 +28,7 @@ fnn = buildNetwork( trndata.indim, 5, trndata.outdim, outclass=SoftmaxLayer )
 trainer = BackpropTrainer( fnn, dataset=trndata, momentum=0.1, verbose=True, weightdecay=0.01)
 
 # generate a grid of data points for visualization
-griddata, X, Y = generateGridData(-3.,6.,0.2)
+griddata, X, Y = generateGridData([-3.,6.,0.2],[-3.,6.,0.2])
 
 # repeat 20 times
 for i in range(20):
