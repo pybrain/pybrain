@@ -1,4 +1,5 @@
 __author__ = 'Tom Schaul, tom@idsia.ch'
+__version__ = '$Id$' 
 
 from pybrain.utilities import Named, abstractMethod
 
