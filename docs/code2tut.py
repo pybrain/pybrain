@@ -13,6 +13,9 @@ Conventions:
    the following lines starting with # are ignored.
 3. Lines following paragraph-level markup (e.g. .. seealso::) must be indented. 
    Paragraph ends with a blank line.
+4. If the code after a comment starts with a higher indentation level, you have
+   to manually edit the resulting file, e.g. by inserting "   ..." at the 
+   beginning of these sections.
    
 See tutorials/fnn.py for example.
 """
@@ -38,11 +41,11 @@ f_out.write("="*len(line)+'\n\n')
 linecomment = False
 comment = 0
 begin = True
+inblock = False
 
 # the following is an ugly hack - don't look at it!
 for line in f_in:
     linecomment = False
-    inblock = False
     # crop #-comments at start of file
     if line.startswith('#'):
         if begin:
@@ -69,12 +72,14 @@ for line in f_in:
         inblock = True
     elif line=="\n":
         inblock = False
-        
+
     if (comment or linecomment) and not inblock:
         line = line.strip()+"\n"
     
-    if line.strip().endswith("::"):
+    if line.endswith("::"):
         line +='\n\n'
+    elif line.endswith("::\n"):
+        line +='\n'
         
     f_out.write(line)
     

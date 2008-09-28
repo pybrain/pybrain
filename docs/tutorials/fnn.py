@@ -17,11 +17,9 @@ from pybrain.supervised.trainers import BackpropTrainer
 from pybrain.structure.modules   import SoftmaxLayer
 
 """ Furthermore, pylab is needed for the graphical output. """
-from pylab import ion, ioff, figure, draw, contourf, clf, show #@UnresolvedImport
-from scipy import diag
+from pylab import ion, ioff, figure, draw, contourf, clf, show, hold, plot
+from scipy import diag, arange, meshgrid, where
 from numpy.random import multivariate_normal
-
-from examples.neuralnets.datagenerator import generateGridData, plotData
 
 """ To have a nice dataset for visualization, we produce a set of 
 points in 2D belonging to three different classes. You could also
@@ -66,23 +64,33 @@ function to linear instead of (the default) sigmoid.
 """
 fnn = buildNetwork( trndata.indim, 5, trndata.outdim, outclass=SoftmaxLayer )
 
-""" 
-.. note:: TODO: improve following text
-
-a corresponding trainer """
-#trainer = RPropMinusTrainer( fnn, dataset=trndata, verbose=True, weightdecay=0.0)
+""" Set up a trainer that basically takes the network and training dataset as input. 
+Currently the backpropagation and RPROP learning algorithms are implemented. See their
+description for possible parameters. If you don't want to deal with this, just use RPROP 
+with default parameters. """
 trainer = BackpropTrainer( fnn, dataset=trndata, momentum=0.1, verbose=True, weightdecay=0.01)
+#trainer = RPropMinusTrainer( fnn, dataset=trndata, verbose=True)
 
-""" generate a grid of data points for visualization """
-griddata, X, Y = generateGridData(-3.,6.,0.2)
+""" Now generate a square grid of data points and put it into a dataset, 
+which we can then classifiy to obtain a nice contour field for visualization.
+Therefore the target values for this data set can be ignored."""
+ticks = arange(-3.,6.,0.2)
+X, Y = meshgrid(ticks, ticks)
+# need column vectors in dataset, not arrays
+griddata = ClassificationDataSet(2,1, nb_classes=3)
+for i in xrange(X.size):
+    griddata.addSample([X.ravel()[i],Y.ravel()[i]], [0])
+griddata._convertToOneOfMany()  # this is still needed to make the fnn feel comfy
 
-""" repeat 20 times """
+""" Start the training iterations. """
 for i in range(20):
 
-    """ train the network for 1 epoch """
+    """ Train the network for some epochs. Usually you would set something like 5 here,
+    but for visualization purposes we do this one epoch at a time."""
     trainer.trainEpochs( 1 )
     
-    """ evaluate the result on the training and test data """
+    """ Evaluate the network on the training and test data. There are several ways to do this - check
+    out the :mod:`pybrain.tools.validation` module, for instance. Here we let the trainer do the test. """
     trnresult = percentError( trainer.testOnClassData(), 
                               trndata['class'] )
     tstresult = percentError( trainer.testOnClassData( 
@@ -92,22 +100,25 @@ for i in range(20):
           "  train error: %5.2f%%" % trnresult, \
           "  test error: %5.2f%%" % tstresult
 
-    """ run our grid data through the FNN, get the most likely class 
-    and shape it into an array """
+    """ Run our grid data through the FNN, get the most likely class 
+    and shape it into a square array again. """
     out = fnn.activateOnDataset(griddata)
-    out = out.argmax(axis=1)
-    out = out.reshape(X.shape)
+    out = out.argmax(axis=1)  # the highest output activation gives the class
+    out = out.reshape(X.shape) 
     
-    """ plot the test data and the underlying grid as a filled contour """
+    """ Now plot the test data and the underlying grid as a filled contour. """
     figure(1)
     ioff()  # interactive graphics off
-    clf()
-    plotData(tstdata)
-    if out.max()!=out.min():
-        CS = contourf(X, Y, out)
+    clf()   # clear the plot
+    hold(True) # overplot on
+    for c in [0,1,2]:
+        here, _ = where(tstdata['class']==c)
+        plot(tstdata['input'][here,0],tstdata['input'][here,1],'o')
+    if out.max()!=out.min():  # safety check against flat field
+        contourf(X, Y, out)   # plot the contour
     ion()   # interactive graphics on
     draw()  # update the plot
     
-""" show the plot until user kills it """
+""" Finally, keep showing the plot until user kills it. """
 ioff()
 show()  
