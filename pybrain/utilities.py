@@ -288,6 +288,7 @@ def garbagecollect(func):
         result = func(*args, **kwargs)
         gc.collect()
         return result
+    return inner
     
     
 def memoize(func):
