@@ -53,12 +53,7 @@ class Module(Named):
     def _resetBuffers(self, length=1):
         """Reset buffers to a length (in time dimension) of 1."""
         for buffername, dim in self.bufferlist:
-            buf = getattr(self, buffername, None)
-            empty_buf = zeros((length, dim))
-            if buf is None:
-                setattr(self, buffername, empty_buf)
-            else:
-                buf[:] = empty_buf
+            setattr(self, buffername, zeros((length, dim)))
         
     def _growBuffers(self):
         """Double the size of the modules buffers in its first dimension and 
