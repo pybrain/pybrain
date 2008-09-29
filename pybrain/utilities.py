@@ -2,6 +2,7 @@ from __future__ import with_statement
 
 __author__ = 'Tom Schaul, tom@idsia.ch; Justin Bayer, bayerj@in.tum.de'
 
+import gc
 import pickle
 import logging
 import threading
@@ -278,6 +279,15 @@ def threaded(callback=lambda *args, **kwargs: None, daemonic=False):
             t.start()
         return inner
     return innerDecorator
+    
+    
+def garbagecollect(func):
+    """Decorate a function to invoke the garbage collecter after each execution.
+    """
+    def inner(*args, **kwargs):
+        result = func(*args, **kwargs)
+        gc.collect()
+        return result
     
     
 def memoize(func):
