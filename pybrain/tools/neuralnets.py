@@ -4,7 +4,7 @@
 __author__ = "Martin Felder"
 __version__ = "$Id$"
 
-from pylab import ion, figure, draw #@UnresolvedImport
+from pylab import ion, figure, draw 
 import csv
 from numpy import Infinity
 import logging
@@ -23,21 +23,26 @@ class NNtools(object):
     """ Abstract class providing basic functionality to make neural network training more comfortable """
 
     def __init__(self, DS, **kwargs):
-        """ Initialize common member variables, and the training data set. """
+        """ Initialize with the training data set DS. All keywords given are set as member variables. 
+        The following are particularly important:
+        @param hidden: number of hidden units
+        @param TDS: test data set for checking convergence
+        @param VDS: validation data set for final performance evaluation
+        @param epoinc: number of epochs to train for, before checking convergence (default: 5)
+        """
         self.DS = DS
-        self.momentum=None
         self.hidden=10 
         self.maxepochs=1000
         self.Graph=None
         self.TDS=None
         self.VDS=None
-        self.epoinc = 5  # number of epochs to train for, before calculating statistics
+        self.epoinc = 5  
         setAllArgs( self, kwargs)
         self.trainCurve = None
         
         
     def initGraphics(self, ymax=10, xmax=-1):
-        """ initialize the graphics output window, and return a handle to the plot """
+        """ initialize the interactive graphics output window, and return a handle to the plot """
         if xmax<0:
             xmax = self.maxepochs
         figure(figsize=[12,8])
@@ -158,7 +163,7 @@ class NNclassifier(NNtools):
     """ Learns to classify a set of data, with optional online progress plots. """
 
     def __init__(self, DS, **kwargs):
-        """ Initialize the classifier: the least we need is the dataset to be classified """
+        """ Initialize the classifier: the least we need is the dataset to be classified. All keywords given are set as member variables. """
         if not isinstance(DS, ClassificationDataSet):
             raise TypeError, 'Need a ClassificationDataSet to do classification!'
         NNtools.__init__(self, DS, **kwargs)
@@ -197,7 +202,7 @@ class NNclassifier(NNtools):
         
             
     def setupRNN(self, trainer=BackpropTrainer, hidden=None, **trnargs):
-        """ perform  using an LSTM RNN """
+        """ Setup an LSTM RNN and trainer for sequence classification. """
         if hidden is not None:
             self.hidden = hidden
         self._convertAllDataToOneOfMany()

@@ -270,7 +270,7 @@ class GridSearch(svm_model):
         
 
 class GridSearchDOE(GridSearch):
-    """ Implements a design of experiments based grid search for the SVM model parameters, as
+    """ Same as GridSearch, but implements a design-of-experiments based search pattern, as
     described by C. Staelin, http://www.hpl.hp.com/techreports/2002/HPL-2002-354R1.pdf """
 
     # DOE pattern; the last 5 points do not need to be calculated when refining the grid 
