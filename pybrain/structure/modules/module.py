@@ -37,12 +37,13 @@ class Module(Named):
         
         # Make sure that it does not matter wether Module.__init__ is called
         # before or after adding elements to bufferlist in subclasses.
+        # TODO: it should be possible to use less than these buffers. For some
+        # methods, an error is not completely necessary. (e.g. evolution)
         self.bufferlist = [] if not self.bufferlist else self.bufferlist
         self.bufferlist += [('inputbuffer', indim), 
                             ('inputerror', indim), 
                             ('outputbuffer', outdim), 
-                            ('outputerror', outdim), 
-                ]
+                            ('outputerror', outdim),]
                 
         self.indim = indim
         self.outdim = outdim
@@ -52,7 +53,12 @@ class Module(Named):
     def _resetBuffers(self, length=1):
         """Reset buffers to a length (in time dimension) of 1."""
         for buffername, dim in self.bufferlist:
-            setattr(self, buffername, zeros((length, dim)))
+            buf = getattr(self, buffername, None)
+            empty_buf = zeros((length, dim))
+            if buf is None:
+                setattr(self, buffername, empty_buf)
+            else:
+                buf[:] = empty_buf
         
     def _growBuffers(self):
         """Double the size of the modules buffers in its first dimension and 
