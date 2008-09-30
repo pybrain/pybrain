@@ -43,8 +43,8 @@ and therefore dividing the provided output by 2. Also clearing the old state.
     True
     
 List all the states again, explicitly (buffer size is 8 by now).
-    >>> fListToString(N['lstm'].state, 3)
-    '[  0.200  0.200  0.545  0.272 -0.068 -0.068  0.000  0.000]'
+    >>> fListToString(N['lstm'].state, 4)
+    '[  0.2000  0.2000  0.5450  0.2725 -0.0675 -0.0675  0.0000  0.0000]'
 
 
 """
