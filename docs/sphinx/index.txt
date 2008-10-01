@@ -42,16 +42,20 @@ Tutorial
    :maxdepth: 2
    
    tutorial/intro
-   netmodcon
-   fnn
-   reinforcement-learning
-   superviseddataset
-   sequentialdataset
-   classificationdataset
-   network
-   trainers
-   svm
-   tools
+   tutorial/netmodcon
+   tutorial/fnn
+   tutorial/reinforcement-learning
+   
+   
+API
+---
+   api/superviseddataset
+   api/sequentialdataset
+   api/classificationdataset
+   api/network
+   api/trainers
+   api/svm
+   api/tools
 
 
 Indices and tables
