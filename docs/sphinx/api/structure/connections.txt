@@ -1,0 +1,19 @@
+.. _connections:
+
+:mod:`pybrain.structure.connections` -- Structural Components: Connections
+===================================================================================
+
+.. autoclass:: pybrain.structure.connections.full.FullConnection
+   :members: __init__, whichBuffers
+
+.. autoclass:: pybrain.structure.connections.identity.IdentityConnection
+   :members: __init__
+
+.. autoclass:: pybrain.structure.connections.shared.SharedConnection
+   :members: __init__
+   
+.. autoclass:: pybrain.structure.connections.shared.SharedFullConnection
+   :members: __init__
+
+.. autoclass:: pybrain.structure.connections.shared.MotherConnection
+   :members: __init__
