@@ -1,8 +1,7 @@
-"""
-Contains several utilities for testing.
-"""
+"""Module that contains several utilities for testing."""
 
 __author__ = 'Justin Bayer, bayer.justin@googlemail.com'
+__version__ = '$Id$'
 
 
 from doctest import DocTestSuite, ELLIPSIS, REPORT_ONLY_FIRST_FAILURE, \

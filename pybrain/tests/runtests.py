@@ -1,7 +1,11 @@
 #! /usr/bin/env python2.5
 # -*- coding: utf-8 -*- 
+
+"""Script to run the pybrain testsuite."""
+
 __author__ = 'Justin Bayer, bayerj@in.tum.de'
 __version__ = '$Id$'
+
 
 import doctest
 import logging

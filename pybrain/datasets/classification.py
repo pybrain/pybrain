@@ -10,6 +10,7 @@ class ClassificationDataSet(SupervisedDataSet):
     
     def __init__(self, inp, target, nb_classes=0, class_labels=None):
         """ Initialize as an empty dataset. 
+        
         @param inp: dimension of input vector
         @param target: dimension of target vector (should be 1!)
         @param nb_classes: Number of classes is normally inferred from the targets. If not all possible classes are present, use this to set classes manually.

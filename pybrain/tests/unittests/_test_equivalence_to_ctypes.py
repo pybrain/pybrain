@@ -18,8 +18,7 @@ Use the network construction scripts in other test files to build a number of ne
 and then test the equivalence of each.
     
 Simple net
-    >>> net = buildNetwork(2,2)
-    >>> testEquivalence(net)
+    >>> testEquivalence(buildNetwork(2,2))
     True
 
 A lot of layers 
@@ -48,6 +47,16 @@ Lstm
     >>> testEquivalence(net)
     True
     
+Swiping networks
+    >>> net = buildSwipingNetwork()
+    >>> testEquivalence(net)
+    True
+    
+Border-swiping networks
+    >>> net = buildSimpleBorderSwipingNet()
+    >>> testEquivalence(net)
+    True
+    
 Mdlstm
     >>> net = buildSimpleMDLSTMNetwork()
     >>> testEquivalence(net)
@@ -68,15 +77,6 @@ Nested networks
     >>> testEquivalence(net)
     True
     
-Swiping networks
-    >>> net = buildSwipingNetwork()
-    >>> testEquivalence(net)
-    True
-    
-Border-swiping networks
-    >>> net = buildSimpleBorderSwipingNet()
-    >>> testEquivalence(net)
-    True
     
 TODO: 
 - MDLSTMs 
@@ -99,15 +99,12 @@ try:
 except:
     pass
 
-def convertToCImplemetation(net):
+def convertToCImplementation(net):
     net = net.copy()
-    try:
-        if isinstance(net, FeedForwardNetwork):
-            cnet = _FeedForwardNetwork()
-        elif isinstance(net, RecurrentNetwork):
-            cnet = _RecurrentNetwork()
-    except:
-        return net
+    if isinstance(net, FeedForwardNetwork):
+        cnet = _FeedForwardNetwork()
+    elif isinstance(net, RecurrentNetwork):
+        cnet = _RecurrentNetwork()
         
     for m in net.inmodules:
         cnet.addInputModule(m)
@@ -129,7 +126,7 @@ def convertToCImplemetation(net):
 
 
 def testEquivalence(net):
-    cnet = convertToCImplemetation(net)
+    cnet = convertToCImplementation(net)
     ds = buildAppropriateDataset(net)
     if net.sequential:
         for seq in ds:
@@ -140,7 +137,7 @@ def testEquivalence(net):
         for input, _ in ds:
             res = net.activate(input)
             cres = cnet.activate(input)
-    return epsilonCheck(sum(res-cres))
+    return epsilonCheck(sum(res-cres), 0.001) or (res, cres)
     
         
 if __name__ == "__main__":

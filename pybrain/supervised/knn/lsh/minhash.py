@@ -1,8 +1,15 @@
-from __future__ import division
-
 #! /usr/bin/env python 2.5
 # -*- coding: utf-8 -*-
+from __future__ import division
+
+
+"""Module that provides functionality for locality sensitive hashing in hamming
+spaces."""
+
+
 __author__ = 'Justin Bayer, bayer.justin@googlemail.com'
+__version__ = '$Id$'
+
 
 from collections import defaultdict
 from scipy import array

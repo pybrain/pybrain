@@ -10,7 +10,7 @@ make_tanh_layer(Layer* layer_p, int dim)
 }
 
 
-Layer* 
+Layer*
 make_tanh_layer(int dim)
 {
     Layer* layer_p = make_layer(dim, dim);
@@ -29,5 +29,3 @@ void layer_backward(Layer* layer_p, TanhLayer* tl_p)
 {
     layer_map_backward(layer_p, tanh_prime);
 }
-
-

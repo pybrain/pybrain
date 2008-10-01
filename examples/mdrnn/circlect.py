@@ -95,8 +95,8 @@ class CirclectDataSet(SupervisedDataSet):
             self.addSample(item.flatten(), [0.2, 0.8])
             item = rect.makeArray((self.width, self.height))
             self.addSample(item.flatten(), [0.8, 0.2])   
-            
-            
+
+
 class MdrnnCirclet(FunctionEnvironment):
     
     def __init__(self, width, height, dataset):
@@ -160,8 +160,9 @@ if __name__ == '__main__':
     ds = CirclectDataSet(width, height, 100)
     mdrnn_env = MdrnnCirclet(width, height, ds)
     print scipy.size(mdrnn_env.net['mdrnn'].params)
-    optimizer = FEM(mdrnn_env, mdrnn_env.net['mdrnn'].params)
+    optimizer = CMAES(mdrnn_env, mdrnn_env.net['mdrnn'].params)
     optimizer.minimize = True
     optimizer.verbose = True
-    optimizer.elitis = True
+    # optimizer.elitist = True
+    # optimizer.forgetFactor = 0.7
     optimizer.learn()

@@ -85,8 +85,11 @@ class SwipingNetwork(FeedForwardNetwork):
                 self.addConnection(SharedFullConnection(self.predefined['inconn'], inmesh[unit], hiddenmesh[hunit]))
                 self.addConnection(SharedFullConnection(self.predefined['outconn'], hiddenmesh[hunit], outmesh[unit]))
                 for dim, maxval in enumerate(self.dims):
-                    # one swiping connection along every dimension
-                    hconn = self.predefined['hconns'][dim]
+                    if (swipe/2**dim) % 2 == 0:
+                        hconn = self.predefined['hconns'][(dim, '-')]
+                    else:
+                        hconn = self.predefined['hconns'][(dim, '+')]
+
                     # determine where the swipe is coming from in this direction:
                     # swipe directions are towards higher coordinates on dim D if the swipe%(2**D) = 0
                     # and towards lower coordinates otherwise.

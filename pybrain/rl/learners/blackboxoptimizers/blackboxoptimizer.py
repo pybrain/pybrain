@@ -31,7 +31,6 @@ class BlackBoxOptimizer(Learner):
     # if None, the provided weights are kept. This is a list of tuples.
     initialSearchRange = None 
     
-    
     online = True
     
     def __init__(self, evaluator, evaluable, **args):

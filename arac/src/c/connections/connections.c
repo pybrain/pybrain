@@ -10,9 +10,12 @@
 void forward(Connection* con_p)
 {
     assert(con_p->inlayerstart < con_p->inlayer_p->outputs.size);
-    assert(con_p->inlayerstop <= con_p->inlayer_p->outputs.size);
     assert(con_p->outlayerstart < con_p->outlayer_p->inputs.size);
-    assert(con_p->outlayerstop <= con_p->outlayer_p->inputs.size);
+
+    // Since the slices are [start, stop), we need to allow endings that are
+    // one bigger than the length.
+    assert(con_p->inlayerstop <= con_p->inlayer_p->outputs.size + 1);
+    assert(con_p->outlayerstop <= con_p->outlayer_p->inputs.size + 1);
     
     assert(con_p->inlayerstart < con_p->inlayerstop);
     assert(con_p->outlayerstart < con_p->outlayerstop);

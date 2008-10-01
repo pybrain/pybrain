@@ -14,7 +14,6 @@
 #include "layers/layers.h"
 #include "functions.h"
 
-
 extern "C" {
     
 //

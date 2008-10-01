@@ -61,7 +61,7 @@ class CaptureGameNetwork(BorderSwipingNetwork):
         outmod = self.outcomponentclass(self.outputs*self.size*self.size, name = 'output')
         outmesh = ModuleMesh.viewOnFlatLayer(outmod, (self.size, self.size), 'outmesh')
         
-        if self.componentclass == MDLSTMLayer:
+        if self.componentclass is MDLSTMLayer:
             c = lambda: MDLSTMLayer(self.hsize, 2, self.peepholes).meatSlice()
             hiddenmesh = ModuleMesh(c, (self.size, self.size, 4), 'hidden', baserename = True)
         else:

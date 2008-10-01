@@ -1,18 +1,30 @@
 #! /usr/bin/env python2.5
 # -*- coding: utf-8 -*
 
+"""The structs of arac are defined here in order to be used with ctypes.
+
+Some functionality for bridging arac with pybrain is also included here.
+"""
+
 
 __author__ = 'Justin S Bayer, bayer.justin@googlemail.com'
 
 
-from ctypes import Structure, Union, cast, CDLL, pointer
-from ctypes import c_int, c_double, POINTER, CFUNCTYPE
+import collections
+import gc
 
-from pybrain.structure import LinearLayer, BiasUnit, SigmoidLayer, LSTMLayer, \
-    MDLSTMLayer, IdentityConnection, FullConnection, TanhLayer, SoftmaxLayer
-from pybrain.structure.connections.shared import SharedFullConnection
+from ctypes import Structure, Union, cast, CDLL, pointer, addressof
+from ctypes import c_int, c_double, POINTER, CFUNCTYPE
+from itertools import izip
+
+import scipy
 
 from arac.util import is_power_of_two
+from pybrain.structure import LinearLayer, BiasUnit, SigmoidLayer, LSTMLayer, \
+    MDLSTMLayer, IdentityConnection, FullConnection, TanhLayer, SoftmaxLayer, \
+    MdrnnLayer
+from pybrain.structure.connections.shared import SharedFullConnection
+from pybrain.utilities import garbagecollect
 
 libarac = CDLL('libarac.so')     # This is like an import.
 
@@ -30,16 +42,21 @@ class c_parameter_container(Structure):
         ('error_p', c_double_p),
     ]
     
-    def __init__(self, contents, errors):
+    def __init__(self, contents=None, errors=None):
         """Create a ParameterContainer struct from two scipy arrays.
         
         Arrays have to be of the same size. Size for the struct is infered by 
         that size."""
-        if contents.shape[0] != errors.shape[0]:
-            raise ValueError("Buffers have to be of the same size.")
-        self.size = contents.shape[0]
-        self.contents_p = contents.ctypes.data_as(c_double_p)
-        self.error_p = errors.ctypes.data_as(c_double_p)
+        self.size = c_int(0)
+        if contents is not None:
+            if contents.dtype != scipy.float64:
+                raise ValueError("Only float64 arrays allowed.")
+            self.size = c_int(scipy.size(contents))
+            self.contents_p = contents.ctypes.data_as(c_double_p)
+        if errors is not None:
+            if errors.dtype != scipy.float64:
+                raise ValueError("Only float64 arrays allowed.")
+            self.error_p = errors.ctypes.data_as(c_double_p)
 
 
 class c_identity_layer(Structure):
@@ -56,14 +73,14 @@ class c_bias_layer(Structure):
     
 class c_mdlstm_layer(Structure):
     """ctypes representation of the arac MdLstmLayer struct."""
-    
+
     _fields_ = [
         ('timedim', c_int),
 
         ('peephole_input_weights', c_parameter_container),
         ('peephole_forget_weights', c_parameter_container),
         ('peephole_output_weights', c_parameter_container),
-    
+
         ('input_squashed_p', c_double_p),
         ('input_gate_squashed_p', c_double_p),
         ('input_gate_unsquashed_p', c_double_p),
@@ -71,7 +88,7 @@ class c_mdlstm_layer(Structure):
         ('output_gate_unsquashed_p', c_double_p),
         ('forget_gate_unsquashed_p', c_double_p),
         ('forget_gate_squashed_p', c_double_p),
-    
+
         ('gate_squasher', c_mapfunc_p),
         ('gate_squasher_prime', c_mapfunc_p),
         ('cell_squasher', c_mapfunc_p),
@@ -79,7 +96,7 @@ class c_mdlstm_layer(Structure):
         ('output_squasher', c_mapfunc_p),
         ('output_squasher_prime', c_mapfunc_p)
     ]
-    
+
     def __init__(self):
         self.gate_squasher = cast(libarac.sigmoid, c_mapfunc_p)
         self.gate_squasher_prime = cast(libarac.sigmoid_prime, c_mapfunc_p)
@@ -101,9 +118,13 @@ class c_tanh_layer(Structure):
     """ctypes representation of the arac TanhLayer struct."""
     
     
+class c_mdrnn_layer(Structure):
+    """ctypes representation of the arac MdrnnLayer struct."""
+
+
 class c_any_layer(Union):
     """ctypes representation of the arac AnyLayer union."""
-    
+
     _fields_ = [
         ('bias_layer_p', POINTER(c_bias_layer)),
         ('identity_layer_p', POINTER(c_identity_layer)),
@@ -112,9 +133,10 @@ class c_any_layer(Union):
         ('sigmoid_layer_p', POINTER(c_sigmoid_layer)),
         ('softmax_layer_p', POINTER(c_softmax_layer)),
         ('tanh_layer_p', POINTER(c_tanh_layer)),
+        ('mdrnn_layer_p', POINTER(c_mdrnn_layer)),
     ]
-    
-    
+
+
 class c_identity_connection(Structure):
     """ctypes representation of the arac IdentityConnection."""
     
@@ -125,6 +147,11 @@ class c_full_connection(Structure):
     _fields_ = [
         ('weights', c_parameter_container),
     ]
+
+    # FIXME: This is an ugly workaround that keeps objects from being collected.
+    registry = []
+    def __init__(self):
+        self.registry.append(self)
     
     
 class c_any_connection(Union):
@@ -149,6 +176,7 @@ class c_layer(Structure):
         BiasUnit: 'bias',
         TanhLayer: 'tanh',
         SoftmaxLayer: 'softmax',
+        MdrnnLayer: 'mdrnn',
     }
     
     def __init__(self, input_dim, output_dim, 
@@ -221,11 +249,14 @@ class c_layer(Structure):
         self.internal.tanh_layer_p = pointer(tanh_layer)
         
     def make_lstm_layer(self, layer):
-        """Make this an MdLstmLayer."""
+        """Make this an LstmLayer."""
         lstm_layer = c_lstm_layer()
+        lstm_layer.states = \
+            c_parameter_container(layer.state, layer.stateError)
+        self.__lstm_layer = lstm_layer      # TODO: necessary?
 
         # Create the encapsulated MdLstmLayer and store it in the class, so it
-        # is not garbage collected
+        # is not garbage collected.
         self.__mdlstmlayer = MDLSTMLayer(layer.dim)
 
         mdlstmlayer = c_layer.from_layer(self.__mdlstmlayer)
@@ -233,14 +264,13 @@ class c_layer(Structure):
         # Set other variables
         self.type = 5
         self.internal.lstm_layer_p = pointer(lstm_layer)
-        lstm_layer.states.contents_p = layer.state.ctypes.data_as(c_double_p)
-        lstm_layer.states.error_p = layer.stateError.ctypes.data_as(c_double_p)
         
     def make_mdlstm_layer(self, layer):
+        """Make this an MdLstmLayer."""
         mdlstm_layer = c_mdlstm_layer()
-        self.__mdlstm_layer = mdlstm_layer
+        self.__mdlstm_layer = mdlstm_layer      # TODO: necessary?
 
-        mdlstm_layer.timedim = 1
+        mdlstm_layer.timedim = layer.dimensions
         mdlstm_layer.input_squashed_p = layer.state.ctypes.data_as(c_double_p)
         mdlstm_layer.input_gate_squashed_p = \
             layer.ingate.ctypes.data_as(c_double_p)
@@ -262,9 +292,129 @@ class c_layer(Structure):
         # ('peephole_forget_weights', c_parameter_container),
         # ('peephole_output_weights', c_parameter_container),
 
-    
+    @garbagecollect
+    def make_mdrnn_layer(self, layer):
+        """Make this an MdrnnLayer."""
+        # The internal layers need timesteps for their calculations.
+        self._timestep = c_int(0)
+        self._timestep_p = pointer(self._timestep)
+
+        mdrnn_layer = c_mdrnn_layer()
+        self.internal.mdrnn_layer_p = pointer(mdrnn_layer)
+        self.type = 7
+
+        # Initialize several parameters that should not be recalculated every
+        # time.
+        mdrnn_layer.timedim = layer.timedim
+        mdrnn_layer.hiddendim = layer.hiddendim
+        mdrnn_layer.shape_p = (c_int * layer.timedim)(*layer.shape)
+        mdrnn_layer.blockshape_p = (c_int * layer.timedim)(*layer.blockshape)
+
+        # Set parameters.
+        # TODO: Fix this flaw in nomenclature: the arac's word for blocksize is
+        # indim,
+        self.inputs.size = layer.indim
+        self.outputs.size = layer.outdim
+        mdrnn_layer.indim = layer.blocksize
+        mdrnn_layer.outdim = layer.outsize
+        mdrnn_layer.sequence_length = layer.sequenceLength
+
+        # Initialize buffers.
+        mdrnn_layer.cell_states_p = layer.cellStates.ctypes.data_as(c_double_p)
+        self.outputs.contents_p = layer.outputbuffer.ctypes.data_as(c_double_p)
+
+        # Initialize layers for internal use. These have to be saved in
+        # order to be not garbage collected.
+        mdrnn_layer.hiddenlayer_p = \
+            pointer(c_layer.from_layer(layer.hiddenlayer))
+        mdrnn_layer.hiddenlayer_p.contents.timestep_p = self._timestep_p
+
+        mdrnn_layer.outlayer_p = pointer(c_layer.from_layer(layer.outlayer))
+        mdrnn_layer.outlayer_p.contents.timestep_p = self._timestep_p
+
+        mdrnn_layer.swipe_inlayer_p = pointer(c_layer.from_layer(layer.inlayer))
+        mdrnn_layer.swipe_inlayer_p.contents.timestep_p = self._timestep_p
+
+        predlayers = [c_layer.from_layer(pred) for pred in layer.predlayers]
+
+        mdrnn_layer.bias_p = pointer(c_layer.from_layer(layer.bias))
+        print addressof(mdrnn_layer.bias_p.contents)
+
+        # Give the internal layers a timestep - it will be zero all the time,
+        # but it will need one anyway.
+        for pred in predlayers:
+            pred.timestep_p = self._timestep_p
+
+        # Initialize connections between the internal layers.
+        # FullConnection from the swiping inlayer to the hiddenlayer. This
+        # connection is only partial, as it only connects with the input part
+        # of the mdlstm cell.
+        con = c_connection(mdrnn_layer.swipe_inlayer_p.contents,
+                           mdrnn_layer.hiddenlayer_p.contents)
+        con.make_full_connection(params=layer.inParams,
+                                 errors=scipy.array((0.)))
+        con.inlayerstart = 0
+        con.inlayerstop = layer.blocksize + 1   # Exlusive slices
+        con.outlayerstart = 0
+        con.outlayerstop = layer.hiddendim * (3 + layer.timedim)
+
+        mdrnn_layer.swipe_inlayer_p.contents.add_outgoing_connection(con)
+
+        # FullConnections from the hidden layers to the hidden layers. This is
+        # realized by connecting with the bogus predecessing layers.
+        for pred, params in izip(predlayers * layer.timedim, layer.predParams):
+            con = c_connection(pred, mdrnn_layer.hiddenlayer_p.contents)
+            con.make_full_connection(params=params,
+                                     errors=scipy.array((0.)))
+            con.inlayerstart = 0
+            con.inlayerstop = layer.outsize + 1
+            con.outlayerstart = 0
+            con.outlayerstop = \
+                layer.hiddendim * layer.outsize
+            pred.add_outgoing_connection(con)
+
+        layer_array_type = (c_layer * layer.timedim)
+        mdrnn_layer.swipe_predlayers_p = layer_array_type(*predlayers)
+
+        # FullConnection from the hidden layer to the output layer. Only the
+        # first half of the output buffer is used.
+        con = c_connection(mdrnn_layer.hiddenlayer_p.contents,
+                           mdrnn_layer.outlayer_p.contents)
+        con.make_full_connection(params=layer.outParams,
+                                 errors=scipy.array((0.)))
+        con.inlayerstart = 0
+        con.inlayerstop = layer.hiddendim + 1
+        con.outlayerstart = 0
+        con.outlayerstop = layer.outsize + 1
+
+        mdrnn_layer.hiddenlayer_p.contents.add_outgoing_connection(con)
+
+        # FullConnection from the bias to the hidden layer.
+        biashiddenparams = (3 + layer.timedim) * layer.hiddendim
+        biasoutparams = layer.outsize
+        con = c_connection(mdrnn_layer.bias_p.contents,
+                           mdrnn_layer.hiddenlayer_p.contents)
+        con.make_full_connection(params=layer.biasParams[:biashiddenparams])
+        con.inlayerstart = 0
+        con.inlayerstop = 2
+        con.outlayerstart = 0
+        con.outlayerstop = biashiddenparams + 1
+
+        mdrnn_layer.bias_p.contents.add_outgoing_connection(con)
+
+        # FullConnection from the bias to the out layer.
+        con = c_connection(mdrnn_layer.bias_p.contents,
+                           mdrnn_layer.outlayer_p.contents)
+        con.make_full_connection(params=layer.biasParams[biashiddenparams:])
+        con.inlayerstart = 0
+        con.inlayerstop = 2
+        con.outlayerstart = 0
+        con.outlayerstop = biasoutparams + 1
+
+        mdrnn_layer.bias_p.contents.add_outgoing_connection(con)
+
     def add_outgoing_connection(self, con):
-        """Add the connection to this layer as an outgoing connection."""
+        """Add a c_connection to this layer as an outgoing connection."""
         if self.outgoing_n == 0:
             typ = c_connection * 1
             self.outgoing_p = typ(con)
@@ -279,7 +429,7 @@ class c_layer(Structure):
         self.outgoing_n += 1
         
     def add_incoming_connection(self, con):
-        """Add the connection to this layers as an incoming connection."""
+        """Add a c_connection to this layers as an incoming connection."""
         if self.incoming_n == 0:
             typ = c_connection * 1
             self.incoming_p = typ(con)
@@ -305,10 +455,12 @@ class c_connection(Structure):
         SharedFullConnection: 'full',
     }
     
-    def __init__(self, inlayer, outlayer):
-        """Create a c_connection by two c_layers. (Not pybrain layers!)"""
-        self.inlayer_p = c_layer_p(inlayer)
-        self.outlayer_p = c_layer_p(outlayer)
+    def __init__(self, inlayer=None, outlayer=None):
+        """Create a c_connection by two c_layers."""
+        if inlayer is not None:
+            self.inlayer_p = c_layer_p(inlayer)
+        if outlayer is not None:
+            self.outlayer_p = c_layer_p(outlayer)
         
     @classmethod
     def from_connection(cls, connection, inlayer, outlayer):
@@ -337,23 +489,27 @@ class c_connection(Structure):
         
     def make_identity_connection(self, connection=None):
         """Make this connection an identity connection."""
-        identity_connection = c_identity_connection()
+        self.identity_connection = c_identity_connection()
         self.type = 0
-        self.internals.identity_connection_p = pointer(c_identity_connection)
+        self.internal.identity_connection_p = \
+            pointer(self.identity_connection)
 
-    def make_full_connection(self, connection):
+    def make_full_connection(self, connection=None, params=None, errors=None):
         """Make this connection a full connection.
         
         The weights for the FullConnection are taken from the passed pybrain
-        connection."""
-        full_connection = c_full_connection()
+        connection or, if no connection is passed, from the supplied
+        params/error arrays.
+        """
+        self.full_connection = c_full_connection()
         self.type = 1
-        self.internal.full_connection_p = pointer(full_connection)
+        self.internal.full_connection_p = pointer(self.full_connection)
+
+        if connection is not None:
+            params = connection.params
+            errors = connection.derivs
             
-        full_connection.weights = c_parameter_container(
-            connection.params,
-            connection.derivs
-        )
+        self.full_connection.weights = c_parameter_container(params, errors)
 
 
 # Some shortcuts.
@@ -398,7 +554,24 @@ c_connection._fields_ = [
 
 
 c_lstm_layer._fields_ = [
-    ('mdlstm_p', POINTER(c_layer)),
+    ('mdlstm_p', c_layer_p),
     ('states', c_parameter_container),
 ]
-    
+
+
+c_mdrnn_layer._fields_ = [
+    ('timedim', c_int),
+    ('shape_p', c_int_p),
+    ('blockshape_p', c_int_p),
+    ('sequence_length', c_int),
+    ('indim', c_int),
+    ('hiddendim', c_int),
+    ('outdim', c_int),
+    ('cell_states_p', c_double_p),
+    ('hiddenlayer_p', c_layer_p),
+    ('outlayer_p', c_layer_p),
+    ('swipe_inlayer_p', c_layer_p),
+    ('swipe_predlayers_p', c_layer_p),
+    ('bias_p', c_layer_p),
+]
+

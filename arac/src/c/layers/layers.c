@@ -34,6 +34,9 @@ void forward(Layer* layer_p)
         case SOFTMAX_LAYER:
             layer_forward(layer_p, layer_p->internal.softmax_layer_p);
             break;
+        case MDRNN_LAYER:
+            layer_forward(layer_p, layer_p->internal.mdrnn_layer_p);
+            break;
 
         default:
             std::cout << "Unknown Layertype for forward: " << layer_p->type 

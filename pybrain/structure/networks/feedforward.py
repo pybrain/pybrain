@@ -1,6 +1,9 @@
 #! /usr/bin/env python2.5
 # -*- coding: utf-8 -*-
 
+"""Module that contains the FeedForwardNetwork class."""
+
+
 __author__ = 'Justin Bayer, bayer.justin@googlemail.com'
 
 from network import Network
@@ -54,6 +57,9 @@ class FeedForwardNetworkComponent(object):
             
             
 class FeedForwardNetwork(FeedForwardNetworkComponent, Network):
+    """FeedForwardNetworks are networks that do not work for sequential data. 
+    Every input is treated as independent of any previous or following inputs.
+    """
     
     def __init__(self, *args, **kwargs):
         Network.__init__(self, *args, **kwargs)        

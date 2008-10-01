@@ -4,6 +4,7 @@
 """
 
     >>> from scipy import array, ones, zeros
+    >>> from ctypes import pointer
 
 
 Construction of a layer structure
@@ -13,13 +14,36 @@ Construction of a layer structure
     >>> outputbuffer = array((0,))
     >>> inerror = array((0,))
     >>> outerror = array((0,))
-    >>> m = c_layer(1, 1, inputbuffer, outputbuffer, inerror, outerror)
+    >>> l = c_layer(1, 1, inputbuffer, outputbuffer, inerror, outerror)
     
     
 Construction of a connection structure
 --------------------------------------
 
-    TODO
+    >>> con = c_connection()
+    >>> fc = c_full_connection()
+    >>> a, b = array((0., 1., 2.)), array((2., 3., 4.))
+    >>> weights = c_parameter_container(a, b)
+    >>> fc.weights = weights
+    >>> con.type = 1
+    >>> con.internal.full_connection_p = pointer(fc)
+
+
+Adding connections to a layer
+-----------------------------
+
+    >>> l.add_outgoing_connection(con)
+    >>> l.outgoing_n
+    1
+    >>> l.outgoing_p[0].internal.full_connection_p.contents.weights.contents_p[0:3]
+    [0.0, 1.0, 2.0]
+    >>> l.add_outgoing_connection(con)
+    >>> l.outgoing_n
+    2
+    >>> l.outgoing_p[0].internal.full_connection_p.contents.weights.contents_p[0:3]
+    [0.0, 1.0, 2.0]
+    >>> l.outgoing_p[1].internal.full_connection_p.contents.weights.contents_p[0:3]
+    [0.0, 1.0, 2.0]
 
 
 Construction of a Network from Pybrain structures

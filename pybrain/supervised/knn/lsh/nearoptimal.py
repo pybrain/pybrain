@@ -1,15 +1,18 @@
-from __future__ import division
-
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
-__author__ = 'Justin Bayer, bayer.justin@googlemail.com'
 
+from __future__ import division
 
 """This module provides functionallity for locality sensitive hashing in high
 dimensional euclidean spaces.
 
 It is based on the work of Andoni and Indyk, 'Near-Optimal Hashing Algorithms
 for Approximate Nearest Neighbor in High Dimensions'."""
+
+
+__author__ = 'Justin Bayer, bayer.justin@googlemail.com'
+__version__ = '$Id$'
+
 
 import logging
 

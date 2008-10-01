@@ -2,6 +2,10 @@
 # -*- coding: utf-8 -*-
 
 
+"""Module that contains functionality for calculating the principal components
+of a dataset."""
+
+
 __author__ = 'Justin S Bayer, bayerj@in.tum.de'
 
 

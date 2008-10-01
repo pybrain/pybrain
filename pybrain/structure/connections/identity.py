@@ -9,7 +9,9 @@ class IdentityConnection(Connection):
     
     def __init__(self, *args, **kwargs):
         Connection.__init__(self, *args, **kwargs)
-        assert self.indim == self.outdim
+        assert self.indim == self.outdim, \
+               "Indim (%i) does not equal outdim (%i)" % (
+               self.indim, self.outdim)
         
     def _forwardImplementation(self, inbuf, outbuf):
         outbuf += inbuf

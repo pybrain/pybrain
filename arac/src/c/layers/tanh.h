@@ -15,7 +15,7 @@
 
 
 //
-// Create a tanh layer. 
+// Create a tanh layer.
 //
 
 Layer* make_tanh_layer(int dim);
@@ -34,4 +34,3 @@ void layer_backward(Layer* layer_p, TanhLayer* tl_p);
 
 
 #endif
-

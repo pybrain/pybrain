@@ -2,6 +2,9 @@
 # -*- coding: utf-8 -*-
 
 
+"""Module that contains the RecurrentNetwork class."""
+
+
 __author__ = 'Justin Bayer, bayer.justin@googlemail.com'
 
 
@@ -122,6 +125,11 @@ class RecurrentNetworkComponent(object):
         
         
 class RecurrentNetwork(RecurrentNetworkComponent, Network):
+    """Class that implements networks which can work with sequential data.
+    
+    Until .reset() is called, the network keeps track of all previous inputs and
+    thus allows the use of recurrent connections and layers that look back in 
+    time."""
     
     bufferlist = Network.bufferlist
     

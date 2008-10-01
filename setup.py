@@ -33,6 +33,7 @@ def compileArac():
         'arac/src/c/layers/sigmoid.c',
         'arac/src/c/layers/softmax.c',
         'arac/src/c/layers/tanh.c',
+        'arac/src/c/layers/mdrnn.c',
     ]
     
     compiler = new_compiler(verbose=1)

@@ -77,7 +77,7 @@ connection_forward(Connection* con_p, FullConnection* fc_p)
 
     int indim = con_p->inlayerstop - con_p->inlayerstart;
     int outdim = con_p->outlayerstop - con_p->outlayerstart;
-    
+
     cblas_dgemv(CblasRowMajor, 
                 // Transpose the matrix since we want to multiply from the right
                 CblasNoTrans,

@@ -3,7 +3,7 @@
 #include <cstring>
 #include <iostream>
 
-void 
+void
 make_softmax_layer(Layer* layer_p, int dim)
 {
     make_layer(layer_p, dim, dim);
@@ -11,7 +11,7 @@ make_softmax_layer(Layer* layer_p, int dim)
 }
 
 
-Layer* 
+Layer*
 make_softmax_layer(int dim)
 {
     Layer* layer_p = make_layer(dim, dim);
@@ -20,7 +20,7 @@ make_softmax_layer(int dim)
 }
 
 
-void layer_forward(Layer* layer_p, SoftmaxLayer* sm_p) 
+void layer_forward(Layer* layer_p, SoftmaxLayer* sm_p)
 {
     double sum = 0;
     for(int i = 0; i < layer_p->inputs.size; i++)
@@ -38,9 +38,9 @@ void layer_forward(Layer* layer_p, SoftmaxLayer* sm_p)
 }
 
 
-void layer_backward(Layer* layer_p, SoftmaxLayer* sm_p) 
+void layer_backward(Layer* layer_p, SoftmaxLayer* sm_p)
 {
-    memcpy((void*) layer_p->inputs.error_p, 
-           (void*) layer_p->outputs.error_p, 
+    memcpy((void*) layer_p->inputs.error_p,
+           (void*) layer_p->outputs.error_p,
            layer_p->inputs.size * sizeof(double));
 }

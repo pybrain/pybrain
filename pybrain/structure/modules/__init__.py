@@ -7,3 +7,4 @@ from lstm import LSTMLayer
 from gaussianlayer import GaussianLayer
 from statedependentlayer import StateDependentLayer
 from softmax import SoftmaxLayer
+from mdrnnlayer import MdrnnLayer

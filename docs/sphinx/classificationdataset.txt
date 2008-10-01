@@ -7,6 +7,7 @@
 
 .. autoclass:: ClassificationDataSet
    :members: __init__, calculateStatistics, getClass, splitByClass, castToRegression, _convertToOneOfMany, _convertToClassNb
+   :show-inheritance:
 
    
 .. note::

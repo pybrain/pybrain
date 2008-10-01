@@ -20,7 +20,7 @@
 #include "lstm.h"
 #include "softmax.h"
 #include "tanh.h"
-
+#include "mdrnn.h"
 
 // 
 // Function that delegates to the specific implementations of layer_forward

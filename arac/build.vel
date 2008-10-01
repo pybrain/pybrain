@@ -43,11 +43,12 @@ targets (
 		$ %(compiler)s %(flags)s -c src/c/layers/sigmoid.c -o src/c/layers/sigmoid.o
 		$ %(compiler)s %(flags)s -c src/c/layers/softmax.c -o src/c/layers/softmax.o
 		$ %(compiler)s %(flags)s -c src/c/layers/tanh.c -o src/c/layers/tanh.o
+		$ %(compiler)s %(flags)s -c src/c/layers/mdrnn.c -o src/c/layers/mdrnn.o
 		$ %(compiler)s %(flags)s -c src/c/arac.c -o src/c/arac.o
 	]
 
 	lib [
-		$ %(compiler)s %(flags)s %(lnflags)s -dynamiclib -o libarac.so src/c/common.o src/c/functions.o src/c/layers/common.o src/c/layers/sigmoid.o src/c/layers/linear.o src/c/layers/lstm.o src/c/layers/mdlstm.o src/c/layers/bias.o src/c/layers/softmax.o src/c/layers/tanh.o src/c/layers/layers.o src/c/connections/common.o src/c/connections/full.o src/c/connections/identity.o src/c/connections/connections.o src/c/arac.o
+		$ %(compiler)s %(flags)s %(lnflags)s -dynamiclib -o libarac.so src/c/common.o src/c/functions.o src/c/layers/common.o src/c/layers/sigmoid.o src/c/layers/linear.o src/c/layers/lstm.o src/c/layers/mdlstm.o src/c/layers/bias.o src/c/layers/softmax.o src/c/layers/tanh.o src/c/layers/mdrnn.o src/c/layers/layers.o src/c/connections/common.o src/c/connections/full.o src/c/connections/identity.o src/c/connections/connections.o src/c/arac.o
 	]
 	
 	test.c.build [
