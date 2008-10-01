@@ -41,9 +41,7 @@ Tutorial
 .. toctree::
    :maxdepth: 2
    
-   
-   
-   intro
+   tutorial/intro
    netmodcon
    fnn
    reinforcement-learning

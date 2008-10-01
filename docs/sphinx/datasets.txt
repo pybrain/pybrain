@@ -1,0 +1,19 @@
+.. datasets:
+
+Using Datasets
+==============
+
+Datasets are useful for allowing comfortable access to training, test and 
+validation data. Instead of having to mangle with arrays, PyBrain gives you a
+much more sophisticated datastructure that allows easier work with your data.
+
+For the different tasks that arise in machine learning, there are of course 
+different datasets:
+
+* :ref:`superviseddataset`
+* :ref:`sequentialdataset`
+* :ref:`classificationdataset`
+
+The different types share some common functionality.
+
+ 
