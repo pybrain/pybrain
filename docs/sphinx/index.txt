@@ -49,6 +49,9 @@ Tutorial
    
 API
 ---
+.. toctree::
+   :maxdepth: 2
+
    api/superviseddataset
    api/sequentialdataset
    api/classificationdataset
