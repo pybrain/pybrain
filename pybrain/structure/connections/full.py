@@ -7,8 +7,9 @@ from pybrain.structure.parametercontainer import ParameterContainer
 
         
 class FullConnection(Connection, ParameterContainer):
-    """ a connection which fully connects every element from the first module's 
-    output buffer to the second module's input buffer """
+    """Connection which fully connects every element from the first module's 
+    output buffer to the second module's input buffer in a matrix multiplicative
+    manner."""
     
     def __init__(self, *args, **kwargs):
         Connection.__init__(self, *args, **kwargs)
@@ -23,6 +24,6 @@ class FullConnection(Connection, ParameterContainer):
         ds += outer(inbuf, outerr).T.flatten()                
         
     def whichBuffers(self, paramIndex):
-        """ returns the index of the input module's output buffer, and
-        the output module's input buffer, for the given weight.  """
+        """Return the index of the input module's output buffer and
+        the output module's input buffer for the given weight."""
         return paramIndex % self.inmod.outdim, paramIndex / self.inmod.outdim

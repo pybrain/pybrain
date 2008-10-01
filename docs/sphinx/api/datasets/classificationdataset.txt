@@ -9,18 +9,6 @@
    :members: __init__, calculateStatistics, getClass, splitByClass, castToRegression, _convertToOneOfMany, _convertToClassNb
    :show-inheritance:
 
-   
-.. note::
-
-   See the documentation of :class:`pybrain.datasets.supervised.SupervisedDataSet` for inherited methods.
-
-
 .. autoclass:: SequenceClassificationDataSet
    :members: __init__
-
-   
-.. note::
-
-   See the documentation of :class:`pybrain.datasets.supervised.SequentialDataSet` and :class:`ClassificationDataSet` for inherited methods.
-
-   
+   :show-inheritance:

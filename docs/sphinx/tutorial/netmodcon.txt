@@ -3,10 +3,10 @@
 Building Networks with Modules and Connections
 ==============================================
 
-This tutorial will attempt to guide you for using one of PyBrain's most basic 
-structural elements: Networks, and with them Modules and Connections.
+This chapter will guide you to use PyBrain's most basic  structural elements: 
+:class:`Network`s, and with them :class:`Module`s and :class:`Connection`s.
 
-Let us start with a simple example, building a multi-layer-perceptron (MLP). 
+We will start with a simple example, building a multi-layer-perceptron (MLP). 
 First we make a new network object::
 
    >>> n = Network()
@@ -17,8 +17,7 @@ Next, we're constructing the input, hidden and output layers::
    >>> hiddenLayer = SigmoidLayer(3)
    >>> outLayer = LinearLayer(1)
  	
-.. note:: We could also have used a hidden layer of type TanhLayer, LinearLayer, 
-          etc.
+.. note:: There are a couple of different classes of layers.
 
 Let's add them to the network::
 

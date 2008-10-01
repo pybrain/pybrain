@@ -19,14 +19,21 @@ class NetworkError(Exception): pass
 
 
 def buildNetwork(*layers, **options):
-    """ This helper function builds arbitrary deep networks, depending on 
-        how many arguments are given. With 2 arguments, a simple flat network
-        with linear input and (per default linear) output layer are created.
-        More arguments add (per default sigmoid) hidden layers to the network.
-        @param layers: list of numbers of neurons for each layer
-        @param options: These values can be changed: 
-            bias=True, hiddenclass=SigmoidLayer, outclass=LinearLayer, outputbias=True
-    """
+    """Build arbitrary deep networks.
+    
+    `layers` should be a list or tuple of integers, that indicate how many 
+    neurons the layers shoudl have. `bias` and `outputbias` are flags to 
+    indicate wether the network should have the corresponding biases; both
+    default to True.
+        
+    To adjust the classes for the layers use the `hiddenclass` and  `outclass`
+    parameters, which expect a subclass of NeuronLayer.
+    
+    If the `recurrent` flag is set, a RecurrentNetwork will be created, 
+    otherwise a FeedForwardNetwork.
+    
+    If the `fast` flag is set, faster arac networks will be used instead of the 
+    pybrain implementations."""
     # options
     opt = {'bias': True, 
            'hiddenclass': SigmoidLayer,

@@ -1,12 +1,13 @@
 .. _sequentialdataset:
 
-:mod:`sequential` -- Dataset for Supervised Seuquences Regression Training
+:mod:`sequential` -- Dataset for Supervised Sequences Regression Training
 ==========================================================================
 
 .. automodule:: pybrain.datasets.sequential
 
 .. autoclass:: SequentialDataSet
    :members: 
+   :show-inheritance:
 
    
 .. note::

@@ -4,8 +4,8 @@ from connection import Connection
 
 
 class IdentityConnection(Connection):
-    """ a connection which fully connects every element from the first module's output buffer
-    to the second module's input buffer. """
+    """Connection which connects the i'th element from the first module's output
+    buffer to the i'th element of the second module's input buffer."""
     
     def __init__(self, *args, **kwargs):
         Connection.__init__(self, *args, **kwargs)

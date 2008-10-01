@@ -10,25 +10,26 @@ from pybrain.auxiliary import GradientDescent
 
 
 class BackpropTrainer(Trainer):
-    """ Train the parameters of a module according to a supervised dataset 
-    (potentially sequential) by backpropagating the errors (through time)."""
+    """Trainer that trains the parameters of a module according to a 
+    supervised dataset (potentially sequential) by backpropagating the errors
+    (through time)."""
         
     def __init__(self, module, dataset=None, learningrate=0.01, lrdecay=1.0, 
                  momentum = 0., verbose=False, batchlearning=False, 
                  weightdecay=0.):
-        """Create a BackpropTrainer to train the specified module on the 
-        specified dataset.
+        """Create a BackpropTrainer to train the specified `module` on the 
+        specified `dataset`.
         
         The learning rate gives the ratio of which parameters are changed into 
-        the direction of the gradient. The learning rate decreases by lrdecay, 
-        which, is used to to multiply the learning rate after each training 
-        step. The parameters are also adjusted with respect to momentum, which 
+        the direction of the gradient. The learning rate decreases by `lrdecay`, 
+        which is used to to multiply the learning rate after each training 
+        step. The parameters are also adjusted with respect to `momentum`, which 
         is the ratio by which the gradient of the last timestep is used.
         
-        If batchlearning is set, the parameters are updated only at the end of
+        If `batchlearning` is set, the parameters are updated only at the end of
         each epoch. Default is False.
         
-        weightdecay corresponds to the weightdecay rate, where 0 is no weight
+        `weightdecay` corresponds to the weightdecay rate, where 0 is no weight
         decay at all.
         """
         Trainer.__init__(self, module)
@@ -197,7 +198,7 @@ class BackpropTrainer(Trainer):
         # Split the dataset randomly: validationProportion of the samples for 
         # validation.
         trainingData, validationData = (
-            dataset.splitWithProportion(1-validationProportion))
+            dataset.splitWithProportion(1 - validationProportion))
         self.ds = trainingData
         bestweights = self.module.params.copy()
         bestverr = self.testOnData(validationData)

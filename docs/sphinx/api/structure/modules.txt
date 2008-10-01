@@ -1,31 +1,43 @@
-.. _modules:
+:mod:`modules` -- Structural Components: Modules
+================================================
 
-:mod:`pybrain.structure.modules` -- Structural Components: Modules
-==================================================================
+.. automodule:: pybrain.structure.modules
 
-.. autoclass:: pybrain.structure.modules.biasunit.BiasUnit
+.. autoclass:: BiasUnit
    :members: __init__
+   :show-inheritance:
 
-.. autoclass:: pybrain.structure.modules.gaussianlayer.GaussianLayer
+
+.. autoclass:: GaussianLayer
    :members: __init__, setSigma
+   :show-inheritance:
 
-.. autoclass:: pybrain.structure.modules.linearlayer.LinearLayer
+
+.. autoclass:: LinearLayer
    :members: __init__
+   :show-inheritance:
 
-.. autoclass:: pybrain.structure.modules.lstm.LSTMLayer
+
+.. autoclass:: LSTMLayer
    :members: __init__
+   :show-inheritance:
 
-.. autoclass:: pybrain.structure.modules.mdlstm.MDLSTMLayer
+.. autoclass:: MDLSTMLayer
    :members: __init__
+   :show-inheritance:
 
-.. autoclass:: pybrain.structure.modules.sigmoidlayer.SigmoidLayer
+.. autoclass:: SigmoidLayer
    :members: __init__
+   :show-inheritance:
 
-.. autoclass:: pybrain.structure.modules.softmax.SoftmaxLayer
+.. autoclass:: SoftmaxLayer
    :members: __init__
+   :show-inheritance:
 
-.. autoclass:: pybrain.structure.modules.statedependentlayer.StateDependentLayer
+.. autoclass:: StateDependentLayer
    :members: __init__, setState, drawRandomWeights
+   :show-inheritance:
 
-.. autoclass:: pybrain.structure.modules.tanhlayer.TanhLayer
+.. autoclass:: TanhLayer
    :members: __init__
+   :show-inheritance:

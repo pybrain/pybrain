@@ -8,13 +8,13 @@ from pybrain.datasets import SupervisedDataSet, SequentialDataSet
 class ClassificationDataSet(SupervisedDataSet):
     """ Specialized data set for classification data. Classes are to be numbered from 0 to nb_classes-1. """
     
-    def __init__(self, inp, target, nb_classes=0, class_labels=None):
-        """ Initialize as an empty dataset. 
+    def __init__(self, inp, target=1, nb_classes=0, class_labels=None):
+        """Initialize an empty dataset. 
         
-        @param inp: dimension of input vector
-        @param target: dimension of target vector (should be 1!)
-        @param nb_classes: Number of classes is normally inferred from the targets. If not all possible classes are present, use this to set classes manually.
-        @param class_labels: list of strings labelling the classes, defaults to target values """
+        `inp` is used to specify the dimensionality of the input. While the 
+        number of targets is given by implicitly by the training samples, it can
+        also be set explicity by `nb_classes`. To give the classes names, supply
+        an iterable of strings as `class_labels`."""
         # FIXME: hard to keep nClasses synchronized if appendLinked() etc. is used.
         SupervisedDataSet.__init__(self, inp, target)
         self.addField('class',1)
@@ -33,15 +33,17 @@ class ClassificationDataSet(SupervisedDataSet):
 
     @classmethod
     def load_matlab(cls, fname):
-        """ read Matlab file containing one variable called 'data' which is an array
-        nSamples x nFeatures+1 and contains the class in the first column """
+        """Create a dataset by reading a Matlab file containing one variable
+        called 'data' which is an array of nSamples * nFeatures + 1 and 
+        contains the class in the first column."""
         from mlabwrap import mlab #@UnresolvedImport
         d=mlab.load(fname)
         return cls(d.data[:,0], d.data[:,1:])
     
     @classmethod
     def load_libsvm(cls, f):
-        """ read sparse LIBSVM/SVMlight format from given (with labels only) """
+        """Create a dataset by reading a sparse LIBSVM/SVMlight format file 
+        (with labels only)."""
         nFeat = 0
         # find max. number of features 
         for line in f:
@@ -78,7 +80,7 @@ class ClassificationDataSet(SupervisedDataSet):
         return DS
  
     def __add__(self, other):
-        """ adds the patterns of two datasets, if dimensions and type match """
+        """Adds the patterns of two datasets, if dimensions and type match."""
         if type(self) != type(other):
             raise TypeError, 'DataSets to be added must agree in type'
         elif self.indim != other.indim:
@@ -95,7 +97,8 @@ class ClassificationDataSet(SupervisedDataSet):
         return result
     
     def assignClasses(self):
-        """ ensure that the class field is properly defined, and nClasses is set. """
+        """Ensure that the class field is properly defined and nClasses is set.
+        """
         if len(self['class']) < len(self['target']):
             if self.outdim>1:
                 raise IndexError, 'Classes and 1-of-k representation out of sync!'
@@ -108,7 +111,7 @@ class ClassificationDataSet(SupervisedDataSet):
             self.nClasses = len(classes)
 
     def calculateStatistics(self):
-        """ return a class histogram """
+        """Return a class histogram."""
         self.assignClasses()
         self.classHist = {}
         flat_labels = list( ravel(self['class']) )
@@ -117,15 +120,18 @@ class ClassificationDataSet(SupervisedDataSet):
         return self.classHist
 
     def getClass(self,idx):
-        """ return the label of given class """
+        """Return the label of given class."""
         try:
             return self.class_labels[idx]
         except IndexError:
             print "error: classes not defined yet!" 
 
-    def _convertToOneOfMany(self, bounds=[0,1]):
-        """ converts the target classes to a 1-of-k representation, retaining the old targets as a field 'class'
-        @param bounds: target values for class non-membership and membership """
+    def _convertToOneOfMany(self, bounds=(0,1)):
+        """Converts the target classes to a 1-of-k representation, retaining the
+        old targets as a field `class`.
+        
+        To supply specific bounds, set the `bounds` parameter, which consists of
+        target values for non-membership and membership."""
         if self.outdim != 1:
             # we already have the correct representation (hopefully...)
             return
@@ -142,7 +148,7 @@ class ClassificationDataSet(SupervisedDataSet):
         ##self.linkFields(self.link.append('class'))
 
     def _convertToClassNb(self):
-        """ the reverse of _convertToOneOfMany. target field is overwritten.  """
+        """The reverse of _convertToOneOfMany. Target field is overwritten."""
         newtarg = self.getField('class')
         self.setField('target', newtarg)
                   
@@ -153,8 +159,9 @@ class ClassificationDataSet(SupervisedDataSet):
         return creator, args, state, iter([]), iter({})
             
     def splitByClass(self, cls_select):
-        """ produce two new datasets, the first one comprising only the class selected (0..nClasses-1),
-        the second one containing the remaining samples """
+        """Produce two new datasets, the first one comprising only the class 
+        selected (0..nClasses-1), the second one containing the remaining 
+        samples."""
         leftIndices, dummy = where(self['class'] == cls_select)
         rightIndices, dummy = where(self['class'] != cls_select)        
         leftDs = self.copy()
@@ -176,8 +183,8 @@ class ClassificationDataSet(SupervisedDataSet):
         return leftDs, rightDs
     
     def castToRegression(self,values):
-        """ Converts data set into a SupervisedDataSet, for regression. Classes are used as indices into
-        the value array given."""
+        """Converts data set into a SupervisedDataSet for regression. Classes
+        are used as indices into the value array given."""
         regDs = SupervisedDataSet(self.indim, 1)
         fields = self.getFieldNames()
         fields.remove('target')
@@ -188,15 +195,16 @@ class ClassificationDataSet(SupervisedDataSet):
     
  
 class SequenceClassificationDataSet(SequentialDataSet, ClassificationDataSet):
-    """ Defines a dataset for sequence classification. Each sample in the sequence still needs its own target value. """
+    """Defines a dataset for sequence classification. Each sample in the 
+    sequence still needs its own target value."""
     
     def __init__(self, inp, target, nb_classes=0, class_labels=None):
-        """ Initialize as an empty dataset. 
-        @param inp: dimension of input vector
-        @param target: dimension of target vector (should be 1!)
-        @param nb_classes: Number of classes is normally inferred from the targets. If not all possible classes are present, use this to set classes manually.
-        @param class_labels: list of strings labelling the classes, defaults to target values """
+        """Initialize an empty dataset. 
         
+        `inp` is used to specify the dimensionality of the input. While the 
+        number of targets is given by implicitly by the training samples, it can
+        also be set explicity by `nb_classes`. To give the classes names, supply
+        an iterable of strings as `class_labels`."""
         # FIXME: hard to keep nClasses synchronized if appendLinked() etc. is used.
         SequentialDataSet.__init__(self, inp, target)
         # we want integer class numbers as targets
@@ -214,12 +222,18 @@ class SequenceClassificationDataSet(SequentialDataSet, ClassificationDataSet):
         raise NotImplementedError
     
     def stratifiedSplit(self, testfrac=0.15, evalfrac=0):
-        """ Stratified random split of a sequence data set, i.e. (almost) same proportion of
-        sequences in each class for all fragments. Returns (training, test[, eval]) data sets.
-        Assumption: Last target for each class is the class of the sequence.
-        Warning: The data will be sorted by class in the resulting data sets.
-        @param testfrac: fraction of total sequences in test dataset
-        @param evalfrac: fraction of total sequences in validation dataset (0=do not return eval set) """
+        """Stratified random split of a sequence data set, i.e. (almost) same
+        proportion of sequences in each class for all fragments. Return 
+        (training, test[, eval]) data sets.
+
+        The parameter `testfrac` specifies the fraction of total sequences in
+        the test dataset, while `evalfrac` specifies the fraction of sequences
+        in the validation dataset. If `evalfrac` equals 0, no validationset is 
+        returned.
+        
+        It is assumed that the last target for each class is the class of the 
+        sequence. Also mind that the data will be sorted by class in the 
+        resulting data sets."""
         lastidx = ravel(self['sequence_index'][1:]-1).astype(int)
         classes = ravel(self['class'][lastidx])
         trnDs = self.copy()
@@ -246,8 +260,8 @@ class SequenceClassificationDataSet(SequentialDataSet, ClassificationDataSet):
             return trnDs, tstDs
 
     def getSequenceClass(self, index=None):
-        """ returns flat array (or single scalar) comprising one class per sequence, 
-        as given by last pattern in each sequence """
+        """Return a flat array (or single scalar) comprising one class per 
+        sequence as given by last pattern in each sequence."""
         lastSeq = self.getNumSequences()-1
         if index is None:
             classidx = r_[self['sequence_index'].astype(int)[1:,0]-1, len(self)-1]
@@ -260,15 +274,16 @@ class SequenceClassificationDataSet(SequentialDataSet, ClassificationDataSet):
             raise IndexError, "Sequence index out of range!"
 
     def removeSequence(self, index):
-        """ removes sequence (including class field) from dataset """
+        """Remove sequence (including class field) from the dataset."""
         self.assignClasses()
         self.linkFields(['input','target','class'])
         SequentialDataSet.removeSequence(self, index)
         self.unlinkFields(['class'])
 
     def save_netcdf(self, flo, **kwargs):
-        """Save the current dataset to the given file as a netCDF dataset to be used
-        with Alex Graves nnl_ndim program in task="sequence classification" mode."""
+        """Save the current dataset to the given file as a netCDF dataset to be
+        used with Alex Graves nnl_ndim program in 
+        task="sequence classification" mode."""
         # make sure classes are defined properly
         assert len(self['class'])==len(self['target'])
         if self.nClasses > 10:

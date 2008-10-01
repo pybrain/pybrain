@@ -19,8 +19,7 @@ class NetworkConstructionException(Exception):
 
 
 class Network(Module, ParameterContainer):
-    """A network is linking different modules with connections. """
-
+    """Abstract class for linking different modules with connections."""
     
     __offset = 0
     

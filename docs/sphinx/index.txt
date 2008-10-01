@@ -52,9 +52,10 @@ API
 .. toctree::
    :maxdepth: 2
 
-   api/superviseddataset
-   api/sequentialdataset
-   api/classificationdataset
+   api/datasets/superviseddataset
+   api/datasets/sequentialdataset
+   api/datasets/classificationdataset
+   api/supervised/knn/lsh/nearoptimal
    api/network
    api/trainers
    api/svm

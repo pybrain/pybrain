@@ -6,12 +6,14 @@ from full import FullConnection
 
 
 class OwnershipViolation(Exception):
-    """ Exception raised when one attempts to write-access the parameters of the 
-        SharedConnection, instead of its mother. """
+    """Exception raised when one attempts to write-access the parameters of the
+    SharedConnection, instead of its mother."""
+    pass
 
 
 class MotherConnection(ParameterContainer):
-    """ The container for the shared parameters of connections (just a container with a constructor, actually). """
+    """The container for the shared parameters of connections (just a container
+    with a constructor, actually)."""
     
     hasDerivatives = True
     nbparams = None
@@ -23,7 +25,8 @@ class MotherConnection(ParameterContainer):
             
 
 class SharedConnection(Connection):
-    """  A shared connection can link different couples of modules, with a single set of parameters. """
+    """A shared connection can link different couples of modules, with a single
+    set of parameters."""
     
     mother = None
     
@@ -52,7 +55,7 @@ class SharedConnection(Connection):
     
         
 class SharedFullConnection(SharedConnection, FullConnection): 
-    """ shared version of FullConnection """
+    """Shared version of FullConnection."""
     
     def _forwardImplementation(self, inbuf, outbuf):
         FullConnection._forwardImplementation(self, inbuf, outbuf)

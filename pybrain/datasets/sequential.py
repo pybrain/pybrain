@@ -11,10 +11,11 @@ class EmptySequenceError(Exception): pass
 
 
 class SequentialDataSet(SupervisedDataSet):
-    """ A SequentialDataSet is like a SupervisedDataSet except that it can keep track of
-        sequences of samples. Indices of a new sequence are stored whenever the method
-        newSequence() is called. The last (open) sequence is considered a normal sequence
-        even though it does not have a following "new sequence" marker. """
+    """A SequentialDataSet is like a SupervisedDataSet except that it can keep
+    track of sequences of samples. Indices of a new sequence are stored whenever
+    the method newSequence() is called. The last (open) sequence is considered
+    a normal sequence even though it does not have a following "new sequence"
+    marker."""
         
     def __init__(self, indim, targetdim):
         SupervisedDataSet.__init__(self, indim, targetdim)
@@ -24,9 +25,10 @@ class SequentialDataSet(SupervisedDataSet):
         self.currentSeq = 0
         
     def newSequence(self):
-        """ marks the beginning of a new sequence. this function does nothing if called at the very
-            start of the data set. Otherwise, it starts a new sequence. Empty sequences are not allowed,
-            and an EmptySequenceError exception will be raised. """
+        """Marks the beginning of a new sequence. this function does nothing if
+        called at the very start of the data set. Otherwise, it starts a new
+        sequence. Empty sequences are not allowed, and an EmptySequenceError
+        exception will be raised."""
         length = self.getLength()
         if length != 0:            
             if ravel(self.getField('sequence_index'))[-1] == length:
@@ -34,11 +36,8 @@ class SequentialDataSet(SupervisedDataSet):
             self._appendUnlinked('sequence_index', length) 
 
     def _getSequenceField(self, index, field):
-        """ returns a sequence of one single field. It is assumed that the last
-            sequence goes until the end of the dataset. 
-            @param index: the index of the sequence
-            @param field: the label of the field 
-        """
+        """Return a sequence of one single field given by `field` and indexed by
+        `index`."""
         seq = ravel(self.getField('sequence_index'))
         if len(seq) == index+1:
             # user wants to access the last sequence, return until end of data
@@ -49,23 +48,24 @@ class SequentialDataSet(SupervisedDataSet):
         return self.getField(field)[ravel(self.getField('sequence_index'))[index]:ravel(self.getField('sequence_index'))[index+1]]
 
     def getSequence(self, index):
-        """ returns the sequence given by index. a list of arrays is returned for the
-            linked arrays. It is assumed that the last sequence goes until the end of
-            the dataset. 
-            @param index: the index of the sequence to return """
+        """Returns the sequence given by `index`. 
+        
+        A list of arrays is returned for the linked arrays. It is assumed that 
+        the last sequence goes until the end of the dataset."""
         return [self._getSequenceField(index, l) for l in self.link]
     
     def getSequenceIterator(self, index):
-        """ return an iterator over the samples of the specified sequence. 
-            @param index: the number of the sequence over which the iterator is generated. """
+        """Return an iterator over the samples of the sequence specified by 
+        `index`."""
         fields = self.getSequence(index)
         for i in range(self.getSequenceLength(index)):
             yield [f[i] for f in fields]
         
     def endOfSequence(self, index):
-        """ returns True if the marker was moved over the last element of sequence 'index', 
-            False otherwise. Mostly used like endOfData() with while loops. 
-            @param index: the number of sequence for which the end is to be reached """
+        """Return True if the marker was moved over the last element of 
+        sequence `index`, False otherwise. 
+        
+        Mostly used like .endOfData() with while loops."""
         seq = ravel(self.getField('sequence_index'))
         if len(seq) == index+1:
             # user wants to access the last sequence, return until end of data
@@ -77,28 +77,26 @@ class SequentialDataSet(SupervisedDataSet):
             return self.index >= seq[index+1]
     
     def gotoSequence(self, index):
-        """ moves the internal marker to the beginning of sequence 'index'.
-            @param index: number of sequence to jump to """
+        """Move the internal marker to the beginning of sequence `index`."""
         try:
             self.index = ravel(self.getField('sequence_index'))[index]
         except IndexError:
             raise IndexError('sequence does not exist')
      
     def getCurrentSequence(self):
-        """ returns the current sequence, according to the marker position. """
+        """Return the current sequence, according to the marker position."""
         seq = ravel(self.getField('sequence_index'))
         return len(seq) - sum(seq > self.index) - 1
         
     def getNumSequences(self):
-        """ returns the number of sequences. The last (open) sequence is also 
-            counted in, even though there is no additional 'newSequence' marker. """
+        """Return the number of sequences. The last (open) sequence is also 
+        counted in, even though there is no additional 'newSequence' marker."""
         return self.getField('sequence_index').shape[0]
     
     def getSequenceLength(self, index):
-        """ returns the length of the given sequence. If the index is pointing
-            to the last sequence, the sequence is considered to go till the end
-            of the dataset. 
-            @param index: number of sequence for which the length is returned """
+        """Return the length of the given sequence. If `index` is pointing
+        to the last sequence, the sequence is considered to go until the end
+        of the dataset."""
         seq = ravel(self.getField('sequence_index'))
         if len(seq) == index+1:
             # user wants to access the last sequence, return until end of data
@@ -109,8 +107,8 @@ class SequentialDataSet(SupervisedDataSet):
         return int(seq[index+1] - seq[index])
     
     def removeSequence(self, index):
-        """ removes the nth sequence from the dataset and places the marker to the 
-            sample following the removed sequence. """
+        """Remove the `index`'th sequence from the dataset and places the
+        marker to the sample following the removed sequence."""
         if index >= self.getNumSequences():
             # sequence doesn't exist, raise exception
             raise IndexError('sequence does not exist.')
@@ -164,18 +162,18 @@ class SequentialDataSet(SupervisedDataSet):
         self.currentSeq = 0
     
     def __iter__(self):
-        """ creates an iterator object over sequences which are themselves iterable objects.
-            Use with double for loops. """
+        """Create an iterator object over sequences which are themselves
+        iterable objects."""
         for i in range(self.getNumSequences()):
             yield self.getSequenceIterator(i)
     
     def _provideSequences(self):
-        """ return an iterator over sequence lists. """
+        """Return an iterator over sequence lists."""
         return iter(map(list, iter(self)))
     
     def evaluateModuleMSE(self, module, averageOver = 1, **args):
-        """ Evaluate the predictions of a module on a sequential dataset
-        and return the MSE (potentially average over a number of epochs). """
+        """Evaluate the predictions of a module on a sequential dataset
+        and return the MSE (potentially average over a number of epochs)."""
         res = 0.
         for dummy in range(averageOver):
             ponderation = 0.
@@ -190,7 +188,10 @@ class SequentialDataSet(SupervisedDataSet):
         return res/averageOver
    
     def splitWithProportion(self, proportion = 0.5):
-        """ produce two new datasets, each containing a part of the sequences """
+        """Produce two new datasets, each containing a part of the sequences. 
+        
+        The first dataset will have a fraction given by `proportion` of the 
+        dataset."""
         l = self.getNumSequences()
         leftIndices = sample(range(l), int(l*proportion))
         leftDs = self.copy()
