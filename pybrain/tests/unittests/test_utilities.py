@@ -30,53 +30,7 @@
     >>> call_count
     1
     
-
-Tests for substitute
-====================
-
-Hack Environment Variables
---------------------------
-
-Since substitution can be deactivated via environment variables, we have to 
-hack them first. This is no real testing.
-
-    >>> import os
-    >>> no_substitute = os.environ.get('PYBRAIN_NO_SUBSTITUTE', False)
-    >>> if no_substitute: del os.environ['PYBRAIN_NO_SUBSTITUTE']
-
-
-Tests
------
-
-First define a function that is supposed to be substituted.
-    
-    >>> @substitute('pybrain.tests.auxiliary.otherfunc')
-    ... def onefunc():
-    ...    print "I am onefunc."
-
-Then assert that it really happens:
-    
-    >>> onefunc()
-    I am the other func.
-    
-Test that attaching builtins to classes works as expected.
-
-    >>> class MyNumber(int):
-    ...   @substitute('math.log')
-    ...   def log(self): pass
-
-    >>> import math
-    >>> MyNumber(2).log()
-    0.69314718055994529
-
-Unhack Environment Variables
-----------------------------
-    
-Recover PYBRAIN_NO_SUBSTITUTE flag
-
-    >>> if no_substitute: os.environ['PYBRAIN_NO_SUBSTITUTE'] = no_substitute
-   
-   
+  
 Tests for Serializable
 ======================
 
