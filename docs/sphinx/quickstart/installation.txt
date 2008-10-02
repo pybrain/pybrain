@@ -41,7 +41,7 @@ and run it::
 
 .. note::
    
-   On Unix systems, you will possibly have to run these commands as a superuser!
+   On Unix systems, you will possibly have to run these commands as a superuser.
    
    
 Scipy and Matplotlib
@@ -65,7 +65,7 @@ edge from our SVN repository.
 
 To check out the PyBrain repository run::
 
-   $ svn co http://pybrain-svn.informatik.tu-muenchen.de pybrain-trunk
+   $ svn co http://pybrain-svn.informatik.tu-muenchen.de/trunk/ pybrain-trunk
    
 Change into the directory Pybrain directory after either checking out SVN or 
 downloading and extracting the archive. There you run (possibly as a superuser 

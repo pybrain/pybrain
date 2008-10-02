@@ -6,14 +6,14 @@ Building Networks with Modules and Connections
 This chapter will guide you to use PyBrain's most basic  structural elements: 
 the :class:`FeedForwardNetwork` and :class:`RecurrentNetwork` classes and with
 them the :class:`Module` class and the :class:`Connection` class. We
-have already seen how to create networks with the `buildNetwork` shortcut - but
+have already seen how to create networks with the ``buildNetwork`` shortcut - but
 since this technique is limited in some ways, we will now explore how to create
 networks from the ground up.
 
 Feed Forward Networks
 ---------------------
 
-We will start with a simple example, building a multi layer perceptron (MLP). 
+We will start with a simple example, building a multi layer perceptron. 
 
 First we make a new :class:`FeedForwardNetwork` object::
 
@@ -36,13 +36,14 @@ In order to use them, we have to add them to the network::
    >>> n.addModule(hiddenLayer)
    >>> n.addOutputModule(outLayer)
  	
-We can actually add multiple input and output modules. The net does have to know
+We can actually add multiple input and output modules. The net has to know
 which of its modules are input and output modules, in order to forward propagate
 input and to back propagate errors.
  	
-We still need to explicitly determine how they should be connected. For this we 
-use the most common connection type, which produces a full connectivity between
-two layers (or Modules, in general): the :class:`FullConnection`::
+IT still needs to be explicitly determined how they should be connected. For 
+this we use the most common connection type, which produces a full connectivity
+between layers, by connecting each neuron of one layer with each neuron of the
+other. This is implemented by the :class:`FullConnection` class::
 
    >>> from pybrain.structure import FullConnection
    >>> in_to_hidden = FullConnection(inLayer, hiddenLayer)
@@ -54,13 +55,12 @@ As with modules, we have to explicitly add them to the network::
    >>> n.addConnection(hidden_to_out)
  	
 All the elements are in place now, so we can do the final step that makes our 
-MLP usable,	which is to call the 'sortModules()' method::
+MLP usable,	which is to call the ``.sortModules()`` method::
 
    >>> n.sortModules()
    
 This call does some internal initialization which is necessary before the net
-can finally be used: for example, the modules are sorted topologically and the
-parameters are reallocated in memory.
+can finally be used: for example, the modules are sorted topologically.
 	
 	
 Examining a Network
@@ -85,13 +85,13 @@ be transformed::
    
 Again, this might look different on your machine - the weights of the 
 connections have already been initialized randomly. To have a look at those 
-parameters, just check the `.params` field of the connections:
+parameters, just check the ``.params`` field of the connections:
 	
 We can access the trainable parameters (weights) of a connection directly, or 
 read all weights of the network at once::
   
    >>> in_to_hidden.params
-   array([ 1.37751406,  1.39320901, -0.24052686, -0.67970042, -0.5999425 , -1.27774679])   >>> hidden_to_out.params
+   array([ 1.37751406,  1.39320901, -0.24052686, -0.67970042, -0.5999425 , -1.27774679])
    >>> hidden_to_out.params
    array([-0.32156782,  1.09338421,  0.48784924])
 
@@ -109,10 +109,10 @@ the second connection.
 Naming your Networks structure
 ------------------------------
 
-In some settings it makes sense to name your the parts of your network. All its
-structural components are derivde from the :class:`Named` class, which means 
-that they have an attribute `.name` by which you can identify it. If no name is
-given, a new name will be generated automatically.
+In some settings it makes sense to give the parts of a network explicit 
+identifiers. The structural components are derivde from the :class:`Named` 
+class, which means that they have an attribute `.name` by which you can 
+identify it by. If no name is given, a new name will be generated automatically.
 
 Subclasses can also be named by passing the `name` argument on initialization::
 
@@ -155,7 +155,7 @@ We will quickly build up a network that is the same as in the example above:
    >>> n.addConnection(FullConnection(n['hidden'], n['out'], name='c2'))
 
 The :class:`RecurrentNetwork` class has one additional method, 
-`addRecurrentConnection`, which looks back in time one timestep. We can
+``.addRecurrentConnection()``, which looks back in time one timestep. We can
 add one from the hidden to the hidden layer::
 
    >>> n.addRecurrentConnection(FullConnection(n['hidden'], n['hidden'], name='c3'))
@@ -181,7 +181,7 @@ the `reset` method::
    >>> n.activate((2, 2))
    array([-0.19675801])
           
-After the call to `reset`, we are getting the same outputs as just after
+After the call to ``.reset()``, we are getting the same outputs as just after
 the objects creation.
 
 

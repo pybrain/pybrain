@@ -6,12 +6,12 @@ Welcome to PyBrain's documentation!
 ===================================
 
 The documentation is build up in the following parts: first, there is the 
-quickstart tutorial which aims at getting you started with PyBrain as quick as 
+quickstart tutorial which aims at getting you started with PyBrain as quickly as 
 possible. This is the right place for you if you just want get a feel for the
 library or if you never used PyBrain before.
 
 Although the quickstart uses supervised learning with neural networks as an 
-example, this does not mean that that's it! PyBrain is not only about supervised
+example, this does not mean that that's it. PyBrain is not only about supervised
 learning and neural networks.
 
 While the quickstart should be read sequentially, the tutorial's chapters can be
@@ -20,7 +20,8 @@ read mostly independent of each other.
 In case this does not suffice, we also have an API reference, which we call the
 module index. All the packages and modules of PyBrain are auto-documented there.
 
-If at any point the documentation does not suffice, you can always get help:
+If at any point the documentation does not suffice, you can always get help at 
+the pybrain Google Group at http://groups.google.com/group/pybrain.
 
 
 Quickstart

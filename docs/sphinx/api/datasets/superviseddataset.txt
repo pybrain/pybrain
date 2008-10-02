@@ -7,4 +7,4 @@
 
 .. autoclass:: SupervisedDataSet
    :show-inheritance:
-   :members: __init__, addField, addSample, batches, clear, copy, endOfData, getDimension, getField, getFieldNames, getLength, getLinked, getSample, getVectorFormat, hasField, linkFields, loadFromFile, randomBatches, reconstruct, reset, saveToFile, setField, splitWithProportion
+   :members: __init__, __len__, addSample, batches, clear, copy, loadFromFile, randomBatches, reconstruct, saveToFile, splitWithProportion

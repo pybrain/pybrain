@@ -27,9 +27,9 @@ shortcut::
    >>> from pybrain.tools.shortcuts import buildNetwork
    >>> net = buildNetwork(2, 3, 1)
    
-This call returns a network that has two inputs, 3 hidden and 1 output neuron. 
-In PyBrain, these layers are ``Module`` objects and they are already 
-connected with ``FullConnection`` objects.
+This call returns a network that has two inputs, three hidden and a single
+output neuron. In PyBrain, these layers are :class:`Module` objects and they are
+already connected with :class:`FullConnection` objects.
 
 
 Activating a Network
@@ -50,7 +50,7 @@ Examining the structure
 
 How can we examine the structure of our network somewhat closer? In PyBrain, 
 every part of a network has a name by which you can access it. When building
-networks with the buildNetwork shortcut, the parts are named automatically::
+networks with the ``buildNetwork`` shortcut, the parts are named automatically::
 
    >>> net['in']
    <LinearLayer 'in'>

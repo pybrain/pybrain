@@ -61,30 +61,29 @@ Test our dataset by printing a little information about it.
   print "First sample (input, target, class):"
   print trndata['input'][0], trndata['target'][0], trndata['class'][0] 
 
-Now build a feed-forward network with 5 hidden units. We use the a convenience
-function for this. The input and output
-layer size must match the dataset's input and target dimension. You could add
-additional hidden layers by inserting more numbers giving the desired layer sizes.
+Now build a feed-forward network with 5 hidden units. We use the shortcut
+``buildNetwork``for this. The input and output layer size must match the 
+dataset's input and target dimension. You could add additional hidden layers by
+inserting more numbers giving the desired layer sizes.
+
 The output layer uses a softmax function because we are doing classification.
 There are more options to explore here, e.g. try changing the hidden layer transfer
 function to linear instead of (the default) sigmoid.
 
-.. seealso:: Desciption :func:`buildNetwork` for more info on options, 
-   and the Network tutorial :ref:`netmodcon` for info on how to build 
-   your own non-standard networks. 
+.. seealso:: Desciption :func:`buildNetwork` for more info on options, and the 
+   Network tutorial :ref:`netmodcon` for info on how to build your own 
+   non-standard networks. 
 
 ::
 
   fnn = buildNetwork( trndata.indim, 5, trndata.outdim, outclass=SoftmaxLayer )
 
 Set up a trainer that basically takes the network and training dataset as input.
-Currently the backpropagation and RPROP learning algorithms are implemented. See their
-description for possible parameters. If you don't want to deal with this, just use RPROP
-with default parameters. 
+For a list of trainers, see :ref:`api/trainers`. We are using a 
+:class:`BackpropTrainer` for this.
 ::
 
   trainer = BackpropTrainer( fnn, dataset=trndata, momentum=0.1, verbose=True, weightdecay=0.01)
-  #trainer = RPropMinusTrainer( fnn, dataset=trndata, verbose=True)
 
 Now generate a square grid of data points and put it into a dataset,
 which we can then classifiy to obtain a nice contour field for visualization.
