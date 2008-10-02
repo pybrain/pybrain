@@ -1,0 +1,18 @@
+:mod:`networks` -- Structural Components: Networks
+==================================================
+
+.. automodule:: pybrain.structure.networks
+
+.. autoclass:: Network
+   :members: __init__, activate, activateOnDataset, addConnection, addInputModule, addModule, addOutputModule, copy, getName, hasDerivatives, paramdim, randomize, reset, setArgs, sortModules, stdParams
+   :show-inheritance:
+
+
+.. autoclass:: FeedForwardNetwork
+   :members: __init__
+   :show-inheritance:
+
+
+.. autoclass:: RecurrentNetwork
+   :members: __init__, addRecurrentConnection
+   :show-inheritance:
