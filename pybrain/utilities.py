@@ -353,63 +353,6 @@ def _import(name):
     return mod
 
     
-def substitute(target):
-    """Substitute a function with the function found via import from the given
-    string.
-    
-    If the function cannot be found, keep the old one and trigger an 
-    information."""
-    
-    if os.environ.get('PYBRAIN_NO_SUBSTITUTE', None) is not None:
-        logging.info("substitute deactivated since PYBRAIN_NO_SUBSTITUTE is"
-                     " set." )
-        return lambda x: x
-        
-    def makeBuiltinWrapper(func):
-        def builtinWrapper(self, *args, **kwargs):
-            return func(self, *args, **kwargs)
-        # To ease reading of error messages
-        builtinWrapper.__name__ = func.__name__
-        return builtinWrapper
-        
-    def decorator(func):
-        import_path = target.split('.')
-        module_path = import_path[:-1]
-        func_name = import_path[-1]
-        try:
-            module = _import(".".join(module_path))
-            opt_func = getattr(module, func_name)
-        except (ImportError, AttributeError), _e:
-            #print e
-            logging.info("Could not find substitution for %s. (Tried: %s)" 
-                         % (func.__name__, target))
-            #logging.info("from %s import %s" % (".".join(module_path), func_name))
-            return func
-        if type(opt_func) is types.BuiltinFunctionType:
-            opt_func = makeBuiltinWrapper(opt_func)
-        return opt_func
-    return decorator
-    
-    
-def lookupSubstitute(func):
-    """Substitute a function/method by its optimized counterpart. 
-    
-    The lookup rules are as follows:
-    TODO
-    """
-    raise NotImplemented("Use pybrain.tools.helpers.substitute")
-    
-    # The following does not work, since we cannot retrieve the methods 
-    # classname during class initialization. Functions are not yet instance 
-    # methods at that point.
-    #if type(func) is types.MethodType:
-    #    func_name = func.im_class.__name__ + "_" + func_name
-    #import_path = func.__module__.split(".") + [func.__name__]
-    #target_path = import_path[:-2] + ["_" + import_path[-2], import_path[-1]]
-    #target = ".".join(target_path)
-    #return substitute(target)(func)
-        
-        
 # tools for binary Gray code manipulation:
 
 def int2gray(i):
