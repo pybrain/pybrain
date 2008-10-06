@@ -20,13 +20,13 @@ from itertools import izip
 import scipy
 
 from arac.util import is_power_of_two
+from arac.lib import libarac
 from pybrain.structure import LinearLayer, BiasUnit, SigmoidLayer, LSTMLayer, \
     MDLSTMLayer, IdentityConnection, FullConnection, TanhLayer, SoftmaxLayer, \
     MdrnnLayer
 from pybrain.structure.connections.shared import SharedFullConnection
 from pybrain.utilities import garbagecollect
 
-libarac = CDLL('libarac.so')     # This is like an import.
 
 c_double_p = POINTER(c_double)
 c_int_p = POINTER(c_int)
@@ -338,7 +338,6 @@ class c_layer(Structure):
         predlayers = [c_layer.from_layer(pred) for pred in layer.predlayers]
 
         mdrnn_layer.bias_p = pointer(c_layer.from_layer(layer.bias))
-        print addressof(mdrnn_layer.bias_p.contents)
 
         # Give the internal layers a timestep - it will be zero all the time,
         # but it will need one anyway.

@@ -25,6 +25,7 @@ import scipy
 from arac.structure import c_parameter_container, c_bias_layer, \
     c_identity_layer, c_sigmoid_layer, c_lstm_layer, c_identity_connection, \
     c_full_connection, c_layer, c_connection, c_double_p
+from arac.lib import libarac
 from pybrain.structure.networks.network import Network
 from pybrain.structure.networks.feedforward import \
     FeedForwardNetworkComponent, FeedForwardNetwork
@@ -33,7 +34,6 @@ from pybrain.structure.networks.recurrent import RecurrentNetworkComponent, \
 from pybrain.structure.modules.neuronlayer import NeuronLayer
 
     
-libarac = ctypes.CDLL('libarac.so')     # This is like an import.
 
 
 class _Network(Network):
