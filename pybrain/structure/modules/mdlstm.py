@@ -40,7 +40,6 @@ class MDLSTMLayer(NeuronLayer, ParameterContainer):
         self.setArgs(dim=dim, peepholes=peepholes, dimensions=dimensions)
         
         # Internal buffers:
-                # Internal buffers:
         self.bufferlist = [
             ('ingate', dim),
             ('outgate', dim),

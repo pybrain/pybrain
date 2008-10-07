@@ -1,51 +1,42 @@
 #! /usr/bin/env python2.5
 # -*- coding: utf-8 -*-
 
-
-__author__ = ('Christian Osendorfer, osendorf@in.tum.de;'
-              'Justin S Bayer, bayerj@in.tum.de')
-
-
-from pybrain.structure.modules import BiasUnit, SigmoidLayer, LinearLayer
-from pybrain.structure.connections import FullConnection
-from pybrain.structure.networks import FeedForwardNetwork
-from pybrain.structure.modules.module import Module
+__author__ = 'Justin S Bayer, bayer.justin@googlemail.com'
+__version__ = '$Id$'
 
 
-class Rbm(FeedForwardNetwork):
+from pybrain.structure import (LinearLayer, SigmoidLayer, FullConnection, 
+                               BiasUnit, FeedForwardNetwork)
 
-    def __init__(self, visibledim, hiddendim):
-        super(Rbm, self).__init__()
-        Module.__init__(self, visibledim, hiddendim)
-        self.visibledim = visibledim
-        self.hiddendim = hiddendim
-        
-        bias = BiasUnit()
-        vl = self.visibleLayer = LinearLayer(visibledim)
-        hl = self.hidddenLayer = SigmoidLayer(hiddendim)
-        fc = self.fullConnection = FullConnection(vl, hl)
-        bc = self.biasConnection = FullConnection(bias, hl)
-        
-        self.addInputModule(vl)
-        self.addOutputModule(hl)
-        self.addConnection(fc)
-        self.addConnection(bc)
-        
-        self.sortModules()
 
-    def _getWeights(self):
-        return self.fullConnection.params
+def buildRbm(visibledim, hiddendim, weights=None, biasweights=None):
+    """Return a restricted Boltzmann machine of the given dimensions with the
+    given distributions."""
+    net = FeedForwardNetwork()
+    bias = BiasUnit('bias')
+    visible = LinearLayer(visibledim, 'visible')
+    hidden = SigmoidLayer(hiddendim, 'hidden')
+    con1 = FullConnection(visible, hidden)
+    con2 = FullConnection(bias, hidden)
+    if weights is not None:
+        con1.params[:] = weights
+    if biasweights is not None:
+        con2.params[:] = biasweights
 
-    def _setWeights(self, val):
-        self.fullConnection.params[:] = val
+    net.addInputModule(visible)
+    net.addModule(bias)
+    net.addOutputModule(hidden)
+    net.addConnection(con1)
+    net.addConnection(con2)
+    net.sortModules()
+    return net
     
-    weights = property(_getWeights, _setWeights)
-    
-    def _getBiasWeights(self):
-        return self.biasConnection.params
-        
-    def _setBiasWeights(self, value):
-        self.biasConnection.params = value
-        
-    biasWeights = property(_getBiasWeights, _setBiasWeights)
 
+def invRbm(rbm):
+    """Return the inverse rbm of an rbm."""
+    visibledim = rbm.outdim
+    hiddendim = rbm.indim
+    # TODO: check if shape is correct
+    params = rbm.connections[rbm['visible']][0].params[:visibledim * hiddendim]
+    params = params.reshape(visibledim, hiddendim).T.flatten()
+    return buildRbm(visibledim, hiddendim, weights=params)
