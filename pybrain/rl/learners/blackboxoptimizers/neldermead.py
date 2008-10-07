@@ -6,7 +6,7 @@ from blackboxoptimizer import BlackBoxOptimizer
 
 
 class NelderMead(BlackBoxOptimizer):
-    """ do the optimization using a simple wrapper for scipy's fmin """
+    """Do the optimization using a simple wrapper for scipy's fmin."""
     
     # acceptable relative error in the evaluator for convergence.
     stopPrecision = 1e-6

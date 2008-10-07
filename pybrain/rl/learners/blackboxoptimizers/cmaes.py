@@ -106,6 +106,7 @@ class CMAES(BlackBoxOptimizer):
             
             self.bestEvaluable = ravel(array(arx[:, arindex[0]]))
             self.bestEvaluation = arfitness[0]
+            self.notify()
     
 
 def sorti(vect):

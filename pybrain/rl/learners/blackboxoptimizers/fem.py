@@ -125,7 +125,8 @@ class FEM(BlackBoxOptimizer):
                 if self.evalMus: print '   mu-fitness(es):', self.muevals[-len(self.mus):]
                 else: print
             
-            self.generation += 1             
+            self.generation += 1
+            self.notify()            
                                  
     def _produceNewSample(self):
         """ returns a new sample, its fitness and its densities """

@@ -8,6 +8,7 @@ import logging
 import threading
 import types
 import os
+import operator
 
 from itertools import count
 from math import sqrt
@@ -433,3 +434,99 @@ def reachable(stepFunction, start, destinations):
     for k, val in deeper.items():
         res[k] = val+1
     return res
+    
+    
+def crossproduct(ss, row=None, level=0):
+    if row is None:
+        row = []
+    if len(ss) > 1:
+        return reduce(operator.add, 
+                      [crossproduct(ss[1:],row+[i],level+1) for i in ss[0]])
+    else:
+       return [row+[i] for i in ss[0]]
+
+
+def arrayslice(arr, *slices):
+    """Return a slice of an array.
+    
+    Example:
+    
+        arrayslice(arr, (2,3), (0, 1), (5, 10))
+    
+    is equivalent to
+    
+        arr[2:3, 0:1, 5:10]
+    """
+    
+    
+    
+def permuteToBlocks(arr, blockshape):
+    """Permute an array so that it consists of linearized blocks.
+    
+    Example: A two-dimensional array of the form
+    
+        0  1  2  3 
+        4  5  6  7
+        8  9  10 11
+        12 13 14 15
+    
+    would be turned into an array like this with (2, 2) blocks:
+    
+        0 1 4 5 2 3 6 7 8 9 12 13 10 11 14 15
+    """
+    shapes = zip(arr.shape, blockshape)
+    if len(blockshape) != arr.ndim:
+        raise ValueError("Blocks don't have the same dimensionality as array.")
+    if any(a % b != 0 for (a, b) in shapes):
+        raise ValueError("Blocks don't fit into array shape.")
+        
+    # First create all possible slices along a single dimension.
+    borders = [[(i * b, (i + 1) * b) for i in xrange(s / b)] for s, b in shapes]
+    # Then combine each with each.
+    allborders = crossproduct(borders)
+    # We will accumulate all the blocks in a list and make an array out of it 
+    # afterwards.
+    chunks = []
+    for border in allborders:
+        print border
+        chunk = arr
+        for start, end in border:
+            print start
+            print end
+            # return 0
+            chunk = operator.getslice(chunk, start, end)[0]
+            print "chunk", chunk
+        return 0
+        chunks.append(chunk)
+        
+    return array(chunks)
+        
+        
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

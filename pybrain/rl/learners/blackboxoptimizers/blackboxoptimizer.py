@@ -9,10 +9,12 @@ from pybrain.structure.parametercontainer import ParameterContainer
 
 class BlackBoxOptimizer(Learner):
     """ A type of Learner that optimizes an unknown (single-output) function.
-    It only accepts evaluables that are arrays, or have a .params attribute which is an array. 
+    It only accepts evaluables that are arrays, or have a .params attribute 
+    which is an array. 
     
-    Subclasses can implement a ._batchLearn() method instead of the _learnStep() method, 
-    which will be called instead if the 'online' parameter is set accordingly. 
+    Subclasses can implement a ._batchLearn() method instead of the _learnStep()
+    method, which will be called instead if the 'online' parameter is set 
+    accordingly. 
     """
     
     # minimize or maximize? 
@@ -66,13 +68,13 @@ class BlackBoxOptimizer(Learner):
         self.noisyEvaluator = evaluator.noisy
         
     def learn(self, maxSteps = None):
-        """ Some BlackBoxOptimizers can only be called one time, and currently do not support iteratively
-        adding more steps. """
+        """ Some BlackBoxOptimizers can only be called one time, and currently
+        do not support iteratively adding more steps. """
         
         if not self.online:
             if self.maxEvaluations != None:
                 if maxSteps != None:
-                    maxSteps = min(maxSteps, self.maxEvaluations-self.steps)
+                    maxSteps = min(maxSteps, self.maxEvaluations - self.steps)
                 else:
                     maxSteps = self.maxEvaluations-self.steps
             self._batchLearn(maxSteps)
