@@ -29,7 +29,7 @@ class RbmGibbsTrainerConfig:
 class RbmGibbsTrainer(Trainer):
     def __init__(self, rbm, dataset, cfg=None):
         self.rbm = rbm
-        self.invrbm = invRbm(rbm)
+        self.invRbm = invRbm(rbm)
         self.dataset = dataset
         self.cfg = RbmGibbsTrainerConfig() if cfg is None else cfg
 
@@ -47,26 +47,58 @@ class RbmGibbsTrainer(Trainer):
                 zeros(self.rbm.outdim), zeros(self.rbm.indim)
 
             for t in xrange(cfg.maxIter):
-                weights = self.rbm.connections[self.rbm['visible']][0].params
+                #print "*** Iteration %2d **************************************" % t
+
+                weights = self.rbm.connections[self.rbm['visible']][0].params.reshape( \
+                    (self.rbm.indim, self.rbm.outdim))
                 biasWeights = self.rbm.connections[self.rbm['bias']][0].params
+
                 mm = cfg.iniMm if t < cfg.mmSwitchIter else cfg.finMm
 
                 w, hb, vb = self.calcUpdateByRows(rows)
+
+                #print "Delta: "
+                #print "Weight: ",
+                #print w
+                #print "Visible bias: ",
+                #print vb
+                #print "Hidden bias: ",
+                #print hb
+                #print ""
 
                 olduw = uw = olduw * mm + \
                 	cfg.rWeights * (w - cfg.weightCost * weights)
                 olduhb = uhb = olduhb * mm + cfg.rHidBias * hb
                 olduvb = uvb = olduvb * mm + cfg.rVisBias * vb
 
+                #print "Delta after momentum: "
+                #print "Weight: ",
+                #print uw
+                #print "Visible bias: ",
+                #print uvb
+                #print "Hidden bias: ",
+                #print uhb
+                #print ""
+
                 # update the parameters of the original rbm
-                print uw.shape
-                weights += uw.flatten()
-                biasWeights += uhb.flatten()
+                weights += uw
+                biasWeights += uhb
+
                 # Create a new inverted rbm with correct parameters
-                invBiasWeights = self._invRbm.connections[self.rbm['bias']][0].params
+                invBiasWeights = self.invRbm.connections[self.invRbm['bias']][0].params
                 invBiasWeights += uvb
-                self._invRbm = invRbm(self.rbm)
-                self._invRbm.connections[self.rbm['bias']][0].params = invBiasWeights
+                self.invRbm = invRbm(self.rbm)
+                self.invRbm.connections[self.invRbm['bias']][0].params[:] = invBiasWeights
+
+                #print "Updated "
+                #print "Weight: ",
+                #print self.rbm.connections[self.rbm['visible']][0].params.reshape( \
+                #    (self.rbm.indim, self.rbm.outdim))
+                #print "Visible bias: ",
+                #print self.invRbm.connections[self.invRbm['bias']][0].params
+                #print "Hidden bias: ",
+                #print self.rbm.connections[self.rbm['bias']][0].params
+                #print ""
 
     def calcUpdateByRow(self, row):
         """This function trains the RBM using only one data row.
@@ -82,7 +114,7 @@ class RbmGibbsTrainer(Trainer):
         # b) the sampling & reconstruction
         sampled = poshp > random.rand(1, self.rbm.outdim)
         sampled = sampled.astype('int32')
-        recon = self.invrbm.activate(sampled)	# the re-construction of data
+        recon = self.invRbm.activate(sampled)	# the re-construction of data
 
         # c) negative phase
         neghp = self.rbm.activate(recon)
@@ -93,24 +125,24 @@ class RbmGibbsTrainer(Trainer):
         # compute the raw delta
         # !!! note that this delta is only the 'theoretical' delta
         return pos - neg, poshb - neghb, posvb - negvb
-    
+
     def calcUpdateByRows(self, rows):
         """Return a 3-tuple constisting of update for (weightmatrix,
         hidden bias weights, visible bias weights)."""
-        
+
         delta_w, delta_hb, delta_vb = \
             zeros((self.rbm.indim, self.rbm.outdim)), \
             zeros(self.rbm.outdim), zeros(self.rbm.indim)
-        
+
         for row in rows:
             dw, dhb, dvb = self.calcUpdateByRow(row)
             delta_w += dw
             delta_hb += dhb
             delta_vb += dvb
-        
+
         delta_w /= len(rows)
         delta_hb /= len(rows)
         delta_vb /= len(rows)
-        
+
         # !!! note that this delta is only the 'theoretical' delta
         return delta_w, delta_hb, delta_vb
