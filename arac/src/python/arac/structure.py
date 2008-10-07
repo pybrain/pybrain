@@ -369,7 +369,7 @@ class c_layer(Structure):
             con.inlayerstop = layer.outsize + 1
             con.outlayerstart = 0
             con.outlayerstop = \
-                layer.hiddendim * layer.outsize
+                layer.hiddendim * (3 + layer.timedim)
             pred.add_outgoing_connection(con)
 
         layer_array_type = (c_layer * layer.timedim)
@@ -385,7 +385,7 @@ class c_layer(Structure):
         con.inlayerstop = layer.hiddendim + 1
         con.outlayerstart = 0
         con.outlayerstop = layer.outsize + 1
-
+        
         mdrnn_layer.hiddenlayer_p.contents.add_outgoing_connection(con)
 
         # FullConnection from the bias to the hidden layer.
