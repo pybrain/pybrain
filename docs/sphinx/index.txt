@@ -17,8 +17,9 @@ learning and neural networks.
 While the quickstart should be read sequentially, the tutorial's chapters can be
 read mostly independent of each other. 
 
-In case this does not suffice, we also have an API reference, which we call the
-module index. All the packages and modules of PyBrain are auto-documented there.
+In case this does not suffice, we also have an API reference, the 
+:ref:`modindex`. Most of the packages and modules of PyBrain are auto-documented
+there.
 
 If at any point the documentation does not suffice, you can always get help at 
 the pybrain Google Group at http://groups.google.com/group/pybrain.
@@ -45,24 +46,8 @@ Tutorial
    tutorial/intro
    tutorial/netmodcon
    tutorial/fnn
-   tutorial/reinforcement-learning
    
    
-API
----
-.. toctree::
-   :maxdepth: 2
-
-   api/datasets/superviseddataset
-   api/datasets/sequentialdataset
-   api/datasets/classificationdataset
-   api/supervised/knn/lsh/nearoptimal
-   api/network
-   api/trainers
-   api/svm
-   api/tools
-
-
 Indices and tables
 ==================
 

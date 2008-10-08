@@ -60,7 +60,7 @@ def compileArac():
         compiler.add_include_dir('/sw/lib')
         compiler.add_library_dir('/usr/local/lib')
         compiler.add_library_dir('/usr/lib')
-        output_dir = '/usr/local/lib'
+        output_dir = '.'
     elif sys.platform.startswith('win'):
         raise AracCompileError("No support for arac on windows yet.")
     else:
@@ -85,6 +85,7 @@ def compileArac():
 
 try:
     compileArac()
+    data_files = ['./libarac.so']
 except AracCompileError, e:
     print "Fast networks are not available: %s" % e
 
@@ -101,6 +102,6 @@ setup(
              find_packages('./arac/src/python'),
     include_package_data=True,
     package_dir={'arac': './arac/src/python/arac/'},
-    
+    data_files=[('arac', ('libarac.so',))],
     test_suite='pybrain.tests.runtests.make_test_suite',
 )

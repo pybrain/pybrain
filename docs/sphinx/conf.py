@@ -139,12 +139,12 @@ htmlhelp_basename = 'PyBraindoc'
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, document class [howto/manual]).
 latex_documents = [
-  ('index', 'PyBrain.tex', 'PyBrain Documentation', 'CogBotLab', 'manual'),
+  ('index', 'PyBrain.tex', 'PyBrain Documentation', 'IDSIA/CogBotLab', 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
 # the title page.
-#latex_logo = None
+# latex_logo = 'pics/pybrain_logo.gif'
 
 # For "manual" documents, if this is true, then toplevel headings are parts,
 # not chapters.
@@ -157,4 +157,4 @@ latex_documents = [
 #latex_appendices = []
 
 # If false, no module index is generated.
-#latex_use_modindex = True
+latex_use_modindex = True

@@ -55,16 +55,25 @@ Serialization
     >>> from cStringIO import StringIO
 
 
-SupervisedDataSet
+UnsupervisedDataSet
 -----------------
     
-    >>> d = datasets.SupervisedDataSet(2, 1)
-    >>> d.addSample([0,0],[0])
-    >>> d.addSample([0,1],[1])
-    >>> d.addSample([1,0],[1])
-    >>> d.addSample([1,1],[0])
-    >>> saveInvariant(d)
-    True
+    >>> d = datasets.UnsupervisedDataSet(2)
+    >>> d.addSample([0,0])
+    >>> d.addSample([0,1])
+    >>> d.addSample([1,0])
+    >>> d.addSample([1,1])
+    >>> for sample in d:
+    ...   print sample
+    ...
+    [array([ 0.,  0.])]
+    [array([ 0.,  1.])]
+    [array([ 1.,  0.])]
+    [array([ 1.,  1.])]    
+    
+
+
+    
 
 
 ClassificationDataSet
