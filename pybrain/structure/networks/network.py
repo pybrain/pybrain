@@ -245,15 +245,16 @@ class Network(Module, ParameterContainer):
         # Determine the input and output dimensions of the network.
         self.indim = sum(m.indim for m in self.inmodules)
         self.outdim = sum(m.outdim for m in self.outmodules)
-        
+
         self.indim = 0
         for m in self.inmodules:
-            self.indim += m.indim
+           self.indim += m.indim
         self.outdim = 0
         for m in self.outmodules:
-            self.outdim += m.outdim
-        
+           self.outdim += m.outdim
+
         # Initialize the network buffers.
+        self.bufferlist = []
         Module.__init__(self, self.indim, self.outdim, name=self.name)
         self.sorted = True
         

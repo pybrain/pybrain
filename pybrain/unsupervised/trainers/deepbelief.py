@@ -5,12 +5,15 @@ __author__ = 'Justin S Bayer, bayer.justin@googlemail.com'
 __version__ = '$Id$'
 
 
+import copy
+
 from pybrain.datasets import SupervisedDataSet, UnsupervisedDataSet
-from pybrain.structure import BiasUnit, FeedForwardNetwork
+from pybrain.structure import BiasUnit, FeedForwardNetwork, FullConnection
 from pybrain.structure.networks.rbm import Rbm
 from pybrain.structure.modules.neuronlayer import NeuronLayer
 from pybrain.supervised.trainers import Trainer
-from pybrain.unsupervised.trainers.rbm import RbmGibbsTrainer
+from pybrain.unsupervised.trainers.rbm import (RbmBernoulliTrainer, 
+                                               RbmGaussTrainer)
 
 
 class DeepBeliefTrainer(Trainer):
@@ -25,7 +28,13 @@ class DeepBeliefTrainer(Trainer):
     The behaviour of the trainer is undefined for other cases.
     """
     
-    def __init__(self, net, dataset, epochs=50, cfg=None):
+    trainers = {
+        'bernoulli': RbmBernoulliTrainer,
+        'gauss': RbmGaussTrainer,
+    }
+    
+    def __init__(self, net, dataset, epochs=50, 
+                 cfg=None, distribution='bernoulli'):
         if isinstance(dataset, SupervisedDataSet):
             self.datasetfield = 'input'
         elif isinstance(dataset, UnsupervisedDataSet):
@@ -37,9 +46,10 @@ class DeepBeliefTrainer(Trainer):
         self.dataset = dataset
         self.epochs = epochs
         self.cfg = cfg
+        self.trainerKlass = self.trainers[distribution]
         
     def trainRbm(self, rbm, dataset):
-        trainer = RbmGibbsTrainer(rbm, dataset, self.cfg)
+        trainer = self.trainerKlass(rbm, dataset, self.cfg)
         for _ in xrange(self.epochs):
             trainer.train()
         return rbm
@@ -66,20 +76,37 @@ class DeepBeliefTrainer(Trainer):
         # for each layer.
         dataset = self.dataset
         piecenet = FeedForwardNetwork()
-        piecenet.addInputModule(self.net.inmodules[0])
-        bias = [i for i in self.net.modulesSorted if isinstance(i, BiasUnit)][0]
+        piecenet.addInputModule(copy.deepcopy(self.net.inmodules[0]))
+        # Add a bias
+        bias = BiasUnit()
         piecenet.addModule(bias)
+        # Add the first visible layer
+        firstRbm = self.iterRbms().next()
+        visible = copy.deepcopy(firstRbm.visible)
+        piecenet.addModule(visible)
+        # For saving the rbms and their inverses
+        self.invRbms = []
+        self.rbms = []
         for rbm in self.iterRbms():
             self.net.sortModules()
             # Train the first layer with an rbm trainer for `epoch` epochs.
+            trainer = self.trainerKlass(rbm, dataset, self.cfg)
             for _ in xrange(self.epochs):
-                RbmGibbsTrainer(rbm, dataset).train()
+                trainer.train()
+            self.invRbms.append(trainer.invRbm)
+            self.rbms.append(rbm)
             # Add the connections and the hidden layer of the rbm to the net.
-            piecenet.addConnection(rbm.biascon)
-            piecenet.addConnection(rbm.con)
-            piecenet.addModule(rbm.hidden)
+            hidden = copy.deepcopy(rbm.hidden)
+            biascon = FullConnection(bias, hidden)
+            biascon.params[:] = rbm.biasWeights
+            con = FullConnection(visible, hidden)
+            con.params[:] = rbm.weights
+            
+            piecenet.addConnection(biascon)
+            piecenet.addConnection(con)
+            piecenet.addModule(hidden)
             # Overwrite old outputs
-            piecenet.outmodules = [rbm.hidden]
+            piecenet.outmodules = [hidden]
             piecenet.outdim = rbm.hiddenDim
             piecenet.sortModules()
             
@@ -87,3 +114,4 @@ class DeepBeliefTrainer(Trainer):
             for sample, in self.dataset:
                 new_sample = piecenet.activate(sample)
                 dataset.addSample(new_sample)
+            visible = hidden

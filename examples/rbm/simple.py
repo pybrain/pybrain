@@ -9,7 +9,7 @@ import scipy
 
 from pybrain.structure.networks.rbm import Rbm
 from pybrain.unsupervised.trainers.rbm import (RbmGibbsTrainerConfig, 
-                                               RbmGibbsTrainer)
+                                               RbmBernoulliTrainer)
 from pybrain.datasets import UnsupervisedDataSet
 
 
@@ -21,7 +21,7 @@ cfg = RbmGibbsTrainerConfig()
 cfg.maxIter = 3
 
 rbm = Rbm.fromDims(6, 1)
-trainer = RbmGibbsTrainer(rbm, ds, cfg)
+trainer = RbmBernoulliTrainer(rbm, ds, cfg)
 print rbm.weights, rbm.biasWeights
 for _ in xrange(50):
     trainer.train()
