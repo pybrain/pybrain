@@ -48,12 +48,12 @@ Tests for Serializable
 Tests for permuteToBlocks
 =========================
 
-     from scipy import array
-     from pybrain.utilities import permuteToBlocks
-     arr = array([[0, 1, 2, 3], [4, 5 ,6 ,7], [8, 9, 10, 11], [12, 13,14, 15]])
-     permuteToBlocks(arr, (2, 2))
-    array([0, 1, 4, 5, 2, 3, 6, 7, 8, 9, 12, 13, 10, 11, 14, 15])
-
+    >>> from scipy import array
+    >>> from pybrain.utilities import permuteToBlocks
+    >>> arr = array([[0, 1, 2, 3], [4, 5 ,6 ,7], [8, 9, 10, 11], [12, 13,14, 15]])
+    >>> permuteToBlocks(arr, (2, 2))
+    array([  0.,   1.,   4.,   5.,   2.,   3.,   6.,   7.,   8.,   9.,  12.,
+            13.,  10.,  11.,  14.,  15.])
     
 """
 

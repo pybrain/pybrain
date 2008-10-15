@@ -15,7 +15,7 @@ from math import sqrt
 from random import random, choice
 from string import split
 
-from scipy import where, array, exp
+from scipy import where, array, exp, zeros, size
 
 # file extension for load/save protocol mapping
 known_extensions = {
@@ -446,20 +446,6 @@ def crossproduct(ss, row=None, level=0):
        return [row+[i] for i in ss[0]]
 
 
-def arrayslice(arr, *slices):
-    """Return a slice of an array.
-    
-    Example:
-    
-        arrayslice(arr, (2,3), (0, 1), (5, 10))
-    
-    is equivalent to
-    
-        arr[2:3, 0:1, 5:10]
-    """
-    
-    
-    
 def permuteToBlocks(arr, blockshape):
     """Permute an array so that it consists of linearized blocks.
     
@@ -474,32 +460,20 @@ def permuteToBlocks(arr, blockshape):
     
         0 1 4 5 2 3 6 7 8 9 12 13 10 11 14 15
     """
-    shapes = zip(arr.shape, blockshape)
-    if len(blockshape) != arr.ndim:
-        raise ValueError("Blocks don't have the same dimensionality as array.")
-    if any(a % b != 0 for (a, b) in shapes):
-        raise ValueError("Blocks don't fit into array shape.")
-        
-    # First create all possible slices along a single dimension.
-    borders = [[(i * b, (i + 1) * b) for i in xrange(s / b)] for s, b in shapes]
-    # Then combine each with each.
-    allborders = crossproduct(borders)
-    # We will accumulate all the blocks in a list and make an array out of it 
-    # afterwards.
-    chunks = []
-    for border in allborders:
-        print border
-        chunk = arr
-        for start, end in border:
-            print start
-            print end
-            # return 0
-            chunk = operator.getslice(chunk, start, end)[0]
-            print "chunk", chunk
-        return 0
-        chunks.append(chunk)
-        
-    return array(chunks)
+    blockheight, blockwidth = blockshape
+    height, width = arr.shape
+    arr = arr.flatten()
+    new = zeros(size(arr))
+    for i in xrange(size(arr)):
+        blockx = (i % width) / blockwidth
+        blocky = i / width / blockheight
+        blockoffset = blocky * width / blockwidth + blockx
+        blockoffset *= blockwidth * blockheight
+        inblockx = i % blockwidth
+        inblocky = (i / width) % blockheight
+        j = blockoffset + inblocky * blockwidth + inblockx
+        new[j] = arr[i]
+    return new
         
         
     
