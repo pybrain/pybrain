@@ -14,12 +14,16 @@ class EpisodicTask(Task, Evaluator):
     # tracking cumulative reward
     cumreward = 0
     
+    # tracking the number of samples
+    samples = 0
+    
     def reset(self):
         """ reinitialize the environment """
         # Note: if a task needs to be reset at the start, the subclass constructor 
         # should take care of that.
         self.env.reset()
-        self.cumreward = 0        
+        self.cumreward = 0
+        self.samples = 0        
         
     def isFinished(self): 
         """ is the current episode over? """
@@ -28,6 +32,7 @@ class EpisodicTask(Task, Evaluator):
     def performAction(self, action):
         Task.performAction(self, action)
         self.addReward()
+        self.samples += 1
     
     def addReward(self):
         """ a filtered mapping towards performAction of the underlying environment. """                

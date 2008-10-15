@@ -157,7 +157,7 @@ class BackpropTrainer(Trainer):
         """Return winner-takes-all classification output on a given dataset. 
         
         If no dataset is given, the dataset passed during Trainer 
-        initialization is used. If return_tarets is set, also return 
+        initialization is used. If return_targets is set, also return 
         corresponding target classes.
         """
         if dataset == None:
