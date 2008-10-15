@@ -54,6 +54,10 @@ Tests for permuteToBlocks
     >>> permuteToBlocks(arr, (2, 2))
     array([  0.,   1.,   4.,   5.,   2.,   3.,   6.,   7.,   8.,   9.,  12.,
             13.,  10.,  11.,  14.,  15.])
+    >>> arr = array(range(32)).reshape(2, 4, 4)
+    >>> permuteToBlocks(arr, (2, 2, 2)).astype('int8').tolist()
+    [0, 1, 4, 5, 16, 17, 20, 21, 2, 3, 6, 7, 18, 19, 22, 23, 8, 9, 12, 13, 24, 25, 28, 29, 10, 11, 14, 15, 26, 27, 30, 31]
+    
     
 """
 

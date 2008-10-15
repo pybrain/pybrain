@@ -460,7 +460,27 @@ def permuteToBlocks(arr, blockshape):
     
         0 1 4 5 2 3 6 7 8 9 12 13 10 11 14 15
     """
-    blockheight, blockwidth = blockshape
+    if len(blockshape) < 2:
+        raise ValueError("Need more than one dimension.")
+    elif len(blockshape) == 2:
+        blockheight, blockwidth = blockshape
+        return permuteToBlocks2d(arr, blockheight, blockwidth)
+    elif len(blockshape) == 3:
+        blockdepth, blockheight, blockwidth = blockshape
+        return permuteToBlocks3d(arr, blockdepth, blockheight, blockwidth)
+    else:
+        raise NotImplementedError("Only for dimensions 2 and 3.")
+    
+    
+def permuteToBlocks3d(arr, blockdepth, blockheight, blockwidth):
+    depth, height, width = arr.shape
+    arr_ = arr.reshape(height * depth, width)
+    arr_ = permuteToBlocks2d(arr_, blockheight, blockwidth)
+    arr_.shape = depth, height * width
+    return permuteToBlocks2d(arr_, blockdepth, blockwidth * blockheight)
+    
+    
+def permuteToBlocks2d(arr, blockheight, blockwidth):
     height, width = arr.shape
     arr = arr.flatten()
     new = zeros(size(arr))
@@ -474,6 +494,7 @@ def permuteToBlocks(arr, blockshape):
         j = blockoffset + inblocky * blockwidth + inblockx
         new[j] = arr[i]
     return new
+
         
         
     
