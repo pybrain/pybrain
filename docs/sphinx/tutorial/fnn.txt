@@ -62,7 +62,7 @@ Test our dataset by printing a little information about it.
   print trndata['input'][0], trndata['target'][0], trndata['class'][0] 
 
 Now build a feed-forward network with 5 hidden units. We use the shortcut
-``buildNetwork``for this. The input and output layer size must match the 
+:func:`buildNetwork` for this. The input and output layer size must match the 
 dataset's input and target dimension. You could add additional hidden layers by
 inserting more numbers giving the desired layer sizes.
 
@@ -79,7 +79,7 @@ function to linear instead of (the default) sigmoid.
   fnn = buildNetwork( trndata.indim, 5, trndata.outdim, outclass=SoftmaxLayer )
 
 Set up a trainer that basically takes the network and training dataset as input.
-For a list of trainers, see :ref:`api/trainers`. We are using a 
+For a list of trainers, see :mod:`trainers`. We are using a 
 :class:`BackpropTrainer` for this.
 ::
 
