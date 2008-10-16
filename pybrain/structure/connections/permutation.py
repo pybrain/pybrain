@@ -5,7 +5,9 @@ __author__ = 'Justin Bayer, bayer.justin@googlemail.com'
 __version__ = '$Id$'
 
 
-from pybrain.structure.connection import Connection
+from scipy import array
+
+from pybrain.structure.connections.connection import Connection
 from pybrain.utilities import permute
 
 
@@ -18,9 +20,11 @@ class PermutationConnection(Connection):
             raise ValueError("Indim (%i) does not equal outdim (%i)" % (
                self.indim, self.outdim))
         if len(permutation) * blocksize != self.indim:
-            raise ValueError("Permutation has wrong size.")
+            raise ValueError(
+                "Permutation has wrong size: should be %i but is %i." %(
+                (self.indim / blocksize), len(permutation)))
             
-        self.permutation = permutation
+        self.permutation = array(permutation)
         self.invpermutation = permute(range(len(permutation)), permutation)
         self.blocksize = blocksize
         

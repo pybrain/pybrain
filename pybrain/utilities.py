@@ -437,6 +437,7 @@ def reachable(stepFunction, start, destinations):
     
     
 def crossproduct(ss, row=None, level=0):
+    """Return the crossproduct of the sets given in `ss`."""
     if row is None:
         row = []
     if len(ss) > 1:
@@ -444,6 +445,16 @@ def crossproduct(ss, row=None, level=0):
                       [crossproduct(ss[1:],row+[i],level+1) for i in ss[0]])
     else:
        return [row+[i] for i in ss[0]]
+
+
+def permute(arr, permutation):
+    """Return an array like arr but with elements permutet.
+    
+    Only the first dimension is permuted, which makes it possible to permute 
+    blocks of the input.
+    
+    arr can be anything as long as it's indexable."""
+    return array([arr[i] for i in permutation])
 
 
 def permuteToBlocks(arr, blockshape):

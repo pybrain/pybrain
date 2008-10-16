@@ -24,6 +24,7 @@ def compileArac():
         'arac/src/c/connections/connections.c',
         'arac/src/c/connections/full.c',
         'arac/src/c/connections/identity.c',
+        'arac/src/c/connections/permutation.c',
         'arac/src/c/layers/bias.c',
         'arac/src/c/layers/common.c',
         'arac/src/c/layers/layers.c',

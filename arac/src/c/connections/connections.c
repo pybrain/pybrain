@@ -36,6 +36,10 @@ void forward(Connection* con_p)
         case FULL_CONNECTION:
             connection_forward(con_p, con_p->internal.full_connection_p);
             break;
+        case PERMUTATION_CONNECTION:
+            connection_forward(con_p, con_p->internal.permutation_connection_p);
+            break;
+
     }
 }
 
@@ -57,6 +61,9 @@ void backward(Connection* con_p)
             break;
         case FULL_CONNECTION:
             connection_backward(con_p, con_p->internal.full_connection_p);
+            break;
+        case PERMUTATION_CONNECTION:
+            connection_backward(con_p, con_p->internal.permutation_connection_p);
             break;
     }
 }

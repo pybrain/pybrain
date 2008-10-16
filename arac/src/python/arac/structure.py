@@ -25,6 +25,7 @@ from pybrain.structure import LinearLayer, BiasUnit, SigmoidLayer, LSTMLayer, \
     MDLSTMLayer, IdentityConnection, FullConnection, TanhLayer, SoftmaxLayer, \
     MdrnnLayer
 from pybrain.structure.connections.shared import SharedFullConnection
+from pybrain.structure.connections.permutation import PermutationConnection
 from pybrain.utilities import garbagecollect
 
 
@@ -152,6 +153,16 @@ class c_full_connection(Structure):
     registry = []
     def __init__(self):
         self.registry.append(self)
+        
+
+class c_permutation_connection(Structure):
+    """ctypes representation of the arac PermutationConnection."""
+    
+    _fields_ = [
+        ('permutation_p', c_double_p),
+        ('invpermutation_p', c_double_p),
+        ('blocksize', c_int)
+    ]
     
     
 class c_any_connection(Union):
@@ -160,6 +171,7 @@ class c_any_connection(Union):
     _fields_ = [
         ('identity_connection_p', POINTER(c_identity_connection)),
         ('full_connection_p', POINTER(c_full_connection)),
+        ('permutation_connection_p', POINTER(c_permutation_connection)),
     ]
     
     
@@ -452,6 +464,7 @@ class c_connection(Structure):
         IdentityConnection: 'identity',
         FullConnection: 'full',
         SharedFullConnection: 'full',
+        PermutationConnection: 'permutation',
     }
     
     def __init__(self, inlayer=None, outlayer=None):
@@ -509,6 +522,18 @@ class c_connection(Structure):
             errors = connection.derivs
             
         self.full_connection.weights = c_parameter_container(params, errors)
+    
+    def make_permutation_connection(self, connection):
+        """Make this connection a permutation connection."""
+        self.permutation_connection = c_permutation_connection()
+        self.type = 2
+        self.internal.permutation_connection_p = (
+            pointer(self.permutation_connection))
+        self.permutation_connection.permutation_p = (
+            connection.permutation.ctypes.data_as(c_double_p)) 
+        self.permutation_connection.invpermutation_p = (
+            connection.invpermutation.ctypes.data_as(c_double_p)) 
+        self.permutation_connection.blocksize = connection.blocksize
 
 
 # Some shortcuts.

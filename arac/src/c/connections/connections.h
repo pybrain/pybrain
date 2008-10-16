@@ -15,6 +15,7 @@
 #include "../common.h"
 #include "identity.h"
 #include "full.h"
+#include "permutation.h"
 
 
 //

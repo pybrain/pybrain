@@ -54,6 +54,13 @@ you can do::
    $ easy_install matplotlib
    
 This might take longer, since scipy will also compile different things.
+
+.. note:
+
+   You will possibly run into trouble in this step. If compilation fails at this
+   point, check out the official webpages http://scipy.org and 
+   http://matplotlib.sf.net - also, if you are on a linux system, your package 
+   manager will most probably have a suitable package for you.
    
    
 PyBrain

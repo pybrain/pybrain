@@ -39,7 +39,7 @@ class MdrnnLayer(NeuronLayer, ParameterContainer):
         offset = self.num_in_params
         rest = self.params[offset:]
         return [rest[(i * self.num_rec_params):(i + 1) * self.num_rec_params]
-                for i in xrange(2 * self.timedim)]
+                for i in xrange(self.timedim)]
     
     @property
     def outParams(self):
@@ -71,7 +71,6 @@ class MdrnnLayer(NeuronLayer, ParameterContainer):
         chunks into the network at each timestep which correspond to the (2, 2)
         rectangles that the input can be split into. 
         """
-        #TODO: docstring
         self.timedim = timedim
         self.shape = shape
         blockshape = tuple([1] * timedim) if blockshape is None else blockshape
@@ -91,8 +90,7 @@ class MdrnnLayer(NeuronLayer, ParameterContainer):
         self.num_in_params = self.blocksize * self.hiddendim * (3 + self.timedim)
 
         # Amount of parameters that are needed for the recurrent connections. 
-        # There is one of the parameter sets for every direction along each
-        # axis.
+        # There is one of the parameter for every time dimension.
         self.num_rec_params = outsize * hiddendim * (3 + self.timedim)
 
         # Amount of parameters that are needed for the output.
@@ -104,7 +102,7 @@ class MdrnnLayer(NeuronLayer, ParameterContainer):
                         
         # Total list of parameters.
         self.num_params = sum((self.num_in_params, 
-                               2 * self.timedim * self.num_rec_params,
+                               self.timedim * self.num_rec_params,
                                self.num_out_params,
                                self.num_bias_params))
                      

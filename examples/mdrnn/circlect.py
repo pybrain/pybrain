@@ -14,6 +14,7 @@ from arac.pybrainbridge import _FeedForwardNetwork
 from pybrain.datasets import SupervisedDataSet
 from pybrain.structure import MdrnnLayer, LinearLayer, IdentityConnection, \
     SigmoidLayer
+from pybrain.structure.networks.mdrnn import _Mdrnn
 from pybrain.rl.environments.functions import FunctionEnvironment
 from pybrain.rl.learners.blackboxoptimizers.fem import FEM
 from pybrain.rl.learners.blackboxoptimizers.cmaes import CMAES
@@ -107,34 +108,23 @@ class MdrnnCirclet(FunctionEnvironment):
         self.dataset = dataset
         
         # Initialize MDRNN
-        self.net = _FeedForwardNetwork()
-        inlayer = LinearLayer(width * height)
-        hiddenlayer = MdrnnLayer(timedim=2, 
-                                 shape=(width, height), 
-                                 blockshape=(1, 1), 
-                                 hiddendim=4,
-                                 outsize=1,
-                                 name='mdrnn')
-        outlayer = SigmoidLayer(width * height)
-        con1 = IdentityConnection(inlayer, hiddenlayer)
-        con2 = IdentityConnection(hiddenlayer, outlayer)
-        self.net.addInputModule(inlayer)
-        self.net.addModule(hiddenlayer)
-        self.net.addOutputModule(outlayer)
-        self.net.addConnection(con1)
-        self.net.addConnection(con2)
-
+        self.net = _Mdrnn(timedim=2, 
+                         shape=(width, height), 
+                         blockshape=(2, 2), 
+                         hiddendim=2,
+                         outsize=1,
+                         name='mdrnn')
         self.net.sortModules()
     
     def f(self, x):
-        self.net['mdrnn'].params[:] = x
+        self.net.params[:] = x
         correct_answers_A = 0
         correct_answers_B = 0
         error = 0
         for (inpt, target_vec) in self.dataset:
             # print inpt
             output = self.net.activate(inpt)
-            indic = output.reshape(self.width * self.height, 1).sum(axis=0)
+            indic = output.reshape(self.width * self.height / self.net.blocksize, 1).sum(axis=0)
             klass = 1 if output[0] > 0.5 else 0
             target = target_vec.argmax()
             if klass == target == 0:
@@ -199,7 +189,7 @@ def evalCorrectAnswers(evaluable, width, height):
     correct_answers_B = 0
     for (inpt, target_vec) in dataset:
         output = net.activate(inpt)
-        indic = output.reshape(width * height, 1).sum(axis=0)
+        indic = output.reshape(width * height / net.blocksize, 1).sum(axis=0)
         klass = 1 if output[0] > 0.5 else 0
         target = target_vec.argmax()
         if klass == target == 0:
@@ -220,18 +210,16 @@ if __name__ == '__main__':
     
     # Always use the same randomization
     scipy.random.seed(0)
-    width = 25
-    height = 25
-    amount = 50
+    width = 28
+    height = 28
+    amount = 100
     ds = CirclectDataSet(width, height, amount)
     mdrnn_env = MdrnnCirclet(width, height, ds)
-    print "Number of parameters:", scipy.size(mdrnn_env.net['mdrnn'].params)
-    # optimizer = cma(mdrnn_env, mdrnn_env.net['mdrnn'].params)
-    # optimizer = fem(mdrnn_env, mdrnn_env.net['mdrnn'].params)
-    optimizer = Optimizer(mdrnn_env, mdrnn_env.net['mdrnn'].params)
+    print "Number of parameters:", scipy.size(mdrnn_env.net.params)
+    optimizer = Optimizer(mdrnn_env, mdrnn_env.net.params)
     optimizer.minimize = True
-    # optimizer.verbose = True
     try:
         optimizer.learn()
     except KeyboardInterrupt:
         print evalCorrectAnswers(optimizer.bestEvaluable, width, height)
+    # mdrnn_env.net.activate([1.] * 100)

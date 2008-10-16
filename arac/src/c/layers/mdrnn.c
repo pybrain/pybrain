@@ -141,10 +141,10 @@ void initialize_connections(
     // every time dimension - once in every direction.
     // The n'th and (n + timedim)'th connection will be between the same layers,
     // but in different directions.
-    for(int i = 0; i < 2 * timedim; i++)
+    for(int i = 0; i < timedim; i++)
     {
         // Connect the predecessing layer with the hiddenlayer.
-        full_connect(mdrnn_p->swipe_predlayers_p + (i % timedim),
+        full_connect(mdrnn_p->swipe_predlayers_p + i,
                      mdrnn_p->hiddenlayer_p,
                      in_to_hidden_weights_p[i + 1]);
 
@@ -276,7 +276,7 @@ void adjust_bogus_layers(Layer* layer_p, int block)
 
 
 // TODO: find a more reasonable name
-void forward_connections(Layer* layer_p, int swipe)
+void forward_connections(Layer* layer_p)
 {
     MdrnnLayer* mdrnn_p = layer_p->internal.mdrnn_layer_p; // Shortcut
 
@@ -302,9 +302,7 @@ void forward_connections(Layer* layer_p, int swipe)
     for(int i = 0; i < timedim; i++)
     {
         Layer* cur_pred_p = mdrnn_p->swipe_predlayers_p + i;
-        int idx = (i >> timedim) % 2;
-
-        forward(&cur_pred_p->outgoing_p[idx]);
+        forward(&cur_pred_p->outgoing_p[0]);
     }
 
     // std::cout << "Hidden inputs: ";
@@ -358,17 +356,13 @@ void backcopy_states(Layer* layer_p, int block)
 
 void layer_forward(Layer* layer_p, MdrnnLayer* mdrnn_p)
 {
-    int swipes = 2 << (mdrnn_p->timedim - 1);
-    for(int i = 0; i < swipes; i++)
+    clear_buffers(layer_p);
+    for(int j = 0; j < mdrnn_p->sequence_length; j++)
     {
-        clear_buffers(layer_p);
-        for(int j = 0; j < mdrnn_p->sequence_length; j++)
-        {
-            // TODO: maybe split these into differently named and more functions
-            adjust_bogus_layers(layer_p, j);
-            forward_connections(layer_p, i);
-            backcopy_states(layer_p, j);
-        }
+        // TODO: maybe split these into differently named and more functions
+        adjust_bogus_layers(layer_p, j);
+        forward_connections(layer_p);
+        backcopy_states(layer_p, j);
     }
 }
 

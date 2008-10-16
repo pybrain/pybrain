@@ -11,15 +11,16 @@ import scipy
 from arac.pybrainbridge import _FeedForwardNetwork
 from pybrain.structure.modules.mdrnnlayer import MdrnnLayer
 from pybrain.structure import LinearLayer, LinearLayer
-from pybrain.utilities import crossproduct
+from pybrain.structure.connections.permutation import PermutationConnection
+from pybrain.utilities import crossproduct, permute
 
 
-class Mdrnn(_FeedForwardNetwork):
+class _Mdrnn(_FeedForwardNetwork):
     
-    def __init__(self, timedim, shape, 
+    def __init__(self, timedim, shape,
                  hiddendim, outsize, blockshape=None, name=None,
                  inlayerclass=LinearLayer, outlayerclass=LinearLayer):
-        super(Mdrnn, self).__init__()
+        super(_Mdrnn, self).__init__()
         # Initialize necessary member variables
         self.timedim = timedim
         self.shape = shape
@@ -36,9 +37,45 @@ class Mdrnn(_FeedForwardNetwork):
         self._buildTopology()
         
     def _makeMdrnnLayer(self):
+        """Return an MdrnnLayer suitable for this network."""
         return MdrnnLayer(self.timedim, self.shape, self.hiddendim, 
                           self.outsize, self.blockshape)
+                          
+    def _standardPermutation(self):
+        """Return the permutation of input data that is suitable for this 
+        network."""
+        # TODO: include blockpermute here
+        return scipy.array(range(self.sequenceLength))
+                          
+    def _buildTopology(self):
+        inlayer = self.inlayerclass(self.indim)
+        outlayer = self.outlayerclass(self.sequenceLength * self.outsize)
+        self.hiddenlayers = []
+        # Add connections and layers
+        self.addInputModule(inlayer)
+        for p in self._permsForSwiping():
+            i = self._makeMdrnnLayer()
+            self.hiddenlayers.append(i)
+            # Make a connection that permutes the input...
+            in_pc = PermutationConnection(inlayer, i, p, self.blocksize)
+            # .. and one that permutes it back.
+            pinv = permute(range(len(p)), p)
+            out_pc = PermutationConnection(i, outlayer, pinv, self.outsize)
+            self.addModule(i)
+            self.addConnection(in_pc)
+            self.addConnection(out_pc)
+        self.addOutputModule(outlayer)
         
+    def _permsForSwiping(self):
+        """Return the correct permutations of blocks for all swiping direction.
+        """
+        # We use an identity permutation to generate the permutations from by
+        # slicing correctly.
+        return [self._standardPermutation()]
+
+
+class _MultiDirectionalMdrnn(_Mdrnn):
+    
     def _permsForSwiping(self):
         """Return the correct permutations of blocks for all swiping direction.
         """
@@ -58,25 +95,5 @@ class Mdrnn(_FeedForwardNetwork):
                 else:
                     indices = slice(None, None, -1)
                 axises.append(indices)
-            permutations.append(operator.getitem(identity, axises))
+            permutations.append(operator.getitem(identity, axises).flatten())
         return permutations
-                
-    def _buildTopology(self):
-        inlayer = self.inlayerclass(self.indim)
-        outlayer = self.outlayerclass(self.sequenceLength * self.outsize)
-        self.hiddenlayers = [self._makeMdrnnLayer() 
-                             for _ in xrange(2**self.timedim)]
-                             
-        # Add connections and layers
-        self.addInputModule(inlayer)
-        for i, p in zip(self.hiddenlayers, self._permsForSwiping()):
-            # Make a connection that permutes the input...
-            in_pc = PermutationConnection(inlayer, i, p, self.blocksize)
-            # .. and one that permutes it back.
-            pinv = permute(range(len(p)), p)
-            out_pc = PermutationConnection(i, outayer, pinv, self.blocksize)
-            self.addModule(i)
-            self.addConnection(pc)
-            self.addConnection(out_pc)
-        self.addOutputModule(outlayer)
-

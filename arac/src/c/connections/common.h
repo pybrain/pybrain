@@ -12,12 +12,14 @@
 
 #define IDENTITY_CONNECTION 0
 #define FULL_CONNECTION 1
+#define PERMUTATION_CONNECTION 2
 
 
 // Forward declarations
 struct Layer;
 struct IdentityConnection;
 struct FullConnection;
+struct PermutationConnection;
 
 
 //
@@ -27,6 +29,7 @@ struct FullConnection;
 union AnyConnection {
     IdentityConnection* identity_connection_p;
     FullConnection* full_connection_p;
+    PermutationConnection* permutation_connection_p;
 };
 
 
