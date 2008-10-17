@@ -15,10 +15,9 @@ class SVMUnit(object):
     
     def __init__(self, indim=0, outdim=0, model=None):
         """ Initializes as empty module. 
-        @param model: Optionally initialize using this LIBSVM model.
-        @param indim: for compatibility only - currently ignored
-        @param outdim: for compatibility only - currently ignored
-        """
+        
+        If `model`is given, initialize using this LIBSVM model instead. `indim`
+        and `outdim` are for compatibility only currently, and ignored."""
         self.reset()
         # set some dummy input/ouput dimensions - these become obsolete when 
         # the SVM is initialized
@@ -44,11 +43,14 @@ class SVMUnit(object):
         self.model.save(filename)
 
     def forwardPass(self, values=False):
-        """ Produce the output from the current input vector, or process a dataset 
-        @param values: If False or 'class', output is set to the number of the predicted class. 
-           If True or 'raw', produces decision values instead. These are stored in a dictionary for
-           multi-class SVM. If 'prob', class probabilities are produced. This works only if probability
-           option was set for SVM training."""            
+        """ Produce the output from the current input vector, or process a 
+        dataset.
+
+        If `values` is False or 'class', output is set to the number of the 
+        predicted class. If True or 'raw', produces decision values instead. 
+        These are stored in a dictionary for multi-class SVM. If `prob`, class
+        probabilities are produced. This works only if probability option was
+        set for SVM training."""            
         if values=="class" or values==False:
             # predict the output class right away
             self.output = self.model.predict(self.input)

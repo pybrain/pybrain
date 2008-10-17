@@ -3,24 +3,31 @@ __version__ = '$Id$'
 from svm import svm_model, svm_parameter, svm_problem, cross_validation
 from svm import C_SVC, NU_SVC, ONE_CLASS, EPSILON_SVR, NU_SVR
 from svm import LINEAR, POLY, RBF, SIGMOID, PRECOMPUTED
+
+
 from numpy import *
 import pylab as p   
 import sys
 import logging
 
 class SVMTrainer(object):
-    """ A class performing supervised learning of a DataSet by an SVM unit. See the remarks 
-    on :class:`SVMUnit` above. This whole class is a bit of a hack, and provided mostly for 
-    convenience of comparisons."""
+    """A class performing supervised learning of a DataSet by an SVM unit. See 
+    the remarks on :class:`SVMUnit` above. This whole class is a bit of a hack,
+    and provided mostly for convenience of comparisons."""
     
     def __init__(self, svmunit, dataset, modelfile=None, plot=False ):
-        """ Initialize data and unit to be trained, and load the model, if provided.
-        @param svmunit: The :class:`SVMUnit` object to be trained.
-        @param dataset: The :class:`ClassificationDataSet` to be trained on. 
-           Compared to FNN training we do not use a test data set, instead 5-fold cross-validation
-           is performed if needed.
-        @param modelfile: If provided, load this model instead of training.
-        @param plot: If True and a grid search is performed, plot the grid search pattern."""
+        """ Initialize data and unit to be trained, and load the model, if 
+        provided.
+        
+        The passed `svmunit` has to be an object of class :class:`SVMUnit` 
+        that is going to be trained on the :class:`ClassificationDataSet` object
+        dataset. 
+        Compared to FNN training we do not use a test data set, instead 5-fold 
+        cross-validation is performed if needed.
+        
+        If `modelfile` is provided, this model is loaded instead of training.
+        If `plot` is True, a grid search is performed and the resulting pattern
+        is plotted."""
         self.svm = svmunit
         self.ds = dataset
         self.svmtarget = dataset['target'].flatten()

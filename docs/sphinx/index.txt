@@ -47,6 +47,19 @@ Tutorial
    tutorial/netmodcon
    tutorial/fnn
    
+
+API
+---
+
+.. toctree::
+   :maxdepth: 1
+   :glob:
+   
+   api/structure/*
+   api/datasets/*
+   api/*
+   api/supervised/*
+   
    
 Indices and tables
 ==================
