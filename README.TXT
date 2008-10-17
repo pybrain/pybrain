@@ -1,17 +1,5 @@
-Requirements: 
-- Python 2.5 
-- SciPy 0.6
-
-Other, optional dependencies:
-- matplotlib 0.9
-- OpenGL
-- ODE
+NOTE: PLEASE READ docs/documentation.pdf
 
 Setup: 
-have the PYTHONPATH variable include this directory.
+PLEASE READ docs/documentation.pdf
 
-Verify correct setup:
-python pybrain/tests/runtest.py
-
-Usage:
-Look in the examples/ directory

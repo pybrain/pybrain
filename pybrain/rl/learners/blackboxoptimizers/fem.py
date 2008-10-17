@@ -107,7 +107,9 @@ class FEM(BlackBoxOptimizer):
             if not self.onlineLearning:
                 self._updateWeightings()
                 self._updateParameters()
-                                            
+                              
+            #print diag(self.sigmas[0])  
+                        
             # evaluate the mu points seperately (for filtered progression values)
             if self.evalMus:
                 for m in self.mus:
