@@ -1,3 +1,5 @@
+# A simple feedforward neural network that learns XOR. 
+
 __author__ = 'Tom Schaul, tom@idsia.ch'
 
 from datasets import SequentialXORDataSet

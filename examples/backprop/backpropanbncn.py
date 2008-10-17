@@ -1,3 +1,5 @@
+# A simple recurrent neural network that learns a simple sequential data set. 
+
 __author__ = 'Tom Schaul, tom@idsia.ch and Daan Wierstra'
 
 from datasets import AnBnCnDataSet

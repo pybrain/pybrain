@@ -12,6 +12,7 @@ from pybrain.tools.rankingfunctions import TopLinearRanking
 class NaturalEvolutionStrategies2(BlackBoxOptimizer):
     """ do the optimization using natural fitness gradients.
     New, cleaner version. With more options too! But no multiple center support anymore.
+    Unfinished...
     """
     
     # mandatory parameters
