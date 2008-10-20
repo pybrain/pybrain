@@ -14,7 +14,7 @@ def labels(filename):
     magicnumber, length = struct.unpack('>ii', fp.read(8))
     assert magicnumber in (2049, 2051), ("Not an MNIST file: %i" % magicnumber)
     for _ in xrange(length):
-        label, = struct.unpack('b', fp.read(1))
+        label, = struct.unpack('B', fp.read(1))
         yield label
         
 
@@ -26,7 +26,7 @@ def images(filename):
     imagesize = numrows * numcols
     for i in xrange(length):
         imagestring = fp.read(imagesize)
-        image = struct.unpack('b' * imagesize, imagestring)
+        image = struct.unpack('B' * imagesize, imagestring)
         yield scipy.array(image)
         
 
