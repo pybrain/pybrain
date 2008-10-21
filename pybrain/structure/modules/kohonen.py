@@ -33,7 +33,7 @@ class KohonenMap(Module):
         self.winner = zeros(2)
         self.nInput = dim
         self.nNeurons = nNeurons
-        self.neighbours = nNeurons - 1 
+        self.neighbours = nNeurons 
         self.learningrate = 0.01
         self.neighbourdecay = 0.9999
         
