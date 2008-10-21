@@ -1,29 +1,34 @@
 __author__ = 'Thomas Rueckstiess, ruecksti@in.tum.de'
 
-from scipy import zeros
+from scipy import zeros, random, argmax
 from module import Module
 
 
-class Table(Module):
-    """ This module represents a (sparse) table. It uses a python dictionary to
-    store the data. Placing the index in the input buffer and executing a 
-    forward pass returns the element (a scipy array) that was stored in the 
-    indexed field."""
-           
-    def __init__(self, indim, outdim, name=None):
-        Module.__init__(self, indim, outdim, name)    
-        self.setArgs(indim=indim, outdim=outdim)
-        self.data = {}
+class ActionValueTable(Module):
+
+    def __init__(self, numStates, numActions, name=None):
+        Module.__init__(self, 1, 1, name)
+        self.numStates = numStates
+        self.numActions = numActions
+        self.values = random.random((numStates, numActions))
         
     def _forwardImplementation(self, inbuf, outbuf):
-        try:
-            outbuf[:] = self.data[tuple(inbuf)]
-        except KeyError:
-            outbuf[:] = zeros((1, self.outdim))
-        
-    def setField(self, index, value):
-        self.data[index] = value
+        outbuf[0] = self.getMaxAction(inbuf[0])
     
-    def clear(self):
-        self.data = {}
+    def updateValue(self, state, action, value):
+        self.values[state, action] = value
+    
+    def getValue(self, state, action):
+        return self.values[state, action]
+    
+    def getMaxAction(self, state):
+        return argmax(self.values[state,:])
+            
+    def initialize(self, value=0.0):
+        self.values[:,:] = value       
+            
+        
+        
+        
+        
         
