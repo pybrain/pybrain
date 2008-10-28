@@ -37,9 +37,9 @@ def compileArac():
         'arac/src/c/layers/mdrnn.c',
     ]
     
-    compiler = new_compiler(verbose=1)
 
     if sys.platform.startswith('linux') or sys.platform == 'darwin':
+        compiler = new_compiler(verbose=1)
         # Workaround for distutils to recognize .c files as c++files.
         compiler.language_map['.c'] = 'c++'
         compiler_cmd = 'g++'
