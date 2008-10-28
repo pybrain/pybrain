@@ -22,6 +22,15 @@ class LSTMLayer(NeuronLayer, ParameterContainer):
     sequential = True
     peepholes = False
     maxoffset = 0
+    
+    # Transfer functions and their derivatives
+    f = lambda _, x: sigmoid(x)
+    fprime = lambda _, x: sigmoidPrime(x)
+    g = lambda _, x: tanh(x)
+    gprime = lambda _, x: tanhPrime(x)
+    h = lambda _, x: tanh(x)
+    hprime = lambda _, x: tanhPrime(x)
+    
 
     def __init__(self, dim, peepholes = False, name = None):
         self.setArgs(dim = dim, peepholes = peepholes)
@@ -47,13 +56,6 @@ class LSTMLayer(NeuronLayer, ParameterContainer):
             self._setParameters(self.params)
             self._setDerivatives(self.derivs)
                     
-        # transfer functions and their derivatives
-        self.f = sigmoid
-        self.fprime = sigmoidPrime
-        self.g = lambda x: tanh(x)
-        self.gprime = lambda x: tanhPrime(x)
-        self.h = self.g
-        self.hprime = self.gprime
         
     def _setParameters(self, p, owner = None):
         ParameterContainer._setParameters(self, p, owner)

@@ -78,7 +78,7 @@ def nearlyEqual(lst1, lst2, tolerance=0.001):
     return all(abs(i - j) <= tolerance for i, j in zip(lst1, lst2))
     
     
-def buildSimpleBorderSwipingNet(size, dim, hsize, predefined = {}):
+def buildSimpleBorderSwipingNet(size = 3, dim = 3, hsize = 1, predefined = {}):
     """ build a simple swiping network,of given size and dimension, using linear inputs and output"""
     # assuming identical size in all dimensions
     dims = tuple([size]*dim)

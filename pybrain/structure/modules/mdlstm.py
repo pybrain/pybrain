@@ -36,6 +36,14 @@ class MDLSTMLayer(NeuronLayer, ParameterContainer):
     dimensions = 1   
     maxoffset = 0
     
+    # Transfer functions and their derivatives
+    def f(self, x): return sigmoid(x)
+    def fprime(self, x): return sigmoidPrime(x)
+    def g(self, x): return tanh(x)
+    def gprime(self, x): return tanhPrime(x)
+    def h(self, x): return tanh(x)
+    def hprime(self, x): return tanhPrime(x)
+    
     def __init__(self, dim, dimensions=1, peepholes=False, name=None):
         self.setArgs(dim=dim, peepholes=peepholes, dimensions=dimensions)
         
@@ -60,15 +68,7 @@ class MDLSTMLayer(NeuronLayer, ParameterContainer):
             ParameterContainer.__init__(self, dim * (2 + dimensions))
             self._setParameters(self.params)
             self._setDerivatives(self.derivs)        
-            
-        # Transfer functions and their derivatives
-        self.f = sigmoid
-        self.fprime = sigmoidPrime
-        self.g = tanh
-        self.gprime = tanhPrime
-        self.h = tanh
-        self.hprime = tanhPrime
-        
+ 
     def _setParameters(self, p, owner=None):
         ParameterContainer._setParameters(self, p, owner)
         size = self.dim

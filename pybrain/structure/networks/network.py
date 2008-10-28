@@ -267,5 +267,6 @@ class Network(Module, ParameterContainer):
         if not keepBuffers:
             self._resetBuffers()
         cp = Evolvable.copy(self)
-        cp._setParameters(self.params.copy())
+        if self.paramdim > 0:
+            cp._setParameters(self.params.copy())
         return cp
