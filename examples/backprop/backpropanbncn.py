@@ -2,7 +2,7 @@
 
 __author__ = 'Tom Schaul, tom@idsia.ch and Daan Wierstra'
 
-from datasets import AnBnCnDataSet
+from datasets import AnBnCnDataSet #@UnresolvedImport
 from pybrain.supervised import BackpropTrainer
 from pybrain.structure import FullConnection, RecurrentNetwork, TanhLayer, LinearLayer, BiasUnit
 

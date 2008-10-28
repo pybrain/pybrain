@@ -2,7 +2,7 @@
 
 __author__ = 'Tom Schaul, tom@idsia.ch'
 
-from datasets import SequentialXORDataSet
+from datasets import SequentialXORDataSet #@UnresolvedImport
 from pybrain.tools.shortcuts import buildNetwork
 from pybrain.supervised import BackpropTrainer
 

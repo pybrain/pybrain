@@ -1,6 +1,6 @@
 __author__ = 'Frank Sehnke, sehnke@in.tum.de'
 
-from scipy import ones, zeros, mean, dot, ravel, sign, random, sqrt
+from scipy import zeros, random
 from time import sleep
 from pybrain.rl.learners.finitedifference.fd import FDLearner
 from pybrain.auxiliary import GradientDescent
@@ -48,7 +48,7 @@ class SimpleSPSA(FDLearner):
         seqLen=self.ds.getNumSequences() #number of sequences done for learning
         for seq in range(seqLen):
             sym*=-1.0
-            state, action, reward = self.ds.getSequence(seq)
+            _state, _action, reward = self.ds.getSequence(seq)
             #add up the rewards of positive and negative perturbation role outs respectivly
             if sym==1.0: reward1+=sum(reward)
             else: reward2+=sum(reward)

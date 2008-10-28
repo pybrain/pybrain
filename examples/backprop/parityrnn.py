@@ -2,9 +2,9 @@
 
 __author__ = 'Tom Schaul (tom@idsia.ch)'
 
-from pybrain.structure import RecurrentNetwork, LinearLayer, TanhLayer, BiasUnit, FullConnection
-from datasets import ParityDataSet
+from datasets import ParityDataSet #@UnresolvedImport
 from pybrain.supervised.trainers.backprop import BackpropTrainer
+from pybrain.structure import RecurrentNetwork, LinearLayer, TanhLayer, BiasUnit, FullConnection
 
 
 def buildParityNet():
