@@ -200,7 +200,7 @@ class LSTMRTRLBlock(Module, ParameterContainer):
         outbuf[:] = self.outgate[self.time] * self.h(self.state[self.time])
         
         # WOOOOOOOWAAA difficult
-        self.Scell[self.time][i*nrNeurons:(i+1)*nrNeurons] =    
+        #self.Scell[self.time][i*nrNeurons:(i+1)*nrNeurons] =    
         if self.time > 0:
             self.Scell[self.time] = self.Scell[self.time - 1]*self.forgetgate[self.time] + \
                                   self.gprime(self.cellx[self.time]) * self.ingate[self.time] 
