@@ -1,6 +1,7 @@
 """
 
     >>> from pybrain.tools.shortcuts import buildNetwork
+    >>> from test_recurrent_network import buildRecurrentNetwork
     >>> from test_peephole_lstm import buildMinimalLSTMNetwork
     >>> from test_peephole_mdlstm import buildMinimalMDLSTMNetwork
     >>> from test_nested_network import buildNestedNetwork
@@ -47,6 +48,13 @@ Nested networks (not supposed to work yet!)
     >>> testEquivalence(net)
     False    
     
+Recurrent networks
+    >>> net = buildRecurrentNetwork()
+    >>> net.name = '22'
+    >>> net.params[:] = [1,1,0.5]
+    >>> testEquivalence(net)
+    True
+    
 Swiping networks
     >>> net = buildSwipingNetwork()
     >>> testEquivalence(net)
@@ -57,16 +65,16 @@ Border-swiping networks
     >>> testEquivalence(net)
     True
     
-Mdlstm
-    >>> net = buildSimpleMDLSTMNetwork()
-    >>> testEquivalence(net)
-    True
-
 Lstm
     >>> net = buildSimpleLSTMNetwork()
     >>> testEquivalence(net)
     True
-            
+    
+Mdlstm
+    >>> net = buildSimpleMDLSTMNetwork()
+    >>> testEquivalence(net)
+    True
+    
 Lstm with peepholes
     >>> net = buildMinimalLSTMNetwork(True)
     >>> testEquivalence(net)
@@ -133,9 +141,22 @@ def testEquivalence(net):
     ds = buildAppropriateDataset(net)
     if net.sequential:
         for seq in ds:
+            net.reset()
+            cnet.reset()
             for input, _ in seq:
                 res = net.activate(input)
                 cres = cnet.activate(input)
+                if net.name == '22':
+                    h = net['hidden0']
+                    ch = cnet['hidden0']
+                    print 'ni', input, net.inputbuffer.T
+                    print 'ci', input, cnet.inputbuffer.T
+                    print 'hni',h.inputbuffer.T[0]
+                    print 'hci', ch.inputbuffer.T[0]
+                    print 'hnout',h.outputbuffer.T[0]
+                    print 'hcout', ch.outputbuffer.T[0]
+                    print
+                    
     else:
         for input, _ in ds:
             res = net.activate(input)

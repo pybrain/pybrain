@@ -248,10 +248,10 @@ class Network(Module, ParameterContainer):
 
         self.indim = 0
         for m in self.inmodules:
-           self.indim += m.indim
+            self.indim += m.indim
         self.outdim = 0
         for m in self.outmodules:
-           self.outdim += m.outdim
+            self.outdim += m.outdim
 
         # Initialize the network buffers.
         self.bufferlist = []

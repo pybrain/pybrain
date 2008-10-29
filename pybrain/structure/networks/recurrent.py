@@ -22,7 +22,7 @@ class RecurrentNetworkComponent(object):
         
     def __str__(self):
         s = super(RecurrentNetworkComponent, self).__str__()
-        s += "\n   Recurrent Connections:\n    %s" % (
+        s += "   Recurrent Connections:\n    %s" % (
                 sorted(self.recurrentConns, key=lambda c: c.name))
         return s
         
