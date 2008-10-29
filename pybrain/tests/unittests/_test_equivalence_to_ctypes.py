@@ -46,7 +46,7 @@ Sliced connections
 Nested networks (not supposed to work yet!)
     >>> net = buildNestedNetwork()
     >>> testEquivalence(net)
-    False    
+    Network cannot be converted.    
     
 Recurrent networks
     >>> net = buildRecurrentNetwork()
@@ -96,48 +96,13 @@ __author__ = 'Tom Schaul, tom@idsia.ch'
 _dependencies = ['arac']
 
 
-from pybrain.structure import FeedForwardNetwork, RecurrentNetwork
 from pybrain.tests.helpers import buildAppropriateDataset, epsilonCheck
 from pybrain.tests import runModuleTestSuite
 
-try:
-    from arac.pybrainbridge import _RecurrentNetwork, _FeedForwardNetwork #@UnresolvedImport
-except:
-    pass
-
-def convertToCImplementation(net):
-    net = net.copy()
-    if isinstance(net, FeedForwardNetwork):
-        cnet = _FeedForwardNetwork()
-    elif isinstance(net, RecurrentNetwork):
-        cnet = _RecurrentNetwork()
-        
-    for m in net.inmodules:
-        cnet.addInputModule(m)
-    for m in net.outmodules:
-        cnet.addOutputModule(m)
-    for m in net.modules:
-        cnet.addModule(m)
-        
-    for clist in net.connections.values():
-        for c in clist:
-            cnet.addConnection(c)        
-    if isinstance(net, RecurrentNetwork):
-        for c in net.recurrentConns:
-            cnet.addRecurrentConnection(c)
-
-    try:
-        cnet.sortModules()
-    except ValueError:
-        return None
-    
-    return cnet
-
-
 def testEquivalence(net):
-    cnet = convertToCImplementation(net)
+    cnet = net.convertToFastNetwork()
     if cnet == None:
-        return False
+        return None
     ds = buildAppropriateDataset(net)
     if net.sequential:
         for seq in ds:

@@ -270,3 +270,42 @@ class Network(Module, ParameterContainer):
         if self.paramdim > 0:
             cp._setParameters(self.params.copy())
         return cp
+
+    def convertToFastNetwork(self):
+        """ Attempt to transform the network into a fast network. If fast networks are not available,
+        or the network cannot be converted, it returns None. """
+        
+        from pybrain.structure.networks import FeedForwardNetwork, RecurrentNetwork
+        try:
+            from arac.pybrainbridge import _RecurrentNetwork, _FeedForwardNetwork #@UnresolvedImport
+        except:
+            print "No fast networks available."
+            return None
+        
+        net = self.copy()
+        if isinstance(net, FeedForwardNetwork):
+            cnet = _FeedForwardNetwork()
+        elif isinstance(net, RecurrentNetwork):
+            cnet = _RecurrentNetwork()
+            
+        for m in net.inmodules:
+            cnet.addInputModule(m)
+        for m in net.outmodules:
+            cnet.addOutputModule(m)
+        for m in net.modules:
+            cnet.addModule(m)
+            
+        for clist in net.connections.values():
+            for c in clist:
+                cnet.addConnection(c)        
+        if isinstance(net, RecurrentNetwork):
+            for c in net.recurrentConns:
+                cnet.addRecurrentConnection(c)
+    
+        try:
+            cnet.sortModules()
+        except ValueError:
+            print "Network cannot be converted."
+            return None
+        
+        return cnet

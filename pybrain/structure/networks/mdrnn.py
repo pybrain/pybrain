@@ -10,7 +10,7 @@ import scipy
 
 from arac.pybrainbridge import _FeedForwardNetwork
 from pybrain.structure.modules.mdrnnlayer import MdrnnLayer
-from pybrain.structure import LinearLayer, LinearLayer
+from pybrain.structure import LinearLayer
 from pybrain.structure.connections.permutation import PermutationConnection
 from pybrain.utilities import crossproduct, permute
 
