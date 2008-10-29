@@ -118,6 +118,16 @@ void activate(Layer* layer_p, int n_layers)
 }
 
 
+void resetAll(Layer* layer_p, int n_layers)
+{
+    for (int i = 0; i < n_layers; i++)
+    {
+        Layer* current_layer_p = &layer_p[i];
+        reset_layer(current_layer_p, current_layer_p->inputs.size, current_layer_p->outputs.size);
+    }
+}
+
+
 void calc_derivs(Layer* layer_p, int n_layers) {
     for (int i = n_layers - 1; i >= 0; i--)
     {

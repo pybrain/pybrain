@@ -80,7 +80,11 @@ class _Network(Network):
         self._cmaxoffset = ctypes.c_int(0)
 
     def reset(self):
-        super(_Network, self).reset()
+        # CHECKME: old was: super(_Network, self).reset()        
+        self.offset = 0
+        for m in self.modules:
+            m.offset = 0
+        libarac.resetAll(self.modulearray, len(self.modules))
             
     def sortModules(self):
         super(_Network, self).sortModules()

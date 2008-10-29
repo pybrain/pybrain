@@ -3,19 +3,8 @@
 #include "common.h"
 
 
-void make_layer(Layer* layer_p, int input_dim, int output_dim)
+void reset_layer(Layer* layer_p, int input_dim, int output_dim)
 {
-    layer_p->inputs.size = input_dim;
-    layer_p->outputs.size = output_dim;
-    layer_p->outgoing_n = 0;
-    layer_p->incoming_n = 0;
-    layer_p->inputs.contents_p = (double*) malloc(sizeof(double) * input_dim);
-    layer_p->outputs.contents_p = (double*) malloc(sizeof(double) * output_dim);
-    layer_p->inputs.error_p = (double*) malloc(sizeof(double) * input_dim);
-    layer_p->outputs.error_p = (double*) malloc(sizeof(double) * output_dim);
-    layer_p->timestep_p = (int*) malloc(sizeof(int));
-    layer_p->seqlen_p = (int*) malloc(sizeof(int));
-
     // Assure that all parameters are zeros
     for(int i = 0; i < input_dim; i++) 
     {
@@ -34,11 +23,29 @@ void make_layer(Layer* layer_p, int input_dim, int output_dim)
 }
 
 
+void make_layer(Layer* layer_p, int input_dim, int output_dim)
+{
+    layer_p->inputs.size = input_dim;
+    layer_p->outputs.size = output_dim;
+    layer_p->outgoing_n = 0;
+    layer_p->incoming_n = 0;
+    layer_p->inputs.contents_p = (double*) malloc(sizeof(double) * input_dim);
+    layer_p->outputs.contents_p = (double*) malloc(sizeof(double) * output_dim);
+    layer_p->inputs.error_p = (double*) malloc(sizeof(double) * input_dim);
+    layer_p->outputs.error_p = (double*) malloc(sizeof(double) * output_dim);
+    layer_p->timestep_p = (int*) malloc(sizeof(int));
+    layer_p->seqlen_p = (int*) malloc(sizeof(int));
+    
+    reset_layer(layer_p, input_dim, output_dim);    
+}
+
+
+
 Layer* 
 make_layer(int input_dim, int output_dim)
 {
     Layer* layer_p = (Layer*) malloc(sizeof(Layer));
-    make_layer(layer_p, input_dim, output_dim);
+    make_layer(layer_p, input_dim, output_dim);    
     return layer_p;
 }
 

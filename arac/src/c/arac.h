@@ -14,6 +14,8 @@
 #include "layers/layers.h"
 #include "functions.h"
 
+#include "layers/common.h"
+
 extern "C" {
     
 //
@@ -30,6 +32,10 @@ void print_connection(Connection* con_p);
 
 // Make a forward pass through the whole module graph.
 void activate(Layer* layer_p, int n_layers);
+
+
+// Reset all the buffers in the layers of the module graph.
+void resetAll(Layer* layer_p, int n_layers);
 
 
 // Calculate the errors back from the leaf to the root.

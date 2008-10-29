@@ -78,6 +78,7 @@ struct Layer {
 //
 Layer* make_layer(int input_dim, int output_dim);
 
+void reset_layer(Layer* layer_p, int input_dim, int output_dim);
 void make_layer(Layer* layer_p, int input_dim, int output_dim);
 
 
