@@ -7,7 +7,7 @@ from numpy.random import multivariate_normal, rand
 from scipy import diag
 from pylab import show, hold, plot 
 
-from pybrain.datasets import ClassificationDataSet
+from pybrain.datasets import ClassificationDataSet, SequenceClassificationDataSet
 
 def generateClassificationData(size, nClasses=3):
     """ generate a set of points in 2D belonging to two or three different classes """
