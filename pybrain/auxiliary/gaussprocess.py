@@ -1,13 +1,13 @@
 __author__ = 'Thomas Rueckstiess, ruecksti@in.tum.de; Christian Osendorfer, osendorf@in.tum.de'
 
 
-from scipy import r_, exp, zeros, eye, array, asarray, random, ravel, diag, sqrt, sin, cos, sort, mgrid, dot
-from scipy import  c_ #@UnusedImport
+from scipy import r_, exp, zeros, eye, array, asarray, random, ravel, diag, sqrt, sin, cos, sort, mgrid, dot, floor
+from scipy import  c_
 from scipy.linalg import solve, inv
 from pybrain.datasets import SupervisedDataSet
 
 # for plotting
-from pylab import figure, clf, hold, plot, fill, title, show, norm, gcf #@UnresolvedImport
+from pylab import figure, clf, hold, plot, fill, title, show, norm, gcf, pcolor, gray #@UnresolvedImport
 
 class GaussianProcess:
     """ This class represents a basic n-dimensional Gaussian Process. The implementation
@@ -150,7 +150,7 @@ class GaussianProcess:
         
         return self.pred_mean + random.multivariate_normal(zeros(len(self.testx)), self.pred_cov)
     
-    def plotCurves(self, showSamples=False):
+    def plotCurves(self, showSamples=False, force2D=True):
         if not self.calculated:
             self._calculate()
         
@@ -172,7 +172,7 @@ class GaussianProcess:
             fill(fillx, filly, facecolor='gray', edgecolor='white', alpha=0.3)
             title('1D Gaussian Process with mean and variance')
             
-        elif self.indim == 2:
+        elif self.indim == 2 and not force2D:
             from matplotlib import axes3d as a3
             
             fig = gcf()
@@ -186,6 +186,13 @@ class GaussianProcess:
             (x, y, z) = map(lambda m: m.reshape(sqrt(len(m)), sqrt(len(m))), (self.testx[:,0], self.testx[:,1], self.pred_mean))
             ax.plot_wireframe(x, y, z, colors='gray')
             return ax
+        
+        elif self.indim ==2 and force2D:
+            # plot mean on pcolor map
+            gray()
+            # (x, y, z) = map(lambda m: m.reshape(sqrt(len(m)), sqrt(len(m))), (self.testx[:,0], self.testx[:,1], self.pred_mean))
+            m = floor(sqrt(len(self.pred_mean)))
+            pcolor(self.pred_mean.reshape(m, m)[::-1,:])  
             
         else: print "plotting only supported for indim=1 or indim=2."
     
