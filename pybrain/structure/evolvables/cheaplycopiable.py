@@ -19,6 +19,11 @@ class CheaplyCopiable(ParameterContainer, Module):
         self.__stored._params[:] = self._params
         cp = CheaplyCopiable(self.__stored)
         return cp
+    
+    def convertToFastNetwork(self):
+        self.__stored._params[:] = self._params
+        cp = CheaplyCopiable(self.__stored.convertToFastNetwork())
+        return cp        
             
     @property
     def derivs(self): 
