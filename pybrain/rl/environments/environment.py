@@ -3,7 +3,7 @@ __author__ = 'Tom Schaul, tom@idsia.ch'
 from pybrain.utilities import abstractMethod
 
 
-class Environment:
+class Environment(object):
     """ The general interface for whatever we would like to model, learn about, predict, or simply interact in. 
         We can perform actions, and access (partial) observations. 
     """       
