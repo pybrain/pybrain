@@ -12,7 +12,7 @@ from arac.pybrainbridge import _FeedForwardNetwork
 from pybrain.structure.modules.mdrnnlayer import MdrnnLayer
 from pybrain.structure import LinearLayer
 from pybrain.structure.connections.permutation import PermutationConnection
-from pybrain.utilities import crossproduct, permute
+from pybrain.utilities import crossproduct, permute, permuteToBlocks
 
 
 class _Mdrnn(_FeedForwardNetwork):
@@ -72,6 +72,15 @@ class _Mdrnn(_FeedForwardNetwork):
         # We use an identity permutation to generate the permutations from by
         # slicing correctly.
         return [self._standardPermutation()]
+        
+    def activate(self, inpt):
+        inpt.shape = self.shape
+        inpt_ = permuteToBlocks(inpt, self.blockshape)
+        inpt.shape = scipy.size(inpt),
+        return super(_Mdrnn, self).activate(inpt_)
+        
+    def filterResult(self, inpt):
+        return inpt
 
 
 class _MultiDirectionalMdrnn(_Mdrnn):
@@ -97,3 +106,13 @@ class _MultiDirectionalMdrnn(_Mdrnn):
                 axises.append(indices)
             permutations.append(operator.getitem(identity, axises).flatten())
         return permutations
+        
+        
+class _AccumulatingMdrnn(_Mdrnn):
+    
+    def activate(self, inpt):
+        res = super(_AccumulatingMdrnn, self).activate(inpt)
+        res.shape = self.outsize, self.indim
+        res = res.sum()
+        
+        

@@ -14,7 +14,7 @@ from arac.pybrainbridge import _FeedForwardNetwork
 from pybrain.datasets import SupervisedDataSet
 from pybrain.structure import MdrnnLayer, LinearLayer, IdentityConnection, \
     SigmoidLayer
-from pybrain.structure.networks.mdrnn import _Mdrnn
+from pybrain.structure.networks.mdrnn import _Mdrnn, _MultiDirectionalMdrnn
 from pybrain.rl.environments.functions import FunctionEnvironment
 from pybrain.rl.learners.blackboxoptimizers.fem import FEM
 from pybrain.rl.learners.blackboxoptimizers.cmaes import CMAES
@@ -108,7 +108,7 @@ class MdrnnCirclet(FunctionEnvironment):
         self.dataset = dataset
         
         # Initialize MDRNN
-        self.net = _Mdrnn(timedim=2, 
+        self.net = _MultiDirectionalMdrnn(timedim=2, 
                          shape=(width, height), 
                          blockshape=(2, 2), 
                          hiddendim=2,
@@ -210,8 +210,8 @@ if __name__ == '__main__':
     
     # Always use the same randomization
     scipy.random.seed(0)
-    width = 28
-    height = 28
+    width = 10
+    height = 10
     amount = 100
     ds = CirclectDataSet(width, height, amount)
     mdrnn_env = MdrnnCirclet(width, height, ds)

@@ -77,8 +77,8 @@ class ParticleSwarmOptimizer(BlackBoxOptimizer):
         self.neighbourfunction = neighbourfunction
         
         if boundaries is None:
-            maxs = scipy.array([1] * self.dim)
-            mins = scipy.array([-1] * self.dim)
+            maxs = scipy.array([10] * self.dim)
+            mins = scipy.array([-10] * self.dim)
         else:
             mins = scipy.array([min_ for min_, max_ in boundaries])
             maxs = scipy.array([max_ for min_, max_ in boundaries])

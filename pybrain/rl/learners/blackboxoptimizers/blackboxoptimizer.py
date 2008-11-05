@@ -70,7 +70,6 @@ class BlackBoxOptimizer(Learner):
     def learn(self, maxSteps = None):
         """ Some BlackBoxOptimizers can only be called one time, and currently
         do not support iteratively adding more steps. """
-        
         if not self.online:
             if self.maxEvaluations != None:
                 if maxSteps != None:
