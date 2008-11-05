@@ -41,7 +41,6 @@ class FunctionEnvironment(Environment, Evaluator):
         if isinstance(x, ParameterContainer):
             x = x.params
         assert type(x) == ndarray
-        # return -self.f(x-self.xopt)
         return -self.f(x)
     
     # methods for conforming to the Environment interface:

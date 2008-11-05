@@ -24,7 +24,7 @@ class TranslateFunction(FunctionEnvironment):
             offset = rand(basef.xdim)
             offset *= distance/norm(offset)
         self.xopt += offset
-        self.f = basef.f
+        self.f =  lambda x: basef.f(x-offset)
     
 
 class RotateFunction(FunctionEnvironment):
