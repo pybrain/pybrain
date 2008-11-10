@@ -24,6 +24,8 @@ class TranslateFunction(FunctionEnvironment):
             offset = rand(basef.xdim)
             offset *= distance/norm(offset)
         self.xopt += offset
+        if isinstance(basef, FunctionEnvironment):
+            self.desiredValue = basef.desiredValue
         self.f =  lambda x: basef.f(x-offset)
     
 
@@ -39,6 +41,8 @@ class RotateFunction(FunctionEnvironment):
             self.M = orth(rand(basef.xdim, basef.xdim))
         else:
             self.M = rotMat
+        if isinstance(basef, FunctionEnvironment):
+            self.desiredValue = basef.desiredValue
         self.f = lambda x: basef.f(dot(x,self.M))
         
     

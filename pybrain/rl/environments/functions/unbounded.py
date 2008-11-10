@@ -9,7 +9,7 @@ from function import FunctionEnvironment
 
 class UnboundedFunctionEnvironment(FunctionEnvironment):
     """ a function that does not have a minimum """    
-    desiredValue = -1000
+    desiredValue = 1e10
     
     
 class LinearFunction(UnboundedFunctionEnvironment):
