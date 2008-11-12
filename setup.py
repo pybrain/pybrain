@@ -102,7 +102,7 @@ setup(
     packages=find_packages(exclude=['examples', 'docs']) + 
              find_packages('./arac/src/python'),
     include_package_data=True,
-    package_dir={'arac': './arac/src/python/arac/'},
+    package_dir={'arac': './arac/src/python/arac'},
     data_files=[('arac', ('libarac.so',))],
     test_suite='pybrain.tests.runtests.make_test_suite',
 )
