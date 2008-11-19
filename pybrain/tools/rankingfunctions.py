@@ -4,17 +4,23 @@ __author__ = 'Daan Wierstra and Tom Schaul'
 
 from pybrain.utilities import Named
 from random import randint
-from scipy import zeros, argmax, array, power, exp, sqrt, var
+from scipy import zeros, argmax, array, power, exp, sqrt, var, zeros_like
 
 
 def rankedFitness(R):
     """ produce a linear ranking of the fitnesses in R.
     
     (The highest rank is the best fitness)"""        
-    l = sorted(list(enumerate(R)), cmp = lambda a,b: cmp(a[1],b[1]))
-    l = sorted(list(enumerate(l)), cmp = lambda a,b: cmp(a[1],b[1]))
-    return array(map(lambda (r, dummy): r, l))
-
+    #l = sorted(list(enumerate(R)), cmp = lambda a,b: cmp(a[1],b[1]))
+    #l = sorted(list(enumerate(l)), cmp = lambda a,b: cmp(a[1],b[1]))
+    #return array(map(lambda (r, dummy): r, l))
+    res = zeros_like(R)
+    l = zip(R, range(len(R)))
+    l.sort()
+    for i, (_, j) in enumerate(l):
+        res[j] = i
+    return res
+    
 
 def normalizedFitness(R):
     return array((R - R.mean())/sqrt(var(R))).flatten()
