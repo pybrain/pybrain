@@ -2,16 +2,27 @@
 
 __author__ = 'Tom Schaul, tom@idsia.ch'
 
-from scipy import power, exp, cos, sqrt, rand, sin, floor
+from scipy import power, exp, cos, sqrt, rand, sin, floor, dot, ones
 from math import pi
 
 from function import FunctionEnvironment
+
 
 
 class MultiModalFunction(FunctionEnvironment):
     """ A function with more than one local optima. """
     xdimMin = 2
       
+      
+class FunnelFunction(MultiModalFunction):
+    funnelSize = 1.0
+    funnelDepth = 1.
+       
+    def f(self, x):
+        return min( dot(x-2.5*ones(self.xdim), x-2.5*ones(self.xdim)), \
+            self.funnelDepth * self.xdim + self.funnelSize * dot(x+2.5*ones(self.xdim), x+2.5*ones(self.xdim)) )
+
+
 
 class RastriginFunction(MultiModalFunction):        
     """ A classical multimodal benchmark with plenty of local minima, globally arranged on a bowl. """

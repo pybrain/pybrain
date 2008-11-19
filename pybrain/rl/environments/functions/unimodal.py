@@ -9,7 +9,7 @@ from function import FunctionEnvironment
 
 class SphereFunction(FunctionEnvironment):
     def f(self, x):
-        return sum(x**2)
+        return sum((x-self.xopt)**2)
     
 
 class SchwefelFunction(FunctionEnvironment):
