@@ -75,7 +75,7 @@ class FitnessPlotter:
         self.ys = r_[min(ymin*1.1, min(self.ys)):max(ymax*1.1, max(self.ys)):self.precision*1j]
         self.zs = self._generateValMap()                
         
-    def addCovEllipse(self, emat, center, segments = 50, rescale = True, color = 'c'):
+    def addCovEllipse(self, emat, center, segments = 50, rescale = True, color = 'c', transp = 1.):
         """plot a covariance ellipse """
         # compute a nb of points on the ellipse
         ex = zeros(segments+1)
@@ -100,11 +100,11 @@ class FitnessPlotter:
             self.fig.plot3D([center[0]], [center[1]], [cz], color+'+')
             self.fig.plot3D(ex, ey, ez, color+'-')
         else:
-            plot([center[0]], [center[1]], color+'+')
-            plot(ex, ey, color+'-')
-        
+            plot([center[0]], [center[1]], '+', color = color, alpha = transp)
+            plot(ex, ey, '-', color = color, alpha = transp)
+            
         
     def saveAs(self, filename, format = '.jpg'):
         savefig(filename+format)
-        
-    
+       
+       
