@@ -65,9 +65,6 @@ class _Network(Network):
             
     maxoffset = property(_getMaxoffset, _setMaxoffset)
 
-    def addConnection(self, *args, **kwargs):
-        Network.addConnection(self, *args, **kwargs)
-
     def __init__(self, *args, **kwargs):
         super(_Network, self).__init__(*args, **kwargs)
         # These dictionaries are registries for already build structs.
@@ -80,7 +77,6 @@ class _Network(Network):
         self._cmaxoffset = ctypes.c_int(0)
 
     def reset(self):
-        # CHECKME: old was: super(_Network, self).reset()        
         self.offset = 0
         for m in self.modules:
             m.offset = 0
@@ -142,13 +138,12 @@ class _Network(Network):
         # upon wether we have to grow the buffers.
         # This relies upon the fact, that all buffers of the network have the
         # same size (in terms of timesteps).
-        grown = False
         while True:
+            # Grow buffers until they have the correct size, so possibly call
+            # _growBuffers() more than once.
             if self.offset < self.outputbuffer.shape[0]:
                 break
-            grown = True
             self._growBuffers()
-        if grown:
             self._rebuild()
 
         start = 0
@@ -220,3 +215,12 @@ class _RecurrentNetwork(RecurrentNetworkComponent, _Network):
     def backActivate(self, outerr):
         result = _Network.backActivate(self, outerr)
         return result
+        
+    def buildCStructure(self):
+        """Build up a module-graph of c structs in memory."""
+        _Network.buildCStructure(self)
+        for connection in self.recurrentConns:
+            struct_connection = self.buildCStructForConnection(connection)
+            struct_connection.recurrent = 1
+            key = '%s-%i' % (connection.name, id(connection))
+            self.cconnections[key] = struct_connection

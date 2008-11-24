@@ -21,8 +21,10 @@ void forward(Connection* con_p)
     assert(con_p->outlayerstart < con_p->outlayerstop);
 
     // Don't forward recurrent connections in the first timestep.
+    std::cout << "recurrent? " << con_p->recurrent << " \n";
     if (con_p->recurrent)
     {
+        std::cout << "not forwarding, recurrent \n";
         if (*(con_p->inlayer_p->timestep_p) == 0)
         {
             return;

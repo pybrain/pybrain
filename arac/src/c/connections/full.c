@@ -74,6 +74,9 @@ connection_forward(Connection* con_p, FullConnection* fc_p)
     
     int bi_from = timestep * from_p->outputs.size + con_p->inlayerstart;
     int bi_to = timestep * to_p->inputs.size + con_p->outlayerstart;
+    
+    // TODO: remove
+    std::cout << "From " << bi_from << " to " << bi_to << std::endl;
 
     int indim = con_p->inlayerstop - con_p->inlayerstart;
     int outdim = con_p->outlayerstop - con_p->outlayerstart;

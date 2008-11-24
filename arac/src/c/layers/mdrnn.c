@@ -230,13 +230,14 @@ void adjust_bogus_layers(Layer* layer_p, int block)
             break;
         }
 
-        // Amount of blocks from the beginning till the output of the
+        // Amount of blocks from the beginning until the output of the
         // predecessing block.
         int pred_block_index = block - decrement_blocks;
 
-        // Amount of bytes from the beginning till the output of the predecessing
-        // block.
-        int pred_block_offset = mdrnn_p->hiddendim * pred_block_index;
+        // Amount of bytes from the beginning of the outputs until the output of
+        // the predecessing block.
+        int pred_block_offset = mdrnn_p->outdim * pred_block_index;
+        
         // Pointer to that data.
         double* pred_output = layer_p->outputs.contents_p + pred_block_offset;
         // First copy the outputs of predecessing layers.
