@@ -4,7 +4,7 @@ __author__ = 'Daan Wierstra and Tom Schaul'
 
 from pybrain.utilities import Named
 from random import randint
-from scipy import zeros, argmax, array, power, exp, sqrt, var, zeros_like
+from scipy import zeros, argmax, array, power, exp, sqrt, var, zeros_like, arange
 
 
 def rankedFitness(R):
@@ -127,6 +127,13 @@ class TopLinearRanking(TopSelection):
                 res[i] = 0.0
         res /= max(res)
         return res
+    
+    def getPossibleParameters(self, numberOfSamples):
+        x = 1./float(numberOfSamples)
+        return arange(x*2, 1+x, x)
+
+    def setParameter(self, p):
+        self.topFraction = p
         
 
 class BilinearRanking(RankingFunction):
