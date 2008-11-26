@@ -8,7 +8,10 @@ __version__ = '$Id$'
 import operator
 import scipy
 
-from arac.pybrainbridge import _FeedForwardNetwork
+try:
+    from arac.pybrainbridge import _FeedForwardNetwork
+except:
+    _FeedForwardNetwork = object
 from pybrain.structure.modules.mdrnnlayer import MdrnnLayer
 from pybrain.structure import LinearLayer
 from pybrain.structure.connections.permutation import PermutationConnection
