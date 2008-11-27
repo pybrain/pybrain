@@ -11,6 +11,7 @@
 
 #include "../common.h"
 #include "../connections/connections.h"
+#include <cstdlib>
 
 #define BIAS_LAYER 0
 #define LINEAR_LAYER 1
