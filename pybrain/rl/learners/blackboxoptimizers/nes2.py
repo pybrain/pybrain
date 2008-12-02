@@ -4,9 +4,10 @@ __author__ = 'Daan Wierstra and Tom Schaul'
 from scipy import eye, multiply, ones, dot, array, outer, rand, ravel, zeros, diag, tril, triu, reshape, average
 from scipy.linalg import cholesky,  pinv2, inv
 from numpy.random import multivariate_normal
+from numpy import sign
 
 from blackboxoptimizer import BlackBoxOptimizer
-from pybrain.tools.rankingfunctions import TopLinearRanking
+from pybrain.tools.rankingfunctions import TopLinearRanking, SmoothGiniRanking
 
 # TODO:
 # batch vanilla working
@@ -30,10 +31,12 @@ class NaturalEvolutionStrategies2(BlackBoxOptimizer):
     
     batchSize = 100
     momentum = None
+    useRprop = False
+    useHessian = False
     
     windowSize = None # default: batch size
     
-    shapingFunction = TopLinearRanking(topFraction = 0.8)
+    shapingFunction = SmoothGiniRanking()#TopLinearRanking(topFraction = 0.2)
 
     # initalization parameters
     rangemins = None
@@ -46,6 +49,9 @@ class NaturalEvolutionStrategies2(BlackBoxOptimizer):
         #self.x = self.x0.copy()  
         
         self.numParams = self.xdim * (self.xdim+1)
+        
+        self.rpropupdates = self.learningRate * ones(self.numParams)
+        self.lastGradient = zeros(self.numParams)
         
         if self.momentum != None:
             self.momentumVector = zeros(self.numParams)
@@ -95,59 +101,107 @@ class NaturalEvolutionStrategies2(BlackBoxOptimizer):
             for dummy in range(self.batchSize):
                 self._produceNewSample()
             shapedFits = self.shapingFunction(self.allFitnesses[-self.batchSize:])
-            gradient = self._calcVanillaGradient(self.allSamples[-self.batchSize:], shapedFits)
+            gradient = self._calcVanillaBatchGradient(self.allSamples[-self.batchSize:], shapedFits)
+            update = gradient.copy()
             if self.momentum != None:
                 self.momentumVector *= self.momentum 
                 self.momentumVector += gradient
-                gradient = self.momentumVector
-            
-            self.x += self.learningRate * gradient[:self.xdim]
-            self.factorSigma += self.learningRate * reshape(gradient[self.xdim:], (self.xdim, self.xdim))
+                update = self.momentumVector
+            if self.useHessian:
+                hessian = outer(gradient, gradient)
+                invHessian = inv(hessian + 0.00000001 * eye(self.numParams))
+                update = dot(invHessian, gradient)
+            if self.useRprop == True:
+                update = self.Rprop(update)
+
+            self.x += self.learningRate * update[:self.xdim]
+            self.factorSigma += self.learningRate * reshape(update[self.xdim:], (self.xdim, self.xdim))
             #print 'fsigma', self.factorSigma
             self.sigma = dot(self.factorSigma.T, self.factorSigma)
-            print 'sigma', self.sigma
+            #print 'sigma', self.sigma
             
             print self.generation, len(self.allSamples), max(self.allFitnesses[-self.batchSize:])
             self.generation += 1
 
 
-    def _learnStep(self):
-        pass
+    def _learnStep(self):          
+        self._produceNewSample()
+        if len(self.allSamples) <= self.batchSize:
+            return
+        shapedFits = self.shapingFunction(self.allFitnesses[-self.batchSize:])
+        gradient = self._calcVanillaOnlineGradient(self.allSamples[-1], shapedFits[-self.batchSize:])
+        if self.momentum != None:
+            self.momentumVector *= self.momentum 
+            self.momentumVector += gradient
+            gradient = self.momentumVector
+        
+        self.x += self.learningRate * gradient[:self.xdim]
+        self.factorSigma += self.learningRate * reshape(gradient[self.xdim:], (self.xdim, self.xdim))
+        #print 'fsigma', self.factorSigma
+        self.sigma = dot(self.factorSigma.T, self.factorSigma)
+        #print 'ONLINE sigma', self.sigma
+        
+        if len(self.allSamples) % self.batchSize == 0:
+            self.generation += 1
+            print self.generation, len(self.allSamples), max(self.allFitnesses[-self.batchSize:])
 
+    
+    def Rprop(self, gradient):
+        update = zeros(self.numParams)
+        for i, grad, prevgrad in zip(range(self.numParams), gradient, self.lastGradient):
+            if grad * prevgrad < 0.0:
+                self.rpropupdates[i] *= 0.5
+            elif grad * prevgrad > 0.0:
+                self.rpropupdates[i] *= 1.2
+            update[i] = sign(gradient[i]) * self.rpropupdates[i]
+        self.lastGradient = gradient.copy()
+        return update
+        
+        
+    def _logDerivX(self, sample, x, invSigma):
+        return dot(invSigma, (sample - x))
 
-
-    def _logDerivX(self, samples, x, invSigma):
+    def _logDerivsX(self, samples, x, invSigma):
         samplesArray = array(samples)
         tmpX = multiply(x, ones((len(samplesArray), self.xdim)))
         return dot(invSigma, (samplesArray - tmpX).T).T
     
     
-    def _logDerivFactorSigma(self, samples, x, invSigma, factorSigma):
-        res = []
-        for sample in samples:
-            logDerivSigma = 0.5 * dot(dot(invSigma, outer(sample-x, sample-x)), invSigma) - 0.5 * invSigma
+    def _logDerivFactorSigma(self, sample, x, invSigma, factorSigma, vanillaScale = False):
+        logDerivSigma = 0.5 * dot(dot(invSigma, outer(sample-x, sample-x)), invSigma) - 0.5 * invSigma
+        if vanillaScale:
             #logDerivSigma = multiply(outer(diag(abs(self.factorSigma)), diag(abs(self.factorSigma))), logDerivSigma)
-            #logDerivSigma = multiply(outer(diag(abs(self.factorSigma)), diag(abs(self.factorSigma))), logDerivSigma)
-            #logDerivSigma = multiply(abs(self.sigma), logDerivSigma)
-            logDerivFactorSigma = dot(factorSigma, (logDerivSigma+logDerivSigma.T))
-            #logDerivFactorSigma = multiply(outer(diag(self.factorSigma),diag(self.factorSigma)), logDerivFactorSigma)
-            res.append(logDerivFactorSigma)
+            logDerivSigma = multiply(outer(diag(abs(self.sigma)), diag(abs(self.sigma))), logDerivSigma)
+        return dot(factorSigma, (logDerivSigma+logDerivSigma.T))
+
+        
+    def _logDerivsFactorSigma(self, samples, x, invSigma, factorSigma, vanillaScale = False):
+        res = [self._logDerivFactorSigma(sample, x, invSigma, factorSigma, vanillaScale) for sample in samples]
         return res
                 
                 
-    def _calcVanillaGradient(self, samples, shapedfitnesses):
+    def _calcVanillaBatchGradient(self, samples, shapedfitnesses):
         phi = zeros((len(samples), self.numParams))
         invSigma = inv(self.sigma)
-        phi[:, :self.xdim] = self._logDerivX(samples, self.x, invSigma)
-        logDerivSigma = self._logDerivFactorSigma(samples, self.x, invSigma, self.factorSigma)
+        phi[:, :self.xdim] = self._logDerivsX(samples, self.x, invSigma)
+        logDerivSigma = self._logDerivsFactorSigma(samples, self.x, invSigma, self.factorSigma, vanillaScale = False)
         # TODO: potentially remove half of the parameters?
         phi[:, self.xdim:] = array(map(ravel, logDerivSigma))
         
         Rmat = outer(shapedfitnesses, ones(self.numParams))
         baselineMatrix = ones((len(samples), self.numParams)) * average(shapedfitnesses)
         gradient = dot(ones(len(samples)), multiply(phi, (Rmat - baselineMatrix)))
-        return gradient        
-    
+        return gradient    
+        
+    def _calcVanillaOnlineGradient(self, sample, shapedfitnesses):
+        invSigma = inv(self.sigma)
+        phi = zeros(self.numParams)
+        phi[:self.xdim] = self._logDerivX(sample, self.x, invSigma)    
+        logDerivSigma = self._logDerivFactorSigma(sample, self.x, invSigma, self.factorSigma, vanillaScale = True)
+        phi[self.xdim:] = logDerivSigma.flatten()
+        baseline = average(shapedfitnesses)
+        gradient = (shapedfitnesses[-1] - baseline) * phi
+        return gradient
     
     #def _updateBaseline(self, phi):
     #    phiSquare = multiply(phi, phi)
