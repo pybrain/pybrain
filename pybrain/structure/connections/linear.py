@@ -14,12 +14,12 @@ class LinearConnection(Connection, ParameterContainer):
     """Connection that just forwards by multiplying the output of the inmodule 
     with a parameter and adds it to the input of the outmodule."""
     
-    def __init__(self, inmod, outmod, *args, **kwargs):
-        if inmod.dim != outmod.dim:
-            raise ValueError(
-                "LinearConnections only work between equally sized modules.")
-        Connection.__init__(self, inmod, outmod, *args, **kwargs)
-        ParameterContainer.__init__(self, inmod.dim)
+    def __init__(self, inmod, outmod, name=None, 
+                 inSliceFrom=0, inSliceTo=None, outSliceFrom=0, outSliceTo=None):
+        size = inSliceTo - inSliceFrom
+        Connection.__init__(self, inmod, outmod, name=name,
+                            inSliceFrom, inSliceTo, outSliceFrom, outSliceTo)
+        ParameterContainer.__init__(self, size)
         
     def _forwardImplementation(self, inbuf, outbuf):
         outbuf += inbuf * self.params
