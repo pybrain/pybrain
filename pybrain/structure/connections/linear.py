@@ -17,7 +17,7 @@ class LinearConnection(Connection, ParameterContainer):
     def __init__(self, inmod, outmod, name=None, 
                  inSliceFrom=0, inSliceTo=None, outSliceFrom=0, outSliceTo=None):
         size = inSliceTo - inSliceFrom
-        Connection.__init__(self, inmod, outmod, name=name,
+        Connection.__init__(self, inmod, outmod, name,
                             inSliceFrom, inSliceTo, outSliceFrom, outSliceTo)
         ParameterContainer.__init__(self, size)
         
