@@ -48,7 +48,7 @@ def windowSequenceEval(DS, winsz, result):
     x = []
     y = []
     seq_res = []
-    for si in DS['sequence_index'][1:]:
+    for i, si in enumerate(DS['sequence_index'][1:].astype(int)):
         tar = DS['target'][si-1]
         curr_x = si_old
         correct = 0.
@@ -62,12 +62,12 @@ def windowSequenceEval(DS, winsz, result):
                 wrong += 1.
                 y += [0.,0.]
             idx += 1
-            print "winidx: ", idx
+            #print "winidx: ", idx
             curr_x += winsz
             x.append(curr_x)
         
         seq_res.append(100.*correct/(correct+wrong))
-        print "sequence %d correct: %g2.2%%"
+        print "sequence %d correct: %g12.2%%" % (i, seq_res[-1])
         
     seq_res = array(seq_res)
     print "total fraction of correct sequences: ", 100.*float((seq_res>=0.5).sum())/seq_res.size
@@ -142,16 +142,3 @@ class DataSetNormalizer(object):
         self.newmin = bounds[0]
         self.newmax = bounds[1]
         
-    
-if __name__ == "__main__":
-    winsize = 5
-    pathtodata = '/maxdat/Data/Calogero/v1.1'
-    fname = "V1-4_333Hz_norm"
-    print "loading file "+ join(pathtodata,fname+'.pkl') 
-    DSseq = SequenceClassificationDataSet.reconstruct( join(pathtodata,fname+'.pkl') )
-    #DSseq.setField('input', DSseq['input'][:,3:])
-    print "indim seq:", DSseq.indim
-    print "winsize: ", winsize
-    DSwin = convertSequenceToTimeWindows(DSseq, ClassificationDataSet, winsize)
-    DSwin.saveToFile(join(pathtodata,fname+'_win%d.pkl'%winsize), protocol=-1, arraysonly=True)
-    print "indim win:", DSwin.indim
