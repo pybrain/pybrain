@@ -101,7 +101,7 @@ class CMAES(BlackBoxOptimizer):
             if arfitness[0] <= self.desiredEvaluation:
                 print "Stopped since fitness supposedly good enough", arfitness[0], self.desiredEvaluation
                 #TODO cleaner; dont always fucking stop
-                #break
+                break
             # or convergence is reached
             if abs((arfitness[0]-arfitness[-1])/arfitness[0]+arfitness[-1]) <= self.stopPrecision:
                 print "coverage reached"

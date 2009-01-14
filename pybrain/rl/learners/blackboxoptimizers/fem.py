@@ -61,6 +61,7 @@ class FEM(BlackBoxOptimizer):
         self.generation = 0
         self.allsamples = []
         self.muevals = []
+        self.allmus = []
         self.allsigmas =[]
         
     def _stoppingCriterion(self):
@@ -119,6 +120,7 @@ class FEM(BlackBoxOptimizer):
                     self.muevals.append(me)
                     import copy
                     self.allsigmas.append(copy.deepcopy(self.sigmas))
+                    self.allmus.append(copy.deepcopy(self.mus))
             else:
                 self.muevals.append(self.bestEvaluation)
                     
@@ -209,6 +211,8 @@ class FEM(BlackBoxOptimizer):
         newSigma = zeros((self.xdim, self.xdim))
         for i in indices:
             newMu += weightings[i] * self.samples[i]
+        # THIS LINE IS A HACK! REMOVE IT!
+        newMu = self.forgetFactor * oldMu + (1-self.forgetFactor) * newMu
         for i in indices:
             dif = self.samples[i]-newMu
             newSigma += weightings[i] * outer(dif, dif) 
@@ -242,7 +246,7 @@ class FEM(BlackBoxOptimizer):
             else:
                 if self.onlineLearning:
                     # use the forget-factor
-                    self.mus[c] = (1-lr) * self.mus[c] + self.forgetFactor * newMu
+                    self.mus[c] = (1-lr) * self.mus[c] + lr * newMu
                 else:
                     self.mus[c] = newMu
             
