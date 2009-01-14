@@ -507,32 +507,24 @@ def permuteToBlocks2d(arr, blockheight, blockwidth):
     return new
 
         
+
+def triu2flat(m):
+    dim = m.shape[0]
+    res = zeros(dim*(dim+1)/2)
+    index = 0
+    for row in range(dim):
+        for col in range(row, dim):
+            res[index] = m[row, col]
+            index += 1
+    return res
+
+def flat2triu(a, dim):
+    res = zeros((dim, dim))
+    index = 0
+    for row in range(dim):
+        for col in range(row, dim):
+            res[row, col] = a[index]
+            index += 1
+    return res
+
         
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
