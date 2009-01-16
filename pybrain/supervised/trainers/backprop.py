@@ -1,7 +1,7 @@
 # $Id$
 __author__ = 'Daan Wierstra and Tom Schaul'
 
-from scipy import dot, argmax
+from scipy import dot, argmax, size
 from random import shuffle
 
 from trainer import Trainer
@@ -60,9 +60,12 @@ class BackpropTrainer(Trainer):
             errors += e
             ponderation += p
             if not self.batchlearning:
-                self.module.params[:] = self.descent(
-                    self.module.derivs - self.weightdecay*self.module.params)
+                gradient = self.module.derivs - self.weightdecay * self.module.params
+                new = self.descent(gradient, errors)
+                if new is not None:
+                    self.module.params[:] = new
                 self.module.resetDerivatives()
+
         if self.verbose:
             print "Total error:", errors/ponderation
         if self.batchlearning:
@@ -93,6 +96,10 @@ class BackpropTrainer(Trainer):
             else:
                 error += 0.5 * sum(outerr**2)
                 ponderation += len(target)
+                # FIXME: the next line keeps arac from producing NaNs. I don't
+                # know why that is, but somehow the __str__ method of the 
+                # ndarray class fixes something,
+                str(outerr)
                 self.module.backActivate(outerr)
                         
         return error, ponderation
