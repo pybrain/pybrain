@@ -13,6 +13,7 @@ from scipy import zeros, asarray, sign, array, cov, dot
 from scipy.linalg import inv
 
 
+
 class GradientDescent(object):
         
     def __init__(self):
