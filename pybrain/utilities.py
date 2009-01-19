@@ -528,3 +528,9 @@ def flat2triu(a, dim):
     return res
 
         
+def ApproxChiFunction(dim):
+    """ Chi (expectation of the length of a normal random vector) 
+    approximation accoring to: Ostermeier 1997 """
+    dim = float(dim)
+    return sqrt(dim) * (1 - 1/(4*dim) + 1/(21* dim**2))
+

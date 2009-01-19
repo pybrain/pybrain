@@ -12,8 +12,6 @@ from copy import deepcopy
 from scipy import zeros, asarray, sign, array, cov, dot
 from scipy.linalg import inv
 
-from pybrain.utilities import sign
-
 
 class GradientDescent(object):
         

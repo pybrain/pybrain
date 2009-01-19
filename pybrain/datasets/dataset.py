@@ -235,7 +235,7 @@ class DataSet(Serializable):
         if index >= self.getLength():
             raise IndexError('index out of bounds of the dataset.')
             
-        return (map(self._convert, [self.data[l][index] for l in self.link]))    
+        return [self._convert(self.data[l][index]) for l in self.link]
 
     def getField(self, label):
         """Return the entire field given by `label` as an array or list,
