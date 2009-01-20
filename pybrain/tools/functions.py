@@ -1,6 +1,6 @@
 __author__ = 'Tom Schaul, tom@idsia.ch'
 
-from scipy import array, exp, tanh, clip, log, dot, sqrt, power, pi, tan, diag, rand
+from scipy import array, exp, tanh, clip, log, dot, sqrt, power, pi, tan, diag, rand, multiply
 from scipy.linalg import inv, det, svd
 
 
@@ -106,6 +106,11 @@ def multivariateNormalPdf(z, x, sigma):
     res = (1./power(2.0*pi, len(z)/2.)) * (1./sqrt(det(sigma))) * exp(tmp)
     return res   
 
+def simpleMultivariateNormalPdf(z, detFactorSigma):
+    """ Assuming z has been transformed to a mean of zero and an identity matrix of covariances. 
+    Needs to provide the determinant of the factorized (real) covariance matrix. """
+    dim = len(z)
+    return exp(-0.5*dot(z, z))/(power(2.0*pi, dim/2.) * detFactorSigma)
 
 def multivariateCauchy(mu, sigma, onlyDiagonal = True):
     """ Generate a sample according to a given multivariate Cauchy distribution. """
