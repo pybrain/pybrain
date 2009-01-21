@@ -11,13 +11,13 @@ from function import FunctionEnvironment
 
 class MultiModalFunction(FunctionEnvironment):
     """ A function with more than one local optima. """
-    xdimMin = 2
-      
+    xdimMin = 2    
+    desiredValue = -1e-3
       
 class FunnelFunction(MultiModalFunction):
     funnelSize = 1.0
     funnelDepth = 1.
-    desiredValue = -1e-2
+    desiredValue = -1e-3
     
     def f(self, x):
         return min( dot(x-2.5*ones(self.xdim), x-2.5*ones(self.xdim)), \

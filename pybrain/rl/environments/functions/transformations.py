@@ -1,7 +1,7 @@
 __author__ = 'Tom Schaul, tom@idsia.ch'
 
 from scipy import rand, dot
-from scipy.linalg import orth, norm
+from scipy.linalg import orth, norm, inv
 
 from function import FunctionEnvironment
 
@@ -43,6 +43,7 @@ class RotateFunction(FunctionEnvironment):
             self.M = rotMat
         if isinstance(basef, FunctionEnvironment):
             self.desiredValue = basef.desiredValue
+        self.xopt = dot(inv(self.M), self.xopt)
         self.f = lambda x: basef.f(dot(x,self.M))
         
     

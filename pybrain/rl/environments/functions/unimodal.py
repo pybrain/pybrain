@@ -43,7 +43,7 @@ class ElliFunction(FunctionEnvironment):
         
                 
 class DiffPowFunction(FunctionEnvironment):
-    """ DIfference of powers."""
+    """ Difference of powers."""
     def f(self, x):
         s = 0
         for i in range(len(x)):
