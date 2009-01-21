@@ -4,7 +4,7 @@ __author__ = 'Daan Wierstra and Tom Schaul'
 
 from pybrain.utilities import Named
 from random import randint
-from scipy import zeros, argmax, array, power, exp, sqrt, var, zeros_like, arange
+from scipy import zeros, argmax, array, power, exp, sqrt, var, zeros_like, arange, mean
 
 
 def rankedFitness(R):
@@ -23,7 +23,7 @@ def rankedFitness(R):
     
 
 def normalizedFitness(R):
-    return array((R - R.mean())/sqrt(var(R))).flatten()
+    return array((R - mean(R))/sqrt(var(R))).flatten()
 
 
 class RankingFunction(Named):
