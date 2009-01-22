@@ -17,7 +17,6 @@ class MultiModalFunction(FunctionEnvironment):
 class FunnelFunction(MultiModalFunction):
     funnelSize = 1.0
     funnelDepth = 1.
-    desiredValue = -1e-3
     
     def f(self, x):
         return min( dot(x-2.5*ones(self.xdim), x-2.5*ones(self.xdim)), \

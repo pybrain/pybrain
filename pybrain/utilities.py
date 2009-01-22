@@ -513,18 +513,16 @@ def triu2flat(m):
     res = zeros(dim*(dim+1)/2)
     index = 0
     for row in range(dim):
-        for col in range(row, dim):
-            res[index] = m[row, col]
-            index += 1
+        res[index:index+dim-row] = m[row, row:]
+        index += dim-row
     return res
 
 def flat2triu(a, dim):
     res = zeros((dim, dim))
     index = 0
     for row in range(dim):
-        for col in range(row, dim):
-            res[row, col] = a[index]
-            index += 1
+        res[row, row:] = a[index:index+dim-row]
+        index += dim-row
     return res
 
         
