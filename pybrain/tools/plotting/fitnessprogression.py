@@ -97,7 +97,7 @@ def plotFitnessProgession(fitdict, batchsize = 1, show = True, semilog = True,
         
         plot(xAxis, yPlot, psymbol, label = name)
         
-    ylabel('fitness')
+    ylabel('-fitness')
     xlabel('number of evaluations')
     pylab.title(title)
     legend()
