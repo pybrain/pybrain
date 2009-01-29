@@ -1,3 +1,7 @@
+""" The algorithm described in 'Natural Evolution Strategies' (CEC-2008) 
+by Wierstra, Schaul, Peters and Schmidhuber."""
+
+
 __author__ = 'Daan Wierstra and Tom Schaul'
 
 from blackboxoptimizer import BlackBoxOptimizer
