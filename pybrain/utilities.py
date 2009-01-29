@@ -444,7 +444,7 @@ def crossproduct(ss, row=None, level=0):
         return reduce(operator.add, 
                       [crossproduct(ss[1:],row+[i],level+1) for i in ss[0]])
     else:
-       return [row+[i] for i in ss[0]]
+        return [row+[i] for i in ss[0]]
 
 
 def permute(arr, permutation):
@@ -492,7 +492,7 @@ def permuteToBlocks3d(arr, blockdepth, blockheight, blockwidth):
     
     
 def permuteToBlocks2d(arr, blockheight, blockwidth):
-    height, width = arr.shape
+    _height, width = arr.shape
     arr = arr.flatten()
     new = zeros(size(arr))
     for i in xrange(size(arr)):
