@@ -15,7 +15,7 @@ from math import sqrt
 from random import random, choice
 from string import split
 
-from scipy import where, array, exp, zeros, size
+from scipy import where, array, exp, zeros, size, mat
 
 # file extension for load/save protocol mapping
 known_extensions = {
@@ -505,10 +505,11 @@ def permuteToBlocks2d(arr, blockheight, blockwidth):
         j = blockoffset + inblocky * blockwidth + inblockx
         new[j] = arr[i]
     return new
-
         
 
 def triu2flat(m):
+    """ Flatten an upper triangular matrix, returning a vector of the 
+    non-zero elements. """
     dim = m.shape[0]
     res = zeros(dim*(dim+1)/2)
     index = 0
@@ -517,7 +518,9 @@ def triu2flat(m):
         index += dim-row
     return res
 
+
 def flat2triu(a, dim):
+    """ Produce an upper triangular matrix of dimension dim from the elements of the given vector. """
     res = zeros((dim, dim))
     index = 0
     for row in range(dim):
@@ -525,10 +528,34 @@ def flat2triu(a, dim):
         index += dim-row
     return res
 
-        
-def ApproxChiFunction(dim):
-    """ Chi (expectation of the length of a normal random vector) 
-    approximation accoring to: Ostermeier 1997 """
-    dim = float(dim)
-    return sqrt(dim) * (1 - 1/(4*dim) + 1/(21* dim**2))
 
+def blockList2Matrix(l):
+    """ Convert a list of matrices into a corresponding big block-diagonal one. """
+    dims = [m.shape[0] for m in l]
+    s = sum(dims)
+    res = zeros((s,s))
+    index = 0
+    for i in range(len(l)):
+        d = dims[i]
+        m = l[i]
+        res[index:index+d, index:index+d] = m
+        index += d
+    return res
+
+
+def blockCombine(l):
+    """ Produce a matrix from a list of lists of its components. """
+    l = [map(mat, row) for row in l]
+    hdims = [m.shape[1] for m in l[0]]
+    hs = sum(hdims)
+    vdims = [row[0].shape[0] for row in l]
+    vs = sum(vdims)
+    res = zeros((hs, vs))
+    vindex = 0
+    for i, row in enumerate(l):
+        hindex = 0
+        for j, m in enumerate(row):
+            res[vindex:vindex +vdims[i], hindex:hindex+hdims[j]] = m
+            hindex += hdims[j]
+        vindex += vdims[i]
+    return res

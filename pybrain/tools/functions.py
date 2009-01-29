@@ -106,11 +106,13 @@ def multivariateNormalPdf(z, x, sigma):
     res = (1./power(2.0*pi, len(z)/2.)) * (1./sqrt(det(sigma))) * exp(tmp)
     return res   
 
+
 def simpleMultivariateNormalPdf(z, detFactorSigma):
     """ Assuming z has been transformed to a mean of zero and an identity matrix of covariances. 
     Needs to provide the determinant of the factorized (real) covariance matrix. """
     dim = len(z)
     return exp(-0.5*dot(z, z))/(power(2.0*pi, dim/2.) * detFactorSigma)
+
 
 def multivariateCauchy(mu, sigma, onlyDiagonal = True):
     """ Generate a sample according to a given multivariate Cauchy distribution. """
@@ -125,3 +127,9 @@ def multivariateCauchy(mu, sigma, onlyDiagonal = True):
         res = dot(d, dot(res, u))
     return res+mu 
 
+        
+def ApproxChiFunction(dim):
+    """ Chi (expectation of the length of a normal random vector) 
+    approximation accoring to: Ostermeier 1997 """
+    dim = float(dim)
+    return sqrt(dim) * (1 - 1/(4*dim) + 1/(21* dim**2))
