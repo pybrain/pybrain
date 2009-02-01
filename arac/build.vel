@@ -1,0 +1,85 @@
+options (
+	default "build"
+	
+	project "Arac - Neural Network Composition Library"
+	author "Justin S Bayer, bayer.justin@googlemail.com"
+	version "pre0.3"
+
+    numpy_swig_dir "/Users/bayerj/devel/thirdparty/numpy/doc/swig"
+    swig_dir "src/swig"
+    py_dir "src/python/arac"
+
+    compiler "/sw/lib/gcc4.3/bin/g++"    
+    flags "-g -O3 -I/usr/local/include -I/usr/include -I/sw/include" 
+    lnflags "-L/usr/local/lib -L/usr/lib -lm -lblas"
+)
+
+
+depends (
+	test.c.run ['test.c.build']
+	test.py ['lib']
+	test ['test.c.run' 'test.py.run']
+)
+
+
+imports [
+]
+
+
+targets (
+
+	build [
+	    py [
+	        |import os, sys
+	        |sys.path.append(os.getcwd())
+	        |import setup
+	        |setup.compile_arac()
+	    ]
+	]
+	
+	test.c.build [
+	    py [
+	        |import os, sys
+	        |sys.path.append(os.getcwd())
+	        |import setup
+	        |setup.compile_test()
+	    ]
+	]
+	
+	test.c.run [
+		$ ./test-arac
+	]
+	
+	test.py.run [
+	   $ python ./src/python/runtests.py
+	]
+	
+	test []
+	
+	swig [
+        $ swig -Wall -python -c++ -outdir %(swig_dir)s -I%(numpy_swig_dir)s -o %(swig_dir)s/cppbridge_wrap.cpp %(swig_dir)s/cppbridge.i
+        py [
+	        |import os, sys
+	        |sys.path.append(os.getcwd())
+	        |import setup
+	        |setup.compile_swig()
+	    ]
+   ]
+	
+	clean [
+		$ rm -rf src/cpp/structure/*.o
+		$ rm -rf src/cpp/structure/connections/*.o
+		$ rm -rf src/cpp/structure/modules/*.o
+		$ rm -rf src/cpp/structure/networks/*.o
+		$ rm -rf src/cpp/structure/networks/mdrnns/*.o
+		$ rm libarac.so
+		$ rm test-arac
+		$ rm src/swig/*.cpp
+		$ rm src/swig/*.o
+		$ rm src/swig/*.py
+		$ rm src/swig/*.pyc
+		$ rm src/python/arac/cppbridge.py
+		$ rm src/python/arac/*.pyc
+		$ rm src/python/arac/tests/*.pyc
+	]
+)
