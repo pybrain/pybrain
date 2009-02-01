@@ -1,4 +1,5 @@
 from biasunit import BiasUnit
+from gate import GateLayer
 from gaussianlayer import GaussianLayer
 from linearlayer import LinearLayer
 from lstm import LSTMLayer
