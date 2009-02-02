@@ -21,6 +21,9 @@ basepath, fn = os.path.split(__file__)
 prepend_path = lambda x: os.path.join(basepath, x)
 
 
+class AracCompileError(Exception): pass
+
+
 def make_compiler(compiler_cmd='g++'):
     executables = {
         'preprocessor': None,
