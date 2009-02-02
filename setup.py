@@ -13,7 +13,7 @@ from distutils.ccompiler import new_compiler
 
 sys.path.append('./arac/')
 
-import setup as aracsetup
+import aracsetuphelpers as aracsetup
 
 
 try:
