@@ -116,7 +116,6 @@ class VanillaGradientEvolutionStrategies(BlackBoxOptimizer):
             # All pdfs computed here are off by a coefficient of 1/power(2.0*pi, self.numParams/2.)
             # but as only their relative values matter, we ignore it.
             
-            
             # stochastically reuse old samples, according to the change in distribution
             for s in range(olds-self.batchSize, olds):
                 oldPdf = exp(-0.5*dot(self.allPs[s],self.allPs[s])) / oldDetFactorSigma
@@ -168,9 +167,14 @@ class VanillaGradientEvolutionStrategies(BlackBoxOptimizer):
                     self.x += self.learningRate * update[:self.xdim]
                 self.factorSigma += self.learningRateSigma * flat2triu(update[self.xdim:], self.xdim)
                 self.sigma = dot(self.factorSigma.T, self.factorSigma)
-            except:
-                print 'Numerical Instability.'
-                raise
+            
+            except ValueError:
+                print 'Numerical Instability. Stopping.'
+                break
+            
+            if self._hasConverged():
+                print 'Premature convergence. Stopping.'
+                break
             
             if self.verbose:
                 print 'G:', self.generation, 'Evals:', self.evalsDone, 'MaxG:', max(self.allFitnesses[-self.batchSize:])
@@ -273,4 +277,15 @@ class VanillaGradientEvolutionStrategies(BlackBoxOptimizer):
         baseline = dot(shapedfitnesses, self.phiSquareWindow) / paramWeightings
         return baseline
         
-
+    def _hasConverged(self):
+        """ When the largest eigenvalue is smaller than 10e-20, we assume the 
+        algorithms has converged. """
+        eigs = abs(diag(self.factorSigma))
+        return min(eigs) < 1e-10
+        
+    def _revertToSafety(self):
+        """ When encountering a bad matrix, this is how we revert to a safe one. """
+        self.factorSigma = eye(self.xdim)
+        self.x = self.bestEvaluable
+        self.allFactorSigmas[-1][:] = self.factorSigma
+        self.sigma = dot(self.factorSigma.T, self.factorSigma)
