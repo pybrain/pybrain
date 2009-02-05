@@ -25,18 +25,85 @@ from pybrain.structure import (
     LSTMLayer,
     SoftmaxLayer,
     PartialSoftmaxLayer,
+    MDLSTMLayer,
     IdentityConnection, 
     FullConnection,
     Network,
     RecurrentNetwork,
-    FeedForwardNetwork
+    FeedForwardNetwork,
+    ModuleMesh,
+    BorderSwipingNetwork
 )
 
 
 scipy.random.seed(0)
 
 
-class TestNetworkEquivalence(TestCase):
+class NetworkTestCase(TestCase):
+
+    def equivalence_recurrent(self, net, _net):
+        scipy.random.seed(0)
+        runs = 10
+        
+        for i in xrange(runs):
+            inpt = scipy.random.random(net.indim)
+            pybrain_res = net.activate(inpt)
+            arac_res = _net.activate(inpt)
+            self.assertArrayNear(pybrain_res, arac_res)
+
+        for _ in xrange(runs):
+            error = scipy.random.random(net.outdim)
+            pybrain_res = net.backActivate(error)
+            arac_res = _net.backActivate(error)
+            self.assertArrayNear(pybrain_res, arac_res)
+            if hasattr(_net, '_derivs'):
+                self.assertArrayNear(_net.derivs, net.derivs)
+                
+        net.reset()
+        _net.reset()
+        self.assert_((_net.inputbuffer == 0.).all())
+        
+        for _ in xrange(runs):
+            inpt = scipy.random.random(net.indim)
+            pybrain_res = net.activate(inpt)
+            arac_res = _net.activate(inpt)
+            self.assertArrayNear(pybrain_res, arac_res)
+
+        for _ in xrange(runs):
+            error = scipy.random.random(net.outdim)
+            pybrain_res = net.backActivate(error)
+            arac_res = _net.backActivate(error)
+            self.assertArrayNear(pybrain_res, arac_res)
+            if hasattr(_net, '_derivs'):
+                self.assertArrayNear(_net.derivs, net.derivs)
+                        
+    def equivalence_feed_forward(self, net, _net):
+        scipy.random.seed(0)
+        runs = 5
+        
+        for _ in xrange(runs):
+            inpt = scipy.random.random(net.indim)
+            pybrain_res = net.activate(inpt)
+            arac_res = _net.activate(inpt)
+            
+            # for module in net.modulesSorted:
+            #     print module.name
+            #     for bn, _ in module.bufferlist:
+            #         print getattr(net[module.name], bn)
+            #         print getattr(_net[module.name], bn)
+            #         print "-" * 5
+            #     print "=" * 20
+            
+            self.assertArrayNear(pybrain_res, arac_res)
+            error = scipy.random.random(net.outdim)
+            pybrain_res = net.backActivate(error)
+            arac_res = _net.backActivate(error)
+            self.assertArrayNear(pybrain_res, arac_res)
+            if hasattr(_net, '_derivs'):
+                self.assertArrayNear(_net.derivs, net.derivs)
+
+
+class TestNetworkEquivalence(NetworkTestCase):
     
     def two_layer_network(self, net):
         inlayer = SigmoidLayer(2, 'in')
@@ -175,76 +242,19 @@ class TestNetworkEquivalence(TestCase):
         net.sortModules()
         
     def equivalence_feed_forward(self, builder):
-        scipy.random.seed(0)
-        runs = 1
-
         _net = pybrainbridge._FeedForwardNetwork()
         builder(_net)
         net = FeedForwardNetwork()
         builder(net)
+        super(TestNetworkEquivalence, self).equivalence_feed_forward(net, _net)
         
-        for _ in xrange(runs):
-            inpt = scipy.random.random(net.indim)
-            pybrain_res = net.activate(inpt)
-            arac_res = _net.activate(inpt)
-            
-            # for module in net.modulesSorted:
-            #     for bn, _ in module.bufferlist:
-            #         print module.name, bn
-            #         print getattr(net[module.name], bn)
-            #         print getattr(_net[module.name], bn)
-            #         print "-" * 5
-            #     print "=" * 20
-            
-            self.assertArrayNear(pybrain_res, arac_res)
-            error = scipy.random.random(net.outdim)
-            pybrain_res = net.backActivate(error)
-            arac_res = _net.backActivate(error)
-            self.assertArrayNear(pybrain_res, arac_res)
-            if hasattr(_net, '_derivs'):
-                self.assertArrayNear(_net.derivs, net.derivs)
-
     def equivalence_recurrent(self, builder):
-        scipy.random.seed(0)
-        runs = 10
-
         _net = pybrainbridge._RecurrentNetwork()
         builder(_net)
         net = RecurrentNetwork()
         builder(net)
-        
-        for i in xrange(runs):
-            inpt = scipy.random.random(net.indim)
-            pybrain_res = net.activate(inpt)
-            arac_res = _net.activate(inpt)
-            self.assertArrayNear(pybrain_res, arac_res)
+        super(TestNetworkEquivalence, self).equivalence_recurrent(net, _net)
 
-        for _ in xrange(runs):
-            error = scipy.random.random(net.outdim)
-            pybrain_res = net.backActivate(error)
-            arac_res = _net.backActivate(error)
-            self.assertArrayNear(pybrain_res, arac_res)
-            if hasattr(_net, '_derivs'):
-                self.assertArrayNear(_net.derivs, net.derivs)
-                
-        net.reset()
-        _net.reset()
-        self.assert_((_net.inputbuffer == 0.).all())
-        
-        for _ in xrange(runs):
-            inpt = scipy.random.random(net.indim)
-            pybrain_res = net.activate(inpt)
-            arac_res = _net.activate(inpt)
-            self.assertArrayNear(pybrain_res, arac_res)
-
-        for _ in xrange(runs):
-            error = scipy.random.random(net.outdim)
-            pybrain_res = net.backActivate(error)
-            arac_res = _net.backActivate(error)
-            self.assertArrayNear(pybrain_res, arac_res)
-            if hasattr(_net, '_derivs'):
-                self.assertArrayNear(_net.derivs, net.derivs)
-                
     def testTwoLayerNetwork(self):
         self.equivalence_feed_forward(self.two_layer_network)
 
@@ -323,14 +333,33 @@ class TestNetworkEquivalence(TestCase):
         net = pybrainbridge._RecurrentNetwork()
         self.lstm_network(net)
         success = False
-        e = ""
         try:
             copied = net.copy()
             success = True
         except TypeError, e:
             success = False
-        self.assert_(success, e)
-
+            self.assert_(success, e)
+        
+        
+class TestNetworkUses(NetworkTestCase):
+    
+    def testBorderSwiping(self):
+        size = 3
+        dim = 3
+        hsize = 1
+        predefined = {}
+        # assuming identical size in all dimensions
+        dims = tuple([size]*dim)
+        # also includes one dimension for the swipes
+        hdims = tuple(list(dims)+[2**dim])
+        inmod = LinearLayer(size**dim, name = 'input')
+        inmesh = ModuleMesh.viewOnFlatLayer(inmod, dims, 'inmesh')
+        outmod = LinearLayer(size**dim, name = 'output')
+        outmesh = ModuleMesh.viewOnFlatLayer(outmod, dims, 'outmesh')
+        hiddenmesh = ModuleMesh.constructWithLayers(TanhLayer, hsize, hdims, 'hidden')
+        net = BorderSwipingNetwork(inmesh, hiddenmesh, outmesh, predefined = predefined)
+        self.equivalence_feed_forward(net, net.convertToFastNetwork())
+        
 
 if __name__ == "__main__":
     unittest.main()  

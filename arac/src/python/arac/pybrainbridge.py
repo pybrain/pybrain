@@ -33,6 +33,7 @@ from pybrain.structure import (
     IdentityConnection, 
     LinearConnection, 
     FullConnection,
+    SharedFullConnection,
     Network,
     RecurrentNetwork,
     FeedForwardNetwork
@@ -60,6 +61,7 @@ class PybrainAracMapper(object):
         TanhLayer: cppbridge.TanhLayer,
         IdentityConnection: cppbridge.IdentityConnection, 
         FullConnection: cppbridge.FullConnection,
+        SharedFullConnection: cppbridge.FullConnection,
         LinearConnection: cppbridge.LinearConnection,
     }
 
@@ -177,6 +179,7 @@ class PybrainAracMapper(object):
             TanhLayer: self._simple_layer_handler,
             IdentityConnection: self._identity_connection_handler, 
             FullConnection: self._parametrized_connection_handler,
+            SharedFullConnection: self._parametrized_connection_handler,
             LinearConnection: self._parametrized_connection_handler,
             Network: self._network_handler,
             RecurrentNetwork: self._network_handler,
