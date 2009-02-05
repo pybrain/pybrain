@@ -18,13 +18,16 @@ class CMAES(BlackBoxOptimizer):
     stopPrecision = 1e-6
     
     online = False
+    keepCenterHistory = False
     
     def _batchLearn(self, maxSteps = None):    
         N = self.xdim
         strfitnessfct = self.evaluator
         xmean = mat(self.x0).reshape(self.xdim, 1)
-
         sigma = 0.5         # coordinate wise standard deviation (step size)
+        
+        if self.keepCenterHistory:
+            self.allCenters = []
       
         # Strategy parameter setting: Selection  
         lambd = int(4+floor(3*log(N)))  # population size, offspring number
@@ -57,7 +60,6 @@ class CMAES(BlackBoxOptimizer):
         arfitness = mat(zeros((lambd,1)))
         arx = mat(zeros((N,lambd)))    
         while counteval+lambd <= maxSteps:
-        
             # Generate and evaluate lambda offspring
             arz = mat(randn(N,lambd))     # array of normally distributed mutation vectors
             for k in range(0,lambd):
@@ -70,6 +72,9 @@ class CMAES(BlackBoxOptimizer):
             xmean = arx[:,arindex[0:mu]]*weights    # recombination, new mean value
             zmean = arz[:,arindex[0:mu]]*weights    # == sigma^-1*D^-1*B'*(xmean-xold)
             
+            if self.keepCenterHistory:
+                self.allCenters.append(ravel(array(xmean)))
+        
             # Cumulation: Update evolution paths
             ps = (1-cs)*ps + sqrt(cs*(2-cs)*mueff) * (B * zmean)                 # Eq. (4)
             hsig = norm(ps)/sqrt(1-(1-cs)**(2*counteval/float(lambd)))/chiN < 1.4 + 2./(N+1)
@@ -97,19 +102,23 @@ class CMAES(BlackBoxOptimizer):
             if self.verbose:
                 print counteval, ': ', arfitness[0]
             
-            # Break, if fitness is good enough
-            if arfitness[0] <= self.desiredEvaluation:
-                print "Stopped since fitness supposedly good enough", arfitness[0], self.desiredEvaluation
-                #TODO cleaner; dont always fucking stop
-                break
-            # or convergence is reached
-            if abs((arfitness[0]-arfitness[-1])/arfitness[0]+arfitness[-1]) <= self.stopPrecision:
-                print "coverage reached"
-                break
             
             self.bestEvaluable = ravel(array(arx[:, arindex[0]]))
             self.bestEvaluation = arfitness[0]
             self.notify()
+            
+            # Break, if fitness is good enough
+            if arfitness[0] <= self.desiredEvaluation:
+                if self.verbose:
+                    print "Stopped since fitness supposedly good enough", arfitness[0], self.desiredEvaluation
+                break
+            # or convergence is reached
+            if abs((arfitness[0]-arfitness[-1])/arfitness[0]+arfitness[-1]) <= self.stopPrecision:
+                if self.verbose:
+                    print "Converged."
+                break
+            
+            
     
 
 def sorti(vect):
