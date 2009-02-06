@@ -35,5 +35,7 @@ setup(
              find_packages('./arac/src/python'),
     include_package_data=True,
     package_dir={'arac': './arac/src/python/arac'},
+    package_data={'arac': ['_cppbridge.so']},
+    data_files=[(os.path.join(sys.prefix, 'lib'), ['libarac.so'])],
     test_suite='pybrain.tests.runtests.make_test_suite',
 )

@@ -74,7 +74,7 @@ def compile_arac():
     sources = sum((glob.glob(i) for i in globs), [])
 
     compiler = make_compiler()
-    objects = compiler.compile(sources, extra_postargs=['-g', '-O3'])
+    objects = compiler.compile(sources, extra_postargs=['-g', '-O3', '-fPIC'])
     compiler.add_library_dir('.')
     compiler.link_shared_lib(
         objects=objects, 
@@ -86,17 +86,18 @@ def compile_arac():
 def compile_swig():
     compiler = make_compiler()
     compiler.add_library('arac')
-    objects = compiler.compile([prepend_path('src/swig/cppbridge_wrap.cpp')])
+    objects = compiler.compile([prepend_path('src/swig/cppbridge_wrap.cpp')],
+			       extra_postargs=['-fPIC'])
     compiler.link_shared_lib(
         objects=objects,
-        output_dir='src/python/arac/',
+        output_dir=prepend_path('src/python/arac/'),
         output_libname='_cppbridge',
         target_lang='c++',
-        extra_postargs=['-undefined suppress', 
+        extra_postargs=['-fPIC', 
                         '-flat_namespace']
     )
-    os.rename('src/python/arac/lib_cppbridge.so', 
-              'src/python/arac/_cppbridge.so')
+    os.rename(prepend_path('src/python/arac/lib_cppbridge.so'), 
+              prepend_path('src/python/arac/_cppbridge.so'))
 
     
 def compile_test():    # Now compile test.                         
