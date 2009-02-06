@@ -88,13 +88,15 @@ def compile_swig():
     compiler.add_library('arac')
     objects = compiler.compile([prepend_path('src/swig/cppbridge_wrap.cpp')],
 			       extra_postargs=['-fPIC'])
+    extra_postargs = ['-fPIC', '-flat_namespace', '-Wno-long-double']
+    if sys.platform == 'darwin':
+    	extra_postargs += ['-undefined suppress'] 
     compiler.link_shared_lib(
         objects=objects,
         output_dir=prepend_path('src/python/arac/'),
         output_libname='_cppbridge',
         target_lang='c++',
-        extra_postargs=['-fPIC', 
-                        '-flat_namespace']
+        extra_postargs=extra_postargs
     )
     os.rename(prepend_path('src/python/arac/lib_cppbridge.so'), 
               prepend_path('src/python/arac/_cppbridge.so'))
