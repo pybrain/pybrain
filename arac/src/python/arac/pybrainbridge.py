@@ -23,20 +23,21 @@ import scipy
 
 from pybrain.structure import (
     BiasUnit,
-    LinearLayer, 
+    FeedForwardNetwork,
+    FullConnection,
     GateLayer,
-    LSTMLayer,
-    SigmoidLayer, 
-    TanhLayer,
-    SoftmaxLayer,
-    PartialSoftmaxLayer,
     IdentityConnection, 
     LinearConnection, 
-    FullConnection,
-    SharedFullConnection,
+    LinearLayer, 
+    LSTMLayer,
+    MDLSTMLayer,
     Network,
+    PartialSoftmaxLayer,
     RecurrentNetwork,
-    FeedForwardNetwork
+    SharedFullConnection,
+    SigmoidLayer, 
+    SoftmaxLayer,
+    TanhLayer,
 )
 
 from pybrain.structure.networks.feedforward import \
@@ -135,6 +136,32 @@ class PybrainAracMapper(object):
         proxy.init_outerror(layer.outputerror)
         proxy.init_state_error(layer.stateError)
         return proxy
+        
+    def _mdlstm_handler(self, layer):
+        # See if there already is a proxy:
+        try: 
+            proxy = self.map[layer]
+        except KeyError:
+            proxy = cppbridge.MdlstmLayer(layer.dimensions, layer.dim)
+            self[layer] = proxy
+        proxy.init_input(layer.inputbuffer)
+        proxy.init_output(layer.outputbuffer)
+        proxy.init_inerror(layer.inputerror)
+        proxy.init_outerror(layer.outputerror)
+        
+        # FIXME: we have to make a buffer especially for this layer to give to 
+        # arac. We attach this to the original pybrain layer object.
+        layer.inputx = scipy.zeros((layer.dimensions, layer.dim))
+        proxy.init_input_squashed(layer.inputx)
+        proxy.init_input_gate_squashed(layer.ingate);
+        proxy.init_input_gate_unsquashed(layer.ingatex);
+        proxy.init_output_gate_squashed(layer.outgate);
+        proxy.init_output_gate_unsquashed(layer.outgatex);
+        proxy.init_forget_gate_unsquashed(layer.forgetgatex);
+        proxy.init_forget_gate_squashed(layer.forgetgate);
+        
+        return proxy
+        
 
     def _parametrized_connection_handler(self, con):
         try:
@@ -171,19 +198,20 @@ class PybrainAracMapper(object):
     def handle(self, obj):
         handlers = {
             BiasUnit: self._bias_handler,
-            LinearLayer: self._simple_layer_handler, 
+            FeedForwardNetwork: self._network_handler,
+            FullConnection: self._parametrized_connection_handler,
             GateLayer: self._simple_layer_handler, 
+            IdentityConnection: self._identity_connection_handler, 
+            LinearConnection: self._parametrized_connection_handler,
+            LinearLayer: self._simple_layer_handler, 
             LSTMLayer: self._lstm_handler,
+            MDLSTMLayer: self._mdlstm_handler,
+            Network: self._network_handler,
+            RecurrentNetwork: self._network_handler,
+            SharedFullConnection: self._parametrized_connection_handler,
             SigmoidLayer: self._simple_layer_handler, 
             SoftmaxLayer: self._simple_layer_handler,
             TanhLayer: self._simple_layer_handler,
-            IdentityConnection: self._identity_connection_handler, 
-            FullConnection: self._parametrized_connection_handler,
-            SharedFullConnection: self._parametrized_connection_handler,
-            LinearConnection: self._parametrized_connection_handler,
-            Network: self._network_handler,
-            RecurrentNetwork: self._network_handler,
-            FeedForwardNetwork: self._network_handler,
             _FeedForwardNetwork: self._network_handler,
             _RecurrentNetwork: self._network_handler,
         }

@@ -259,6 +259,46 @@ class MdlstmLayer : public Module
 };
 
 
+%extend MdlstmLayer {
+
+    void init_input_squashed(double* content_p, int length, int rowsize)
+    {
+        init_buffer($self->input_squashed(), content_p, length, rowsize);
+    }
+    
+    void init_input_gate_squashed(double* content_p, int length, int rowsize)
+    {
+        init_buffer($self->input_gate_squashed(), content_p, length, rowsize);
+    }
+    
+    void init_input_gate_unsquashed(double* content_p, int length, int rowsize)
+    {
+        init_buffer($self->input_gate_unsquashed(), content_p, length, rowsize);
+    }
+    
+    void init_output_gate_squashed(double* content_p, int length, int rowsize)
+    {
+        init_buffer($self->output_gate_squashed(), content_p, length, rowsize);
+    }
+    
+    void init_output_gate_unsquashed(double* content_p, int length, int rowsize)
+    {
+        init_buffer($self->output_gate_unsquashed(), content_p, length, rowsize);
+    }
+        
+    void init_forget_gate_unsquashed(double* content_p, int length, int rowsize)
+    {
+        init_buffer($self->forget_gate_unsquashed(), content_p, length, rowsize);
+    }
+    
+    void init_forget_gate_squashed(double* content_p, int length, int rowsize)
+    {
+        init_buffer($self->forget_gate_squashed(), content_p, length, rowsize);
+    }
+}
+
+
+
 %feature("notabstract") PartialSoftmaxLayer;
 class PartialSoftmaxLayer : public Module
 {
@@ -417,8 +457,6 @@ class LinearConnection : public Connection, public Parametrized
             }
         }
 };    
-
-
 
 
 %feature("notabstract") Network;

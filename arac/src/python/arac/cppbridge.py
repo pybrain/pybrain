@@ -264,6 +264,13 @@ class MdlstmLayer(Module):
         except: self.this = this
     __swig_destroy__ = _cppbridge.delete_MdlstmLayer
     __del__ = lambda self : None;
+    def init_input_squashed(*args): return _cppbridge.MdlstmLayer_init_input_squashed(*args)
+    def init_input_gate_squashed(*args): return _cppbridge.MdlstmLayer_init_input_gate_squashed(*args)
+    def init_input_gate_unsquashed(*args): return _cppbridge.MdlstmLayer_init_input_gate_unsquashed(*args)
+    def init_output_gate_squashed(*args): return _cppbridge.MdlstmLayer_init_output_gate_squashed(*args)
+    def init_output_gate_unsquashed(*args): return _cppbridge.MdlstmLayer_init_output_gate_unsquashed(*args)
+    def init_forget_gate_unsquashed(*args): return _cppbridge.MdlstmLayer_init_forget_gate_unsquashed(*args)
+    def init_forget_gate_squashed(*args): return _cppbridge.MdlstmLayer_init_forget_gate_squashed(*args)
 MdlstmLayer_swigregister = _cppbridge.MdlstmLayer_swigregister
 MdlstmLayer_swigregister(MdlstmLayer)
 

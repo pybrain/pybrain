@@ -86,7 +86,7 @@ def compile_arac():
 def compile_swig():
     compiler = make_compiler()
     compiler.add_library('arac')
-    objects = compiler.compile([prepend_path('src/swig/cppbridge_wrap.cpp')],
+    objects = compiler.compile([prepend_path('src/swig/cppbridge_wrap.cc')],
 			       extra_postargs=['-fPIC'])
     extra_postargs = ['-fPIC', '-flat_namespace', '-Wno-long-double']
     if sys.platform == 'darwin':
