@@ -63,15 +63,15 @@ void
 IdentityConnection::_backward()
 {
     int this_timestep = timestep() - 1;
-    if (this_timestep - get_recurrent() < 0)
+    if (timestep() + get_recurrent() > sequencelength())
     {
         return;
     }
     
-    double* sinkbuffer_p = _incoming_p->outerror()[this_timestep - get_recurrent()];
+    double* sinkbuffer_p = _incoming_p->outerror()[this_timestep];
     sinkbuffer_p += _incomingstart;
 
-    double* sourcebuffer_p = _outgoing_p->inerror()[this_timestep] + _outgoingstart;
+    double* sourcebuffer_p = _outgoing_p->inerror()[this_timestep + get_recurrent()] + _outgoingstart;
     int size = (_incomingstop - _incomingstart);
     for(int i = 0; i < size; i++)
     {

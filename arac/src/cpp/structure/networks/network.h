@@ -62,6 +62,7 @@ class Network : public BaseNetwork
         std::vector<Module*> _inmodules;
         std::vector<Module*> _outmodules;
         std::vector<Component*> _components_sorted;
+        std::vector<Component*> _components_rec;
         std::map<Module*, ModuleType> _modules;
         std::vector<Connection*> _connections;
         std::map<Module*, std::vector<Connection*> > _outgoing_connections;

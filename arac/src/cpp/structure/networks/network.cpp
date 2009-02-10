@@ -36,6 +36,12 @@ Network::clear()
     {
         (*comp_iter)->clear();
     }
+    for(comp_iter = _components_rec.begin(); 
+        comp_iter != _components_rec.end();
+        ++comp_iter)
+    {
+        (*comp_iter)->clear();
+    }
 }
 
 
@@ -87,14 +93,23 @@ Network::_forward()
         memcpy((void*) sink_p, (void*) input_p, size * sizeof(double));
         input_p += size;
     }
-    // Forward the components in the right order.
+    // First forward recurrent components.
     std::vector<Component*>::iterator comp_iter;
+    for(comp_iter = _components_rec.begin(); 
+        comp_iter != _components_rec.end();
+        ++comp_iter)
+    {
+        (*comp_iter)->forward();
+    }
+    
+    // Forward the non recurrent components in the right order.
     for(comp_iter = _components_sorted.begin(); 
         comp_iter != _components_sorted.end();
         ++comp_iter)
     {
         (*comp_iter)->forward();
     }
+    
     // Copy outputs into the outputbuffer.
     double* sink_p = output()[timestep()];
     for(mod_iter = _outmodules.begin(); mod_iter != _outmodules.end(); mod_iter++)
@@ -130,6 +145,21 @@ Network::_backward()
         error_p += size;
     }
     
+    // First backward recurrent components.
+    std::vector<Component*>::iterator iter;
+    for(iter = _components_rec.begin(); 
+        iter != _components_rec.end();
+        iter++)
+    {
+        Component* comp_p = *iter;
+        if (comp_p->error_agnostic())
+        {
+            continue;
+        }
+        comp_p->backward();
+    }
+    
+    // Backward non recurrent components in reverse topological order.
     std::vector<Component*>::reverse_iterator riter;
     for(riter = _components_sorted.rbegin(); 
         riter != _components_sorted.rend();
@@ -247,18 +277,6 @@ Network::sort()
     // Fill the list of sorted components correctly.
     _components_sorted.clear();
     
-    // First fill in the recurrent connections.
-    // TODO: These should be sorted by recurrency.
-    for (con_iter = _connections.begin();
-         con_iter != _connections.end();
-         con_iter++)
-    {
-        if (((*con_iter)->get_recurrent()))
-        {
-            _components_sorted.push_back(*con_iter);
-        }
-    }
-    
     // Then fill in the rest in topological order.
     for(mod_iter = sorted.begin(); mod_iter != sorted.end(); mod_iter++)
     {
@@ -267,13 +285,17 @@ Network::sort()
             con_iter != _outgoing_connections[*mod_iter].end();
             con_iter++)
         {
-            if (((*con_iter)->get_recurrent()))
+            if (!((*con_iter)->get_recurrent()))
             {
-                continue;
+                _components_sorted.push_back(*con_iter);
             }
-            _components_sorted.push_back(*con_iter);
+            else
+            {
+                _components_rec.push_back(*con_iter);
+            }
         }
     }
+    
     init_buffers();
     _dirty = false;
 }
