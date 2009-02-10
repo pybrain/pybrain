@@ -2519,12 +2519,13 @@ SWIG_Python_MustGetPtr(PyObject *obj, swig_type_info *ty, int argnum, int flags)
 #define SWIGTYPE_p_PartialSoftmaxLayer swig_types[15]
 #define SWIGTYPE_p_SigmoidLayer swig_types[16]
 #define SWIGTYPE_p_SoftmaxLayer swig_types[17]
-#define SWIGTYPE_p_TanhLayer swig_types[18]
-#define SWIGTYPE_p_arac__common__Buffer swig_types[19]
-#define SWIGTYPE_p_char swig_types[20]
-#define SWIGTYPE_p_double swig_types[21]
-static swig_type_info *swig_types[23];
-static swig_module_info swig_module = {swig_types, 22, 0, 0, 0, 0};
+#define SWIGTYPE_p_SupervisedSimpleDataset swig_types[18]
+#define SWIGTYPE_p_TanhLayer swig_types[19]
+#define SWIGTYPE_p_arac__common__Buffer swig_types[20]
+#define SWIGTYPE_p_char swig_types[21]
+#define SWIGTYPE_p_double swig_types[22]
+static swig_type_info *swig_types[24];
+static swig_module_info swig_module = {swig_types, 23, 0, 0, 0, 0};
 #define SWIG_TypeQuery(name) SWIG_TypeQueryModule(&swig_module, &swig_module, name)
 #define SWIG_MangledTypeQuery(name) SWIG_MangledTypeQueryModule(&swig_module, &swig_module, name)
 
@@ -2626,10 +2627,12 @@ namespace swig {
 
 
 using namespace arac::common;
-using namespace arac::structure;
+using namespace arac::datasets;
+using namespace arac::optimization;
 using namespace arac::structure::connections;
 using namespace arac::structure::modules;
 using namespace arac::structure::networks;
+using namespace arac::structure;
 
 
 void init_buffer(Buffer& buffer, double* content_p, int length, int rowsize)
@@ -2742,8 +2745,89 @@ SWIG_CanCastAsInteger(double *d, double min, double max) {
 }
 
 
+SWIGINTERN int
+SWIG_AsVal_long (PyObject *obj, long* val)
+{
+  if (PyInt_Check(obj)) {
+    if (val) *val = PyInt_AsLong(obj);
+    return SWIG_OK;
+  } else if (PyLong_Check(obj)) {
+    long v = PyLong_AsLong(obj);
+    if (!PyErr_Occurred()) {
+      if (val) *val = v;
+      return SWIG_OK;
+    } else {
+      PyErr_Clear();
+    }
+  }
+#ifdef SWIG_PYTHON_CAST_MODE
+  {
+    int dispatch = 0;
+    long v = PyInt_AsLong(obj);
+    if (!PyErr_Occurred()) {
+      if (val) *val = v;
+      return SWIG_AddCast(SWIG_OK);
+    } else {
+      PyErr_Clear();
+    }
+    if (!dispatch) {
+      double d;
+      int res = SWIG_AddCast(SWIG_AsVal_double (obj,&d));
+      if (SWIG_IsOK(res) && SWIG_CanCastAsInteger(&d, LONG_MIN, LONG_MAX)) {
+	if (val) *val = (long)(d);
+	return res;
+      }
+    }
+  }
+#endif
+  return SWIG_TypeError;
+}
+
+
+SWIGINTERN int
+SWIG_AsVal_int (PyObject * obj, int *val)
+{
+  long v;
+  int res = SWIG_AsVal_long (obj, &v);
+  if (SWIG_IsOK(res)) {
+    if ((v < INT_MIN || v > INT_MAX)) {
+      return SWIG_OverflowError;
+    } else {
+      if (val) *val = static_cast< int >(v);
+    }
+  }  
+  return res;
+}
+
+SWIGINTERN void Buffer_append(Buffer *self,double *row_p,int this_size){
+        if (this_size != self->rowsize()) {
+            PyErr_Format(PyExc_ValueError, "Row has wrong length: (%d,%d) given",
+                         this_size, self->rowsize());
+            return;
+        }
+        self->free_memory();
+        self->append(row_p);
+    }
+
+  #define SWIG_From_long   PyInt_FromLong 
+
+
+SWIGINTERNINLINE PyObject *
+SWIG_From_int  (int value)
+{    
+  return SWIG_From_long  (value);
+}
+
+
+SWIGINTERNINLINE PyObject*
+  SWIG_From_bool  (bool value)
+{
+  return PyBool_FromLong(value ? 1 : 0);
+}
+
+
 /* Support older NumPy data type names
- */
+*/
 #if NDARRAY_VERSION < 0x01000000
 #define NPY_BOOL          PyArray_BOOL
 #define NPY_BYTE          PyArray_BYTE
@@ -2793,90 +2877,6 @@ SWIG_CanCastAsInteger(double *d, double min, double max) {
 #define NPY_FARRAY        FARRAY
 #define NPY_F_CONTIGUOUS  F_CONTIGUOUS
 #endif
-
-
-  SWIGINTERN int
-  SWIG_AsVal_long (PyObject * obj, long * val)
-  {
-    static PyArray_Descr * longDescr = PyArray_DescrNewFromType(NPY_LONG);
-    if (PyInt_Check(obj)) {
-      if (val) *val = PyInt_AsLong(obj);
-      return SWIG_OK;
-    } else if (PyLong_Check(obj)) {
-      long v = PyLong_AsLong(obj);
-      if (!PyErr_Occurred()) {
-	if (val) *val = v;
-	return SWIG_OK;
-      } else {
-	PyErr_Clear();
-      }
-    }
-#ifdef SWIG_PYTHON_CAST_MODE
-    {
-      int dispatch = 0;
-      long v = PyInt_AsLong(obj);
-      if (!PyErr_Occurred()) {
-	if (val) *val = v;
-	return SWIG_AddCast(SWIG_OK);
-      } else {
-	PyErr_Clear();
-      }
-      if (!dispatch) {
-	double d;
-	int res = SWIG_AddCast(SWIG_AsVal_double (obj,&d));
-	if (SWIG_IsOK(res) && SWIG_CanCastAsInteger(&d, LONG_MIN, LONG_MAX)) {
-	  if (val) *val = (long)(d);
-	  return res;
-	}
-      }
-    }
-#endif
-    if (!PyArray_IsScalar(obj,Integer)) return SWIG_TypeError;
-    PyArray_CastScalarToCtype(obj, (void*)val, longDescr);
-    return SWIG_OK;
-  }
-
-
-SWIGINTERN int
-SWIG_AsVal_int (PyObject * obj, int *val)
-{
-  long v;
-  int res = SWIG_AsVal_long (obj, &v);
-  if (SWIG_IsOK(res)) {
-    if ((v < INT_MIN || v > INT_MAX)) {
-      return SWIG_OverflowError;
-    } else {
-      if (val) *val = static_cast< int >(v);
-    }
-  }  
-  return res;
-}
-
-SWIGINTERN void Buffer_append(Buffer *self,double *row_p,int this_size){
-        if (this_size != self->rowsize()) {
-            PyErr_Format(PyExc_ValueError, "Row has wrong length: (%d,%d) given",
-                         this_size, self->rowsize());
-            return;
-        }
-        self->free_memory();
-        self->append(row_p);
-    }
-
-  #define SWIG_From_long   PyInt_FromLong 
-
-
-SWIGINTERNINLINE PyObject *
-SWIG_From_int  (int value)
-{    
-  return SWIG_From_long  (value);
-}
-
-
-SWIGINTERNINLINE PyObject*
-  SWIG_From_bool  (bool value)
-{
-  return PyBool_FromLong(value ? 1 : 0);
-}
 
 
 /* Macros to extract array attributes.
@@ -3270,6 +3270,27 @@ SWIGINTERN void LstmLayer_init_state(LstmLayer *self,double *content_p,int lengt
 SWIGINTERN void LstmLayer_init_state_error(LstmLayer *self,double *content_p,int length,int rowsize){
         init_buffer(self->state_error(), content_p, length, rowsize);
     }
+SWIGINTERN void MdlstmLayer_init_input_squashed(MdlstmLayer *self,double *content_p,int length,int rowsize){
+        init_buffer(self->input_squashed(), content_p, length, rowsize);
+    }
+SWIGINTERN void MdlstmLayer_init_input_gate_squashed(MdlstmLayer *self,double *content_p,int length,int rowsize){
+        init_buffer(self->input_gate_squashed(), content_p, length, rowsize);
+    }
+SWIGINTERN void MdlstmLayer_init_input_gate_unsquashed(MdlstmLayer *self,double *content_p,int length,int rowsize){
+        init_buffer(self->input_gate_unsquashed(), content_p, length, rowsize);
+    }
+SWIGINTERN void MdlstmLayer_init_output_gate_squashed(MdlstmLayer *self,double *content_p,int length,int rowsize){
+        init_buffer(self->output_gate_squashed(), content_p, length, rowsize);
+    }
+SWIGINTERN void MdlstmLayer_init_output_gate_unsquashed(MdlstmLayer *self,double *content_p,int length,int rowsize){
+        init_buffer(self->output_gate_unsquashed(), content_p, length, rowsize);
+    }
+SWIGINTERN void MdlstmLayer_init_forget_gate_unsquashed(MdlstmLayer *self,double *content_p,int length,int rowsize){
+        init_buffer(self->forget_gate_unsquashed(), content_p, length, rowsize);
+    }
+SWIGINTERN void MdlstmLayer_init_forget_gate_squashed(MdlstmLayer *self,double *content_p,int length,int rowsize){
+        init_buffer(self->forget_gate_squashed(), content_p, length, rowsize);
+    }
 SWIGINTERN FullConnection *new_FullConnection__SWIG_3(Module *incoming_p,Module *outgoing_p,double *parameters_p,int parameter_size,double *derivatives_p,int derivative_size,int incomingstart,int incomingstop,int outgoingstart,int outgoingstop){
                 int required_size = \
                     (incomingstop - incomingstart) * (outgoingstop - outgoingstart);
@@ -3349,6 +3370,14 @@ SWIGINTERN void Network_back_activate(Network *self,double *outerror_p,int outle
             return;
         }
         self->back_activate(outerror_p, inerror_p);
+    }
+SWIGINTERN void SupervisedSimpleDataset_append(SupervisedSimpleDataset *self,double *sample_p,int samplelength,double *target_p,int targetlength){
+        if (samplelength != self->samplesize() or targetlength != self->targetsize()) {
+            PyErr_Format(PyExc_ValueError, "Arrays of lengths (%d,%d) given",
+                         samplelength, targetlength);
+            return;
+        }
+        self->append(sample_p, target_p);
     }
 #ifdef __cplusplus
 extern "C" {
@@ -5187,6 +5216,244 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_MdlstmLayer_init_input_squashed(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MdlstmLayer *arg1 = (MdlstmLayer *) 0 ;
+  double *arg2 = (double *) 0 ;
+  int arg3 ;
+  int arg4 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyArrayObject *array2 = NULL ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:MdlstmLayer_init_input_squashed",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_MdlstmLayer, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MdlstmLayer_init_input_squashed" "', argument " "1"" of type '" "MdlstmLayer *""'"); 
+  }
+  arg1 = reinterpret_cast< MdlstmLayer * >(argp1);
+  {
+    array2 = obj_to_array_no_conversion(obj1, NPY_DOUBLE);
+    if (!array2 || !require_dimensions(array2,2) || !require_contiguous(array2)
+      || !require_native(array2)) SWIG_fail;
+    arg2 = (double*) array_data(array2);
+    arg3 = (int) array_size(array2,0);
+    arg4 = (int) array_size(array2,1);
+  }
+  MdlstmLayer_init_input_squashed(arg1,arg2,arg3,arg4);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MdlstmLayer_init_input_gate_squashed(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MdlstmLayer *arg1 = (MdlstmLayer *) 0 ;
+  double *arg2 = (double *) 0 ;
+  int arg3 ;
+  int arg4 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyArrayObject *array2 = NULL ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:MdlstmLayer_init_input_gate_squashed",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_MdlstmLayer, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MdlstmLayer_init_input_gate_squashed" "', argument " "1"" of type '" "MdlstmLayer *""'"); 
+  }
+  arg1 = reinterpret_cast< MdlstmLayer * >(argp1);
+  {
+    array2 = obj_to_array_no_conversion(obj1, NPY_DOUBLE);
+    if (!array2 || !require_dimensions(array2,2) || !require_contiguous(array2)
+      || !require_native(array2)) SWIG_fail;
+    arg2 = (double*) array_data(array2);
+    arg3 = (int) array_size(array2,0);
+    arg4 = (int) array_size(array2,1);
+  }
+  MdlstmLayer_init_input_gate_squashed(arg1,arg2,arg3,arg4);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MdlstmLayer_init_input_gate_unsquashed(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MdlstmLayer *arg1 = (MdlstmLayer *) 0 ;
+  double *arg2 = (double *) 0 ;
+  int arg3 ;
+  int arg4 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyArrayObject *array2 = NULL ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:MdlstmLayer_init_input_gate_unsquashed",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_MdlstmLayer, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MdlstmLayer_init_input_gate_unsquashed" "', argument " "1"" of type '" "MdlstmLayer *""'"); 
+  }
+  arg1 = reinterpret_cast< MdlstmLayer * >(argp1);
+  {
+    array2 = obj_to_array_no_conversion(obj1, NPY_DOUBLE);
+    if (!array2 || !require_dimensions(array2,2) || !require_contiguous(array2)
+      || !require_native(array2)) SWIG_fail;
+    arg2 = (double*) array_data(array2);
+    arg3 = (int) array_size(array2,0);
+    arg4 = (int) array_size(array2,1);
+  }
+  MdlstmLayer_init_input_gate_unsquashed(arg1,arg2,arg3,arg4);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MdlstmLayer_init_output_gate_squashed(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MdlstmLayer *arg1 = (MdlstmLayer *) 0 ;
+  double *arg2 = (double *) 0 ;
+  int arg3 ;
+  int arg4 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyArrayObject *array2 = NULL ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:MdlstmLayer_init_output_gate_squashed",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_MdlstmLayer, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MdlstmLayer_init_output_gate_squashed" "', argument " "1"" of type '" "MdlstmLayer *""'"); 
+  }
+  arg1 = reinterpret_cast< MdlstmLayer * >(argp1);
+  {
+    array2 = obj_to_array_no_conversion(obj1, NPY_DOUBLE);
+    if (!array2 || !require_dimensions(array2,2) || !require_contiguous(array2)
+      || !require_native(array2)) SWIG_fail;
+    arg2 = (double*) array_data(array2);
+    arg3 = (int) array_size(array2,0);
+    arg4 = (int) array_size(array2,1);
+  }
+  MdlstmLayer_init_output_gate_squashed(arg1,arg2,arg3,arg4);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MdlstmLayer_init_output_gate_unsquashed(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MdlstmLayer *arg1 = (MdlstmLayer *) 0 ;
+  double *arg2 = (double *) 0 ;
+  int arg3 ;
+  int arg4 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyArrayObject *array2 = NULL ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:MdlstmLayer_init_output_gate_unsquashed",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_MdlstmLayer, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MdlstmLayer_init_output_gate_unsquashed" "', argument " "1"" of type '" "MdlstmLayer *""'"); 
+  }
+  arg1 = reinterpret_cast< MdlstmLayer * >(argp1);
+  {
+    array2 = obj_to_array_no_conversion(obj1, NPY_DOUBLE);
+    if (!array2 || !require_dimensions(array2,2) || !require_contiguous(array2)
+      || !require_native(array2)) SWIG_fail;
+    arg2 = (double*) array_data(array2);
+    arg3 = (int) array_size(array2,0);
+    arg4 = (int) array_size(array2,1);
+  }
+  MdlstmLayer_init_output_gate_unsquashed(arg1,arg2,arg3,arg4);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MdlstmLayer_init_forget_gate_unsquashed(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MdlstmLayer *arg1 = (MdlstmLayer *) 0 ;
+  double *arg2 = (double *) 0 ;
+  int arg3 ;
+  int arg4 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyArrayObject *array2 = NULL ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:MdlstmLayer_init_forget_gate_unsquashed",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_MdlstmLayer, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MdlstmLayer_init_forget_gate_unsquashed" "', argument " "1"" of type '" "MdlstmLayer *""'"); 
+  }
+  arg1 = reinterpret_cast< MdlstmLayer * >(argp1);
+  {
+    array2 = obj_to_array_no_conversion(obj1, NPY_DOUBLE);
+    if (!array2 || !require_dimensions(array2,2) || !require_contiguous(array2)
+      || !require_native(array2)) SWIG_fail;
+    arg2 = (double*) array_data(array2);
+    arg3 = (int) array_size(array2,0);
+    arg4 = (int) array_size(array2,1);
+  }
+  MdlstmLayer_init_forget_gate_unsquashed(arg1,arg2,arg3,arg4);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MdlstmLayer_init_forget_gate_squashed(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MdlstmLayer *arg1 = (MdlstmLayer *) 0 ;
+  double *arg2 = (double *) 0 ;
+  int arg3 ;
+  int arg4 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyArrayObject *array2 = NULL ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:MdlstmLayer_init_forget_gate_squashed",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_MdlstmLayer, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MdlstmLayer_init_forget_gate_squashed" "', argument " "1"" of type '" "MdlstmLayer *""'"); 
+  }
+  arg1 = reinterpret_cast< MdlstmLayer * >(argp1);
+  {
+    array2 = obj_to_array_no_conversion(obj1, NPY_DOUBLE);
+    if (!array2 || !require_dimensions(array2,2) || !require_contiguous(array2)
+      || !require_native(array2)) SWIG_fail;
+    arg2 = (double*) array_data(array2);
+    arg3 = (int) array_size(array2,0);
+    arg4 = (int) array_size(array2,1);
+  }
+  MdlstmLayer_init_forget_gate_squashed(arg1,arg2,arg3,arg4);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *MdlstmLayer_swigregister(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *obj;
   if (!PyArg_ParseTuple(args,(char*)"O:swigregister", &obj)) return NULL;
@@ -6537,6 +6804,27 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_Network_clear_derivatives(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  Network *arg1 = (Network *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:Network_clear_derivatives",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_Network, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Network_clear_derivatives" "', argument " "1"" of type '" "Network *""'"); 
+  }
+  arg1 = reinterpret_cast< Network * >(argp1);
+  (arg1)->clear_derivatives();
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *_wrap_Network_add_module__SWIG_0(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   Network *arg1 = (Network *) 0 ;
@@ -6791,6 +7079,178 @@ SWIGINTERN PyObject *Network_swigregister(PyObject *SWIGUNUSEDPARM(self), PyObje
   return SWIG_Py_Void();
 }
 
+SWIGINTERN PyObject *_wrap_new_SupervisedSimpleDataset(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  int arg1 ;
+  int arg2 ;
+  int val1 ;
+  int ecode1 = 0 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  SupervisedSimpleDataset *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:new_SupervisedSimpleDataset",&obj0,&obj1)) SWIG_fail;
+  ecode1 = SWIG_AsVal_int(obj0, &val1);
+  if (!SWIG_IsOK(ecode1)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "new_SupervisedSimpleDataset" "', argument " "1"" of type '" "int""'");
+  } 
+  arg1 = static_cast< int >(val1);
+  ecode2 = SWIG_AsVal_int(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "new_SupervisedSimpleDataset" "', argument " "2"" of type '" "int""'");
+  } 
+  arg2 = static_cast< int >(val2);
+  result = (SupervisedSimpleDataset *)new SupervisedSimpleDataset(arg1,arg2);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_SupervisedSimpleDataset, SWIG_POINTER_NEW |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_delete_SupervisedSimpleDataset(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  SupervisedSimpleDataset *arg1 = (SupervisedSimpleDataset *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:delete_SupervisedSimpleDataset",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_SupervisedSimpleDataset, SWIG_POINTER_DISOWN |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_SupervisedSimpleDataset" "', argument " "1"" of type '" "SupervisedSimpleDataset *""'"); 
+  }
+  arg1 = reinterpret_cast< SupervisedSimpleDataset * >(argp1);
+  delete arg1;
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_SupervisedSimpleDataset_size(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  SupervisedSimpleDataset *arg1 = (SupervisedSimpleDataset *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  int result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:SupervisedSimpleDataset_size",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_SupervisedSimpleDataset, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SupervisedSimpleDataset_size" "', argument " "1"" of type '" "SupervisedSimpleDataset *""'"); 
+  }
+  arg1 = reinterpret_cast< SupervisedSimpleDataset * >(argp1);
+  result = (int)(arg1)->size();
+  resultobj = SWIG_From_int(static_cast< int >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_SupervisedSimpleDataset_samplesize(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  SupervisedSimpleDataset *arg1 = (SupervisedSimpleDataset *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  int result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:SupervisedSimpleDataset_samplesize",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_SupervisedSimpleDataset, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SupervisedSimpleDataset_samplesize" "', argument " "1"" of type '" "SupervisedSimpleDataset *""'"); 
+  }
+  arg1 = reinterpret_cast< SupervisedSimpleDataset * >(argp1);
+  result = (int)(arg1)->samplesize();
+  resultobj = SWIG_From_int(static_cast< int >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_SupervisedSimpleDataset_targetsize(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  SupervisedSimpleDataset *arg1 = (SupervisedSimpleDataset *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  int result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:SupervisedSimpleDataset_targetsize",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_SupervisedSimpleDataset, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SupervisedSimpleDataset_targetsize" "', argument " "1"" of type '" "SupervisedSimpleDataset *""'"); 
+  }
+  arg1 = reinterpret_cast< SupervisedSimpleDataset * >(argp1);
+  result = (int)(arg1)->targetsize();
+  resultobj = SWIG_From_int(static_cast< int >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_SupervisedSimpleDataset_append(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  SupervisedSimpleDataset *arg1 = (SupervisedSimpleDataset *) 0 ;
+  double *arg2 = (double *) 0 ;
+  int arg3 ;
+  double *arg4 = (double *) 0 ;
+  int arg5 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyArrayObject *array2 = NULL ;
+  int i2 = 1 ;
+  PyArrayObject *array4 = NULL ;
+  int i4 = 1 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  PyObject * obj2 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OOO:SupervisedSimpleDataset_append",&obj0,&obj1,&obj2)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_SupervisedSimpleDataset, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SupervisedSimpleDataset_append" "', argument " "1"" of type '" "SupervisedSimpleDataset *""'"); 
+  }
+  arg1 = reinterpret_cast< SupervisedSimpleDataset * >(argp1);
+  {
+    array2 = obj_to_array_no_conversion(obj1, NPY_DOUBLE);
+    if (!array2 || !require_dimensions(array2,1) || !require_contiguous(array2)
+      || !require_native(array2)) SWIG_fail;
+    arg2 = (double*) array_data(array2);
+    arg3 = 1;
+    for (i2=0; i2 < array_numdims(array2); ++i2) arg3 *= array_size(array2,i2);
+  }
+  {
+    array4 = obj_to_array_no_conversion(obj2, NPY_DOUBLE);
+    if (!array4 || !require_dimensions(array4,1) || !require_contiguous(array4)
+      || !require_native(array4)) SWIG_fail;
+    arg4 = (double*) array_data(array4);
+    arg5 = 1;
+    for (i4=0; i4 < array_numdims(array4); ++i4) arg5 *= array_size(array4,i4);
+  }
+  SupervisedSimpleDataset_append(arg1,arg2,arg3,arg4,arg5);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *SupervisedSimpleDataset_swigregister(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *obj;
+  if (!PyArg_ParseTuple(args,(char*)"O:swigregister", &obj)) return NULL;
+  SWIG_TypeNewClientData(SWIGTYPE_p_SupervisedSimpleDataset, SWIG_NewClientData(obj));
+  return SWIG_Py_Void();
+}
+
 static PyMethodDef SwigMethods[] = {
 	 { (char *)"Buffer_append", _wrap_Buffer_append, METH_VARARGS, NULL},
 	 { (char *)"delete_Buffer", _wrap_delete_Buffer, METH_VARARGS, NULL},
@@ -6866,6 +7326,13 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"LstmLayer_swigregister", LstmLayer_swigregister, METH_VARARGS, NULL},
 	 { (char *)"new_MdlstmLayer", _wrap_new_MdlstmLayer, METH_VARARGS, NULL},
 	 { (char *)"delete_MdlstmLayer", _wrap_delete_MdlstmLayer, METH_VARARGS, NULL},
+	 { (char *)"MdlstmLayer_init_input_squashed", _wrap_MdlstmLayer_init_input_squashed, METH_VARARGS, NULL},
+	 { (char *)"MdlstmLayer_init_input_gate_squashed", _wrap_MdlstmLayer_init_input_gate_squashed, METH_VARARGS, NULL},
+	 { (char *)"MdlstmLayer_init_input_gate_unsquashed", _wrap_MdlstmLayer_init_input_gate_unsquashed, METH_VARARGS, NULL},
+	 { (char *)"MdlstmLayer_init_output_gate_squashed", _wrap_MdlstmLayer_init_output_gate_squashed, METH_VARARGS, NULL},
+	 { (char *)"MdlstmLayer_init_output_gate_unsquashed", _wrap_MdlstmLayer_init_output_gate_unsquashed, METH_VARARGS, NULL},
+	 { (char *)"MdlstmLayer_init_forget_gate_unsquashed", _wrap_MdlstmLayer_init_forget_gate_unsquashed, METH_VARARGS, NULL},
+	 { (char *)"MdlstmLayer_init_forget_gate_squashed", _wrap_MdlstmLayer_init_forget_gate_squashed, METH_VARARGS, NULL},
 	 { (char *)"MdlstmLayer_swigregister", MdlstmLayer_swigregister, METH_VARARGS, NULL},
 	 { (char *)"new_PartialSoftmaxLayer", _wrap_new_PartialSoftmaxLayer, METH_VARARGS, NULL},
 	 { (char *)"delete_PartialSoftmaxLayer", _wrap_delete_PartialSoftmaxLayer, METH_VARARGS, NULL},
@@ -6893,11 +7360,19 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"new_Network", _wrap_new_Network, METH_VARARGS, NULL},
 	 { (char *)"delete_Network", _wrap_delete_Network, METH_VARARGS, NULL},
 	 { (char *)"Network_clear", _wrap_Network_clear, METH_VARARGS, NULL},
+	 { (char *)"Network_clear_derivatives", _wrap_Network_clear_derivatives, METH_VARARGS, NULL},
 	 { (char *)"Network_add_module", _wrap_Network_add_module, METH_VARARGS, NULL},
 	 { (char *)"Network_add_connection", _wrap_Network_add_connection, METH_VARARGS, NULL},
 	 { (char *)"Network_activate", _wrap_Network_activate, METH_VARARGS, NULL},
 	 { (char *)"Network_back_activate", _wrap_Network_back_activate, METH_VARARGS, NULL},
 	 { (char *)"Network_swigregister", Network_swigregister, METH_VARARGS, NULL},
+	 { (char *)"new_SupervisedSimpleDataset", _wrap_new_SupervisedSimpleDataset, METH_VARARGS, NULL},
+	 { (char *)"delete_SupervisedSimpleDataset", _wrap_delete_SupervisedSimpleDataset, METH_VARARGS, NULL},
+	 { (char *)"SupervisedSimpleDataset_size", _wrap_SupervisedSimpleDataset_size, METH_VARARGS, NULL},
+	 { (char *)"SupervisedSimpleDataset_samplesize", _wrap_SupervisedSimpleDataset_samplesize, METH_VARARGS, NULL},
+	 { (char *)"SupervisedSimpleDataset_targetsize", _wrap_SupervisedSimpleDataset_targetsize, METH_VARARGS, NULL},
+	 { (char *)"SupervisedSimpleDataset_append", _wrap_SupervisedSimpleDataset_append, METH_VARARGS, NULL},
+	 { (char *)"SupervisedSimpleDataset_swigregister", SupervisedSimpleDataset_swigregister, METH_VARARGS, NULL},
 	 { NULL, NULL, 0, NULL }
 };
 
@@ -7021,6 +7496,7 @@ static swig_type_info _swigt__p_Parametrized = {"_p_Parametrized", "Parametrized
 static swig_type_info _swigt__p_PartialSoftmaxLayer = {"_p_PartialSoftmaxLayer", "PartialSoftmaxLayer *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_SigmoidLayer = {"_p_SigmoidLayer", "SigmoidLayer *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_SoftmaxLayer = {"_p_SoftmaxLayer", "SoftmaxLayer *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_SupervisedSimpleDataset = {"_p_SupervisedSimpleDataset", "SupervisedSimpleDataset *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_TanhLayer = {"_p_TanhLayer", "TanhLayer *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_arac__common__Buffer = {"_p_arac__common__Buffer", "arac::common::Buffer *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_char = {"_p_char", "char *", 0, 0, (void*)0, 0};
@@ -7045,6 +7521,7 @@ static swig_type_info *swig_type_initial[] = {
   &_swigt__p_PartialSoftmaxLayer,
   &_swigt__p_SigmoidLayer,
   &_swigt__p_SoftmaxLayer,
+  &_swigt__p_SupervisedSimpleDataset,
   &_swigt__p_TanhLayer,
   &_swigt__p_arac__common__Buffer,
   &_swigt__p_char,
@@ -7069,6 +7546,7 @@ static swig_cast_info _swigc__p_Parametrized[] = {  {&_swigt__p_Parametrized, 0,
 static swig_cast_info _swigc__p_PartialSoftmaxLayer[] = {  {&_swigt__p_PartialSoftmaxLayer, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_SigmoidLayer[] = {  {&_swigt__p_SigmoidLayer, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_SoftmaxLayer[] = {  {&_swigt__p_SoftmaxLayer, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_SupervisedSimpleDataset[] = {  {&_swigt__p_SupervisedSimpleDataset, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_TanhLayer[] = {  {&_swigt__p_TanhLayer, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_arac__common__Buffer[] = {  {&_swigt__p_arac__common__Buffer, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_char[] = {  {&_swigt__p_char, 0, 0, 0},{0, 0, 0, 0}};
@@ -7093,6 +7571,7 @@ static swig_cast_info *swig_cast_initial[] = {
   _swigc__p_PartialSoftmaxLayer,
   _swigc__p_SigmoidLayer,
   _swigc__p_SoftmaxLayer,
+  _swigc__p_SupervisedSimpleDataset,
   _swigc__p_TanhLayer,
   _swigc__p_arac__common__Buffer,
   _swigc__p_char,
