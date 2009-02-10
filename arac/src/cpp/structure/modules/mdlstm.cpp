@@ -26,11 +26,49 @@ MdlstmLayer::MdlstmLayer(int size, int timedim) :
     _forget_gate_squashed(size * timedim),
     _forget_gate_unsquashed(size * timedim)
 {
-    
+    _input_p = new double[size];
+    _input_state_p = new double[size];
+    _output_error_p = new double[size];
+    _output_state_error_p = new double[size];
+    _output_gate_error_p = new double[size];
+    _forget_gate_error_p = new double[size * _timedim];
+    _input_gate_error_p = new double[size];
+    _input_error_p = new double[size];
+    _input_state_error_p = new double[size * _timedim];
+    _state_error_p = new double[size];
 }
 
 
-MdlstmLayer::~MdlstmLayer() {}
+MdlstmLayer::~MdlstmLayer() 
+{
+    delete[] _input_p;
+    delete[] _input_state_p;
+    delete[] _output_error_p;
+    delete[] _output_state_error_p;
+    delete[] _output_gate_error_p;
+    delete[] _forget_gate_error_p;
+    delete[] _input_gate_error_p;
+    delete[] _input_error_p;
+    delete[] _input_state_error_p;
+    delete[] _state_error_p;
+}
+
+
+void
+MdlstmLayer::clear_intermediates()
+{
+    int size = _outsize / 2;
+    memset(_input_p, 0, sizeof(double) * size);
+    memset(_input_state_p, 0, sizeof(double) * size);
+    memset(_output_error_p, 0, sizeof(double) * size);
+    memset(_output_state_error_p, 0, sizeof(double) * size);
+    memset(_output_gate_error_p, 0, sizeof(double) * size);
+    memset(_forget_gate_error_p, 0, sizeof(double) * size * _timedim);
+    memset(_input_gate_error_p, 0, sizeof(double) * size);
+    memset(_input_error_p, 0, sizeof(double) * size);
+    memset(_input_state_error_p, 0, sizeof(double) * size * _timedim);
+    memset(_state_error_p, 0, sizeof(double) * size);
+}
 
 
 void
@@ -172,22 +210,10 @@ MdlstmLayer::_forward()
 void
 MdlstmLayer::_backward()
 {
+    clear_intermediates();
     int size = _outsize / 2;
     int this_timestep = timestep() - 1;
     
-    double input_p[size];
-    double input_state_p[size];
-    
-    double output_error_p[size];
-    double output_state_error_p[size];
-
-    double output_gate_error_p[size];
-    double forget_gate_error_p[size * _timedim];
-    double input_gate_error_p[size];
-    double input_error_p[size];
-    double input_state_error_p[size * _timedim];
-    double state_error_p[size];
-
     double (*cell_squasher) (double) = tanh_;
     double (*output_squasher) (double) = tanh_;
     double (*gate_squasher_prime) (double) = sigmoidprime;
@@ -202,12 +228,12 @@ MdlstmLayer::_backward()
     int i, j;
     for (i = size + size * _timedim, j = 0; j < size; j++, i++)
     {
-        input_p[j] = inputbuffer_p[i];
+        _input_p[j] = inputbuffer_p[i];
     }
 
     for (i = 3 * size + size * _timedim, j = 0; j < size * _timedim ; j++, i++)
     {
-        input_state_p[j] = inputbuffer_p[i];
+        _input_state_p[j] = inputbuffer_p[i];
     }
 
     // Shortcut
@@ -216,31 +242,31 @@ MdlstmLayer::_backward()
     // Splitting the errorbuffer into two parts.
     for (int i = 0; i < size; i++)
     {
-        output_error_p[i] = output_error_buffer_p[i];
+        _output_error_p[i] = output_error_buffer_p[i];
     }
 
     for (int i = 0; i < size; i++)
     {
-        output_state_error_p[i] = output_error_buffer_p[i + size];
+        _output_state_error_p[i] = output_error_buffer_p[i + size];
     }
     
     // Calculate the outgate error.
     for (int i = 0; i < size; i++)
     {
-        output_gate_error_p[i] = \
+        _output_gate_error_p[i] = \
             gate_squasher_prime(_output_gate_unsquashed[this_timestep][i]) \
-            * output_error_p[i] \
+            * _output_error_p[i] \
             * cell_squasher(outputstate_p[i]);
     }
 
     // This is an intermediate for calculations.
     for (int i = 0; i < size; i++)
     {
-        state_error_p[i] = \
-            output_error_p[i] \
+        _state_error_p[i] = \
+            _output_error_p[i] \
             * _output_gate_squashed[this_timestep][i] \
             * tanhprime(outputstate_p[i]);  // FIXME: use func-pointer here.
-        state_error_p[i] += nextstateerror_p[i];
+        _state_error_p[i] += nextstateerror_p[i];
     }
     
     // TODO: integrate peepholes
@@ -248,8 +274,8 @@ MdlstmLayer::_backward()
     // {
     //     for (int i = 0; i < size; i++)
     //     {
-    //         state_error_p[i] += \
-    //             output_gate_error_p[i] \
+    //         _state_error_p[i] += \
+    //             _output_gate_error_p[i] \
     //             * mdlstml_p->peephole_output_weights.contents_p[i];
     //     }
     // }
@@ -257,10 +283,10 @@ MdlstmLayer::_backward()
     // Calculate cell errors.
     for (int i = 0; i < size; i++)
     {
-        input_error_p[i] = \
+        _input_error_p[i] = \
             _input_gate_squashed[this_timestep][i] \
-            * cell_squasher_prime(input_p[i]) \
-            * state_error_p[i];
+            * cell_squasher_prime(_input_p[i]) \
+            * _state_error_p[i];
     }
     
     // Calc forget gate errors.
@@ -268,10 +294,10 @@ MdlstmLayer::_backward()
     {
         for (int j = 0; j < size; j++)
         {
-            forget_gate_error_p[i * size + j] = \
+            _forget_gate_error_p[i * size + j] = \
                 gate_squasher_prime(_forget_gate_unsquashed[this_timestep][i * size + j]) \
-                * state_error_p[j] \
-                * input_state_p[i * size + j];
+                * _state_error_p[j] \
+                * _input_state_p[i * size + j];
         }
     }
     
@@ -282,10 +308,10 @@ MdlstmLayer::_backward()
 
     for (int i = 0; i < size; i++)
     {
-        input_gate_error_p[i] = \
+        _input_gate_error_p[i] = \
             gate_squasher_prime(_input_gate_unsquashed[this_timestep][i]) \
             * _input_squashed[this_timestep][i] \
-            * state_error_p[i];
+            * _state_error_p[i];
     }
     
     // FIXME: strangely, tests fail if this loop is removed.
@@ -305,16 +331,16 @@ MdlstmLayer::_backward()
     //     for (int i = 0; i < size * _timedim; i++)
     //     {
     //         mdlstml_p->peephole_forget_weights.error_p[i] += \
-    //             forget_gate_error_p[i] \
-    //             * input_state_p[i];
+    //             _forget_gate_error_p[i] \
+    //             * _input_state_p[i];
     //     }
     //     for (int i = 0; i < _timedim; i++)
     //     {
     //         for (int j = 0; j < size; j++)
     //         {
     //             mdlstml_p->peephole_input_weights.error_p[j] += \
-    //                 input_gate_error_p[j] \
-    //                 * input_state_p[i * size + j];
+    //                 _input_gate_error_p[j] \
+    //                 * _input_state_p[i * size + j];
     //         }
     //     }
     // }
@@ -323,15 +349,15 @@ MdlstmLayer::_backward()
     {
         for (int j = 0; j < size; j++)
         {
-            input_state_error_p[i * size + j] += \
-                state_error_p[j] * _forget_gate_squashed[this_timestep][i * size + j];
+            _input_state_error_p[i * size + j] += \
+                _state_error_p[j] * _forget_gate_squashed[this_timestep][i * size + j];
             // TODO: integrate peepholes
             // if (mdlstml_p->peephole_output_weights.contents_p)
             // {
-            //     input_state_error_p[i * size + j] += \
-            //         input_gate_error_p[j] \
+            //     _input_state_error_p[i * size + j] += \
+            //         _input_gate_error_p[j] \
             //         * mdlstml_p->peephole_input_weights.contents_p[j];
-            //     input_state_error_p[i * size + j] += \
+            //     _input_state_error_p[i * size + j] += \
             //         forget_gate_error_p[i * size + j] \
             //         * mdlstml_p->peephole_forget_weights.contents_p[i * size + j];
             // }
@@ -347,26 +373,26 @@ MdlstmLayer::_backward()
     i = 0;
     for (int j = 0; j < size; j++, i++)
     {
-        inerror_p[i] = input_gate_error_p[j];
+        inerror_p[i] = _input_gate_error_p[j];
     }
 
     for (int j = 0; j < size * _timedim; j++, i++)
     {
-        inerror_p[i] = forget_gate_error_p[j];
+        inerror_p[i] = _forget_gate_error_p[j];
     }
     
     for (int j = 0; j < size; j++, i++)
     {
-        inerror_p[i] = input_error_p[j];
+        inerror_p[i] = _input_error_p[j];
     }
 
     for (int j = 0; j < size; j++, i++)
     {
-        inerror_p[i] = output_gate_error_p[j];
+        inerror_p[i] = _output_gate_error_p[j];
     }
     
     for (int j = 0; j < size * _timedim ; j++, i++)
     {
-        inerror_p[i] = input_state_error_p[j];
+        inerror_p[i] = _input_state_error_p[j];
     }
 }
