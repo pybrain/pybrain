@@ -234,6 +234,9 @@ class _Network(Network):
         super(_Network, self).__init__(*args, **kwargs)
         # Mapping the components of the network to their proxies.
         self.proxies = PybrainAracMapper()
+
+        # This is to keep references of arrays that shall not be collected.
+        self._dontcollect = []
         
     def copy(self):
         old_proxies = self.proxies
@@ -257,6 +260,8 @@ class _Network(Network):
     def reset(self):
         net_proxy = self.proxies.handle(self)
         net_proxy.clear()
+        # Empty references.
+        self._dontcollect[:] = []
 
     def buildCStructure(self):
         """Build up a C++-network."""
@@ -290,6 +295,7 @@ class _Network(Network):
         inpt.shape = self.indim,
         result = scipy.zeros(self.outdim)
         self.proxies[self].activate(inpt, result)
+        self._dontcollect += [inpt, result]
         return result
         
     def backActivate(self, outerr):
@@ -299,6 +305,7 @@ class _Network(Network):
         outerr.shape = self.outdim,
         inerror = scipy.zeros(self.indim)
         self.proxies[self].back_activate(outerr, inerror)
+        self._dontcollect += [outerr, inerror]
         return inerror
 
         

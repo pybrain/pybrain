@@ -66,7 +66,6 @@ class Buffer
                          this_size, $self->rowsize());
             return;
         }
-        $self->free_memory();
         $self->append(row_p);
     }
 };

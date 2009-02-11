@@ -65,6 +65,17 @@ class TestStructure(TestCase):
         self.assert_((outputbuffer == 0).all())
         self.assert_((inputerror == 0).all())
         self.assert_((outputerror == 0).all())
+        
+    def testCreateHugeModule(self):
+        s = 1000
+        l = arac.cppbridge.LinearLayer(s)
+        self.assertEqual(l.insize(), s)
+        self.assertEqual(l.outsize(), s)
+        l = arac.cppbridge.MdlstmLayer(1, s)
+        self.assertEqual(l.insize(), 5 * s)
+        self.assertEqual(l.outsize(), 2 * s)
+
+
 
 
 if __name__ == "__main__":

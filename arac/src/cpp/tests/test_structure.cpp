@@ -598,7 +598,7 @@ TEST(TestModules, LstmLayer) {
 
 
 TEST(TestModules, MdlstmLayer) {
-    MdlstmLayer* layer_p = new MdlstmLayer(2, 1);
+    MdlstmLayer* layer_p = new MdlstmLayer(1, 2);
     
     double* input_p = new double[10];
     input_p[0] = -2;

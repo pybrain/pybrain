@@ -10,7 +10,9 @@
 using arac::structure::Parametrized;
 
 
-Parametrized::Parametrized() 
+Parametrized::Parametrized() :
+    _parameters_p(0),
+    _derivatives_p(0)
 {
     
 }
@@ -18,13 +20,12 @@ Parametrized::Parametrized()
 
 Parametrized::Parametrized(int size) 
 {
+    _size = size;
     _parameters_p = new double[size];
     _derivatives_p = new double[size];
 
     memset(_parameters_p, 0, size * sizeof(double));
     memset(_derivatives_p, 0, size * sizeof(double));
-
-    _size = size;
 }
 
 

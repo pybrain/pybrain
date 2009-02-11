@@ -34,9 +34,9 @@ class Parametrized
         
     protected:
         
+        int _size;
         double* _parameters_p;
         double* _derivatives_p;
-        int _size;
         bool _parameters_owner;
         bool _derivatives_owner;
 };

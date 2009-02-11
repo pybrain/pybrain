@@ -14,8 +14,8 @@ using arac::common::Buffer;
 
 
 LstmLayer::LstmLayer(int size) :
-    _mdlstm(size, 1),
     Module(4 * size, size),
+    _mdlstm(1, size),
     _state_p(new Buffer(size)),
     _state_error_p(new Buffer(size))
 {

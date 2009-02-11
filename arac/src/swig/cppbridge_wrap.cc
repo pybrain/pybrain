@@ -2802,7 +2802,6 @@ SWIGINTERN void Buffer_append(Buffer *self,double *row_p,int this_size){
                          this_size, self->rowsize());
             return;
         }
-        self->free_memory();
         self->append(row_p);
     }
 
