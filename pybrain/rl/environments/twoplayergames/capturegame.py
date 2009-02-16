@@ -107,7 +107,13 @@ class CaptureGame(TwoPlayerGame):
                 else: s += ' '+str(val)
             s += '\n'
         if self.winner:
-            s += 'Winner:'+str(self.winner)
+            if self.winner == self.BLACK:
+                w = 'Black (#)'
+            elif self.winner == self.WHITE:
+                w = 'White (*)'
+            else:
+                w = self.winner    
+            s += 'Winner: '+w
             s += ' (moves done:'+str(self.movesDone)+')\n'
         return s
     

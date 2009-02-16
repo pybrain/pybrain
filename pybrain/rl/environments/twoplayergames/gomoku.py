@@ -39,7 +39,7 @@ class GomokuGame(TwoPlayerGame):
     def _fiveRow(self, color, pos):
         """ Is this placement the 5th in a row? """
         # TODO: more efficient...
-        for dir in [(0,1), (1,0), (1,1)]:
+        for dir in [(0,1), (1,0), (1,1), (1,-1)]:
             found = 1
             for d in [-1, 1]:
                 for i in range(1, 5):
@@ -108,7 +108,13 @@ class GomokuGame(TwoPlayerGame):
                 else: s += ' '+str(val)
             s += '\n'
         if self.winner:
-            s += 'Winner:'+str(self.winner)
+            if self.winner == self.BLACK:
+                w = 'Black (#)'
+            elif self.winner == self.WHITE:
+                w = 'White (*)'
+            else:
+                w = self.winner    
+            s += 'Winner: '+w
             s += ' (moves done:'+str(self.movesDone)+')\n'
         return s
     
@@ -122,7 +128,7 @@ class GomokuGame(TwoPlayerGame):
         return res
     
     def _setStone(self, c, pos):
-        """ set stone, and update liberties and groups. """
+        """ set stone """
         self.b[pos] = c
     
     def getLegals(self, c):

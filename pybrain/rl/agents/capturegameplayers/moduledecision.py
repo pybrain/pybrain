@@ -47,7 +47,7 @@ class ModuleDecidingPlayer(RandomCapturePlayer):
             print self.module.params
             print self.module.inputbuffer
             print self.module.outputbuffer
-            raise Exception('No positve value in array?')
+            raise Exception('Non-positive value in array?')
         legals = self.game.getLegals(self.color)
         vals = ones(len(a))*(-100)*(1+self.temperature)
         for i in map(self._convertPosToIndex, legals):
