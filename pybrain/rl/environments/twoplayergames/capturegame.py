@@ -64,7 +64,9 @@ class CaptureGame(TwoPlayerGame):
         return a
     
     def isLegal(self, c, pos):
-        if self.b[pos] != self.EMPTY:
+        if pos not in self.b:
+            return False
+        elif self.b[pos] != self.EMPTY:
             return False
         elif not self.suicideenabled:
             return not self._suicide(c, pos)
