@@ -21,7 +21,7 @@ class ColorMap:
         axes([0,0,1,1]) # Make the plot occupy the whole canvas
         axis('off')
         self.fig.set_size_inches(figsize)
-        imshow(mat, cmap = cmap, clim = (minvalue,  maxvalue))
+        imshow(mat, cmap = cmap, clim = (minvalue,  maxvalue), interpolation='nearest')
         
     def show(self):
         """ have the image popup """

@@ -1,7 +1,9 @@
 __author__ = 'Tom Schaul, tom@idsia.ch'
 
 from xml.dom.minidom import parse, getDOMImplementation
-
+from pybrain.utilities import fListToString
+from scipy import zeros
+import string
 
 class XMLHandling:
     """ general purpose methods for reading, writing and editing XML files. 
@@ -73,25 +75,50 @@ class XMLHandling:
         """ get the element children """
         return filter(lambda x: x.nodeType == x.ELEMENT_NODE, node.childNodes)                
         
-    def findNode(self, name, index = 0):
+    def findNode(self, name, index = 0, root = None):
         """ return the toplevel node with the provided name (if there are more, choose the 
         index corresponding one). """
-        for n in self.root.childNodes:
+        if root == None: root = self.root
+        for n in root.childNodes:
             if n.nodeName == name:
                 if index == 0:
                     return n
                 index -= 1
         return None
         
-    def findNamedNode(self, name, nameattr):
+    def findNamedNode(self, name, nameattr, root = None):
         """ return the toplevel node with the provided name, and the fitting 'name' attribute. """
-        for n in self.root.childNodes:
+        if root == None: root = self.root
+        for n in root.childNodes:
             if n.nodeName == name:
                 if 'name' in n.attributes:
                     if n.attributes['name'] == nameattr:
                         return n                
         return None
         
+    def writeDoubles(self, node, l, precision = 6):
+        self.addTextNode(node, fListToString(l, precision)[2:-1])
+        
+    def writeMatrix(self, node, m, precision = 6):
+        for i, row in enumerate(m):
+            r = self.newChild(node, 'row')
+            self.writeAttrDict(r, {'number':str(i)})
+            self.writeDoubles(r, row, precision)
+            
+    def readDoubles(self, node):
+        dstrings = string.split(node.firstChild.data)
+        return map(lambda s: float(s), dstrings)
+
+    def readMatrix(self, node):
+        rows = []
+        for c in self.getChildrenOf(node):
+            rows.append(self.readDoubles(c))
+        if len(rows) == 0:
+            return None
+        res = zeros((len(rows), len(rows[0])))
+        for i, r in enumerate(rows):
+            res[i] = r
+        return res
     
                     
 def baseTransform(val):
