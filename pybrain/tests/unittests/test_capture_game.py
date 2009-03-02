@@ -40,7 +40,8 @@ Check if all the values are right:
      O O . . .
      . . . . .
      . . . . .
-    Winner:-1 (moves done:8)
+    Winner: White (*) (moves done:8)
+    
     
     >>> c.groups
     {(0, 1): 5, (1, 2): 2, (2, 1): 10, (0, 2): 2, (2, 0): 10, (1, 0): 5, (1, 1): 5}
