@@ -1,7 +1,7 @@
 from pybrain.rl.environments.mazes import Maze 
 from pybrain.structure.modules import ActionValueTable
 from pybrain.rl.agents import EpsilonGreedyAgent
-from pybrain.rl.learners import QLearner
+from pybrain.rl.learners import Q, QLambda, SARSA
 from pybrain.rl.experiments import ContinuousExperiment
 from pybrain.rl import Task
 
@@ -51,7 +51,7 @@ table = ActionValueTable(81, 4)
 table.initialize(1)
 
 # create agent with controller and learner
-agent = EpsilonGreedyAgent(table, QLearner())
+agent = EpsilonGreedyAgent(table, QLambda(4))
 
 experiment = ContinuousExperiment(task, agent)
 
@@ -64,6 +64,6 @@ for i in range(100000):
     if i % 100 == 0:
         pylab.pcolor(table.values.max(1).reshape(9,9))
         pylab.draw()
-            
-    agent.reset()
+        agent.reset()
+    
 
