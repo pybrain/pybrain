@@ -27,6 +27,10 @@ class ReinforcementDataSet(SequentialDataSet):
         self.statedim = statedim
         self.actiondim = actiondim
     
+        # the input and target dimensions (for compatibility)
+        self.indim = self.statedim
+        self.outdim = self.actiondim
+    
     def addSample(self, state, action, reward):
         """ adds a new sample consisting of state, action, reward. 
             @param state: the current state of the world
