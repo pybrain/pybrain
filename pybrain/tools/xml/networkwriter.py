@@ -47,7 +47,7 @@ class NetworkWriter(XMLHandling):
             if om not in net.inmodules:
                 self.writeModule(mods, om, False, True)            
         # now the rest
-        for m in net.modules:
+        for m in net.modulesSorted:
             if m not in net.inmodules and m not in net.outmodules:
                 self.writeModule(mods, m, False, False)            
         
@@ -59,7 +59,7 @@ class NetworkWriter(XMLHandling):
             
         # the connections
         conns = self.newChild(netroot, 'Connections')
-        for m in net.modules:
+        for m in net.modulesSorted:
             for c in net.connections[m]:
                 self.writeConnection(conns, c, False)
         if isinstance(net, RecurrentNetwork):
