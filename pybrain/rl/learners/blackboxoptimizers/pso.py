@@ -90,21 +90,32 @@ class ParticleSwarmOptimizer(BlackBoxOptimizer):
             startingPosition += mins
             self.particles.append(Particle(startingPosition))
         
-        # Global neighbourhood
-        # TODO: do some better neighbourhoods later
+        # Global neighborhood
+        # TODO: do some better neighborhoods later
         self.neighbours = self.neighbourfunction(self.particles)
         
     def best(self, particlelist):
         """Return the particle with the best fitness from a list of particles.
         """
-        return max(particlelist, key=lambda p: p.fitness)
+        picker = min if self.minimize else max
+        return picker(particlelist, key=lambda p: p.fitness)
     
     def _learnStep(self):
         for particle in self.particles:
             particle.fitness = self.evaluator(particle.position)
-            if particle.fitness > self.bestEvaluation:
+            
+            # Update the best solutions found so far.
+            better = False
+            if self.minimize:
+                if particle.fitness < self.bestEvaluation:
+                    better = True
+            else:
+                if particle.fitness > self.bestEvaluation:
+                    better = True
+            if better:
                 self.bestEvaluable = particle.position
                 self.bestEvaluation = particle.fitness
+                
         for particle in self.particles:
             bestPosition = self.best(self.neighbours[particle]).position
             diff_social = self.sociality \
