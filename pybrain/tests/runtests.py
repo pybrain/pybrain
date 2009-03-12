@@ -92,7 +92,11 @@ def make_test_suite():
     # Add doctests from the unittest modules to the suite
     optionflags = doctest.ELLIPSIS | doctest.NORMALIZE_WHITESPACE
     for mod in modules:
-        suite.addTest(doctest.DocTestSuite(mod, optionflags=optionflags))
+        try:
+            suite.addTest(doctest.DocTestSuite(mod, optionflags=optionflags))
+        except ValueError:
+            # No tests found.
+            pass
         
     return suite
     

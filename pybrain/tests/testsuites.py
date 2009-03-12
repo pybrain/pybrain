@@ -15,6 +15,11 @@ def runModuleTestSuite(module):
 
     # Add local doctests
     optionflags = ELLIPSIS | NORMALIZE_WHITESPACE | REPORT_ONLY_FIRST_FAILURE
-    suite.addTest(DocTestSuite(module, optionflags=optionflags))
+
+    try:
+        suite.addTest(DocTestSuite(module, optionflags=optionflags))
+    except ValueError:
+        # No tests have been found in that module.
+        pass
 
     TextTestRunner().run(suite)
