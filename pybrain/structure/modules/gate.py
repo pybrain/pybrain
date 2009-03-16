@@ -11,6 +11,20 @@ from pybrain.structure.modules.neuronlayer import NeuronLayer
 from pybrain.tools.functions import sigmoid, sigmoidPrime
 
 
+class MultiplicationLayer(NeuronLayer):
+    """Layer that implements pairwise multiplication."""
+
+    def __init__(self, dim, name=None):
+        Module.__init__(self, 2 * dim, dim, name)
+    
+    def _forwardImplementation(self, inbuf, outbuf):
+        outbuf += inbuf[:self.outdim] * inbuf[self.outdim:]
+        
+    def _backwardImplementation(self, outerr, inerr, outbuf, inbuf):
+        inerr[:self.outdim] += inbuf[self.outdim:] * outerr
+        inerr[self.outdim:] += inbuf[:self.outdim] * outerr
+
+
 class GateLayer(NeuronLayer):
     """Layer that implements pairwise input multiplication, with one element of
     the pair being squashed.
@@ -60,3 +74,20 @@ class DoubleGateLayer(NeuronLayer):
 
         inerr[:dim] -= sigmoidPrime(in0) * in1 * out1
         inerr[dim:] += (1 - sigmoid(in0)) * out1
+
+
+class SwitchLayer(NeuronLayer):
+    """Layer that implements pairwise multiplication."""
+
+    def __init__(self, dim, name=None):
+        Module.__init__(self, dim, dim * 2, name)
+    
+    def _forwardImplementation(self, inbuf, outbuf):
+        outbuf[:self.indim] += sigmoid(inbuf)
+        outbuf[self.indim:] += 1 - sigmoid(inbuf)
+        
+    def _backwardImplementation(self, outerr, inerr, outbuf, inbuf):
+        inerr += sigmoidPrime(inbuf) * outerr[:self.indim]
+        inerr -= sigmoidPrime(inbuf) * outerr[self.indim:]
+
+
