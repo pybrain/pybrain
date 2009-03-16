@@ -31,3 +31,32 @@ class GateLayer(NeuronLayer):
                                 * outerr)
         inerr[self.outdim:] += (sigmoid(inbuf[:self.outdim]) 
                                 * outerr)
+      
+
+class DoubleGateLayer(NeuronLayer):
+    """Layer that implements a continuous if-then-else.
+    
+    If a DoubleGateLayer of size n is created, it will have 2 * n inputs and 
+    2 * n outputs. The i'th output is calculated as sigmoid(I_i) * I_(i + n) for
+    i < n and as (1 - sigmoid(I_i) * I_(i + n) for i >= n where I is the vector
+    of inputs."""
+    
+    def __init__(self, dim, name=None):
+        Module.__init__(self, 2 * dim, 2 * dim, name)
+    
+    def _forwardImplementation(self, inbuf, outbuf):
+        dim = self.indim / 2
+        outbuf[:dim] += sigmoid(inbuf[:dim]) * inbuf[dim:]
+        outbuf[dim:] += (1 - sigmoid(inbuf[:dim])) * inbuf[dim:]
+        
+    def _backwardImplementation(self, outerr, inerr, outbuf, inbuf):
+        dim = self.indim / 2
+        in0 = inbuf[:dim]
+        in1 = inbuf[dim:]
+        out0 = outerr[:dim]
+        out1 = outerr[dim:]
+        inerr[:dim] += sigmoidPrime(in0) * in1 * out0
+        inerr[dim:] += sigmoid(in0) * out0
+
+        inerr[:dim] -= sigmoidPrime(in0) * in1 * out1
+        inerr[dim:] += (1 - sigmoid(in0)) * out1
