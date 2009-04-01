@@ -1,6 +1,6 @@
 __author__ = 'Tom Schaul, tom@idsia.ch'
 
-from numpy import floor, log, eye, zeros, array, sqrt, sum, mat
+from numpy import floor, log, eye, zeros, array, sqrt, sum, mat, dot
 from numpy import exp, triu, diag, matrix, power, ravel
 from numpy.linalg import eig, norm
 from numpy.random import randn
@@ -51,7 +51,7 @@ class CMAES(BlackBoxOptimizer):
         ps = zeros((N,1))                   # evolution paths for C and sigma
         B = eye(N,N)                      # B defines the coordinate system
         D = eye(N,N)                      # diagonal matrix D defines the scaling
-        C = B*D*(B*D).T                   # covariance matrix
+        C = dot(dot(B,D),dot(B,D).T)                # covariance matrix
         chiN=N**0.5*(1-1./(4.*N)+1/(21.*N**2)) 
         # expectation of ||N(0,I)|| == norm(randn(N,1))
       
@@ -63,7 +63,7 @@ class CMAES(BlackBoxOptimizer):
             # Generate and evaluate lambda offspring
             arz = mat(randn(N,lambd))     # array of normally distributed mutation vectors
             for k in range(0,lambd):
-                arx[:,k] = xmean + sigma * (B*D * arz[:,k])    # add mutation  % Eq. (1)            
+                arx[:,k] = xmean + sigma * (dot(B,D) * arz[:,k])    # add mutation  % Eq. (1)            
                 arfitness[k] = strfitnessfct(array(arx[:,k]).flatten())  # objective function call
                 counteval = counteval+1
             
@@ -78,15 +78,15 @@ class CMAES(BlackBoxOptimizer):
             # Cumulation: Update evolution paths
             ps = (1-cs)*ps + sqrt(cs*(2-cs)*mueff) * (B * zmean)                 # Eq. (4)
             hsig = norm(ps)/sqrt(1-(1-cs)**(2*counteval/float(lambd)))/chiN < 1.4 + 2./(N+1)
-            pc = ((1-cc)*pc + hsig * sqrt(cc*(2-cc)*mueff) * (B * D * zmean))    # Eq. (2)
+            pc = ((1-cc)*pc + hsig * sqrt(cc*(2-cc)*mueff) * (dot(B,D) * zmean))    # Eq. (2)
         
             # Adapt covariance matrix C
             C = ((1-ccov) * C                    # regard old matrix      % Eq. (3)
                  + ccov * (1/mucov) * (pc*pc.T   # plus rank one update
                  + (1-hsig) * cc*(2-cc) * C)
                  + ccov * (1-1/mucov)            # plus rank mu update 
-                   * (B*D*arz[:,arindex[0:mu]])
-                   *  diag(ravel(weights)) * (B*D*arz[:,arindex[0:mu]]).T)               
+                   * (dot(B,D)*arz[:,arindex[0:mu]])
+                   *  diag(ravel(weights)) * (dot(B,D)*arz[:,arindex[0:mu]]).T)               
         
             # Adapt step size sigma
             sigma = sigma * exp((cs/damps)*(norm(ps)/chiN - 1))             # Eq. (5)
