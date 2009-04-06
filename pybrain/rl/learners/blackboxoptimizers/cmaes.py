@@ -1,9 +1,9 @@
 __author__ = 'Tom Schaul, tom@idsia.ch; Sun Yi, yi@idsia.ch'
 
-from numpy import floor, log, eye, zeros, array, sqrt, sum, mat, dot
-from numpy import exp, triu, diag, matrix, power, ravel
+from numpy import floor, log, eye, zeros, array, sqrt, sum, dot, tile, outer
+from numpy import exp, triu, diag, power, ravel, minimum, maximum
 from numpy.linalg import eig, norm
-from numpy.random import randn
+from numpy.random import randn, rand
 
 from blackboxoptimizer import BlackBoxOptimizer
 
@@ -20,10 +20,12 @@ class CMAES(BlackBoxOptimizer):
 
     online = False
     keepCenterHistory = False
-
-    # Additional parameters for importance mixing
+    
     lambd = None        # override CMA heuristics for batch size
-    forceUpdate = 0.01  # refresh rate
+    
+    # Additional parameters for importance mixing
+    importanceMixing = False
+    forceUpdate = 0.1  # refresh rate
 
     def _importanceMixing(self, N, lambd, xmean, sigma, B, D,
                           xmean0, sigma0, B0, D0, arz, arx, arfitness):
@@ -51,13 +53,13 @@ class CMAES(BlackBoxOptimizer):
         # first step, forward
         pr0 = prob0(arx, lambd)
         pr = prob(arx, lambd)
-        p = minimum(1, exp(pr-pr0) * (1-forceUpdate))
-        acpt = rand(1,lambd) < p
+        p = minimum(1, exp(pr-pr0) * (1-self.forceUpdate))
+        acpt = rand(lambd) < p
         t = filter(lambda i: acpt[i], xrange(lambd))
 
         arx[:,xrange(len(t))] = arx[:,t]
         arz[:,xrange(len(t))] = arz[:,t]
-        arfitness[xrange(len(t))] = arfitness[t]
+        arfitness[range(len(t))] = arfitness[t]
         nreq = lambd - len(t)   # number of new samples required
 
         # second step, backward
@@ -66,9 +68,9 @@ class CMAES(BlackBoxOptimizer):
             splz = randn(N, lambd)
             splx = tile(xmean.reshape(N,1),(1,lambd)) + sigma * dot(dot(B,D),splz)
             pr = prob(splx, lambd)
-            pr0 = prob0(splx, lambd0)
-            p = maximum(forceUpdate, 1 - exp(pr0-pr))
-            acpt = rand(1,lambd) < p
+            pr0 = prob0(splx, lambd)
+            p = maximum(self.forceUpdate, 1 - exp(pr0-pr))
+            acpt = rand(lambd) < p
             t = filter(lambda i: acpt[i], xrange(lambd))
             splz = splz[:,t]
             splx = splx[:,t]
@@ -85,7 +87,6 @@ class CMAES(BlackBoxOptimizer):
 
     def _batchLearn(self, maxSteps = None):
         N = self.xdim
-        strfitnessfct = self.evaluator
         xmean = array(self.x0)
         #xmean = mat(self.x0).reshape(self.xdim, 1)
         sigma = 0.5         # coordinate wise standard deviation (step size)
@@ -114,8 +115,8 @@ class CMAES(BlackBoxOptimizer):
         # damping for sigma usually close to 1 former damp == damps/cs
 
         # Initialize dynamic (internal) strategy parameters and constants
-        pc = zeros((N,1))
-        ps = zeros((N,1))                   # evolution paths for C and sigma
+        pc = zeros(N)
+        ps = zeros(N)                   # evolution paths for C and sigma
         B = eye(N,N)                      # B defines the coordinate system
         D = eye(N,N)                      # diagonal matrix D defines the scaling
         C = dot(dot(B,D),dot(B,D).T)                # covariance matrix
@@ -127,21 +128,26 @@ class CMAES(BlackBoxOptimizer):
         #arfitness = mat(zeros((lambd,1)))
         #arx = mat(zeros((N,lambd)))
         arfitness = zeros(lambd)
-        arx = zeros(N, lambd)
+        arx = zeros((N, lambd))
 
         while counteval+lambd <= maxSteps:
             # !!! This part is modified for importance mixing
-            if counteval == 0:
+            if counteval == 0 or self.importanceMixing == False:
                 # Generate and evaluate lambda offspring
                 arz = randn(N,lambd)
-                arx = tile(xmean,(1,lambd)) + sigma * dot(dot(B,D), arz)
+                arx = tile(xmean.reshape(N,1),(1,lambd)) + sigma * dot(dot(B,D), arz)
                 for k in xrange(lambd):
                     arfitness[k] = self.evaluator(arx[:,k])
                     counteval += 1
+                    
+                if self.importanceMixing:
+                    xmean0, sigma0, B0, D0 = xmean.copy(), sigma, B.copy(), D.copy()
+                
             else:
                 arz, arx, arfitness, neweval = self._importanceMixing(N, lambd, xmean, sigma, B, D,
                           xmean0, sigma0, B0, D0, arz, arx, arfitness)
-                xmean0, sigma0, B0, D0 = xmean, sigma, B, D
+                xmean0, sigma0, B0, D0 = xmean.copy(), sigma, B.copy(), D.copy()
+                
                 counteval += neweval
 
             # Sort by fitness and compute weighted mean into xmean
@@ -158,14 +164,15 @@ class CMAES(BlackBoxOptimizer):
             ps = (1-cs)*ps + sqrt(cs*(2-cs)*mueff) * dot(B,zmean)                 # Eq. (4)
             hsig = norm(ps)/sqrt(1-(1-cs)**(2*counteval/float(lambd)))/chiN < 1.4 + 2./(N+1)
             pc = (1-cc)*pc + hsig * sqrt(cc*(2-cc)*mueff) * dot(dot(B,D),zmean)    # Eq. (2)
-
+            
             # Adapt covariance matrix C
             C = ((1-ccov) * C                    # regard old matrix      % Eq. (3)
                  + ccov * (1/mucov) * (outer(pc,pc) #pc*pc.T   # plus rank one update
-                 + (1-hsig) * cc*(2-cc) * C)
+                                       + (1-hsig) * cc*(2-cc) * C)
                  + ccov * (1-1/mucov)            # plus rank mu update
-                   * dot(dot(arx[:,xrange(mu)],diag(weights)),arx[:,xrange(mu)].T))
-
+                 * dot(dot(arx[:,xrange(mu)],diag(weights)),arx[:,xrange(mu)].T)
+                )
+                
             # Adapt step size sigma
             sigma = sigma * exp((cs/damps)*(norm(ps)/chiN - 1))             # Eq. (5)
 
@@ -198,6 +205,6 @@ class CMAES(BlackBoxOptimizer):
 def sorti(vect):
     """ sort, but also return the indices-changes """
     tmp = sorted(map(lambda (x,y): (y,x), enumerate(ravel(vect))))
-    res1 = map(lambda x: x[0], tmp)
-    res2 = map(lambda x: int(x[1]), tmp)
+    res1 = array(map(lambda x: x[0], tmp))
+    res2 = array(map(lambda x: int(x[1]), tmp))
     return res1, res2
