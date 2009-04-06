@@ -27,13 +27,14 @@ class CMAES(BlackBoxOptimizer):
     importanceMixing = False
     forceUpdate = 0.1  # refresh rate
 
-    def _importanceMixing(self, N, lambd, xmean, sigma, B, D,
+    def _importanceMixing(self, N, xmean, sigma, B, D,
                           xmean0, sigma0, B0, D0, arz, arx, arfitness):
         """
         Performing importance mixing based on old samples.
         """
         # The real covariance matrix (sigma**2) * dot(dot(B,D),dot(B,D).T)
-
+        lambd = self.lambd
+            
         # Things required to compute the probability
         c = -0.5 * sum(log(diag(sigma*D)**2))
         c0 = -0.5 * sum(log(diag(sigma0*D0)**2))
@@ -85,6 +86,9 @@ class CMAES(BlackBoxOptimizer):
         for i in xrange(lambd-nreq,lambd): arfitness[i] = self.evaluator(arx[:,i])
         return arz, arx, arfitness, nreq
 
+    def _heuristicLambda(self):
+        return int(4+floor(3*log(self.xdim)))
+
     def _batchLearn(self, maxSteps = None):
         N = self.xdim
         xmean = array(self.x0)
@@ -95,10 +99,10 @@ class CMAES(BlackBoxOptimizer):
             self.allCenters = []
 
         # Strategy parameter setting: Selection
-        if self.lambd:
-            lambd = self.lambd
-        else:
-            lambd = int(4+floor(3*log(N)))  # population size, offspring number
+        if self.lambd == None:
+            self.lambd = self._heuristicLambda()  # population size, offspring number
+        lambd = self.lambd
+            
         mu = int(floor(lambd/2))        # number of parents/points for recombination
         #weights = log(mu+1)-log(matrix(range(1,mu+1))).T # muXone array for weighted recombination
         weights = log(mu+1)-log(array(xrange(1,mu+1)))      # use array
@@ -144,7 +148,7 @@ class CMAES(BlackBoxOptimizer):
                     xmean0, sigma0, B0, D0 = xmean.copy(), sigma, B.copy(), D.copy()
                 
             else:
-                arz, arx, arfitness, neweval = self._importanceMixing(N, lambd, xmean, sigma, B, D,
+                arz, arx, arfitness, neweval = self._importanceMixing(N, xmean, sigma, B, D,
                           xmean0, sigma0, B0, D0, arz, arx, arfitness)
                 xmean0, sigma0, B0, D0 = xmean.copy(), sigma, B.copy(), D.copy()
                 
