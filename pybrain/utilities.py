@@ -311,13 +311,15 @@ def memoize(func):
     return inner
 
 
-def storeCallResults(obj):
+def storeCallResults(obj, verbose = False):
     """Pseudo-decorate an object to store all evaluations of the function in the returned list."""
     results = []    
     oldcall = obj.__class__.__call__
     def newcall(*args, **kwargs):
         result = oldcall(*args, **kwargs)
         results.append(result)
+        if verbose:
+            print result
         return result
     obj.__class__.__call__ = newcall
     return results
@@ -448,7 +450,7 @@ def crossproduct(ss, row=None, level=0):
 
 
 def permute(arr, permutation):
-    """Return an array like arr but with elements permutet.
+    """Return an array like arr but with elements permuted.
     
     Only the first dimension is permuted, which makes it possible to permute 
     blocks of the input.
