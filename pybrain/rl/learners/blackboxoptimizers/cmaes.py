@@ -34,26 +34,22 @@ class CMAES(BlackBoxOptimizer):
         """
         # The real covariance matrix (sigma**2) * dot(dot(B,D),dot(B,D).T)
         lambd = self.lambd
-            
+        
         # Things required to compute the probability
-        c = -0.5 * sum(log(diag(sigma*D)**2))
-        c0 = -0.5 * sum(log(diag(sigma0*D0)**2))
-
-        invA = dot(diag(1/diag(sigma*D)), B.T)
-        invA0 = dot(diag(1/diag(sigma0*D0)), B0.T)
+        Ds, Ds0 = sigma*D, sigma0*D0
+        c = sum(log(diag(Ds)))
+        c0 = sum(log(diag(Ds0)))
+        invA = dot(diag(1/diag(Ds)), B.T)
+        invA0 = dot(diag(1/diag(Ds0)), B0.T)
+        ctr = tile(xmean.reshape(N,1), (1,lambd))
+        ctr0 = tile(xmean0.reshape(N,1), (1,lambd))
 
         # two auxiliary functions for computing probability
-        def prob(x, L):
-            ctr = tile(xmean.reshape(N,1), (1,L))
-            return c - 0.5*sum(dot(invA, x-ctr)**2, 0)
-
-        def prob0(x, L):
-            ctr0 = tile(xmean0.reshape(N,1), (1,L))
-            return c0 - 0.5*sum(dot(invA0, x-ctr0)**2, 0)
+        def prob(x): return c - 0.5*sum(dot(invA, x-ctr)**2, 0)
+        def prob0(x): return c0 - 0.5*sum(dot(invA0, x-ctr0)**2, 0)
 
         # first step, forward
-        pr0 = prob0(arx, lambd)
-        pr = prob(arx, lambd)
+        pr, pr0 = prob(arx), prob0(arx)
         p = minimum(1, exp(pr-pr0) * (1-self.forceUpdate))
         acpt = rand(lambd) < p
         t = filter(lambda i: acpt[i], xrange(lambd))
@@ -68,8 +64,7 @@ class CMAES(BlackBoxOptimizer):
         while req > 0:
             splz = randn(N, lambd)
             splx = tile(xmean.reshape(N,1),(1,lambd)) + sigma * dot(dot(B,D),splz)
-            pr = prob(splx, lambd)
-            pr0 = prob0(splx, lambd)
+            pr, pr0 = prob(splx), prob0(splx)
             p = maximum(self.forceUpdate, 1 - exp(pr0-pr))
             acpt = rand(lambd) < p
             t = filter(lambda i: acpt[i], xrange(lambd))
@@ -92,7 +87,6 @@ class CMAES(BlackBoxOptimizer):
     def _batchLearn(self, maxSteps = None):
         N = self.xdim
         xmean = array(self.x0)
-        #xmean = mat(self.x0).reshape(self.xdim, 1)
         sigma = 0.5         # coordinate wise standard deviation (step size)
 
         if self.keepCenterHistory:
@@ -129,8 +123,6 @@ class CMAES(BlackBoxOptimizer):
 
         # -------------------- Generation Loop --------------------------------
         counteval = 0 # the next 40 lines contain the 20 lines of interesting code
-        #arfitness = mat(zeros((lambd,1)))
-        #arx = mat(zeros((N,lambd)))
         arfitness = zeros(lambd)
         arx = zeros((N, lambd))
 
@@ -143,15 +135,12 @@ class CMAES(BlackBoxOptimizer):
                 for k in xrange(lambd):
                     arfitness[k] = self.evaluator(arx[:,k])
                     counteval += 1
-                    
                 if self.importanceMixing:
-                    xmean0, sigma0, B0, D0 = xmean.copy(), sigma, B.copy(), D.copy()
-                
+                    xmean0, sigma0, B0, D0 = xmean.copy(), sigma, B.copy(), D.copy()  
             else:
                 arz, arx, arfitness, neweval = self._importanceMixing(N, xmean, sigma, B, D,
                           xmean0, sigma0, B0, D0, arz, arx, arfitness)
                 xmean0, sigma0, B0, D0 = xmean.copy(), sigma, B.copy(), D.copy()
-                
                 counteval += neweval
 
             # Sort by fitness and compute weighted mean into xmean
@@ -161,8 +150,7 @@ class CMAES(BlackBoxOptimizer):
             xmean = dot(arx[:,xrange(mu)], weights)
             zmean = dot(arz[:,xrange(mu)], weights)
 
-            if self.keepCenterHistory:
-                self.allCenters.append(xmean)
+            if self.keepCenterHistory: self.allCenters.append(xmean)
 
             # Cumulation: Update evolution paths
             ps = (1-cs)*ps + sqrt(cs*(2-cs)*mueff) * dot(B,zmean)                 # Eq. (4)
