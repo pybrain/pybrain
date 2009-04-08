@@ -20,9 +20,9 @@ class CMAES(BlackBoxOptimizer):
 
     online = False
     keepCenterHistory = False
-    
+
     lambd = None        # override CMA heuristics for batch size
-    
+
     # Additional parameters for importance mixing
     importanceMixing = False
     forceUpdate = 0.1  # refresh rate
@@ -34,7 +34,7 @@ class CMAES(BlackBoxOptimizer):
         """
         # The real covariance matrix (sigma**2) * dot(dot(B,D),dot(B,D).T)
         lambd = self.lambd
-        
+
         # Things required to compute the probability
         Ds, Ds0 = sigma*D, sigma0*D0
         c = sum(log(diag(Ds)))
@@ -96,7 +96,7 @@ class CMAES(BlackBoxOptimizer):
         if self.lambd == None:
             self.lambd = self._heuristicLambda()  # population size, offspring number
         lambd = self.lambd
-            
+
         mu = int(floor(lambd/2))        # number of parents/points for recombination
         #weights = log(mu+1)-log(matrix(range(1,mu+1))).T # muXone array for weighted recombination
         weights = log(mu+1)-log(array(xrange(1,mu+1)))      # use array
@@ -125,8 +125,8 @@ class CMAES(BlackBoxOptimizer):
         counteval = 0 # the next 40 lines contain the 20 lines of interesting code
         arfitness = zeros(lambd)
         arx = zeros((N, lambd))
-
         while counteval+lambd <= maxSteps:
+            #print ".",
             # !!! This part is modified for importance mixing
             if counteval == 0 or self.importanceMixing == False:
                 # Generate and evaluate lambda offspring
@@ -136,7 +136,7 @@ class CMAES(BlackBoxOptimizer):
                     arfitness[k] = self.evaluator(arx[:,k])
                     counteval += 1
                 if self.importanceMixing:
-                    xmean0, sigma0, B0, D0 = xmean.copy(), sigma, B.copy(), D.copy()  
+                    xmean0, sigma0, B0, D0 = xmean.copy(), sigma, B.copy(), D.copy()
             else:
                 arz, arx, arfitness, neweval = self._importanceMixing(N, xmean, sigma, B, D,
                           xmean0, sigma0, B0, D0, arz, arx, arfitness)
@@ -147,8 +147,12 @@ class CMAES(BlackBoxOptimizer):
             arfitness, arindex = sorti(arfitness)  # minimization
             arz = arz[:,arindex]
             arx = arx[:,arindex]
-            xmean = dot(arx[:,xrange(mu)], weights)
-            zmean = dot(arz[:,xrange(mu)], weights)
+            arzsel = arz[:,xrange(mu)]
+            arxsel = arx[:,xrange(mu)]
+            arxmut = arxsel - tile(xmean.reshape(N,1),(1,mu))
+
+            zmean = dot(arzsel, weights)
+            xmean = dot(arxsel, weights)
 
             if self.keepCenterHistory: self.allCenters.append(xmean)
 
@@ -156,15 +160,16 @@ class CMAES(BlackBoxOptimizer):
             ps = (1-cs)*ps + sqrt(cs*(2-cs)*mueff) * dot(B,zmean)                 # Eq. (4)
             hsig = norm(ps)/sqrt(1-(1-cs)**(2*counteval/float(lambd)))/chiN < 1.4 + 2./(N+1)
             pc = (1-cc)*pc + hsig * sqrt(cc*(2-cc)*mueff) * dot(dot(B,D),zmean)    # Eq. (2)
-            
+
             # Adapt covariance matrix C
             C = ((1-ccov) * C                    # regard old matrix      % Eq. (3)
                  + ccov * (1/mucov) * (outer(pc,pc) #pc*pc.T   # plus rank one update
                                        + (1-hsig) * cc*(2-cc) * C)
                  + ccov * (1-1/mucov)            # plus rank mu update
-                 * dot(dot(arx[:,xrange(mu)],diag(weights)),arx[:,xrange(mu)].T)
+                 * dot(dot(arxmut,diag(weights)),arxmut.T)
                 )
-                
+
+            #print diag(C)
             # Adapt step size sigma
             sigma = sigma * exp((cs/damps)*(norm(ps)/chiN - 1))             # Eq. (5)
 
@@ -172,9 +177,12 @@ class CMAES(BlackBoxOptimizer):
             # This is O(N^3). When strategy internal CPU-time is critical, the
             # next three lines should be executed only every (alpha/ccov/N)-th
             # iteration, where alpha is e.g. between 0.1 and 10
-            C=triu(C)+triu(C,1).T # enforce symmetry
+            print C
+            C=(C+C.T)/2 # enforce symmetry
             Ev, B = eig(C)          # eigen decomposition, B==normalized eigenvectors
-            D = sqrt(diag(Ev))      #diag(ravel(sqrt(Ev))) # D contains standard deviations now
+            print Ev
+            print ""
+            D = diag(sqrt(Ev))      #diag(ravel(sqrt(Ev))) # D contains standard deviations now
 
             if self.verbose:
                 print counteval, ': ', arfitness[0]
