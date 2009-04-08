@@ -1,7 +1,7 @@
 __author__ = 'Tom Schaul, tom@idsia.ch; Sun Yi, yi@idsia.ch'
 
 from numpy import floor, log, eye, zeros, array, sqrt, sum, dot, tile, outer
-from numpy import exp, triu, diag, power, ravel, minimum, maximum
+from numpy import exp, diag, power, ravel, minimum, maximum
 from numpy.linalg import eig, norm
 from numpy.random import randn, rand
 
@@ -25,7 +25,7 @@ class CMAES(BlackBoxOptimizer):
 
     # Additional parameters for importance mixing
     importanceMixing = False
-    forceUpdate = 0.1  # refresh rate
+    forcedRefresh = 0.1  # refresh rate
 
     def _importanceMixing(self, N, xmean, sigma, B, D,
                           xmean0, sigma0, B0, D0, arz, arx, arfitness):
@@ -50,7 +50,7 @@ class CMAES(BlackBoxOptimizer):
 
         # first step, forward
         pr, pr0 = prob(arx), prob0(arx)
-        p = minimum(1, exp(pr-pr0) * (1-self.forceUpdate))
+        p = minimum(1, exp(pr-pr0) * (1-self.forcedRefresh))
         acpt = rand(lambd) < p
         t = filter(lambda i: acpt[i], xrange(lambd))
 
@@ -65,7 +65,7 @@ class CMAES(BlackBoxOptimizer):
             splz = randn(N, lambd)
             splx = tile(xmean.reshape(N,1),(1,lambd)) + sigma * dot(dot(B,D),splz)
             pr, pr0 = prob(splx), prob0(splx)
-            p = maximum(self.forceUpdate, 1 - exp(pr0-pr))
+            p = maximum(self.forcedRefresh, 1 - exp(pr0-pr))
             acpt = rand(lambd) < p
             t = filter(lambda i: acpt[i], xrange(lambd))
             splz = splz[:,t]
