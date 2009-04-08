@@ -177,11 +177,8 @@ class CMAES(BlackBoxOptimizer):
             # This is O(N^3). When strategy internal CPU-time is critical, the
             # next three lines should be executed only every (alpha/ccov/N)-th
             # iteration, where alpha is e.g. between 0.1 and 10
-            print C
             C=(C+C.T)/2 # enforce symmetry
             Ev, B = eig(C)          # eigen decomposition, B==normalized eigenvectors
-            print Ev
-            print ""
             D = diag(sqrt(Ev))      #diag(ravel(sqrt(Ev))) # D contains standard deviations now
 
             if self.verbose:
