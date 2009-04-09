@@ -1,7 +1,7 @@
 __author__ = 'Tom Schaul, tom@idsia.ch; Sun Yi, yi@idsia.ch'
 
-from numpy import floor, log, eye, zeros, array, sqrt, sum, dot, tile, outer
-from numpy import exp, diag, power, ravel, minimum, maximum
+from numpy import floor, log, eye, zeros, array, sqrt, sum, dot, tile, outer, inner, real
+from numpy import exp, triu, diag, power, ravel, minimum, maximum
 from numpy.linalg import eig, norm
 from numpy.random import randn, rand
 
@@ -25,7 +25,7 @@ class CMAES(BlackBoxOptimizer):
 
     # Additional parameters for importance mixing
     importanceMixing = False
-    forcedRefresh = 0.1  # refresh rate
+    forceUpdate = 0.1  # refresh rate
 
     def _importanceMixing(self, N, xmean, sigma, B, D,
                           xmean0, sigma0, B0, D0, arz, arx, arfitness):
@@ -39,20 +39,23 @@ class CMAES(BlackBoxOptimizer):
         Ds, Ds0 = sigma*D, sigma0*D0
         c = sum(log(diag(Ds)))
         c0 = sum(log(diag(Ds0)))
+        #print "log|C|/2, log|C0|/2:", c, c0
         invA = dot(diag(1/diag(Ds)), B.T)
         invA0 = dot(diag(1/diag(Ds0)), B0.T)
         ctr = tile(xmean.reshape(N,1), (1,lambd))
         ctr0 = tile(xmean0.reshape(N,1), (1,lambd))
+        A = sigma * dot(B,D)
 
         # two auxiliary functions for computing probability
-        def prob(x): return c - 0.5*sum(dot(invA, x-ctr)**2, 0)
-        def prob0(x): return c0 - 0.5*sum(dot(invA0, x-ctr0)**2, 0)
+        def prob(x): return -c-0.5*sum(dot(invA, x-ctr)**2, 0)
+        def prob0(x): return -c0-0.5*sum(dot(invA0, x-ctr0)**2, 0)
 
         # first step, forward
         pr, pr0 = prob(arx), prob0(arx)
-        p = minimum(1, exp(pr-pr0) * (1-self.forcedRefresh))
+        p = minimum(1, exp(pr-pr0)*(1-self.forceUpdate))
         acpt = rand(lambd) < p
         t = filter(lambda i: acpt[i], xrange(lambd))
+        #print "use", len(t), "old"
 
         arx[:,xrange(len(t))] = arx[:,t]
         arz[:,xrange(len(t))] = arz[:,t]
@@ -63,11 +66,12 @@ class CMAES(BlackBoxOptimizer):
         req = nreq
         while req > 0:
             splz = randn(N, lambd)
-            splx = tile(xmean.reshape(N,1),(1,lambd)) + sigma * dot(dot(B,D),splz)
+            splx = ctr + dot(A,splz)
             pr, pr0 = prob(splx), prob0(splx)
-            p = maximum(self.forcedRefresh, 1 - exp(pr0-pr))
+            p = maximum(self.forceUpdate, 1 - exp(pr0-pr))
             acpt = rand(lambd) < p
             t = filter(lambda i: acpt[i], xrange(lambd))
+            #print -len(t),
             splz = splz[:,t]
             splx = splx[:,t]
             if len(t) >= req:
@@ -121,11 +125,16 @@ class CMAES(BlackBoxOptimizer):
         chiN=N**0.5*(1-1./(4.*N)+1/(21.*N**2))
         # expectation of ||N(0,I)|| == norm(randn(N,1))
 
+        xmean0 = zeros(N)
+
         # -------------------- Generation Loop --------------------------------
         counteval = 0 # the next 40 lines contain the 20 lines of interesting code
         arfitness = zeros(lambd)
         arx = zeros((N, lambd))
+        g = 0
         while counteval+lambd <= maxSteps:
+            #print "generation", g
+            g += 1
             #print ".",
             # !!! This part is modified for importance mixing
             if counteval == 0 or self.importanceMixing == False:
@@ -135,6 +144,24 @@ class CMAES(BlackBoxOptimizer):
                 for k in xrange(lambd):
                     arfitness[k] = self.evaluator(arx[:,k])
                     counteval += 1
+                #cnt = 0
+                #arz = zeros((N, lambd))
+                #arx = zeros((N, lambd))
+                #A = sigma*dot(B,D)
+                #while cnt < lambd:
+                #    z = randn(N)
+                #    x = xmean + dot(A, z)
+                #    if inner(x-xmean, xmean-xmean0) < -0.01:
+                #        print ".",
+                #        continue
+                #    else:
+                #        arz[:,cnt] = z
+                #        arx[:,cnt] = x
+                #        arfitness[cnt] = self.evaluator(x)
+                #        cnt += 1
+                #        counteval += 1
+                #print ""
+                #
                 if self.importanceMixing:
                     xmean0, sigma0, B0, D0 = xmean.copy(), sigma, B.copy(), D.copy()
             else:
@@ -142,6 +169,7 @@ class CMAES(BlackBoxOptimizer):
                           xmean0, sigma0, B0, D0, arz, arx, arfitness)
                 xmean0, sigma0, B0, D0 = xmean.copy(), sigma, B.copy(), D.copy()
                 counteval += neweval
+                print neweval
 
             # Sort by fitness and compute weighted mean into xmean
             arfitness, arindex = sorti(arfitness)  # minimization
@@ -180,7 +208,9 @@ class CMAES(BlackBoxOptimizer):
             C=(C+C.T)/2 # enforce symmetry
             Ev, B = eig(C)          # eigen decomposition, B==normalized eigenvectors
             D = diag(sqrt(Ev))      #diag(ravel(sqrt(Ev))) # D contains standard deviations now
-
+            Ev = real(Ev)       # enforce real value
+            B = real(B)
+            #print "eig", Ev
             if self.verbose:
                 print counteval, ': ', arfitness[0]
 
@@ -197,6 +227,11 @@ class CMAES(BlackBoxOptimizer):
             if abs((arfitness[0]-arfitness[-1])/arfitness[0]+arfitness[-1]) <= self.stopPrecision:
                 if self.verbose:
                     print "Converged."
+                break
+            # or diverge, unfortunately
+            if min(Ev) > 1e5:
+                if self.verbose:
+                    print "Diverged."
                 break
 
 def sorti(vect):
