@@ -13,7 +13,7 @@
 __author__ = "Thomas Rueckstiess, ruecksti@in.tum.de"
 
 from scipy.cluster.vq import kmeans2
-from scipy import random
+from scipy import random, array
 from scipy.linalg import norm
 
 def kinit(X, k):
