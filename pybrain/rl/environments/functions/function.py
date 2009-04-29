@@ -22,7 +22,11 @@ class FunctionEnvironment(Environment, Evaluator):
     # what would be the desired performance?
     desiredValue = -1e-10
     
-    def __init__(self, xdim = 1, xopt = None):
+    def __init__(self, xdim = None, xopt = None):
+        if xdim == None:
+            xdim = self.xdim
+        if xdim == None:
+            xdim = self.xdimMin
         assert xdim >= self.xdimMin and not (self.xdimMax != None and xdim > self.xdimMax)
         self.xdim = xdim
         if xopt == None:
