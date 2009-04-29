@@ -61,7 +61,7 @@ def drawIndex(probs, tolerant = False):
 def drawGibbs(vals, temperature = 1.):
     """ return the index of the sample drawn by a softmax. """
     if temperature == 0:
-        # randopmly pick one of the values with the max value.
+        # randomly pick one of the values with the max value.
         m = max(vals)
         best = []
         for i, v in enumerate(vals):

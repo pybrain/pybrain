@@ -1,6 +1,6 @@
 __author__ = 'Thomas Rueckstiess, ruecksti@in.tum.de'
 
-from scipy import zeros, random, argmax
+from scipy import random, argmax
 from module import Module
 
 
