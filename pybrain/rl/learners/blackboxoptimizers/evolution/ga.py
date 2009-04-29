@@ -4,7 +4,6 @@ from scipy import randn, zeros
 from random import choice, random, gauss
 from evolution import Evolution
 
-
 class GA(Evolution):
     """ Genetic algorithm """
     
@@ -15,38 +14,53 @@ class GA(Evolution):
     topproportion = 0.2
     
     elitism = False
-    elitesize = 1
+    eliteproportion = 0.5
+    elitesize = None # override with an exact number
     
     mutationprob = 0.1
     mutationStdDev = 0.5
     
     def initPopulation(self):
-        self.currentpop = []
-        for dummy in range(self.popsize):
-            self.currentpop.append(randn(self.xdim))        
+        self.currentpop = [self.x0]
+        for dummy in range(self.popsize-1):
+            self.currentpop.append(self.x0+randn(self.xdim))        
     
     def crossOver(self, parents, nbChildren):
-        """ generate a number of children by doing crosover """
+        """ generate a number of children by doing 1-point cross-over """
         children = []
         for dummy in range(nbChildren):
             p1 = choice(parents)
-            p2 = choice(parents)
-            point = choice(range(self.xdim-1))
-            res = zeros(self.xdim)
-            res[:point] = p1[:point]
-            res[point:] = p2[point:]
-            children.append(res)
+            if self.xdim < 2:
+                children.append(p1)
+            else:
+                p2 = choice(parents)
+                point = choice(range(self.xdim-1))
+                res = zeros(self.xdim)
+                res[:point] = p1[:point]
+                res[point:] = p2[point:]
+                children.append(res)
         return children          
     
-    def mutate(self, indiv):
-        """ mutate some genes of the given individual (in-place) """
+    def mutated(self, indiv):
+        """ mutate some genes of the given individual """
+        res = indiv.copy()
         for i in range(self.xdim):
             if random() < self.mutationprob:
-                indiv[i] += gauss(0, self.mutationStdDev)
+                res[i] = indiv[i] + gauss(0, self.mutationStdDev)
+        return res
                 
     def selectionSize(self):
         """ the number of parents selected from the current population """
         return int(self.popsize * self.topproportion)
+    
+    def eliteSize(self):
+        if self.elitism:
+            if self.elitesize != None:
+                return self.elitesize
+            else:
+                return int(self.popsize * self.eliteproportion)
+        else:
+            return 0
         
     def select(self):
         """ select some of the individuals of the population, taking into account their fitnesses 
@@ -63,8 +77,9 @@ class GA(Evolution):
     def produceOffspring(self):
         """ produce offspring by selection, mutation and crossover. """
         parents = self.select()
-        # TODO: elitism
-        self.currentpop = self.crossOver(parents, self.popsize)
-        for child in self.currentpop:
-            self.mutate(child)
+        es = min(self.eliteSize(), self.selectionSize())
+        self.currentpop = parents[:es]
+        for child in self.crossOver(parents, self.popsize-es):
+            self.currentpop.append(self.mutated(child))
+        
         

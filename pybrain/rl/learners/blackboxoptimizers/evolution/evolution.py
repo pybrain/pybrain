@@ -45,7 +45,8 @@ class Evolution(BlackBoxOptimizer):
                 break
             self.oneGeneration()
             self.generation += 1
-            print 'Gen:', self.generation, 'fit:', self.bestEvaluation
+            if self.verbose:
+                print 'Gen:', self.generation, 'fit:', self.bestEvaluation
         
     def initPopulation(self):
         """ initialize the population """
