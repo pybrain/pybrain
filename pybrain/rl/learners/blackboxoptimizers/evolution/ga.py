@@ -19,11 +19,12 @@ class GA(Evolution):
     
     mutationprob = 0.1
     mutationStdDev = 0.5
+    initRangeScaling = 10.
     
     def initPopulation(self):
         self.currentpop = [self.x0]
         for dummy in range(self.popsize-1):
-            self.currentpop.append(self.x0+randn(self.xdim))        
+            self.currentpop.append(self.x0+randn(self.xdim)*self.mutationStdDev*self.initRangeScaling)        
     
     def crossOver(self, parents, nbChildren):
         """ generate a number of children by doing 1-point cross-over """
