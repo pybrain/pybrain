@@ -86,4 +86,4 @@ def pPca(data, dim):
         W, W_ = data.T * E.T * inv(E * E.T), W
         if abs(W - W_).max() < 0.001:
             break
-    return W
+    return W.T
