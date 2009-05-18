@@ -29,13 +29,13 @@ class PermutationConnection(Connection):
         self.blocksize = blocksize
         
     def _forwardImplementation(self, inbuf, outbuf):
-        inbuf = inbuf.reshape(self.indim / blocksize, blocksize)
+        inbuf = inbuf.reshape(self.indim / self.blocksize, self.blocksize)
         inbuf = permute(inbuf, self.permutation)
         inbuf.shape = self.indim,
         outbuf += inbuf
         
     def _backwardImplementation(self, outerr, inerr, inbuf):
-        outerr = outerr.reshape(self.indim / blocksize, blocksize)
+        outerr = outerr.reshape(self.indim / self.blocksize, self.blocksize)
         outerr = permute(outerr, self.invpermutation)
         outerr.shape = self.indim,
         inerr += outerr

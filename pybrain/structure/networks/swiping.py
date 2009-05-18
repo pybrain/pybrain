@@ -4,14 +4,11 @@ from pybrain.structure.networks.feedforward import FeedForwardNetwork
 from pybrain.structure.connections.shared import MotherConnection, SharedFullConnection
 from pybrain.utilities import iterCombinations
 
-# TODO: class TunedSwipingNetwork: reduce the overhead of having many modules, 
-#       by doing only sliced connections on large layers, and not sorting them
-
 # TODO: special treatment for multi-dimensional lstm cells: identity connections on state buffers
 
 
 class SwipingNetwork(FeedForwardNetwork):
-    """ A network architecture that establishes shared connections between ModuleMeshes (of identical dimesnions)
+    """ A network architecture that establishes shared connections between ModuleMeshes (of identical dimensions)
     so that the behavior becomes equivalent to one unit (in+hidden+out components at the same coordinate) swiping
     over a multidimensional input space and producing a multidimensional output. """
     
@@ -105,7 +102,7 @@ class SwipingNetwork(FeedForwardNetwork):
         return iterCombinations(self.dims)
     
     def _printPredefined(self, dic = None, indent = 0):
-        """ print the weights of the Motherconnections in the self.predefined dictionnary (recursively)"""
+        """ print the weights of the Motherconnections in the self.predefined dictionary (recursively)"""
         if dic == None:
             dic = self.predefined
         for k, val in sorted(dic.items()):
@@ -117,3 +114,4 @@ class SwipingNetwork(FeedForwardNetwork):
                 print val.params
             else:
                 print val
+                
