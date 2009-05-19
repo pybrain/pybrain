@@ -114,7 +114,7 @@ Tests for probabilistic PCA
     >>> from pybrain.auxiliary.pca import pPca
     
     >>> pc = pPca(data, 1)
-    >>> x, y = pc[0, 0], pc[1, 0]
+    >>> x, y = pc[0, 0], pc[0, 1]
     >>> x / y
     0.92...
 
