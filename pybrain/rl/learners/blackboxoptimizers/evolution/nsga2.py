@@ -15,6 +15,8 @@ class MultiObjectiveGA(GA):
     
     popsize = 100
     mutationStdDev = 1.
+    
+    allowEquality = True
         
     def __init__(self, *args, **kwargs):
         """ x0 is assumed to be an array, but then converted to a tuple. 
@@ -46,24 +48,27 @@ class MultiObjectiveGA(GA):
         self.allgenerations.append((self.currentpop))
         if self.elitism:    
             self.bestEvaluable = list(non_dominated_front(self.currentpop,
-                                                          key=lambda x: self.fitnesses[x]))
+                                                          key=lambda x: self.fitnesses[x],
+                                                          allowequality = self.allowEquality))
         else:
             self.bestEvaluable = list(non_dominated_front(self.currentpop+self.bestEvaluable,
-                                                          key=lambda x: self.fitnesses[x]))
+                                                          key=lambda x: self.fitnesses[x],
+                                                          allowequality = self.allowEquality))
         self.bestEvaluation = map(lambda indiv: self.fitnesses[indiv], self.bestEvaluable)
         
         self.produceOffspring()
         
     def select(self):
-        return nsga2select(self.currentpop, self.fitnesses, self.selectionSize())    
+        return nsga2select(self.currentpop, self.fitnesses, self.selectionSize(), self.allowEquality)    
                 
     
 
-def nsga2select(population, fitnesses, survivors):
+def nsga2select(population, fitnesses, survivors, allowequality = True):
     """The NSGA-II selection strategy (Deb et al., 2002).
     The number of individuals that survive is given by the survivors parameter."""
     fronts = non_dominated_sort(population,
-                                key=lambda x: fitnesses[x])
+                                key=lambda x: fitnesses[x],
+                                allowequality = allowequality)
     individuals = set()
     for front in fronts:
         remaining = survivors - len(individuals)
@@ -98,7 +103,7 @@ def crowding_distance(individuals, fitnesses):
     return distances
  
  
-def non_dominated_front(iterable, key=lambda x: x):
+def non_dominated_front(iterable, key=lambda x: x, allowequality = True):
     """Return a subset of items from iterable which are not dominated by any
     other item in iterable."""
     items = list(iterable)
@@ -111,8 +116,12 @@ def non_dominated_front(iterable, key=lambda x: x):
     dominations = collections.defaultdict(lambda: [])
     for i in items:
         for j in items:
-            if all(keys[i][k] < keys[j][k] for k in xrange(dim)):
-                dominations[i].append(j)
+            if allowequality:
+                if all(keys[i][k] < keys[j][k] for k in xrange(dim)):
+                    dominations[i].append(j)
+            else:
+                if all(keys[i][k] <= keys[j][k] for k in xrange(dim)):
+                    dominations[i].append(j)
  
     dominates = lambda i, j: j in dominations[i]
  
@@ -131,13 +140,13 @@ def non_dominated_front(iterable, key=lambda x: x):
     return res
  
     
-def non_dominated_sort(iterable, key=lambda x: x):
+def non_dominated_sort(iterable, key=lambda x: x, allowequality = True):
     """Return a list that is sorted in a non-dominating fashion.
     Keys have to be n-tuple."""
     items = set(iterable)
     fronts = []
     while items:
-        front = non_dominated_front(items, key)
+        front = non_dominated_front(items, key, allowequality)
         items -= front
         fronts.append(front)
     return fronts
