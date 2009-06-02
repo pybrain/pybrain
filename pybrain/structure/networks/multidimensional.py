@@ -31,13 +31,13 @@ class MultiDimensionalRNN(SwipingNetwork):
         
         if self.componentclass is MDLSTMLayer:
             c = lambda: MDLSTMLayer(self.hsize, 2, self.peepholes).meatSlice()
-            hiddenmesh = ModuleMesh(c, (self.size, self.size, 4), 'hidden', baserename = True)
+            adims = tuple(list(dims)+[4])
+            hiddenmesh = ModuleMesh(c, adims, 'hidden', baserename = True)
         else:
             hiddenmesh = ModuleMesh.constructWithLayers(self.componentclass, self.hsize, tuple(list(dims)+[self.swipes]), 'hidden')
         
         self._buildSwipingStructure(inmesh, hiddenmesh, outmesh)
-        self.sortModules()
-        
+         
         # add the identity connections for the states
         for m in self.modules:
             if isinstance(m, MDLSTMLayer):
@@ -50,9 +50,10 @@ class MultiDimensionalRNN(SwipingNetwork):
                                                               outSliceTo = self.hsize*(index+1)))
                         index += 1
  
-
+        self.sortModules()
+       
 class MultiDimensionalLSTM(MultiDimensionalRNN):
     """ The same, but with LSTM cells in the hidden layer. """
     componentclass = MDLSTMLayer
-      
-            
+    peepholes = False
+           
