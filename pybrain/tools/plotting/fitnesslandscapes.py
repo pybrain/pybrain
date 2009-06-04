@@ -4,14 +4,15 @@ __author__ = 'Tom Schaul, tom@idsia.ch'
 
 from scipy import zeros, r_, cos, sin, pi, array, dot, sqrt, diag
 from scipy.linalg import svd
-from pylab import figure, plot, show, meshgrid, contour, savefig #@UnresolvedImport
+from pylab import figure, plot, show, meshgrid, contour, savefig, colorbar #@UnresolvedImport
 from pybrain.rl.environments.functions import FunctionEnvironment
 from inspect import isclass
 
 
 class FitnessPlotter:
     """ plot the function's values in the rectangular region specified by ranges. By default, plot in [-1,1] """
-    def __init__(self, f, xmin = -1, xmax = 1, ymin = -1, ymax = 1, precision = 50, is3d = False):
+    def __init__(self, f, xmin = -1, xmax = 1, ymin = -1, ymax = 1, precision = 50, is3d = False, newfig = True, 
+                 colorbar = False, cblabel = None):
         """ @param precision: how many steps along every dimension """        
         if isinstance(f, FunctionEnvironment):
             assert f.xdim == 2
@@ -24,10 +25,13 @@ class FitnessPlotter:
             
         self.precision = precision
         self.is3d = is3d
+        self.colorbar = colorbar
+        self.cblabel = cblabel
         self.xs = r_[xmin:xmax:self.precision*1j]
         self.ys = r_[ymin:ymax:self.precision*1j]
-        self.zs = self._generateValMap()        
-        self.fig = figure()        
+        self.zs = self._generateValMap()
+        if newfig or self.is3d:        
+            self.fig = figure()
         if self.is3d:
             import matplotlib.axes3d as p3
             self.fig = p3.Axes3D(self.fig) #@UndefinedVariable
@@ -46,7 +50,12 @@ class FitnessPlotter:
             X, Y = meshgrid(self.xs, self.ys)    
             self.fig.contour3D(X, Y, self.zs, levels)                 
         else:
-            contour(self.xs, self.ys, self.zs, levels)
+            tmp = contour(self.xs, self.ys, self.zs, levels)
+            if self.colorbar:
+                cb = colorbar(tmp)
+                if self.cblabel != None:
+                    cb.set_label(self.cblabel)
+
         if popup: show()
     
     def addSamples(self, samples, rescale = True, color = ''):
