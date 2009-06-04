@@ -17,6 +17,8 @@ class MultiObjectiveGA(GA):
     mutationStdDev = 1.
     
     allowEquality = True
+    
+    startPop = None
         
     def __init__(self, *args, **kwargs):
         """ x0 is assumed to be an array, but then converted to a tuple. 
@@ -31,8 +33,11 @@ class MultiObjectiveGA(GA):
         return False
     
     def initPopulation(self):
-        GA.initPopulation(self)
-        self.currentpop = map(tuple, self.currentpop)
+        if self.startPop == None:
+            GA.initPopulation(self)
+            self.currentpop = map(tuple, self.currentpop)
+        else:
+            self.currentpop = self.startPop
          
     def mutated(self, indiv):
         return tuple(GA.mutated(self,array(indiv)))
