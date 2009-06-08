@@ -108,7 +108,7 @@ def crowding_distance(individuals, fitnesses):
     return distances
  
  
-def non_dominated_front(iterable, key=lambda x: x, allowequality = True):
+def _non_dominated_front_old(iterable, key=lambda x: x, allowequality = True):
     """Return a subset of items from iterable which are not dominated by any
     other item in iterable."""
     items = list(iterable)
@@ -144,7 +144,63 @@ def non_dominated_front(iterable, key=lambda x: x, allowequality = True):
                 res.remove(j)
     return res
  
+ 
+def _non_dominated_front_fast(iterable, key=lambda x: x, allowequality = True):
+    """Return a subset of items from iterable which are not dominated by any
+    other item in iterable. 
     
+    Faster version.
+    """
+    items = list(iterable)
+    keys = dict((i, key(i)) for i in items)
+    dim = len(keys.values()[0])
+    dominations = {}
+    for i in items:
+        for j in items:
+            good = True
+            if allowequality:
+                for k in xrange(dim):
+                    if keys[i][k] >= keys[j][k]:
+                        good = False
+                        break
+            else:
+                for k in xrange(dim):
+                    if keys[i][k] > keys[j][k]:
+                        good = False
+                        break
+            if good:
+                dominations[(i,j)] = None
+    res = set()
+    items = set(items)
+    for i in items:
+        res.add(i)
+        for j in list(res):
+            if i is j:
+                continue
+            if (j,i) in dominations: 
+                res.remove(i)
+                break
+            elif (i,j) in dominations:
+                res.remove(j)
+    return res
+
+def _non_dominated_front_merge(iterable, key=lambda x: x, allowequality = True):
+    items = list(iterable)
+    l = len(items)
+    if l > 20:
+        part1 = list(_non_dominated_front_merge(items[:l/2], key, allowequality))
+        part2 = list(_non_dominated_front_merge(items[l/2:], key, allowequality))
+        if len(part1) >= l/3 or len(part2) >= l/3:
+            return _non_dominated_front_fast(part1+part2, key, allowequality)
+        else:
+            return _non_dominated_front_merge(part1+part2, key, allowequality)
+    else:
+        return _non_dominated_front_fast(items, key, allowequality)
+
+
+non_dominated_front = _non_dominated_front_merge
+
+
 def non_dominated_sort(iterable, key=lambda x: x, allowequality = True):
     """Return a list that is sorted in a non-dominating fashion.
     Keys have to be n-tuple."""
