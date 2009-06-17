@@ -2,7 +2,8 @@
 
 __author__ = 'Tom Schaul, tom@idsia.ch'
 
-from scipy import ones
+from scipy import ones, sqrt
+from numpy.linalg.linalg import norm
 
 from function import FunctionEnvironment
     
@@ -67,3 +68,16 @@ class RosenbrockFunction(FunctionEnvironment):
         for i in range(len(x)-1):
             s += 100 * (x[i]**2 - x[i+1])**2 + (x[i]-1)**2
         return s
+    
+class GlasmachersFunction(FunctionEnvironment):
+    """ Tricky! Designed to make most algorithms fail. """
+    c = .1
+    xdimMin = 2
+    
+    def f(self, x):
+        m = self.xdim/2
+        a = self.c * norm(x[:m])
+        b = norm(x[m:])
+        return a + b + sqrt(2*a*b+b**2)
+    
+    
