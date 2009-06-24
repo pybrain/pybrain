@@ -120,7 +120,7 @@ class OriginalNES(VanillaGradientEvolutionStrategies):
         update = dot(pinv2(phi), fitnesses)[:-1]
         return update
 
-    def _logDerivsFactorSigma(self, samples, mu, factorSigma):
+    def _logDerivsFactorSigma(self, samples, mu, invSigma, factorSigma):
         """ Compute the log-derivatives w.r.t. the factorized covariance matrix components. 
         This implementation should be faster than the one in Vanilla. """
         res = zeros((len(samples), self.numParams-self.xdim))
