@@ -101,7 +101,7 @@ class ExactNES(VanillaGradientEvolutionStrategies):
         else: 
             raise NotImplementedError('No such baseline implemented')
         
-        return update
+        return update / self.batchSize
 
 
 

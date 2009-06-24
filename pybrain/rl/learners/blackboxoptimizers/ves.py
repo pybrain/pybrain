@@ -160,7 +160,7 @@ class VanillaGradientEvolutionStrategies(BlackBoxOptimizer):
                 shapedFits = self.shapingFunction(self.allFitnesses[-self.batchSize:])
             
                 # update parameters (unbiased: divide by batchsize)
-                update = self._calcBatchUpdate(shapedFits) / self.batchSize
+                update = self._calcBatchUpdate(shapedFits) 
                 if self.elitism:
                     self.x = self.bestEvaluable
                 else:
