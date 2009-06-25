@@ -6,7 +6,7 @@ from pybrain.rl.agents.agent import Agent
 from pybrain.structure.modules.module import Module
 from pybrain.rl.evaluator import Evaluator
 from pybrain.rl.experiments.episodic import EpisodicExperiment
-
+from scipy import power
 
 class EpisodicTask(Task, Evaluator):
     """ A task that consists of independent episodes. """
@@ -16,6 +16,9 @@ class EpisodicTask(Task, Evaluator):
     
     # tracking the number of samples
     samples = 0
+    
+    # the discount factor 
+    discount = None
     
     batchSize = 1
     
@@ -39,7 +42,10 @@ class EpisodicTask(Task, Evaluator):
     def addReward(self):
         """ a filtered mapping towards performAction of the underlying environment. """                
         # by default, the cumulative reward is just the sum over the episode    
-        self.cumreward += self.getReward()
+        if self.discount:
+            self.cumreward += power(self.discount, self.samples) * self.getReward()
+        else:
+            self.cumreward += self.getReward()
     
     def getTotalReward(self):
         """ the accumulated reward since the start of the episode """

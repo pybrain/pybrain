@@ -17,9 +17,6 @@ class POMDPTask(EpisodicTask, Named):
     # number of possible actions
     actions = 4
     
-    # the discount factor 
-    discount = None
-    
     # maximal number of steps before the episode is stopped
     maxSteps = None
     
