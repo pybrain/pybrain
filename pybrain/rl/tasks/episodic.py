@@ -17,6 +17,8 @@ class EpisodicTask(Task, Evaluator):
     # tracking the number of samples
     samples = 0
     
+    batchSize = 1
+    
     def reset(self):
         """ reinitialize the environment """
         # Note: if a task needs to be reset at the start, the subclass constructor 
@@ -53,8 +55,8 @@ class EpisodicTask(Task, Evaluator):
                 self.performAction(module.activate(self.getObservation()))
             return self.getTotalReward()
         elif isinstance(module, Agent):
-            EpisodicExperiment(self, module).doEpisodes(1)
-            return self.getTotalReward()
+            EpisodicExperiment(self, module).doEpisodes(self.batchSize)
+            return self.getTotalReward() / self.batchSize
         else:
             raise NotImplementedError('Missing implementation for '+module.__class__.__name__+' evaluation')
         
