@@ -56,7 +56,7 @@ class EpisodicTask(Task, Evaluator):
             return self.getTotalReward()
         elif isinstance(module, Agent):
             EpisodicExperiment(self, module).doEpisodes(self.batchSize)
-            return self.getTotalReward() / self.batchSize
+            return self.getTotalReward() / float(self.batchSize)
         else:
             raise NotImplementedError('Missing implementation for '+module.__class__.__name__+' evaluation')
         
