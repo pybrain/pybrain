@@ -2,12 +2,12 @@ __author__ = 'Thomas Rueckstiess, ruecksti@in.tum.de; Christian Osendorfer, osen
 
 
 from scipy import r_, exp, zeros, eye, array, asarray, random, ravel, diag, sqrt, sin, cos, sort, mgrid, dot, floor
-from scipy import  c_
 from scipy.linalg import solve, inv
 from pybrain.datasets import SupervisedDataSet
+from scipy.linalg import norm
 
 # for plotting
-from pylab import figure, clf, hold, plot, fill, title, show, norm, gcf, pcolor, gray #@UnresolvedImport
+from pylab import figure, clf, hold, plot, fill, title, show, gcf, pcolor, gray
 
 class GaussianProcess:
     """ This class represents a basic n-dimensional Gaussian Process. The implementation
