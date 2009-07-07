@@ -3,7 +3,7 @@ __author__ = 'Thomas Rueckstiess, ruecksti@in.tum.de'
 from pybrain.datasets import SequentialDataSet
 from pybrain.auxiliary import GaussianProcess
 from episodic import EpisodicExperiment
-from scipy import mgrid, array, floor, ceil
+from scipy import mgrid, array, floor, c_, r_, reshape
 
 
 class ModelExperiment(EpisodicExperiment):
@@ -16,7 +16,9 @@ class ModelExperiment(EpisodicExperiment):
         
         # create model and training set (action dimension + 1 for time)
         self.modelds = SequentialDataSet(self.task.indim + 1, 1)
-        self.model = [GaussianProcess(indim=self.modelds.getDimension('input'), start=(-10, -10, 0), stop=(10, 10, 300), step=(5, 5, 100)) for i in range(self.task.outdim)]
+        self.model = [GaussianProcess(indim=self.modelds.getDimension('input'), 
+                                      start=(-10, -10, 0), stop=(10, 10, 300), step=(5, 5, 100)) 
+                      for _ in range(self.task.outdim)]
         
         # change hyper parameters for all gps
         for m in self.model:
@@ -76,7 +78,7 @@ class ModelExperiment(EpisodicExperiment):
         self.task.performAction(action)
 
         # predict with model
-        modelobs = array([0, 0, 0])
+        #modelobs = array([0, 0, 0])
         
         # time dimension        
         # if self.stepid < self.model[0].stop:

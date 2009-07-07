@@ -74,7 +74,7 @@ Tests for permuteToBlocks
 """
 
 
-from scipy import array
+from scipy import array #@UnusedImport
 from pybrain.utilities import Serializable
 from pybrain.tests import runModuleTestSuite
 

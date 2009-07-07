@@ -55,7 +55,7 @@ class SimpleConvolutionalNetwork(FeedForwardNetwork):
         
 if __name__ == '__main__':
     from scipy import array, ravel
-        
+    from custom.convboard import ConvolutionalBoardNetwork
     N = ConvolutionalBoardNetwork(4, 3, 5)
     input = [[[0,0],[0,0],[0,0],[0,0]],
              [[0,0],[0,0],[0,0],[1,1]],

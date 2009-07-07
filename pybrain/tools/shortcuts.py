@@ -6,7 +6,7 @@ import logging
 from sys import exit as errorexit
 from pybrain.structure.networks.feedforward import FeedForwardNetwork
 from pybrain.structure.networks.recurrent import RecurrentNetwork
-from pybrain.structure.modules import BiasUnit, SigmoidLayer, LinearLayer, LSTMLayer, TanhLayer
+from pybrain.structure.modules import BiasUnit, SigmoidLayer, LinearLayer, LSTMLayer
 from pybrain.structure.connections import FullConnection, IdentityConnection
 
 try:

@@ -101,4 +101,4 @@ class BraninFunction(MultiModalFunction):
     
     def f(self, x):
         return self._a * (x[1]-self._b*x[0]**2+self._c*x[0]-self._d)**2 + self._e * ((1-self._f)*cos(x[0])+1) - self.vopt
-     
+

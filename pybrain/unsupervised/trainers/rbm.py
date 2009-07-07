@@ -177,7 +177,7 @@ class RbmGaussTrainer(RbmGibbsTrainer):
     
     def __init__(self, rbm, dataset, cfg=None):
         super(RbmGaussTrainer, self).__init__(rbm, dataset, cfg)
-        samples = self.dataset[self.datasetField]
+        #samples = self.dataset[self.datasetField]
         # self.visibleVariances = samples.var(axis=0)
         self.visibleVariances = ones(rbm.net.outdim)
     

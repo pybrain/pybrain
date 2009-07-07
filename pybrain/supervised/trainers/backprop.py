@@ -1,7 +1,7 @@
 # $Id$
 __author__ = 'Daan Wierstra and Tom Schaul'
 
-from scipy import dot, argmax, size
+from scipy import dot, argmax
 from random import shuffle
 
 from trainer import Trainer

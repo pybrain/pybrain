@@ -9,7 +9,7 @@ __author__ = ('Thomas Rueckstiess, ruecksti@in.tum.de'
 
 from copy import deepcopy
 
-from scipy import zeros, asarray, sign, array, cov, dot
+from scipy import zeros, asarray, sign, array, cov, dot, clip
 from scipy.linalg import inv
 
 
@@ -149,13 +149,13 @@ class IRpropPlus(object):
         
         # For positive gradient parts.
         positive = (products > 0).astype('int8')
-        pos_step = self.step * upfactor * positive
-        clip(post_step, -self.bound, self.bound)
+        pos_step = self.step * self.upfactor * positive
+        clip(pos_step, -self.bound, self.bound)
         pos_update = self.values - signs * pos_step
         
         # For negative gradient parts.
         negative = (products < 0).astype('int8')
-        neg_step = self.step * downfactor * negative
+        neg_step = self.step * self.downfactor * negative
         clip(neg_step, -self.bound, self.bound)
         if error <= self.previous_error:
             # If the error has decreased, do nothing.

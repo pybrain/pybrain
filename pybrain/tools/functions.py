@@ -1,6 +1,6 @@
 __author__ = 'Tom Schaul, tom@idsia.ch'
 
-from scipy import array, exp, tanh, clip, log, dot, sqrt, power, pi, tan, diag, rand, multiply
+from scipy import array, exp, tanh, clip, log, dot, sqrt, power, pi, tan, diag, rand
 from scipy.linalg import inv, det, svd
 
 

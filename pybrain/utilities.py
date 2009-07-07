@@ -6,7 +6,6 @@ import gc
 import pickle
 import logging
 import threading
-import types
 import os
 import operator
 

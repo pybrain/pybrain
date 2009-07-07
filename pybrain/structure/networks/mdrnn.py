@@ -100,7 +100,7 @@ class _MultiDirectionalMdrnn(_Mdrnn):
         # Loop over all possible directions: from each corner to each corner
         for direction in crossproduct([('+', '-')] * self.timedim):
             axises = []
-            for i, axisdir in enumerate(direction):
+            for _, axisdir in enumerate(direction):
                 # Use a normal complete slice for forward...
                 if axisdir == '+':
                     indices = slice(None, None, 1)

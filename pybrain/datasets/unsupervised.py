@@ -5,11 +5,7 @@ __author__ = 'Justin S Bayer, bayer.justin@googlemail.com'
 __version__ = '$Id$'
 
 
-from random import sample
-from scipy import isscalar
-
 from pybrain.datasets.dataset import DataSet
-from pybrain.utilities import fListToString
 
     
 class UnsupervisedDataSet(DataSet): 

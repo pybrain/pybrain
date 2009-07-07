@@ -16,7 +16,7 @@
 """
 
 
-from pybrain.structure.networks.mdrnn import _MultiDirectionalMdrnn, _Mdrnn
+from pybrain.structure.networks.mdrnn import _MultiDirectionalMdrnn, _Mdrnn #@UnusedImport
 from pybrain.tests import runModuleTestSuite
 
 

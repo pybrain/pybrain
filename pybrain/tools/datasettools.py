@@ -3,9 +3,8 @@
 __author__ = "Martin Felder"
 __version__ = '$Id$' 
 
-from os.path import join
-from numpy import r_, array, isfinite, any
-from pybrain.datasets import SequentialDataSet, ClassificationDataSet, SequenceClassificationDataSet
+from numpy import r_, array, isfinite
+from pybrain.datasets import SequentialDataSet
 
 
 def convertSequenceToTimeWindows(DSseq, NewClass, winsize):

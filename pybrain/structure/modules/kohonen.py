@@ -2,11 +2,9 @@ __author__ = 'Thomas Rueckstiess, ruecksti@in.tum.de'
 
 from scipy import random
 from scipy.ndimage import minimum_position
-from scipy.linalg.basic import norm
 from scipy import mgrid, zeros, tile, array, floor, sum
 
 from module import Module
-from pybrain.structure.parametercontainer import ParameterContainer
 
 
 class KohonenMap(Module):

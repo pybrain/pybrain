@@ -7,8 +7,6 @@ __author__ = 'Justin S Bayer, bayer.justin@googlemail.com'
 __version__ = '$Id$'
 
 
-import scipy
-
 from pybrain.datasets import UnsupervisedDataSet
 from pybrain.unsupervised.trainers.deepbelief import DeepBeliefTrainer
 from pybrain.tools.shortcuts import buildNetwork

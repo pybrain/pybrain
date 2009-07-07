@@ -23,7 +23,6 @@ import scipy
 
 from pybrain.structure import (
     BiasUnit,
-    FeedForwardNetwork,
     FullConnection,
     GateLayer,
     IdentityConnection, 
@@ -33,7 +32,6 @@ from pybrain.structure import (
     MDLSTMLayer,
     Network,
     PartialSoftmaxLayer,
-    RecurrentNetwork,
     SharedFullConnection,
     SigmoidLayer, 
     SoftmaxLayer,

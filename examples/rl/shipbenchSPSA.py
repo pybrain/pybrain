@@ -16,7 +16,6 @@ from pybrain.rl.agents.finitedifference import FiniteDifferenceAgent
 from pybrain.rl.learners.finitedifference.spsa import SimpleSPSA
 from pybrain.rl.experiments import EpisodicExperiment
 from cPickle import load, dump
-from scipy import random
 
 # Method for loading a weight matrix and initialize the network
 def loadWeights(filename):
