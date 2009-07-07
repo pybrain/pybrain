@@ -2,7 +2,6 @@ __author__ = 'Frank Sehnke, sehnke@in.tum.de'
 
 
 from scipy import random, zeros, ones, sqrt, exp, sin, cos, log
-from pylab import show, plot, scatter, legend, axis #@UnresolvedImport
 
 stND=zeros(1000)
 for i in range(1000):
@@ -44,6 +43,7 @@ class MixtureOfGaussians:
 
     #generate complete mixture for plotting
     def plotGaussian(self, col, dm):
+        from pylab import plot
         if dm=="max": scal=1.0
         else: scal=10.0
         ret=[]
@@ -126,6 +126,7 @@ class MixtureOfGaussians:
 
     #plots the choosen reward function without noise
     def plotReward(self, col):
+        from pylab import plot
         xList=[]
         yList=[]
         for i in range(1000):
@@ -159,6 +160,7 @@ class MixtureOfGaussians:
                     self.plotGaussian('b', dm)
 
         if plt:
+            from pylab import show, scatter, legend, axis
             self.plotGaussian('k', dm)
             scatter(xList, yList, 1)
             v = [-30.5, 30.5, -0.5, 1.5]

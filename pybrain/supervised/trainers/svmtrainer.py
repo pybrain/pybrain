@@ -6,8 +6,6 @@ from svm import LINEAR, POLY, RBF, SIGMOID, PRECOMPUTED
 
 
 from numpy import *
-import pylab as p   
-import sys
 import logging
 
 class SVMTrainer(object):
@@ -125,6 +123,7 @@ class GridSearch(svm_model):
         self.params = params
         
         if self.plotflag:
+            import pylab as p 
             p.ion()
             p.figure(figsize=[12,8])
         
@@ -236,6 +235,7 @@ class GridSearch(svm_model):
         
     def _redraw(self,db,tofile=0,eta=None):
         """ redraw the updated grid interactively """
+        import pylab as p 
         if len(db) <= 3 or not self.plotflag: return
         begin_level = round(max(map(lambda(x):x[2],db))) - 3
         step_size = 0.25
@@ -346,6 +346,7 @@ class GridSearchDOE(GridSearch):
             self.allScores = append(self.allScores,scores[isnew],axis=0)
         
         if self.plotflag:
+            import pylab as p 
             if self.depth == 0:
                 self.oPlot = p.plot(self.allPts[:,0],self.allPts[:,1],'o')[0]
             # insert new data into plot

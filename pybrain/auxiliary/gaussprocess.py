@@ -7,8 +7,6 @@ from scipy.linalg import solve, inv
 from pybrain.datasets import SupervisedDataSet
 from scipy.linalg import norm
 
-# for plotting
-from pylab import figure, clf, hold, plot, fill, title, show, gcf, pcolor, gray
 
 class GaussianProcess:
     """ This class represents a basic n-dimensional Gaussian Process. The implementation
@@ -40,7 +38,6 @@ class GaussianProcess:
         self.pred_cov = eye(len(self.testx))
         self.autonoise = False
         self.hyper = (0.5, 2.0, 0.1)
-        figure()
     
     def _kernel(self, a, b):
         """ kernel function, here RBF kernel """
@@ -152,6 +149,8 @@ class GaussianProcess:
         return self.pred_mean + random.multivariate_normal(zeros(len(self.testx)), self.pred_cov)
     
     def plotCurves(self, showSamples=False, force2D=True):
+        from pylab import clf, hold, plot, fill, title, gcf, pcolor, gray
+        
         if not self.calculated:
             self._calculate()
         
@@ -199,10 +198,14 @@ class GaussianProcess:
     
 
 if __name__ == '__main__':
+    
+    from pylab import figure, show
+    
     # --- example on how to use the GP in 1 dimension
     ds = SupervisedDataSet(1, 1)
     gp = GaussianProcess(indim=1, start=-3, stop=3, step=0.05)    
-
+    figure()
+    
     x = mgrid[-3:3:0.2]
     y = 0.1*x**2 + x + 1
     z = sin(x) + 0.5*cos(y)
@@ -227,6 +230,7 @@ if __name__ == '__main__':
     
     ds = SupervisedDataSet(2,1)
     gp = GaussianProcess(indim=2, start=0, stop=5, step=0.2)    
+    figure()
     
     x,y = mgrid[0:5:4j, 0:5:4j]
     z = cos(x)*sin(y)

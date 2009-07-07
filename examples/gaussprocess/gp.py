@@ -6,10 +6,11 @@ __author__ = "Thomas Rueckstiess, ruecksti@in.tum.de"
 from pybrain.auxiliary import GaussianProcess
 from pybrain.datasets import SupervisedDataSet
 from scipy import mgrid, sin, cos, array, ravel
-from pylab import show
+from pylab import show, figure
 
 ds = SupervisedDataSet(1, 1)
 gp = GaussianProcess(indim=1, start=-3, stop=3, step=0.05)    
+figure()
 
 x = mgrid[-3:3:0.2]
 y = 0.1*x**2 + x + 1
@@ -35,6 +36,7 @@ print gp.testOnArray(array([[0.4]]))
 
 ds = SupervisedDataSet(2,1)
 gp = GaussianProcess(indim=2, start=0, stop=5, step=0.25)    
+figure()
 
 x,y = mgrid[0:5:4j, 0:5:4j]
 z = cos(x)*sin(y)
