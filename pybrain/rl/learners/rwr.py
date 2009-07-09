@@ -7,7 +7,6 @@ from pybrain.datasets import ReinforcementDataSet, ImportanceDataSet, Sequential
 from pybrain.supervised import BackpropTrainer
 from pybrain.utilities import drawIndex
 
-from pylab import plot, legend, figure, clf, draw, ion #@UnresolvedImport
 
 # TODO: greedy runs: start once in every possible starting state!
 # TODO: supervised: train-set, test-set, early stopping -> actual convergence!
@@ -51,6 +50,7 @@ class RWR(Learner):
         if self.valueMomentum == None:
             self.valueMomentum = self.momentum        
         if self.supervisedPlotting:
+            from pylab import ion
             ion() 
         
         # adaptive temperature:
@@ -238,6 +238,7 @@ class RWR(Learner):
                                                    continueEpochs = self.continueEpochs,
                                                    verbose = self.verbose)
         if self.supervisedPlotting:
+            from pylab import plot, legend, figure, clf, draw
             figure(1)
             clf()
             plot(tmp1, label = 'train')

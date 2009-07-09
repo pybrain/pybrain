@@ -1,7 +1,6 @@
-#!/usr/bin/env python
-# Example script for SVM classification using PyBrain and LIBSVM
-# CAVEAT: Needs the libsvm Python file svm.py and the corresponding (compiled)
-# library to reside in the Python path!
+""" Example script for SVM classification using PyBrain and LIBSVM 
+CAVEAT: Needs the libsvm Python file svm.py and the corresponding (compiled) library to reside in the Python path! """
+
 __author__ = "Martin Felder"
 __version__ = '$Id$' 
 

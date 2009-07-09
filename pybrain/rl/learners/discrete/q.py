@@ -1,7 +1,7 @@
 __author__ = 'Thomas Rueckstiess, ruecksti@in.tum.de'
 
 from pybrain.rl.learners.rllearner import RLLearner
-import time
+
 
 class Q(RLLearner):
     

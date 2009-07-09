@@ -1,7 +1,7 @@
 __author__ = 'Tom Schaul, tom@idsia.ch; Sun Yi, yi@idsia.ch'
 
-from numpy import floor, log, eye, zeros, array, sqrt, sum, dot, tile, outer, inner, real
-from numpy import exp, triu, diag, power, ravel, minimum, maximum
+from numpy import floor, log, eye, zeros, array, sqrt, sum, dot, tile, outer, real
+from numpy import exp, diag, power, ravel, minimum, maximum
 from numpy.linalg import eig, norm
 from numpy.random import randn, rand
 

@@ -7,8 +7,6 @@ __author__ = 'Justin S Bayer, bayer.justin@googlemail.com'
 __version__ = '$Id$'
 
 
-import scipy
-
 from pybrain.structure.networks.rbm import Rbm
 from pybrain.unsupervised.trainers.rbm import (RbmGibbsTrainerConfig, 
                                                RbmBernoulliTrainer)

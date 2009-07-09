@@ -8,11 +8,9 @@ __author__ = 'Justin S Bayer, bayer.justin@googlemail.com'
 import distutils
 import glob
 import os
-import os.path
 import sys
 
 from distutils.ccompiler import new_compiler
-from setuptools import setup, find_packages
 
 import numpy.distutils
 
@@ -90,7 +88,7 @@ def compile_swig():
 			       extra_postargs=['-fPIC'])
     extra_postargs = ['-fPIC', '-flat_namespace', '-Wno-long-double']
     if sys.platform == 'darwin':
-    	extra_postargs += ['-undefined suppress'] 
+        extra_postargs += ['-undefined suppress'] 
     compiler.link_shared_lib(
         objects=objects,
         output_dir=prepend_path('src/python/arac/'),
