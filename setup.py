@@ -9,19 +9,14 @@ import os
 import sys
 
 from setuptools import setup, find_packages
-from distutils.ccompiler import new_compiler
-
-sys.path.append('./arac/')
-
-import aracsetuphelpers as aracsetup
-
 
 try:
+    sys.path.append('./arac/')
+    import aracsetuphelpers as aracsetup
     aracsetup.compile_arac()
     aracsetup.compile_swig()
 except Exception, e:
     print "Fast networks are not available: %s" % e
-
 
 setup(
     name="PyBrain",
