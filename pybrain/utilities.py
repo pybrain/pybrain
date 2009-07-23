@@ -560,3 +560,29 @@ def blockCombine(l):
             hindex += hdims[j]
         vindex += vdims[i]
     return res
+
+
+def avgFoundAfter(decreasingTargetValues, listsOfActualValues, batchSize = 1):
+    """ Determine the average number of steps to reach a certain value (for the first time),
+    given a list of value sequences. 
+    If a value is not always encountered, the length of the longest sequence is used.
+    Returns an array. """    
+    from scipy import sum
+    numLists = len(listsOfActualValues)
+    longest = max(map(len, listsOfActualValues))    
+    # gather a list of indices of first encounters
+    res = [[0] for _ in range(numLists)]
+    for tval in decreasingTargetValues:        
+        for li, l in enumerate(listsOfActualValues):
+            lres = res[li]
+            found = False
+            for i in range(lres[-1], len(l)):
+                if l[i] <= tval:
+                    lres.append(i)
+                    found = True
+                    break
+            if not found:
+                lres.append(longest)
+    tmp = array(res)
+    summed = sum(tmp, axis = 0)[1:]
+    return summed/float(numLists)*batchSize

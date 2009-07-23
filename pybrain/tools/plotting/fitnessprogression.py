@@ -4,25 +4,30 @@ __author__ = 'Tom Schaul, tom@idsia.ch'
 
 import pylab
 from pylab import xlabel, ylabel, legend, plot, semilogy
-from scipy import array, zeros
-
+from scipy import array, zeros, power, log10
+from pybrain.utilities import avgFoundAfter
 
 plotsymbols = ['-', ':', '-.']
 psymbol = '-'
 
     
-def plotFitnessProgession(fitdict, batchsize = 1, show = True, semilog = True, 
+def plotFitnessProgession(fitdict, batchsize = 1, semilog = True, 
                           targetcutoff = 1e-10, minimize = True, 
-                          onlysuccessful = True,
                           title = None, verbose = True,
-                          varyplotsymbols = False):
+                          varyplotsymbols = False,
+                          averageOverEvaluations = True,
+                          onlysuccessful = False,
+                          resolution = 1000):
     """ Plot multiple fitness curves on a single figure, with the following customizations:
     
-        @param fitdict: a dictionnary mapping a name to a list of fitness-arrays 
+        @param fitdict: a dictionary mapping a name to a list of fitness-arrays 
         @param batchsize: the number of evaluations between two points in fitness-arrays 
-                          specific batchsizes can also be given given in fitdict
+                          specific batch sizes can also be given given in fitdict
         @param targetcutoff: this gives the cutoff point at the best fitness
-        @param onlysuccessful: ignore the runs that did not hit the target
+        @param averageOverEvaluations: averaging is done over fitnesses (for a given number of evaluations) 
+                                    or over evaluations required to reach a certain fitness.
+        @param resolution: resolution when averaging over evaluations
+        @param onlysuccessful: consider only successful runs
         @param title: specify a title.
         @param varyplotsymbols: used different line types for each curve.
         """
@@ -69,24 +74,37 @@ def plotFitnessProgession(fitdict, batchsize = 1, show = True, semilog = True,
         nbRuns = len(flist)
         print name, nbRuns, 'runs',
         
-        if targetcutoff != None and onlysuccessful:
-            # filter out unsuccessful runs
-            flist = filter(isSuccessful, flist)
-            print ',', len(flist), 'of which were successful.'
-            if len(flist) == 0:
-                continue
+        if targetcutoff != None:
+            if onlysuccessful:
+                # filter out unsuccessful runs
+                flist = filter(isSuccessful, flist)
+                print ',', len(flist), 'of which were successful.'
+            else:
+                print    
+            # cut off irrelevant part            
             flist = map(relevantPart, flist)
-        else:
-            print
+                        
+        if len(flist) == 0: 
+            continue
+                    
+        if averageOverEvaluations:            
+            worstPerf = max(map(max, flist))     
+            if semilog:
+                yPlot = list(reversed(power(10,((array(range(resolution+1))/float(resolution))*
+                                             (log10(worstPerf)-log10(targetcutoff))+log10(targetcutoff)))))            
+            else:        
+                yPlot = list(reversed((array(range(resolution+1))/float(resolution))*
+                                             (worstPerf-targetcutoff)+targetcutoff))            
+            xPlot = avgFoundAfter(yPlot, flist, batchsize)
         
-        longestRun = max(map(len, flist))
-        xAxis = array(range(longestRun))*batchsize
-    
-        summed = zeros(longestRun)
-        for l in flist:
-            summed += paddedClipped(l, longestRun)
-        yPlot = paddedClipped(summed / len(flist), longestRun)
-               
+        else:
+            longestRun = max(map(len, flist))
+            xPlot = array(range(longestRun))*batchsize        
+            summed = zeros(longestRun)
+            for l in flist:
+                summed += paddedClipped(l, longestRun)
+            yPlot = paddedClipped(summed / len(flist), longestRun)        
+                                     
         if semilog:
             semilogy()
         
@@ -95,12 +113,10 @@ def plotFitnessProgession(fitdict, batchsize = 1, show = True, semilog = True,
         else:
             psymbol = '-'
         
-        plot(xAxis, yPlot, psymbol, label = name)
+        plot(xPlot, yPlot, psymbol, label = name)
         
     ylabel('-fitness')
     xlabel('number of evaluations')
     pylab.title(title)
     legend()
-    if show:
-        pylab.show()
     
