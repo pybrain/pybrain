@@ -15,6 +15,9 @@ class SwipingNetwork(FeedForwardNetwork):
     # if all dimensions should be considered symmetric, their weights are shared
     symmetricdimensions = True
     
+    # should the forward and backward directions be symmetric (for each dimension)?
+    symmetricdirections = True
+    
     # dimensions of the swiping grid
     dims = None
         
@@ -70,10 +73,19 @@ class SwipingNetwork(FeedForwardNetwork):
         if 'hconns' not in self.predefined:
             self.predefined['hconns'] = {}
             for s in range(len(self.dims)):
-                if s > 0 and self.symmetricdimensions:
-                    self.predefined['hconns'][s] = self.predefined['hconns'][0]
+                if self.symmetricdirections:
+                    if s > 0 and self.symmetricdimensions:
+                        self.predefined['hconns'][s] = self.predefined['hconns'][0]
+                    else:
+                        self.predefined['hconns'][s] = MotherConnection(hiddenmesh.componentIndim*
+                                                        hiddenmesh.componentOutdim, name = 'hconn'+str(s))
                 else:
-                    self.predefined['hconns'][s] = MotherConnection(hiddenmesh.componentIndim*hiddenmesh.componentOutdim, name = 'hconn'+str(s))
+                    for dir in ['-', '+']:
+                        if s > 0 and self.symmetricdimensions:
+                            self.predefined['hconns'][(s, dir)] = self.predefined['hconns'][(0,dir)]
+                        else:
+                            self.predefined['hconns'][(s, dir)] = MotherConnection(hiddenmesh.componentIndim*
+                                                        hiddenmesh.componentOutdim, name = 'hconn'+str(s)+dir)
         
         # establish the connections        
         for unit in self._iterateOverUnits():
@@ -81,17 +93,23 @@ class SwipingNetwork(FeedForwardNetwork):
                 hunit = tuple(list(unit)+[swipe])
                 self.addConnection(SharedFullConnection(self.predefined['inconn'], inmesh[unit], hiddenmesh[hunit]))
                 self.addConnection(SharedFullConnection(self.predefined['outconn'], hiddenmesh[hunit], outmesh[unit]))
+                # one swiping connection along every dimension
                 for dim, maxval in enumerate(self.dims):
-                    # one swiping connection along every dimension
-                    hconn = self.predefined['hconns'][dim]
                     # determine where the swipe is coming from in this direction:
                     # swipe directions are towards higher coordinates on dim D if the swipe%(2**D) = 0
                     # and towards lower coordinates otherwise.
                     previousunit = list(hunit)
                     if (swipe/2**dim) % 2 == 0:
                         previousunit[dim] -= 1
+                        dir = '+'
                     else:
                         previousunit[dim] += 1
+                        dir = '-'
+        
+                    if self.symmetricdirections:
+                        hconn = self.predefined['hconns'][dim]
+                    else: 
+                        hconn = self.predefined['hconns'][(dim, dir)]
                         
                     previousunit = tuple(previousunit)
                     if previousunit[dim] >= 0 and previousunit[dim] < maxval:

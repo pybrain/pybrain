@@ -10,19 +10,17 @@ from pybrain.utilities import iterCombinations, tupleRemoveItem, reachable, decr
 
 class BorderSwipingNetwork(SwipingNetwork):
     """ Expands the swiping network architecture by border units (bias) and connections. """
-    
-    # should the border weights be symmetrical along a dimension?
-    symmetricBorders = True
-    
-    # if this flag is set, we extrapolate the values of unkown border connection weights
+
+    # if this flag is set, we extrapolate the values of unknown border connection weights
     # by initializing them to the closest match.
     extrapolateBorderValues = True
         
     # all border weights the same?
     simpleborders = False
-    
-                    
+                        
     def __init__(self, inmesh = None, hiddenmesh = None, outmesh = None, **args):
+        if not self.symmetricdirections:
+            raise NotImplementedError("BorderSwipingNetworks are currently limited so direction-symmetric weights.")
         if inmesh != None:
             args['dims'] = inmesh.dims
         SwipingNetwork.__init__(self, **args)
@@ -52,8 +50,8 @@ class BorderSwipingNetwork(SwipingNetwork):
                 for t in iterCombinations(tupleRemoveItem(self.dims, dim)):                    
                     tc = self._canonicForm(t, dim)
                     if t == tc and t not in tmp:
-                        # the connections from the borders are symetrical, 
-                        # so we need seperate ones only up to the middle 
+                        # the connections from the borders are symmetrical, 
+                        # so we need separate ones only up to the middle 
                         tmp[t] = MotherConnection(hiddenmesh.componentIndim, name = 'bconn'+str(dim)+str(t))
                         if self.extrapolateBorderValues:
                             p = self._extrapolateBorderAt(t, self.predefined['bordconns'][dim])                        
@@ -82,15 +80,14 @@ class BorderSwipingNetwork(SwipingNetwork):
                     self.addConnection(SharedFullConnection(bconn, self['bias'], hiddenmesh[hunit]))                
         
     def _canonicForm(self, tup, dim):
-        """ determine if there is a symetrical tuple of lower coordinates
+        """ determine if there is a symmetrical tuple of lower coordinates
         @param dim: the removed coordinate. """
-        if not self.symmetricBorders:
+        if not self.symmetricdimensions:
             return tup
         canonic = []
         for dim, maxval in enumerate(tupleRemoveItem(self.dims, dim)):
             canonic.append(min(maxval-1-tup[dim], tup[dim]))
         return tuple(canonic)
-
                         
     def _extrapolateBorderAt(self, t, using):
         """ maybe we can use weights that are similar to neighboring borderconnections
