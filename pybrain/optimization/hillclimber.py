@@ -1,24 +1,20 @@
 __author__ = 'Tom Schaul, tom@idsia.ch'
 
-from pybrain.rl.learners import Learner
+from pybrain.optimization.optimizer import BlackBoxOptimizer
 
     
-class HillClimber(Learner):
+class HillClimber(BlackBoxOptimizer):
     """ The simplest kind of stochastic search: hill-climbing in the fitness landscape. """    
-    
-    noisy = False
+
+    evaluatorIsNoisy = False
     
     def _learnStep(self):
         """ generate a new evaluable by mutation, compare them, and keep the best. """
-        if self.noisy:
-            # re-evaluate the current individual in case the evaluator is noisy
-            self.bestEvaluation = self.evaluator(self.bestEvaluable)
-        cp = self.bestEvaluable.copy()
-        cp.mutate()
-        tmpF = self.evaluator(cp)
-        if self.verbose:
-            print self.steps, ':', self.bestEvaluation, 'new:', tmpF
-        if tmpF >= self.bestEvaluation:
-            self.bestEvaluable, self.bestEvaluation = cp, tmpF
-            
+        # re-evaluate the current individual in case the evaluator is noisy
+        if self.evaluatorIsNoisy:
+            self.bestEvaluation = self._oneEvaluation(self.bestEvaluable)
+        
+        challenger = self.bestEvaluable.copy()
+        challenger.mutate()
+        self._oneEvaluation(challenger)
         

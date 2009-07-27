@@ -11,7 +11,7 @@ class RandomSearch(BlackBoxOptimizer):
     """ Every point is chosen randomly, independently of all previous ones. """    
     
     def _learnStep(self):
-        new = self.initEvaluable.copy()
+        new = self._initEvaluable.copy()
         new.randomize()
         self._oneEvaluation(new)        
 

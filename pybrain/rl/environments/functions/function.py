@@ -4,11 +4,10 @@ from scipy import zeros, array, ndarray
 
 from pybrain.rl.environments import Environment
 from pybrain.utilities import abstractMethod
-from pybrain.rl.evaluator import Evaluator
 from pybrain.structure.parametercontainer import ParameterContainer
 
 
-class FunctionEnvironment(Environment, Evaluator):
+class FunctionEnvironment(Environment):
     """ A n-to-1 mapping function to be with a single minimum of value zero, at xopt. """
     
     # what input dimensions can the function have?
@@ -21,15 +20,16 @@ class FunctionEnvironment(Environment, Evaluator):
     
     # what would be the desired performance?
     desiredValue = -1e-10
+    toBeMinimized = False
     
     def __init__(self, xdim = None, xopt = None):
-        if xdim == None:
+        if xdim is None:
             xdim = self.xdim
-        if xdim == None:
+        if xdim is None:
             xdim = self.xdimMin
-        assert xdim >= self.xdimMin and not (self.xdimMax != None and xdim > self.xdimMax)
+        assert xdim >= self.xdimMin and not (self.xdimMax is not None and xdim > self.xdimMax)
         self.xdim = xdim
-        if xopt == None:
+        if xopt is None:
             self.xopt = zeros(self.xdim)
         else:
             self.xopt = xopt
@@ -54,7 +54,7 @@ class FunctionEnvironment(Environment, Evaluator):
     def getSensors(self):
         """ the one sensor is the function result. """
         tmp = self.result
-        assert tmp != None
+        assert tmp is not None
         self.result = None
         return array([tmp])
                     

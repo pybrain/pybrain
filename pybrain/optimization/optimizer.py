@@ -1,12 +1,12 @@
 __author__ = 'Tom Schaul, tom@idsia.ch'
 
-from scipy import array, randn
+from scipy import array, randn, ndarray
 
 from pybrain.utilities import setAllArgs, abstractMethod
 from pybrain.rl.learners.learner import PhylogeneticLearner
 from pybrain.rl.learners.directsearch.directsearch import DirectSearch
 from pybrain.structure.parametercontainer import ParameterContainer
-
+from pybrain.rl.environments.functions.function import FunctionEnvironment
 
 
 class BlackBoxOptimizer(DirectSearch, PhylogeneticLearner):
@@ -15,19 +15,28 @@ class BlackBoxOptimizer(DirectSearch, PhylogeneticLearner):
     the fitness-evaluator (provided as first argument upon initialization).
     
     Evaluable objects can be either arrays of continuous values (also wrapped in ParameterContainer) 
-    or subclasses of Evolvable (that define those methods).
+    or subclasses of Evolvable (that define its methods).
     """    
-    
-    desiredEvaluation = None
-    maxEvaluations = 1e6
-    maxLearningSteps = None
     
     # Minimize or maximize fitness?
     minimize = False
 
+    # Is there a known value of sufficient fitness?
+    desiredEvaluation = None    
+
     # Bookkeeping settings
     storeAllEvaluations = False
     storeAllEvaluated = False
+    wasWrapped = False
+    wasUnwrapped = False
+    
+    # stopping criteria
+    maxEvaluations = 1e6
+    maxLearningSteps = None    
+    
+    # providing information during the learning
+    listener = None
+    verbose = False
 
     def __init__(self, evaluator, initEvaluable = None, **kwargs):
         """ The evaluator is any callable object (e.g. a lambda function). """
@@ -42,8 +51,15 @@ class BlackBoxOptimizer(DirectSearch, PhylogeneticLearner):
             self._allEvaluations = []
         elif self.storeAllEvaluations:
             self._allEvaluations = []
+        # default settings, if provided by the evaluator:
+        if isinstance(evaluator, FunctionEnvironment):
+            assert self.minimize == evaluator.toBeMinimized
+            if self.numParameters is None:
+                self.numParameters = evaluator.xdim
+            if self.desiredEvaluation is None:
+                self.desiredEvaluation = evaluator.desiredValue             
         #set the starting point for optimization (as provided, or randomly)
-        self._setInitEvalauable(initEvaluable)
+        self._setInitEvaluable(initEvaluable)
 
     def learn(self, additionalLearningSteps = None):
         """ The main loop that does the learning. """
@@ -51,6 +67,8 @@ class BlackBoxOptimizer(DirectSearch, PhylogeneticLearner):
             self.maxLearningSteps = self.numLearningSteps + additionalLearningSteps
         while not self._stoppingCriterion():
             self._learnStep()
+            self._notify()
+            self.numLearningSteps += 1
         return self._bestFound()
         
     def _learnStep(self):
@@ -60,21 +78,30 @@ class BlackBoxOptimizer(DirectSearch, PhylogeneticLearner):
     def _setInitEvaluable(self, evaluable):
         # If the evaluable is provided as a list of numbers or as an array,
         # we wrap it into a ParameterContainer.
-        if isinstance(evaluable, list) or isinstance(evaluable, array):            
+        if isinstance(evaluable, list):
+            evaluable = array(evaluable)
+        if isinstance(evaluable, ndarray):            
             pc = ParameterContainer(len(evaluable))
             pc._setParameters(evaluable)
-            self.initEvaluable = pc
+            self.wasWrapped = True
+            self._initEvaluable = pc
         else:
-            self.initEvaluable = evaluable
-        self._oneEvaluation(self.initEvaluable)
+            self._initEvaluable = evaluable
+        self._oneEvaluation(self._initEvaluable)
         
     def _bestFound(self):
         """ return the best found evaluable and its associated fitness. """
-        return self.bestEvaluable, self.bestEvaluation
+        if self.wasWrapped:
+            return self.bestEvaluable.params.copy(), self.bestEvaluation
+        else:
+            return self.bestEvaluable, self.bestEvaluation
         
     def _oneEvaluation(self, evaluable):
         """ This method should be called by all optimizers for producing an evaluation. """
-        res = self.__evaluator(evaluable)
+        if self.wasWrapped:            
+            res = self.__evaluator(evaluable.params)
+        else:            
+            res = self.__evaluator(evaluable)
         # always keep track of the best
         if (self.numEvaluations == 0
             or (self.minimize and res < self.bestEvaluation)
@@ -93,12 +120,21 @@ class BlackBoxOptimizer(DirectSearch, PhylogeneticLearner):
     def _stoppingCriterion(self):
         if self.maxEvaluations is not None and self.numEvaluations >= self.maxEvaluations:
             return True
-        if self.desiredEvaluation is not None and self.bestEvaluation >= self.desiredEvaluation:
-            return True
+        if self.desiredEvaluation is not None:
+            if ((self.minimize and self.bestEvaluation <= self.desiredEvaluation)
+                or (not self.minimize and self.bestEvaluation >= self.desiredEvaluation)):
+                return True
         if self.maxLearningSteps is not None and self.numLearningSteps >= self.maxLearningSteps:
             return True
         return False
-        
+    
+    def _notify(self):
+        """ Provide some feedback during the run. """
+        if self.verbose:
+            print 'Step:', self.numLearningSteps, 'best:', self.bestEvaluation
+        if self.listener is not None:
+            self.listener(self.bestEvaluable, self.bestEvaluation)
+            
         
 class ContinuousOptimizer(BlackBoxOptimizer):
     """ A more restricted class of black-box optimization algorithms
@@ -114,19 +150,19 @@ class ContinuousOptimizer(BlackBoxOptimizer):
             # if there is no initial point specified, we start at one that's sampled 
             # normally around the origin.
             assert self.numParameters is not None
-            evaluable = randn(self.numParameters)
-            
-        elif isinstance(evaluable, ParameterContainer):
-            # in this case we have to wrap the evaluator
+            evaluable = randn(self.numParameters)            
+        if isinstance(evaluable, ParameterContainer):
             self.wrappingEvaluable = evaluable.copy()
-            self.wasWrapped = True
-            evaluable = evaluable.params.copy()
-        else:
-            self.wasWrapped = False
-        BlackBoxOptimizer._setInitEvaluable(self, evaluable)
+            self.wasUnwrapped = True
+            evaluable = evaluable.params.copy()     
+        elif isinstance(evaluable, list):
+            evaluable = array(evaluable)
+        self.numParameters = len(evaluable)
+        self.initEvaluable = evaluable
+        self._oneEvaluation(self.initEvaluable)
         
     def _oneEvaluation(self, evaluable):        
-        if self.wasWrapped:
+        if self.wasUnwrapped:
             self.wrappingEvaluable._setParameters(evaluable)
             evaluable = self.wrappingEvaluable.copy()
         return BlackBoxOptimizer._oneEvaluation(self, evaluable)

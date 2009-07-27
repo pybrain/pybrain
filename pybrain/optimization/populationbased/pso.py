@@ -1,64 +1,33 @@
-#! /usr/bin/env python2.5
-# -*- coding: utf-8 -*-
-
 __author__ = ('Julian Togelius, julian@idsia.ch',
               'Justin S Bayer, bayer.justin@googlemail.com')
-__version__ = '$Id'
-
 
 import scipy
 
+from pybrain.optimization.optimizer import ContinuousOptimizer
 
-from pybrain.rl.learners.blackboxoptimizers.blackboxoptimizer import BlackBoxOptimizer
-
-
-class Particle(object):
-    
-    def _setFitness(self, value):
-        self._fitness = value
-        if value > self.bestFitness:
-            self.bestFitness = value
-            self.bestPosition = self.position
-    
-    def _getFitness(self):
-        return self._fitness
-    
-    fitness = property(_getFitness, _setFitness)
-    
-    def __init__(self, start):
-        """Initialize a Particle at the given start vector."""
-        self.dim = scipy.size(start)
-        self.position = start
-        self.velocity = scipy.zeros(scipy.size(start))
-        self.bestPosition = scipy.zeros(scipy.size(start))
-        self._fitness = None
-        self.bestFitness = -scipy.inf
-    
-    def move(self):
-        self.position += self.velocity
 
 
 def fullyConnected(lst):
-    return dict((i, lst) for i in lst)
-    
+    return dict((i, lst) for i in lst)    
     
 def ring(lst):
     leftist = lst[1:] + lst[0:1]
     rightist = lst[-1:] + lst[:-1]
     return dict((i, (j, k)) for i, j, k in zip(lst, leftist, rightist))
 
+# TODO: implement some better neighborhoods
 
 
-class ParticleSwarmOptimizer(BlackBoxOptimizer):
+class ParticleSwarmOptimizer(ContinuousOptimizer):
     
     def __init__(self, evaluator, evaluable, size, boundaries=None,
                  memory=2.0, sociality=2.0, inertia=0.9,
                  neighbourfunction=fullyConnected,
-                 *args, **kwargs):
+                 **kwargs):
         """Initialize a ParticleSwarmOptimizer with `size` particles.
         
         `boundaries` should be a list of (min, max) pairs with the length of the
-        dimensionality of the vector to be optimized. Particles will be
+        dimensionality of the vector to be optimized (default: +-10). Particles will be
         initialized with a position drawn uniformly in that interval.
         
         `memory` indicates how much the velocity of a particle is affected by
@@ -67,10 +36,9 @@ class ParticleSwarmOptimizer(BlackBoxOptimizer):
         its neighbours best position.
         `inertia` is a damping factor.
         """
-        super(ParticleSwarmOptimizer, self).__init__(\
-            evaluator, evaluable, *args, **kwargs)
+        super(ParticleSwarmOptimizer, self).__init__(evaluator, evaluable, **kwargs)
         
-        self.dim = scipy.size(evaluable)
+        self.dim = self.numParameters
         self.inertia = inertia
         self.sociality = sociality
         self.memory = memory
@@ -88,10 +56,9 @@ class ParticleSwarmOptimizer(BlackBoxOptimizer):
             startingPosition = scipy.random.random(self.dim)
             startingPosition *= (maxs - mins)
             startingPosition += mins
-            self.particles.append(Particle(startingPosition))
+            self.particles.append(Particle(startingPosition, self.minimize))
         
         # Global neighborhood
-        # TODO: do some better neighborhoods later
         self.neighbours = self.neighbourfunction(self.particles)
         
     def best(self, particlelist):
@@ -102,19 +69,7 @@ class ParticleSwarmOptimizer(BlackBoxOptimizer):
     
     def _learnStep(self):
         for particle in self.particles:
-            particle.fitness = self.evaluator(particle.position)
-            
-            # Update the best solutions found so far.
-            better = False
-            if self.minimize:
-                if particle.fitness < self.bestEvaluation:
-                    better = True
-            else:
-                if particle.fitness > self.bestEvaluation:
-                    better = True
-            if better:
-                self.bestEvaluable = particle.position
-                self.bestEvaluation = particle.fitness
+            particle.fitness = self._oneEvaluation(particle.position)
                 
         for particle in self.particles:
             bestPosition = self.best(self.neighbours[particle]).position
@@ -130,3 +85,33 @@ class ParticleSwarmOptimizer(BlackBoxOptimizer):
             particle.velocity += diff_memory + diff_social
             particle.move()
             
+            
+class Particle(object):        
+    def _setFitness(self, value):
+        self._fitness = value
+        if ((self.minimize and value < self.bestFitness)
+            or (not self.minimize and value > self.bestFitness)):
+            self.bestFitness = value
+            self.bestPosition = self.position
+    
+    def _getFitness(self):
+        return self._fitness
+    
+    fitness = property(_getFitness, _setFitness)
+    
+    def __init__(self, start, minimize):
+        """Initialize a Particle at the given start vector."""
+        self.minimize = minimize
+        self.dim = scipy.size(start)
+        self.position = start
+        self.velocity = scipy.zeros(scipy.size(start))
+        self.bestPosition = scipy.zeros(scipy.size(start))
+        self._fitness = None
+        if self.minimize:
+            self.bestFitness = scipy.inf
+        else:
+            self.bestFitness = -scipy.inf
+    
+    def move(self):
+        self.position += self.velocity
+

@@ -5,6 +5,10 @@ from scipy.optimize import fmin
 from pybrain.optimization.optimizer import ContinuousOptimizer
 
 
+class DesiredFoundException(Exception):
+    """ The desired target has been found. """
+
+
 class NelderMead(ContinuousOptimizer):
     """Do the optimization using a simple wrapper for scipy's fmin."""
     
@@ -13,13 +17,21 @@ class NelderMead(ContinuousOptimizer):
     
     minimize = True
     
-    online = False
+      
+    def _callback(self, *_):
+        if self._stoppingCriterion():
+            raise DesiredFoundException()
         
-    def _batchLearn(self, maxSteps = None):
-        """ The only stopping criterion (apart form limiting the evaluations) is
-        to set the desired function precision. """
-        self.bestEvaluable = fmin(func = self.evaluator, x0 = self.x0, ftol = self.stopPrecision, 
-                                  maxfun = maxSteps, disp = self.verbose)
-        self.bestEvaluation = self.evaluator(self.bestEvaluable)
-        return self.bestEvaluable, self.bestEvaluation
-    
+    def _learnStep(self):
+        try:
+            fmin(func = self._oneEvaluation, 
+                 x0 = self.bestEvaluable, 
+                 callback = self._callback,
+                 ftol = self.stopPrecision, 
+                 maxfun = self.maxEvaluations-self.numEvaluations,
+                 disp = self.verbose)
+        except DesiredFoundException:
+            pass
+        # the algorithm has finished: no point in doing more steps.
+        self.maxLearningSteps = self.numLearningSteps
+            
