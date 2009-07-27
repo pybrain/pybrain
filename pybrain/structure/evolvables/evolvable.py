@@ -26,3 +26,4 @@ class Evolvable(Named):
         res = self.copy()
         res.randomize()
         return res
+    

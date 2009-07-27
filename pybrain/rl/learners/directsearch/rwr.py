@@ -2,7 +2,6 @@ __author__ = 'Tom Schaul, tom@idsia.ch and Daan Wiertra, daan@idsia.ch'
 
 from scipy import zeros, array, mean, randn, exp, dot, argmax
 
-from learner import Learner
 from pybrain.datasets import ReinforcementDataSet, ImportanceDataSet, SequentialDataSet
 from pybrain.supervised import BackpropTrainer
 from pybrain.utilities import drawIndex
