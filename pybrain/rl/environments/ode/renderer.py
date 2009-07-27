@@ -8,11 +8,11 @@ from math import pi, acos, sqrt
 from tools.mathhelpers import dotproduct, crossproduct, norm
 from pybrain.rl.environments.renderer import Renderer 
            
-import ode
+import ode #@UnresolvedImport
 import time
 import threading 
 
-import Image
+import Image #@UnresolvedImport
 
 
 class ODERenderer(Renderer):

@@ -8,7 +8,7 @@ from math import acos, pi, sqrt
 from tools.mathhelpers import crossproduct, norm, dotproduct
            
 import time
-import Image 
+import Image #@UnresolvedImport
 
 from pybrain.tools.networking.udpconnection import UDPClient
 

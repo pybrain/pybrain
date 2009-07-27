@@ -1,23 +1,15 @@
 __author__ = 'Michael Isik'
-__version__ = '$Id$' 
-
-
-
-from trainer import Trainer
-
-from pybrain.rl.learners.blackboxoptimizers.evolino.population     import EvolinoPopulation
-from pybrain.rl.learners.blackboxoptimizers.evolino.individual     import EvolinoSubIndividual
-from pybrain.rl.learners.blackboxoptimizers.evolino.filter         import EvolinoEvaluation, EvolinoSelection, EvolinoReproduction, EvolinoBurstMutation
-from pybrain.rl.learners.blackboxoptimizers.evolution.filter       import Randomization
-from pybrain.rl.learners.blackboxoptimizers.evolution.variate      import CauchyVariate
-
-
-from pybrain.tools.kwargsprocessor import KWArgsProcessor
 
 
 from numpy import Infinity
 
-
+from trainer import Trainer
+from pybrain.supervised.evolino.population import EvolinoPopulation
+from pybrain.supervised.evolino.individual import EvolinoSubIndividual
+from pybrain.supervised.evolino.filter import EvolinoEvaluation, EvolinoSelection, EvolinoReproduction, EvolinoBurstMutation
+from pybrain.supervised.evolino.gfilter import Randomization
+from pybrain.supervised.evolino.variate import CauchyVariate
+from pybrain.tools.kwargsprocessor import KWArgsProcessor
 
 
 class EvolinoTrainer(Trainer):
@@ -146,3 +138,4 @@ class EvolinoTrainer(Trainer):
 
     def burstMutate(self):
         self.burstMutation.apply(self._population)
+        

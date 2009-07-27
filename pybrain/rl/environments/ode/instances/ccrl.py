@@ -2,8 +2,8 @@ __author__ = 'Frank Sehnke, sehnke@in.tum.de'
 
 from pybrain.rl.environments.ode import ODEEnvironment, sensors, actuators
 import imp
-import xode
-import ode
+import xode #@UnresolvedImport
+import ode #@UnresolvedImport
 import sys
 from scipy import array, asarray
 

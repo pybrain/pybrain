@@ -1,8 +1,8 @@
 __author__ = 'Michael Isik'
 
-from pybrain.rl.learners.blackboxoptimizers.evolution.filter     import Filter, SimpleMutation
-from pybrain.rl.learners.blackboxoptimizers.evolution.variate    import CauchyVariate
-from pybrain.rl.learners.blackboxoptimizers.evolution.population import SimplePopulation
+from gfilter import Filter, SimpleMutation
+from variate import CauchyVariate
+from population import SimplePopulation
 from pybrain.tools.validation import Validator
 from pybrain.tools.kwargsprocessor import KWArgsProcessor
 

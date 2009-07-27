@@ -1,16 +1,15 @@
 __author__ = 'Tom Schaul, tom@idsia.ch'
 
 
-from meta import MetaLearner
+from pybrain.optimization.optimizer import BlackBoxOptimizer
+from pybrain.optimization.hillclimber import HillClimber
 from pybrain.structure.modules.module import Module
 from pybrain.structure.evolvables.maskedparameters import MaskedParameters
 from pybrain.structure.evolvables.maskedmodule import MaskedModule
 from pybrain.structure.evolvables.topology import TopologyEvolvable
-from pybrain.rl.learners.search.hillclimber import HillClimber
-from pybrain.rl.learners.learner import Learner
 
 
-class MemeticSearch(MetaLearner):
+class MemeticSearch(BlackBoxOptimizer):
     """ Interleaving topology search with local search """
     
     localSteps = 100
@@ -24,7 +23,7 @@ class MemeticSearch(MetaLearner):
                 evaluable = MaskedModule(evaluable)
             else:
                 evaluable = MaskedParameters(evaluable)
-        Learner.__init__(self, evaluator, evaluable, **args)
+        BlackBoxOptimizer.__init__(self, evaluator, evaluable, **args)
         
         
     def _learnStep(self):
@@ -40,7 +39,7 @@ class MemeticSearch(MetaLearner):
         challenger.topologyMutate()
         
         # do a bit of local search on the new topology
-        outsourced = self.localSearch(self.evaluator, challenger, maxEvaluations = self.localSteps,
+        outsourced = self.localSearch(self.__evaluator, challenger, maxEvaluations = self.localSteps,
                                       desiredEvaluation = self.desiredEvaluation,
                                       **self.localSearchArgs)
         challenger, challengerFitness = outsourced.learn()
@@ -53,3 +52,4 @@ class MemeticSearch(MetaLearner):
         if self.verbose:
             print 'bits on in new mask', sum(challenger.mask),
             print self.bestEvaluation, challengerFitness
+            

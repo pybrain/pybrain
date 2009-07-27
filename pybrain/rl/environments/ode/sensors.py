@@ -1,6 +1,6 @@
 __author__ = 'Thomas Rueckstiess, ruecksti@in.tum.de'
 
-import ode, sys, xode
+import ode, sys, xode #@UnresolvedImport
 import warnings
 from scipy.linalg import norm
 from pybrain.utilities import Named

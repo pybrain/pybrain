@@ -158,8 +158,8 @@ class ContinuousOptimizer(BlackBoxOptimizer):
         elif isinstance(evaluable, list):
             evaluable = array(evaluable)
         self.numParameters = len(evaluable)
-        self.initEvaluable = evaluable
-        self._oneEvaluation(self.initEvaluable)
+        self._initEvaluable = evaluable
+        self._oneEvaluation(self._initEvaluable)
         
     def _oneEvaluation(self, evaluable):        
         if self.wasUnwrapped:

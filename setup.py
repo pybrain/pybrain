@@ -12,7 +12,7 @@ from setuptools import setup, find_packages
 
 try:
     sys.path.append('./arac/')
-    import aracsetuphelpers as aracsetup
+    import aracsetuphelpers as aracsetup #@UnresolvedImport
     aracsetup.compile_arac()
     aracsetup.compile_swig()
 except Exception, e:

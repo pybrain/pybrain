@@ -26,6 +26,7 @@ def make_test_suite():
                     if f.startswith('test_') and f.endswith('.py')]
                     
     if not module_names:
+        import sys
         logging.info("No tests found in %s" % testdir)
         sys.exit()
         

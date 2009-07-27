@@ -1,145 +1,84 @@
 __author__ = 'Daan Wierstra and Tom Schaul'
 
+import copy
 from scipy import dot, rand, ones, eye, zeros, outer, isnan, multiply
 from numpy.random import multivariate_normal
-from numpy import average
 
 from pybrain.utilities import drawIndex
-from blackboxoptimizer import BlackBoxOptimizer
 from pybrain.tools.rankingfunctions import RankingFunction
 from pybrain.tools.functions import multivariateNormalPdf, multivariateCauchy
+from pybrain.optimization.optimizer import ContinuousOptimizer
 
 
-class FEM(BlackBoxOptimizer):
+class FEM(ContinuousOptimizer):
     """ Fitness expectation-maximization"""
     
+    minimize = True
+    
+    onlineLearning = True
     batchsize = 50 #a.k.a: lambda
-    numberOfCenters = 1  #a.k.a: k
+    forgetFactor = 0.5
+    elitist = False
+    rankingFunction = RankingFunction()
+    useCauchy = False
+    numberOfCenters = 1  #a.k.a: k    
+    
     rangemins = None
     rangemaxs = None
     initCovariances = None
-    onlineLearning = True
-    forgetFactor = 0.5
-    elitist = False
-    evalMus = True
-    rankingFunction = RankingFunction()
-    useCauchy = False
-    
-    # TODO: interface changed: make coherent
-    online = False
+
+    storeAllCenters = True
+    storeAllDistributions = False
     
     def __init__(self, evaluator, evaluable, **parameters):
-        BlackBoxOptimizer.__init__(self, evaluator, evaluable, **parameters)
+        ContinuousOptimizer.__init__(self, evaluator, evaluable, **parameters)
         self.alphas = ones(self.numberOfCenters)/self.numberOfCenters
         self.mus = []
         self.sigmas = []
 
-        self.tau = 1.
+        xdim = self.numParameters
         if self.rangemins == None:
-            self.rangemins = -ones(self.xdim)
+            self.rangemins = -ones(xdim)
         if self.rangemaxs == None:
-            self.rangemaxs = ones(self.xdim)
+            self.rangemaxs = ones(xdim)
         if self.initCovariances == None:
-            self.initCovariances = eye(self.xdim)
-            
-        if self.elitist and self.numberOfCenters == 1 and not self.noisyEvaluator:
-            # in the elitist case seperate evaluations are not necessary. 
-            # CHECKME: maybe in the noisy case?
-            self.evalMus = False
-            
+            self.initCovariances = eye(xdim)        
         assert not(self.useCauchy and self.numberOfCenters > 1)
             
-        for dummy in range(self.numberOfCenters):
-            self.mus.append(rand(self.xdim) * (self.rangemaxs-self.rangemins) + self.rangemins)
-            self.sigmas.append(dot(eye(self.xdim), self.initCovariances))
+        for _ in range(self.numberOfCenters):
+            self.mus.append(rand(xdim) * (self.rangemaxs-self.rangemins) + self.rangemins)
+            self.sigmas.append(dot(eye(xdim), self.initCovariances))
         self.reset()
             
     def reset(self):
         self.samples = range(self.batchsize)
         self.densities = zeros((self.batchsize, self.numberOfCenters))
         self.fitnesses = zeros(self.batchsize)
-        self.generation = 0
-        self.allsamples = []
-        self.muevals = []
-        self.allmus = []
-        self.allsigmas =[]
+        self._allCenters = []
+        self._allCovariances =[]
         
-    def _stoppingCriterion(self):
-        if self.evalMus:
-            evals = len(self.allsamples)+len(self.muevals)
-        else:
-            evals = len(self.allsamples)
-        return (self.bestEvaluation >= self.desiredEvaluation or evals >= self.maxEvaluations)
-
-    def _batchLearn(self, maxSteps):
-        if self.verbose:
-            print
-            print "==================="        
-            print "Fitness Expectation Maximization"
-            print "==================="
-            if self.onlineLearning:
-                print "ONLINE"
-                print "Forget-factor:", self.forgetFactor
-            else:
-                print 'OFFLINE'
-            print 'Distribution:',
-            if self.useCauchy:
-                print 'Cauchy'
-            else:
-                print 'Gaussian'
-            print "Batch-size:", self.batchsize
-            print "Elitist:", self.elitist
-            print 'Ranking function:', self.rankingFunction.name
-            if self.numberOfCenters > 1:
-                print "Number of centers:", self.numberOfCenters
-            print
-        
-        # go through a number of generations
-        while not self._stoppingCriterion():
-            for k in range(self.batchsize):
-                self.samples[k], self.fitnesses[k], self.densities[k] = self._produceNewSample()
-                
-                if self.onlineLearning and self.generation >= 1:
-                    self._updateWeightings()
-                    self._updateParameters(k)
-                    
-                if self._stoppingCriterion(): break
-                
-            if not self.onlineLearning:
+    def _learnStep(self):
+        """ one generation, also in the online case. """
+        for k in range(self.batchsize):
+            self.samples[k], self.fitnesses[k], self.densities[k] = self._produceNewSample()            
+            if self.onlineLearning and self.numLearningSteps >= 1:
                 self._updateWeightings()
-                self._updateParameters()
-                              
-            #print diag(self.sigmas[0])  
-                        
-            # evaluate the mu points seperately (for filtered progression values)
-            if self.evalMus:
-                for m in self.mus:
-                    me = self.evaluator(m)
-                    if me > self.bestEvaluation:
-                        self.bestEvaluation, self.bestEvaluable = me, m
-                    self.muevals.append(me)
-                    import copy
-                    self.allsigmas.append(copy.deepcopy(self.sigmas))
-                    self.allmus.append(copy.deepcopy(self.mus))
-            else:
-                self.muevals.append(self.bestEvaluation)
-                    
-            if self.verbose:
-                print 'gen:', self.generation, 'max,min,avg:',max(self.fitnesses), min(self.fitnesses), average(self.fitnesses),
-                if self.evalMus: print '   mu-fitness(es):', self.muevals[-len(self.mus):]
-                else: print
+                self._updateParameters(k)                
+            if self._stoppingCriterion(): break
             
-            self.generation += 1
-            self.notify()            
-                                 
+        if not self.onlineLearning:
+            self._updateWeightings()
+            self._updateParameters()                              
+                    
+        if self.storeAllCenters:
+            self._allCenters.append(copy.deepcopy(self.mus))
+        if self.storeAllDistributions:
+            self._allCovariances.append(copy.deepcopy(self.sigmas))                    
+                                                     
     def _produceNewSample(self):
         """ returns a new sample, its fitness and its densities """
         sample = self._generateSample()
-        fit = self.evaluator(sample)
-        if fit >= self.bestEvaluation:
-            self.bestEvaluation = fit
-            self.bestEvaluable = sample.copy()
-        self.allsamples.append(sample)
+        fit = self._oneEvaluation(sample)
         
         # compute densities, and normalize
         densities = zeros(self.numberOfCenters)
@@ -207,8 +146,9 @@ class FEM(BlackBoxOptimizer):
     
     def _gaussianUpdate(self, weightings, indices, oldMu):
         """ computation of parameter updates if the distribution is gaussian """
-        newMu = zeros(self.xdim)
-        newSigma = zeros((self.xdim, self.xdim))
+        xdim = self.numParameters
+        newMu = zeros(xdim)
+        newSigma = zeros((xdim, xdim))
         for i in indices:
             newMu += weightings[i] * self.samples[i]
         # THIS LINE IS A HACK! REMOVE IT!

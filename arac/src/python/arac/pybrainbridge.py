@@ -43,7 +43,7 @@ from pybrain.structure.networks.feedforward import \
 from pybrain.structure.networks.recurrent import RecurrentNetworkComponent, \
     RecurrentNetwork
     
-import arac.cppbridge as cppbridge
+import arac.cppbridge as cppbridge #@UnresolvedImport
 
 
 class PybrainAracMapper(object):

@@ -1,7 +1,7 @@
 __author__ = 'Michael Isik'
 
-from pybrain.rl.learners.blackboxoptimizers.evolution.population import Population, SimplePopulation
-from pybrain.rl.learners.blackboxoptimizers.evolution.filter     import Randomization
+from gpopulation import Population, SimplePopulation
+from gfilter import Randomization
 from individual import EvolinoIndividual, EvolinoSubIndividual
 
 from pybrain.tools.kwargsprocessor import KWArgsProcessor

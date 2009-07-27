@@ -1,8 +1,8 @@
 __author__ = "Martin Felder, felder@in.tum.de"
 __version__ = '$Id$' 
-from svm import svm_model, svm_parameter, svm_problem, cross_validation
-from svm import C_SVC, NU_SVC, ONE_CLASS, EPSILON_SVR, NU_SVR
-from svm import LINEAR, POLY, RBF, SIGMOID, PRECOMPUTED
+from svm import svm_model, svm_parameter, svm_problem, cross_validation #@UnresolvedImport
+from svm import C_SVC, NU_SVC, ONE_CLASS, EPSILON_SVR, NU_SVR #@UnresolvedImport
+from svm import LINEAR, POLY, RBF, SIGMOID, PRECOMPUTED #@UnresolvedImport
 
 
 from numpy import *

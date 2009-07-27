@@ -4,6 +4,8 @@
 # Don't modify this file, modify the SWIG interface instead.
 # This file is compatible with both classic and new-style classes.
 
+#@PydevCodeAnalysisIgnore
+
 import _cppbridge
 import new
 new_instancemethod = new.instancemethod

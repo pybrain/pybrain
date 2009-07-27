@@ -10,7 +10,7 @@ import operator
 import scipy
 
 try:
-    from arac.pybrainbridge import _FeedForwardNetwork
+    from arac.pybrainbridge import _FeedForwardNetwork #@UnresolvedImport
 except:
     _FeedForwardNetwork = object
 from pybrain.structure.modules.mdrnnlayer import MdrnnLayer

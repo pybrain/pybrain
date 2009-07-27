@@ -1,7 +1,7 @@
 __author__ = 'Michael Isik'
 
 
-from pybrain.rl.learners.blackboxoptimizers.evolution.variate import UniformVariate, GaussianVariate
+from variate import UniformVariate, GaussianVariate
 
 class Filter(object):
     """ Base class for all kinds of operators on the population during the

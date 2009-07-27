@@ -10,8 +10,8 @@ __author__ = 'Justin S Bayer, bayer.justin@googlemail.com'
 import unittest
 import scipy
 
-import arac.cppbridge
-from arac.tests.common import TestCase
+import arac.cppbridge #@UnresolvedImport
+from arac.tests.common import TestCase #@UnresolvedImport
 
 
 class TestStructure(TestCase):

@@ -21,7 +21,7 @@ import exceptions
 import logging
 import os
 
-from signal import SIGKILL
+from signal import SIGKILL #@UnresolvedImport
 from subprocess import Popen, PIPE
 
 from rlglue.agent.ClientAgent import ClientAgent #@UnresolvedImport
@@ -248,7 +248,7 @@ class RLCExperiment(object):
     
     def _killProcess(self, pid):
         try:
-            os.kill(pid, SIGKILL)
+            os.kill(pid, SIGKILL) #@UndefinedVariable
         except exceptions.OSError:
             # Explicitly silence if the process has already been killed
             pass
