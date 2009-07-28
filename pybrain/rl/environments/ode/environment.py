@@ -554,7 +554,7 @@ class ODEEnvironment(GraphicalEnvironment):
 if __name__ == '__main__' :
     """
     little example on how to use the virtual world.
-    Synopsis: python odeenvironment.py [modelname]
+    Synopsis: python environment.py [modelname]
     Parameters: modelname = base name of the xode file to use (default: johnnie)
     """
 
