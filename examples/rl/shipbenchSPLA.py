@@ -19,7 +19,7 @@ from pybrain.tools.shortcuts import buildNetwork
 from pybrain.rl.environments.shipsteer import ShipSteeringEnvironment
 from pybrain.rl.environments.shipsteer import GoNorthwardTask
 from pybrain.rl.agents.finitedifference import FiniteDifferenceAgent
-from pybrain.rl.learners.finitedifference.spla import SPLA
+from pybrain.rl.learners import SPLA
 from pybrain.rl.experiments import EpisodicExperiment
 from pybrain.tools.plotting import MultilinePlotter
 from pylab import figure, ion #@UnresolvedImport

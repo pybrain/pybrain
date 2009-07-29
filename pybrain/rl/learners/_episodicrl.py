@@ -1,10 +1,10 @@
 __author__ = 'Tom Schaul, tom@idsia.ch'
 
 from learner import Learner
-from policygradients import ENAC
 from pybrain.rl.tasks.episodic import EpisodicTask
 from pybrain.structure.modules.module import Module
 from pybrain.rl.agents.policygradient import PolicyGradientAgent
+from pybrain.rl.learners.directsearch.policygradients.enac import ENAC
 
 
 class EpisodicRL(Learner):

@@ -48,7 +48,7 @@ def make_compiler(compiler_cmd='g++'):
     for i in numpy.distutils.misc_util.get_numpy_include_dirs():
         compiler.add_include_dir(i)
     
-    output_dir = '.'
+    #output_dir = '.'
         
     compiler.add_library('m')
     compiler.add_library('blas')

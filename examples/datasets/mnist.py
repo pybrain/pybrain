@@ -24,7 +24,7 @@ def images(filename):
     magicnumber, length, numrows, numcols = struct.unpack('>iiii', chunk)
     assert magicnumber in (2049, 2051), ("Not an MNIST file: %i" % magicnumber)
     imagesize = numrows * numcols
-    for i in xrange(length):
+    for _ in xrange(length):
         imagestring = fp.read(imagesize)
         image = struct.unpack('B' * imagesize, imagestring)
         yield scipy.array(image)

@@ -5,8 +5,7 @@
 __author__ = 'Justin S Bayer, bayer.justin@googlemail.com'
 
 
-from aracsetuphelpers import (make_compiler, compile_arac, compile_test, 
-    compile_swig)
+from aracsetuphelpers import (make_compiler, compile_arac, compile_test, compile_swig) #@UnusedImport
 
 
 

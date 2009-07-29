@@ -2,8 +2,8 @@ __author__ = 'Tom Schaul, tom@idsia.ch'
 
 from scipy import argmax, array
 
-from pybrain.rl.learners.blackboxoptimizers import BlackBoxOptimizer
 from pybrain.utilities import abstractMethod
+from pybrain.optimization.optimizer import BlackBoxOptimizer
 
 
 class Evolution(BlackBoxOptimizer):

@@ -1,5 +1,5 @@
 from scipy import array
-from pybrain.rl.learners.blackboxoptimizers.evolution.ga import GA
+from pybrain.rl.learners import GA
 import collections
 
 __author__ = 'Justin Bayer, Tom Schaul, {justin,tom}@idsia.ch'

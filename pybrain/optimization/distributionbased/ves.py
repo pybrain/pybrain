@@ -1,14 +1,14 @@
 __author__ = 'Daan Wierstra and Tom Schaul'
 
-from pybrain.rl.learners.blackboxoptimizers.blackboxoptimizer import BlackBoxOptimizer
-from pybrain.tools.rankingfunctions import TopLinearRanking
-from pybrain.utilities import flat2triu, triu2flat
-
 from scipy import eye, multiply, ones, dot, array, outer, rand, zeros, diag, reshape, randn, exp
 from scipy.linalg import cholesky, inv, det
 
+from pybrain.optimization.optimizer import ContinuousOptimizer
+from pybrain.tools.rankingfunctions import TopLinearRanking
+from pybrain.utilities import flat2triu, triu2flat
 
-class VanillaGradientEvolutionStrategies(BlackBoxOptimizer):
+
+class VanillaGradientEvolutionStrategies(ContinuousOptimizer):
     """ Vanilla gradient-based evolution strategy. """
     
     # mandatory parameters
@@ -40,7 +40,7 @@ class VanillaGradientEvolutionStrategies(BlackBoxOptimizer):
     forcedRefresh = 0.01
     
     def __init__(self, evaluator, evaluable, **parameters):
-        BlackBoxOptimizer.__init__(self, evaluator, evaluable, **parameters)
+        ContinuousOptimizer.__init__(self, evaluator, evaluable, **parameters)
         
         self.numParams = self.xdim + self.xdim * (self.xdim+1) / 2
                 

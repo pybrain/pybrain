@@ -28,7 +28,7 @@ from pybrain.rl.environments.ode.tasks import CCRLPlateTask
 from pybrain.structure.modules.tanhlayer import TanhLayer
 from pybrain.tools.shortcuts import buildNetwork
 from pybrain.rl.agents.finitedifference import FiniteDifferenceAgent
-from pybrain.rl.learners.finitedifference.spla import SPLA
+from pybrain.rl.learners import SPLA
 from pybrain.rl.experiments import EpisodicExperiment
 from cPickle import load, dump
 

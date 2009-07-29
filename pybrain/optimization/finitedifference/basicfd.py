@@ -3,7 +3,7 @@ __author__ = 'Thomas Rueckstiess, ruecksti@in.tum.de'
 from scipy import ones, zeros, mean, dot, ravel
 from scipy.linalg import pinv
 from scipy import random
-from pybrain.rl.learners.finitedifference.fd import FDLearner
+from finitediff import FDLearner
 from pybrain.auxiliary import GradientDescent
 
 class FDBasic(FDLearner):

@@ -2,7 +2,7 @@ __author__ = 'Frank Sehnke, sehnke@in.tum.de'
 
 from scipy import zeros, random
 from time import sleep
-from pybrain.rl.learners.finitedifference.fd import FDLearner
+from finitediff import FDLearner
 from pybrain.auxiliary import GradientDescent
 
 #This class uses SPSA in general, but uses the likelihood gradient and a simpler exploration decay

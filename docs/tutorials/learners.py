@@ -14,13 +14,12 @@ from pybrain.structure import FullConnection
 from pybrain.structure.parametercontainer import ParameterContainer
 from pybrain.structure.evolvables.cheaplycopiable import CheaplyCopiable
 from pybrain.structure.networks.network import Network
-from pybrain.rl.learners import * #@UnusedWildImport
-from pybrain.rl.learners.meta import * #@UnusedWildImport
 from pybrain.rl.agents.finitedifference import FiniteDifferenceAgent
 from pybrain.rl.tasks.episodic import EpisodicTask
 from pybrain.rl.environments.functions import SphereFunction
 from pybrain.rl.tasks.polebalancing import CartPoleTask
 from pybrain.rl.tasks.pomdp import CheeseMaze
+from pybrain.rl.learners import * #@UnusedWildImport
 
 """ The problem we we would like to solve can be anything that has something like a fitness
 function. The following switches between 4 different examples. 
@@ -76,7 +75,7 @@ print 'fmin', NelderMead(thetask, thenet).learn(maxEvals)
 """ the same, using other algorithms """
 
 print 'CMA', CMAES(thetask, thenet).learn(maxEvals)
-print 'NES', NaturalEvolutionStrategies(thetask, thenet).learn(maxEvals)
+print 'NES', OriginalNES(thetask, thenet).learn(maxEvals)
 print 'FEM', FEM(thetask, thenet).learn(maxEvals)
 
 

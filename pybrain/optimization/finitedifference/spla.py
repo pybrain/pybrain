@@ -2,7 +2,7 @@ __author__ = 'Frank Sehnke, sehnke@in.tum.de'
 
 from scipy import ones, zeros, random
 from time import sleep
-from pybrain.rl.learners.finitedifference.fd import FDLearner
+from finitediff import FDLearner
 from pybrain.auxiliary import GradientDescent
 
 class SPLA(FDLearner):
