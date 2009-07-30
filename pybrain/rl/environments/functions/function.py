@@ -18,9 +18,9 @@ class FunctionEnvironment(Environment):
     # the (single) point where f = 0
     xopt = None
     
-    # what would be the desired performance?
-    desiredValue = -1e-10
-    toBeMinimized = False
+    # what would be the desired performance? by default: something close to zero
+    desiredValue = 1e-10
+    toBeMinimized = True
     
     def __init__(self, xdim = None, xopt = None):
         if xdim is None:
@@ -45,7 +45,7 @@ class FunctionEnvironment(Environment):
         if isinstance(x, ParameterContainer):
             x = x.params
         assert type(x) == ndarray
-        return -self.f(x)
+        return self.f(x)
     
     # methods for conforming to the Environment interface:
     def reset(self):
@@ -69,9 +69,3 @@ class FunctionEnvironment(Environment):
     outdim = 1
     
     
-class OppositeFunction(FunctionEnvironment):
-    """ the opposite of a function """
-    def __init__(self, basef):
-        FunctionEnvironment.__init__(self, basef.xdim, basef.xopt)
-        self.f = lambda x: -basef.f(x)
-        

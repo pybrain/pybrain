@@ -1,9 +1,10 @@
 __author__ = 'Thomas Rueckstiess, ruecksti@in.tum.de'
 
-from pybrain.rl.learners.rllearner import RLLearner
+from pybrain.rl.learners.valuebased.valuebasedlearner import ValueBasedLearner
+from pybrain.rl.learners.datasetlearner import DataSetLearner
 
 
-class Q(RLLearner):
+class Q(ValueBasedLearner, DataSetLearner):
     
     def __init__(self, nActions):
         self.alpha = 0.5

@@ -1,205 +1,281 @@
 __author__ = 'Daan Wierstra and Tom Schaul'
 
-import copy
-from scipy import dot, rand, ones, eye, zeros, outer, isnan, multiply
-from numpy.random import multivariate_normal
+from scipy import dot, rand, ones, eye, zeros, outer, isnan, multiply, argmax, product, log
+from numpy.random import normal, multivariate_normal
+from numpy import sort
+from scipy.stats import norm
+from copy import deepcopy
 
-from pybrain.utilities import drawIndex
-from pybrain.tools.rankingfunctions import RankingFunction
-from pybrain.tools.functions import multivariateNormalPdf, multivariateCauchy
-from pybrain.optimization.optimizer import ContinuousOptimizer
+from pybrain.utilities import drawIndex, fListToString
+from pybrain.tools.functions import multivariateNormalPdf
+from pybrain.tools.rankingfunctions import TopLinearRanking
+from pybrain.optimization.distributionbased.distributionbased import DistributionBasedOptimizer
 
 
-class FEM(ContinuousOptimizer):
-    """ Fitness expectation-maximization"""
+class FEM(DistributionBasedOptimizer):
+    """ Fitness Expectation-Maximization 
+    """
     
-    minimize = True
+    # fundamental parameters
+    numberOfCenters = 1
+    diagonalOnly = False
+    forgetFactor = 0.1
+    muMultiplier = 1.
+    windowSize = 50
     
-    onlineLearning = True
-    batchsize = 50 #a.k.a: lambda
-    forgetFactor = 0.5
-    elitist = False
-    rankingFunction = RankingFunction()
-    useCauchy = False
-    numberOfCenters = 1  #a.k.a: k    
+    adaptiveShaping = False
     
+    shapingFunction = TopLinearRanking(topFraction = 0.5)
+    
+    minimumCenterWeight = 0.01
+    
+    # advanced improvement parameters
+    
+    # elitism: always keep best mu in distribution
+    elitism = False
+    # sampleElitism: every $windowSize samples, produce best sample ever
+    sampleElitism = False
+    oneFifthRule = False
+    
+    useAnticipatedMeanShift = False
+    
+    # rank-mu update, presumably
+    doMadnessUpdate = False
+    
+    mutative = False
+    
+    # initalization parameters
     rangemins = None
     rangemaxs = None
     initCovariances = None
-
-    storeAllCenters = True
-    storeAllDistributions = False
     
-    def __init__(self, evaluator, evaluable, **parameters):
-        ContinuousOptimizer.__init__(self, evaluator, evaluable, **parameters)
-        self.alphas = ones(self.numberOfCenters)/self.numberOfCenters
+    minimize = False
+        
+    def __init__(self, evaluator, evaluable, **args):
+        DistributionBasedOptimizer.__init__(self, evaluator, evaluable, **args)
+        assert self.numberOfCenters == 1, 'Mixtures of Gaussians not supported yet.'
+        assert self.minimize == False
+        
+        xdim = self.numParameters
+        self.alphas = ones(self.numberOfCenters)/float(self.numberOfCenters)
         self.mus = []
         self.sigmas = []
 
-        xdim = self.numParameters
         if self.rangemins == None:
             self.rangemins = -ones(xdim)
         if self.rangemaxs == None:
             self.rangemaxs = ones(xdim)
         if self.initCovariances == None:
-            self.initCovariances = eye(xdim)        
-        assert not(self.useCauchy and self.numberOfCenters > 1)
+            if self.diagonalOnly:
+                self.initCovariances = ones(xdim)
+            else:
+                self.initCovariances = eye(xdim)
             
         for _ in range(self.numberOfCenters):
             self.mus.append(rand(xdim) * (self.rangemaxs-self.rangemins) + self.rangemins)
             self.sigmas.append(dot(eye(xdim), self.initCovariances))
         self.reset()
-            
-    def reset(self):
-        self.samples = range(self.batchsize)
-        self.densities = zeros((self.batchsize, self.numberOfCenters))
-        self.fitnesses = zeros(self.batchsize)
-        self._allCenters = []
-        self._allCovariances =[]
         
-    def _learnStep(self):
-        """ one generation, also in the online case. """
-        for k in range(self.batchsize):
-            self.samples[k], self.fitnesses[k], self.densities[k] = self._produceNewSample()            
-            if self.onlineLearning and self.numLearningSteps >= 1:
-                self._updateWeightings()
-                self._updateParameters(k)                
-            if self._stoppingCriterion(): break
+    def reset(self):
+        self.samples = range(self.windowSize)        
+        self.fitnesses = zeros(self.windowSize)
+        self.generation = 0
+        self.allsamples = []
+        self.muevals = []
+        self.allmus = []
+        self.allsigmas = []
+        self.allalphas = []
+        self.allUpdateSizes = []
+        self.allfitnesses = []
+        self.meanShifts = [zeros((self.numParameters)) for _ in range(self.numberOfCenters)]
             
-        if not self.onlineLearning:
-            self._updateWeightings()
-            self._updateParameters()                              
-                    
-        if self.storeAllCenters:
-            self._allCenters.append(copy.deepcopy(self.mus))
-        if self.storeAllDistributions:
-            self._allCovariances.append(copy.deepcopy(self.sigmas))                    
-                                                     
+    
     def _produceNewSample(self):
         """ returns a new sample, its fitness and its densities """
-        sample = self._generateSample()
-        fit = self._oneEvaluation(sample)
         
-        # compute densities, and normalize
-        densities = zeros(self.numberOfCenters)
-        if self.numberOfCenters > 1:
-            for c in range(self.numberOfCenters):
-                densities[c] = self.alphas[c] * multivariateNormalPdf(sample, self.mus[c], self.sigmas[c])
-            densities /= sum(densities)
+        chosenOne = drawIndex(self.alphas, True)
         
-        return sample, fit, densities
-
-    def _generateSample(self):
-        """ generate a new sample from the current distribution. """
-        if self.useCauchy:
-            # Cauchy distribution
-            chosenOne = drawIndex(self.alphas, True)
-            return multivariateCauchy(self.mus[chosenOne], self.sigmas[chosenOne])
+        mu = self.mus[chosenOne]
+        
+        if self.useAnticipatedMeanShift:
+            if len(self.allsamples) % 2 == 1 and len(self.allsamples) > 1:
+                if not(self.elitism and chosenOne == self.bestChosenCenter):
+                    mu += self.meanShifts[chosenOne]
+                
+        if self.diagonalOnly:
+            sample = normal(mu, self.sigmas[chosenOne])
         else:
-            # Normal distribution
-            chosenOne = drawIndex(self.alphas, True)
-            return multivariate_normal(self.mus[chosenOne], self.sigmas[chosenOne])
-                    
-    def _updateWeightings(self):
-        """ update the weightings using transformed fitnesses """
+            sample = multivariate_normal(mu, self.sigmas[chosenOne])
+        if self.sampleElitism and len(self.allsamples) > self.windowSize and len(self.allsamples) % self.windowSize == 0:
+            sample = self.bestEvaluable.copy()
+        fit = self._oneEvaluation(sample)
+        self.allfitnesses.append(fit)
+    
+        if fit >= self.bestEvaluation or len(self.allsamples) == 0:
+            # used to determine which center produced the current best
+            self.bestChosenCenter = chosenOne
+            self.bestSigma = self.sigmas[chosenOne].copy()
+        self.allsamples.append(sample)
+        return sample, fit
+        
+    def _computeDensities(self, sample):
+        """ compute densities, and normalize """
+        densities = zeros(self.numberOfCenters)
+        for c in range(self.numberOfCenters):
+            if self.diagonalOnly:
+                pdf = product([norm.pdf(x, self.mus[c][i], self.sigmas[c][i]) for i, x in enumerate(sample)])                
+            else:
+                pdf = multivariateNormalPdf(sample, self.mus[c], self.sigmas[c])
+            if pdf > 1e40:
+                pdf = 1e40
+            elif pdf < 1e-40:
+                pdf = 1e-40
+            if isnan(pdf):
+                print 'NaN!'
+                pdf = 0.
+            densities[c] = self.alphas[c] * pdf
+        densities /= sum(densities)
+        return densities
+
+
+    def _computeUpdateSize(self, densities, sampleIndex):
+        """ compute the  the center-update-size for each sample
+        using transformed fitnesses """
+        
         # determine (transformed) fitnesses
-        transformedfitnesses = self.rankingFunction(self.fitnesses)
+        transformedfitnesses = self.shapingFunction(self.fitnesses)
         # force renormaliziation
         transformedfitnesses /= max(transformedfitnesses)
         
-        if self.numberOfCenters > 1:    
-            self.weightings = multiply(outer(transformedfitnesses, ones(self.numberOfCenters)), self.densities)
-        else:
-            self.weightings = transformedfitnesses.reshape(self.batchsize, 1)
+        updateSize = transformedfitnesses[sampleIndex] * densities
+        return updateSize * self.forgetFactor
         
-        if self.onlineLearning:            
-            for c in range(self.numberOfCenters):
-                self.weightings[:,c] /= max(self.weightings[:,c])
-        else:
-            #CHECKME: inconsistency?
-            self.weightings /= sum(self.weightings)     
-        
-    def _cauchyUpdate(self, weightings):
-        """ computation of parameter updates if the distribution is Cauchy """
-        # make sure the weightings sum to 1
-        weightings  = weightings / sum(weightings)
-        newSigma = zeros((self.xdim, self.xdim))                
-        newMu = zeros(self.xdim)
-        for d in range(self.xdim):
-            # build a list of tuples of (value, weight)
-            tuplist = zip(map(lambda s: s[d], self.samples), weightings)
-            tuplist.sort()
-            # determine the values at the 1/4 and 3/4 points of cumulative weighting
-            cum = 0
-            quart = None
-            for elem, w in tuplist:
-                cum += w
-                if cum >= 0.25 and not quart:
-                    quart = elem
-                if cum >= 0.75:
-                    threequart = elem
-                    break
-            assert threequart != quart                    
-            newMu[d] = (quart + threequart)/2
-            newSigma[d,d] = threequart - newMu[d]
-        return newMu, newSigma
-    
-    def _gaussianUpdate(self, weightings, indices, oldMu):
-        """ computation of parameter updates if the distribution is gaussian """
-        xdim = self.numParameters
-        newMu = zeros(xdim)
-        newSigma = zeros((xdim, xdim))
-        for i in indices:
-            newMu += weightings[i] * self.samples[i]
-        # THIS LINE IS A HACK! REMOVE IT!
-        newMu = self.forgetFactor * oldMu + (1-self.forgetFactor) * newMu
-        for i in indices:
-            dif = self.samples[i]-newMu
-            newSigma += weightings[i] * outer(dif, dif) 
-        return newMu, newSigma
-        
-    def _updateParameters(self, sampleIndex = None):
+
+    def _updateMus(self, updateSize, lastSample):
         for c in range(self.numberOfCenters):
-            weightings = self.weightings[:,c]
-            if self.onlineLearning:
-                lr = self.forgetFactor * weightings[sampleIndex]
-                self.alphas[c] = (1.0-lr) * self.alphas[c] + lr            
-            else:
-                self.alphas[c] = sum(weightings)
+            oldmu = self.mus[c]
+            self.mus[c] *= 1. - self.muMultiplier * updateSize[c]
+            self.mus[c] += self.muMultiplier * updateSize[c] * lastSample
+            # don't update with the ones that were produced with a mean shift
+            if ((self.useAnticipatedMeanShift and len(self.allsamples)%self.windowSize == 1) 
+                or (not self.useAnticipatedMeanShift and self.numberOfCenters > 1)):
+                self.meanShifts[c] *= 1. - self.forgetFactor
+                self.meanShifts[c] += self.mus[c] - oldmu
                 
-            # determine the updates to the parameters, depending on the distribution used
-            if self.useCauchy:
-                newMu, newSigma = self._cauchyUpdate(weightings)
-            else:
-                # gaussian case
-                if self.onlineLearning:
-                    newMu, newSigma = self._gaussianUpdate(weightings, [sampleIndex], self.mus[c])
-                else:
-                    newMu, newSigma = self._gaussianUpdate(weightings, range(self.batchsize), self.mus[c],)
-                    # CHECKME: redundant!?
-                    #newMu /= sum(weightings)
-                    #newSigma /= sum(weightings)
-    
-            # update the mus
-            if self.elitist:
-                self.mus[c] = self.bestEvaluable.copy()
-            else:
-                if self.onlineLearning:
-                    # use the forget-factor
-                    self.mus[c] = (1-lr) * self.mus[c] + lr * newMu
-                else:
-                    self.mus[c] = newMu
+            if self.doMadnessUpdate and len(self.allsamples) > 2*self.windowSize:
+                self.mus[c] = zeros(self.numParameters)
+                updateSum = 0.
+                for i in range(self.windowSize):
+                    self.mus[c] += self.allsamples[-i-1] * self.allUpdateSizes[-i-1][c]
+                    updateSum += self.allUpdateSizes[-i-1][c]
+                self.mus[c] /= updateSum
+        
+        if self.elitism:
+            # dirty hack! TODO: koshify
+            self.mus[0] = self.bestEvaluable.copy()
             
-            # update the sigmas
-            if True in isnan(newSigma):
-                print "NaNs! We'll ignore them."
-            else: 
-                if self.onlineLearning:
-                    # use the forget-factor
-                    self.sigmas[c] = (1-lr) * self.sigmas[c] + self.forgetFactor * newSigma
-                else:
-                    self.sigmas[c] = newSigma 
-            
-        # nomalize alphas
+                
+        
+    def _updateSigmas(self, updateSize, lastSample):
+        for c in range(self.numberOfCenters):
+            self.sigmas[c] *= (1.-updateSize[c])
+            dif = self.mus[c] - lastSample
+            if self.diagonalOnly:
+                self.sigmas[c] += updateSize[c] * multiply(dif, dif)
+            else:
+                self.sigmas[c] += updateSize[c] * 1.2 * outer(dif, dif)
+                
+
+
+    def _updateAlphas(self, updateSize):
+        for c in range(self.numberOfCenters):
+            x = updateSize[c]
+            x /= sum(updateSize)
+            self.alphas[c] = (1.0 - self.forgetFactor) * self.alphas[c] + self.forgetFactor * x
         self.alphas /= sum(self.alphas)
+        for c in range(self.numberOfCenters):
+            if self.alphas[c] < self.minimumCenterWeight:
+                # center-splitting    
+                if self.verbose:
+                    print 'Split!'
+                bestCenter = argmax(self.alphas)
+                totalWeight = self.alphas[c] + self.alphas[bestCenter] 
+                self.alphas[c] = totalWeight/2
+                self.alphas[bestCenter] = totalWeight/2
+                self.mus[c] = self.mus[bestCenter].copy()
+                self.sigmas[c] = 4.0 * self.sigmas[bestCenter].copy()
+                self.sigmas[bestCenter] *= 0.25
+
+                break
+            
+    def _updateShaping(self):
+        """ Daan: "This won't work. I like it!"  """
+        assert self.numberOfCenters == 1
+        possible = self.shapingFunction.getPossibleParameters(self.windowSize)
+        matchValues = []
+        pdfs = [multivariateNormalPdf(s, self.mus[0], self.sigmas[0])
+                for s in self.samples]
+        
+        for p in possible:
+            self.shapingFunction.setParameter(p)
+            transformedFitnesses = self.shapingFunction(self.fitnesses)
+            #transformedFitnesses /= sum(transformedFitnesses)
+            sumValue = sum([x*log(y) for x,y in zip(pdfs, transformedFitnesses) if y > 0])
+            normalization = sum([x*y for x,y in zip(pdfs, transformedFitnesses) if y > 0])
+            matchValues.append(sumValue/normalization)
+            
+        
+        self.shapingFunction.setParameter(possible[argmax(matchValues)])
+        
+        if len(self.allsamples) % 100 == 0:
+            print possible[argmax(matchValues)]
+            print fListToString(matchValues, 3)
+    
+    def _learnStep(self):
+        """  """
+        k = len(self.allsamples) % self.windowSize
+        sample, fit = self._produceNewSample()
+        self.samples[k], self.fitnesses[k] = sample, fit
+        self.generation += 1
+        if len(self.allsamples) < self.windowSize:
+            return
+        if self.verbose and len(self.allsamples) % 100 == 0:
+            print len(self.allsamples), min(self.fitnesses), max(self.fitnesses)#, self.alphas
+        #print len(self.allsamples), self.fitnesses[k],  self.mus
+        #print self.generation, self.mus
+        
+        updateSize = self._computeUpdateSize(self._computeDensities(sample), k)
+        self.allUpdateSizes.append(deepcopy(updateSize))
+        if sum(updateSize) > 0:
+            # update parameters
+            if self.numberOfCenters > 1:
+                self._updateAlphas(updateSize)
+            if not self.mutative:
+                self._updateMus(updateSize, sample)
+                self._updateSigmas(updateSize, sample)
+            else:
+                self._updateSigmas(updateSize, sample)
+                self._updateMus(updateSize, sample)
+        
+        if self.adaptiveShaping:
+            self._updateShaping()        
+        
+        # storage, e.g. for plotting
+        self.allalphas.append(deepcopy(self.alphas))
+        self.allsigmas.append(deepcopy(self.sigmas))
+        self.allmus.append(deepcopy(self.mus))
+        
+        if self.oneFifthRule and len(self.allsamples) % 10 == 0  and len(self.allsamples) > 2*self.windowSize:
+            lastBatch = self.allfitnesses[-self.windowSize:]
+            secondLast = self.allfitnesses[-2*self.windowSize:-self.windowSize]
+            sortedLast = sort(lastBatch)
+            sortedSecond = sort(secondLast)
+            index = int(self.windowSize * 0.8)
+            if sortedLast[index] >= sortedSecond[index]:
+                self.sigmas = [1.2 * sigma for sigma in self.sigmas]
+                #print "+"
+            else:
+                self.sigmas = [0.5 * sigma for sigma in self.sigmas]
+                #print "-"
+                
     

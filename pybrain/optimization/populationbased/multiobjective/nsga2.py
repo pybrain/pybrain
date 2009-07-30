@@ -1,8 +1,8 @@
-from scipy import array
-from pybrain.rl.learners import GA
-import collections
-
 __author__ = 'Justin Bayer, Tom Schaul, {justin,tom}@idsia.ch'
+
+from scipy import array
+from pybrain.optimization.populationbased.ga import GA
+import collections
 
 # TODO: not very elegant, because of the conversions between tuples and arrays all the time...
 

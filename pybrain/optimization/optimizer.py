@@ -53,7 +53,9 @@ class BlackBoxOptimizer(DirectSearch, PhylogeneticLearner):
             self._allEvaluations = []
         # default settings, if provided by the evaluator:
         if isinstance(evaluator, FunctionEnvironment):
-            assert self.minimize == evaluator.toBeMinimized
+            assert self.minimize == evaluator.toBeMinimized, \
+            'Algorithm is set to minimize='+str(self.minimize)+\
+            ' but evaluator is set to minimize='+str(evaluator.toBeMinimized)
             if self.numParameters is None:
                 self.numParameters = evaluator.xdim
             if self.desiredEvaluation is None:

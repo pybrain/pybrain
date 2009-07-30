@@ -1,11 +1,12 @@
 __author__ = 'Thomas Rueckstiess, ruecksti@in.tum.de'
 
-from pybrain.rl.learners.rllearner import RLLearner
+from pybrain.rl.learners.directsearch.directsearch import DirectSearch
+from pybrain.rl.learners.datasetlearner import DataSetLearner
 from pybrain.utilities import abstractMethod
 from pybrain.auxiliary import GradientDescent
 from scipy import ravel
 
-class PolicyGradientLearner(RLLearner):
+class PolicyGradientLearner(DirectSearch, DataSetLearner):
     """ The PolicyGradientLearner takes a ReinforcementDataSet which has been extended with the log likelihood
         of each parameter for each time step. It additionally takes a Module which has been extended with
         a gaussian layer on top. It then changes the weights of both the gaussian layer and the rest of the
@@ -25,7 +26,7 @@ class PolicyGradientLearner(RLLearner):
     alpha = property(getAlpha, setAlpha)
         
     def setModule(self, module):
-        RLLearner.setModule(self, module)
+        DataSetLearner.setModule(self, module)
         self.gd.init(module.params)    
         
     def learn(self):

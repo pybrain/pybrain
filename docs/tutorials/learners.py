@@ -8,16 +8,17 @@ __author__ = 'Tom Schaul, tom@idsia.ch'
 
 """ A script that attempts to illustrate a large variety of use-cases for Learners """
 
+from scipy import randn
+
 from pybrain.tools.shortcuts import buildNetwork
 from pybrain.utilities import storeCallResults
 from pybrain.structure import FullConnection
-from pybrain.structure.parametercontainer import ParameterContainer
+from pybrain.rl.environments.functions import OppositeFunction
 from pybrain.structure.evolvables.cheaplycopiable import CheaplyCopiable
 from pybrain.structure.networks.network import Network
 from pybrain.rl.agents.finitedifference import FiniteDifferenceAgent
 from pybrain.rl.tasks.episodic import EpisodicTask
 from pybrain.rl.environments.functions import SphereFunction
-from pybrain.rl.tasks.polebalancing import CartPoleTask
 from pybrain.rl.tasks.pomdp import CheeseMaze
 from pybrain.rl.learners import * #@UnusedWildImport
 
@@ -26,13 +27,15 @@ function. The following switches between 4 different examples.
 
 The variable 'thenet' contains the trainable parameters that affect the fitness. """
 
-if False:
+if True:
     # simple function optimization
     thetask = SphereFunction(3)
-    thenet = ParameterContainer(3)
+    thenet = randn(3)
     
 elif True:
     # simple pole-balancing task
+    
+    from pybrain.rl.tasks.polebalancing import CartPoleTask
     thetask = CartPoleTask(1, markov = True)
     thenet = buildNetwork(thetask.outdim, thetask.indim, bias = False)
     
@@ -75,8 +78,8 @@ print 'fmin', NelderMead(thetask, thenet).learn(maxEvals)
 """ the same, using other algorithms """
 
 print 'CMA', CMAES(thetask, thenet).learn(maxEvals)
+print 'FEM', FEM(OppositeFunction(thetask), thenet).learn(maxEvals)
 print 'NES', OriginalNES(thetask, thenet).learn(maxEvals)
-print 'FEM', FEM(thetask, thenet).learn(maxEvals)
 
 
 """ if the task can be framed as a RL problem, we can use those algorithms: """

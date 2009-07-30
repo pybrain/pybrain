@@ -5,13 +5,14 @@ from scipy.linalg import orth, norm, inv
 
 from function import FunctionEnvironment
 
-    
+
 class OppositeFunction(FunctionEnvironment):
     """ the opposite of a function """
-    
     def __init__(self, basef):
         FunctionEnvironment.__init__(self, basef.xdim, basef.xopt)
         self.f = lambda x: -basef.f(x)
+        self.desiredValue = -basef.desiredValue
+        self.toBeMinimized = not basef.toBeMinimized    
 
 
 class TranslateFunction(FunctionEnvironment):

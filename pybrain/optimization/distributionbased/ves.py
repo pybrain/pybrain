@@ -3,12 +3,12 @@ __author__ = 'Daan Wierstra and Tom Schaul'
 from scipy import eye, multiply, ones, dot, array, outer, rand, zeros, diag, reshape, randn, exp
 from scipy.linalg import cholesky, inv, det
 
-from pybrain.optimization.optimizer import ContinuousOptimizer
+from pybrain.optimization.distributionbased.distributionbased import DistributionBasedOptimizer
 from pybrain.tools.rankingfunctions import TopLinearRanking
 from pybrain.utilities import flat2triu, triu2flat
 
 
-class VanillaGradientEvolutionStrategies(ContinuousOptimizer):
+class VanillaGradientEvolutionStrategies(DistributionBasedOptimizer):
     """ Vanilla gradient-based evolution strategy. """
     
     # mandatory parameters
@@ -39,10 +39,13 @@ class VanillaGradientEvolutionStrategies(ContinuousOptimizer):
     importanceMixing = True
     forcedRefresh = 0.01
     
+    minimize = True
+    
     def __init__(self, evaluator, evaluable, **parameters):
-        ContinuousOptimizer.__init__(self, evaluator, evaluable, **parameters)
-        
-        self.numParams = self.xdim + self.xdim * (self.xdim+1) / 2
+        DistributionBasedOptimizer.__init__(self, evaluator, evaluable, **parameters)
+        xdim = self.numParameters
+        assert not self.diagonalOnly, 'Diagonal-only not yet supported'
+        self.numParams = xdim + xdim * (xdim+1) / 2
                 
         if self.momentum != None:
             self.momentumVector = zeros(self.numParams)
@@ -50,17 +53,17 @@ class VanillaGradientEvolutionStrategies(ContinuousOptimizer):
             self.learningRateSigma = self.learningRate
         
         if self.rangemins == None:
-            self.rangemins = -ones(self.xdim)
+            self.rangemins = -ones(xdim)
         if self.rangemaxs == None:
-            self.rangemaxs = ones(self.xdim)
+            self.rangemaxs = ones(xdim)
         if self.initCovariances == None:
             if self.diagonalOnly:
-                self.initCovariances = ones(self.xdim)
+                self.initCovariances = ones(xdim)
             else:
-                self.initCovariances = eye(self.xdim)
+                self.initCovariances = eye(xdim)
 
-        self.x = rand(self.xdim) * (self.rangemaxs-self.rangemins) + self.rangemins
-        self.sigma = dot(eye(self.xdim), self.initCovariances)
+        self.x = rand(xdim) * (self.rangemaxs-self.rangemins) + self.rangemins
+        self.sigma = dot(eye(xdim), self.initCovariances)
         self.factorSigma = cholesky(self.sigma)
         
         self.reset()
@@ -86,18 +89,15 @@ class VanillaGradientEvolutionStrategies(ContinuousOptimizer):
 
     def _produceNewSample(self, z = None, p = None):
         if z == None:
-            p = randn(self.xdim)
+            p = randn(self.numParameters)
             z = dot(self.factorSigma.T, p) + self.x
         if p == None:
             p = dot(inv(self.factorSigma).T, (z-self.x))            
         self.allPs.append(p)
         self.allSamples.append(z)
-        fit = self.evaluator(z)
+        fit = self._oneEvaluation(z)
         self.evalsDone += 1
-        self.allFitnesses.append(fit)
-        if fit > self.bestEvaluation:
-            self.bestEvaluation = fit
-            self.bestEvaluable = z.copy()   
+        self.allFitnesses.append(fit) 
         return z, fit
     
     
@@ -139,7 +139,7 @@ class VanillaGradientEvolutionStrategies(ContinuousOptimizer):
                 if r < self.forcedRefresh:
                     self._produceNewSample()
                 else:
-                    p = randn(self.xdim)
+                    p = randn(self.numParameters)
                     newPdf = exp(-0.5*dot(p,p)) / newDetFactorSigma
                     sample = dot(self.factorSigma.T, p) + self.x
                     oldPs = dot(oldInvA.T, (sample-self.allCenters[-2]))
@@ -150,6 +150,7 @@ class VanillaGradientEvolutionStrategies(ContinuousOptimizer):
 
     def _batchLearn(self, maxSteps):
         """ Batch learning. """
+        xdim = self.numParameters
         while (self.evalsDone < maxSteps 
                and not self.bestEvaluation >= self.desiredEvaluation):
             # produce samples and evaluate them        
@@ -164,8 +165,8 @@ class VanillaGradientEvolutionStrategies(ContinuousOptimizer):
                 if self.elitism:
                     self.x = self.bestEvaluable
                 else:
-                    self.x += self.learningRate * update[:self.xdim]
-                self.factorSigma += self.learningRateSigma * flat2triu(update[self.xdim:], self.xdim)
+                    self.x += self.learningRate * update[:xdim]
+                self.factorSigma += self.learningRateSigma * flat2triu(update[xdim:], xdim)
                 self.sigma = dot(self.factorSigma.T, self.factorSigma)
             
             except ValueError:
@@ -187,6 +188,7 @@ class VanillaGradientEvolutionStrategies(ContinuousOptimizer):
     def _learnStep(self):      
         """ Online learning. """    
         # produce one sample and evaluate        
+        xdim = self.numParameters
         self._produceNewSample()
         if len(self.allSamples) <= self.batchSize:
             return
@@ -196,8 +198,8 @@ class VanillaGradientEvolutionStrategies(ContinuousOptimizer):
         
         # update parameters
         update = self._calcOnlineUpdate(shapedFits)
-        self.x += self.learningRate * update[:self.xdim]
-        self.factorSigma += self.learningRateSigma * reshape(update[self.xdim:], (self.xdim, self.xdim))
+        self.x += self.learningRate * update[:xdim]
+        self.factorSigma += self.learningRateSigma * reshape(update[xdim:], (xdim, xdim))
         self.sigma = dot(self.factorSigma.T, self.factorSigma)
         
         if len(self.allSamples) % self.batchSize == 0:
@@ -229,7 +231,7 @@ class VanillaGradientEvolutionStrategies(ContinuousOptimizer):
 
     def _logDerivsX(self, samples, x, invSigma):
         samplesArray = array(samples)
-        tmpX = multiply(x, ones((len(samplesArray), self.xdim)))
+        tmpX = multiply(x, ones((len(samplesArray), self.numParameters)))
         return dot(invSigma, (samplesArray - tmpX).T).T
     
     
@@ -248,9 +250,9 @@ class VanillaGradientEvolutionStrategies(ContinuousOptimizer):
         invSigma = inv(self.sigma)
         
         phi = zeros((len(samples), self.numParams))
-        phi[:, :self.xdim] = self._logDerivsX(samples, self.x, invSigma)
+        phi[:, :self.numParameters] = self._logDerivsX(samples, self.x, invSigma)
         logDerivFactorSigma = self._logDerivsFactorSigma(samples, self.x, invSigma, self.factorSigma)
-        phi[:, self.xdim:] = array(logDerivFactorSigma)
+        phi[:, self.numParameters:] = array(logDerivFactorSigma)
         Rmat = outer(shapedfitnesses, ones(self.numParams))
         
         # optimal baseline
@@ -263,9 +265,9 @@ class VanillaGradientEvolutionStrategies(ContinuousOptimizer):
     def _calcVanillaOnlineGradient(self, sample, shapedfitnesses):
         invSigma = inv(self.sigma)
         phi = zeros(self.numParams)
-        phi[:self.xdim] = self._logDerivX(sample, self.x, invSigma)    
+        phi[:self.numParameters] = self._logDerivX(sample, self.x, invSigma)    
         logDerivSigma = self._logDerivFactorSigma(sample, self.x, invSigma, self.factorSigma)
-        phi[self.xdim:] = logDerivSigma.flatten()
+        phi[self.numParameters:] = logDerivSigma.flatten()
         index = len(self.allSamples) % self.batchSize
         self.phiSquareWindow[index] = multiply(phi, phi)
         baseline = self._calcBaseline(shapedfitnesses)
@@ -285,7 +287,7 @@ class VanillaGradientEvolutionStrategies(ContinuousOptimizer):
         
     def _revertToSafety(self):
         """ When encountering a bad matrix, this is how we revert to a safe one. """
-        self.factorSigma = eye(self.xdim)
+        self.factorSigma = eye(self.numParameters)
         self.x = self.bestEvaluable
         self.allFactorSigmas[-1][:] = self.factorSigma
         self.sigma = dot(self.factorSigma.T, self.factorSigma)

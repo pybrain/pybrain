@@ -1,4 +1,4 @@
-from hillclimber import HillClimber
+from hillclimber import HillClimber, StochasticHillClimber
 from randomsearch import RandomSearch, WeightGuessing, WeightMaskGuessing
 from neldermead import NelderMead
 from populationbased.__init__ import *

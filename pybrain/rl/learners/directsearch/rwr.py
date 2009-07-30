@@ -5,6 +5,7 @@ from scipy import zeros, array, mean, randn, exp, dot, argmax
 from pybrain.datasets import ReinforcementDataSet, ImportanceDataSet, SequentialDataSet
 from pybrain.supervised import BackpropTrainer
 from pybrain.utilities import drawIndex
+from pybrain.rl.learners.learner import Learner
 
 
 # TODO: greedy runs: start once in every possible starting state!
