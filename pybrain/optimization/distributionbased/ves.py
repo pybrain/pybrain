@@ -41,8 +41,8 @@ class VanillaGradientEvolutionStrategies(DistributionBasedOptimizer):
     
     minimize = True
     
-    def __init__(self, evaluator, evaluable, **parameters):
-        DistributionBasedOptimizer.__init__(self, evaluator, evaluable, **parameters)
+    def _setInitEvaluable(self, evaluable):
+        DistributionBasedOptimizer._setInitEvaluable(self, evaluable)
         xdim = self.numParameters
         assert not self.diagonalOnly, 'Diagonal-only not yet supported'
         self.numParams = xdim + xdim * (xdim+1) / 2

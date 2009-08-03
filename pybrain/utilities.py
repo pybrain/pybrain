@@ -256,7 +256,7 @@ def tupleRemoveItem(tup, index):
 def confidenceIntervalSize(stdev, nbsamples):
     """ Determine the size of the confidence interval, given the standard deviation and the number of samples.
     t-test-percentile: 97.5%, infinitely many degrees of freedom,
-    therfore on the two-sided interval: 95% """
+    therefore on the two-sided interval: 95% """
     # CHECKME: for better precision, maybe get the percentile dynamically, from the scipy library?
     return 2*1.98*stdev/sqrt(nbsamples)   
     

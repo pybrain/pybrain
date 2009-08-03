@@ -24,6 +24,9 @@ class BlackBoxOptimizer(DirectSearch, PhylogeneticLearner):
     # Is there a known value of sufficient fitness?
     desiredEvaluation = None    
 
+    # dimension of the search space, if applicable
+    numParameters = None
+    
     # Bookkeeping settings
     storeAllEvaluations = False
     storeAllEvaluated = False
@@ -53,9 +56,9 @@ class BlackBoxOptimizer(DirectSearch, PhylogeneticLearner):
             self._allEvaluations = []
         # default settings, if provided by the evaluator:
         if isinstance(evaluator, FunctionEnvironment):
-            assert self.minimize == evaluator.toBeMinimized, \
-            'Algorithm is set to minimize='+str(self.minimize)+\
-            ' but evaluator is set to minimize='+str(evaluator.toBeMinimized)
+            if self.minimize is not evaluator.toBeMinimized:
+                raise TypeError('Algorithm is set to minimize='+str(self.minimize)+\
+                                ' but evaluator is set to minimize='+str(evaluator.toBeMinimized))
             if self.numParameters is None:
                 self.numParameters = evaluator.xdim
             if self.desiredEvaluation is None:
@@ -87,6 +90,8 @@ class BlackBoxOptimizer(DirectSearch, PhylogeneticLearner):
             pc._setParameters(evaluable)
             self.wasWrapped = True
             self._initEvaluable = pc
+        elif evaluable is None:
+            raise ValueError('An initial evaluable must be specified to start optimization.')
         else:
             self._initEvaluable = evaluable
         self._oneEvaluation(self._initEvaluable)
@@ -106,8 +111,8 @@ class BlackBoxOptimizer(DirectSearch, PhylogeneticLearner):
             res = self.__evaluator(evaluable)
         # always keep track of the best
         if (self.numEvaluations == 0
-            or (self.minimize and res < self.bestEvaluation)
-            or (not self.minimize and res > self.bestEvaluation)):
+            or (self.minimize and res <= self.bestEvaluation)
+            or (not self.minimize and res >= self.bestEvaluation)):
             self.bestEvaluation = res
             self.bestEvaluable = evaluable
         self.numEvaluations += 1
@@ -142,17 +147,17 @@ class ContinuousOptimizer(BlackBoxOptimizer):
     """ A more restricted class of black-box optimization algorithms
     that assume the parameters to be necessarily an array of continuous values 
     (which can be wrapped in a ParameterContainer). """    
-        
-    # dimension of the search space
-    numParameters = None
-    
+            
     def _setInitEvaluable(self, evaluable):
         """ If the parameters are wrapped, we keep track of the wrapper explicitly. """
         if evaluable is None:
             # if there is no initial point specified, we start at one that's sampled 
             # normally around the origin.
-            assert self.numParameters is not None
-            evaluable = randn(self.numParameters)            
+            if self.numParameters is not None:
+                evaluable = randn(self.numParameters)
+            else:
+                raise ValueError('Could not determine the dimensionality of the evaluator,'+\
+                                 ' and thus not start the optimization. Please provide an initial search point.')            
         if isinstance(evaluable, ParameterContainer):
             self.wrappingEvaluable = evaluable.copy()
             self.wasUnwrapped = True

@@ -20,12 +20,10 @@ class MultiObjectiveGA(GA):
     
     startPop = None
         
-    def __init__(self, *args, **kwargs):
-        """ x0 is assumed to be an array, but then converted to a tuple. 
-        The algorithm returns all individuals in the Pareto-front (and their fitnesses). """
-        GA.__init__(self, *args, **kwargs)
-        self.bestEvaluation = []
-        self.bestEvaluable = [tuple(self.x0)]
+    def _setInitEvaluable(self, evaluable):
+        """ The algorithm returns all individuals in the Pareto-front (and their fitnesses). 
+        """
+        GA._setInitEvaluable(self, evaluable)
         self.fitnesses = {}    
     
     def stoppingCriterion(self):

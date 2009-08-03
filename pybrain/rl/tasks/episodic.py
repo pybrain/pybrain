@@ -20,6 +20,7 @@ class EpisodicTask(Task):
     # the discount factor 
     discount = None
     
+    # a task can have an intrinsic batchsize, reward being always averaged over a number of episodes.
     batchSize = 1
     
     def reset(self):

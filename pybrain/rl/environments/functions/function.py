@@ -44,7 +44,7 @@ class FunctionEnvironment(Environment):
         goal is maximization, so we negate the result here"""
         if isinstance(x, ParameterContainer):
             x = x.params
-        assert type(x) == ndarray
+        assert type(x) == ndarray, 'FunctionEnvironment: Input not understood: '+str(type(x))
         return self.f(x)
     
     # methods for conforming to the Environment interface:

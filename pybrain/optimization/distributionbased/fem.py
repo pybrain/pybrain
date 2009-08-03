@@ -51,8 +51,8 @@ class FEM(DistributionBasedOptimizer):
     
     minimize = False
         
-    def __init__(self, evaluator, evaluable, **args):
-        DistributionBasedOptimizer.__init__(self, evaluator, evaluable, **args)
+    def _setInitEvaluable(self, evaluable):
+        DistributionBasedOptimizer._setInitEvaluable(self, evaluable)
         assert self.numberOfCenters == 1, 'Mixtures of Gaussians not supported yet.'
         assert self.minimize == False
         
@@ -74,9 +74,7 @@ class FEM(DistributionBasedOptimizer):
         for _ in range(self.numberOfCenters):
             self.mus.append(rand(xdim) * (self.rangemaxs-self.rangemins) + self.rangemins)
             self.sigmas.append(dot(eye(xdim), self.initCovariances))
-        self.reset()
         
-    def reset(self):
         self.samples = range(self.windowSize)        
         self.fitnesses = zeros(self.windowSize)
         self.generation = 0
@@ -88,13 +86,10 @@ class FEM(DistributionBasedOptimizer):
         self.allUpdateSizes = []
         self.allfitnesses = []
         self.meanShifts = [zeros((self.numParameters)) for _ in range(self.numberOfCenters)]
-            
-    
+                
     def _produceNewSample(self):
-        """ returns a new sample, its fitness and its densities """
-        
-        chosenOne = drawIndex(self.alphas, True)
-        
+        """ returns a new sample, its fitness and its densities """        
+        chosenOne = drawIndex(self.alphas, True)        
         mu = self.mus[chosenOne]
         
         if self.useAnticipatedMeanShift:

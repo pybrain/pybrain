@@ -1,6 +1,6 @@
 __author__ = 'Daan Wierstra and Tom Schaul'
 
-from scipy import size, zeros
+from scipy import size, zeros, ndarray
 from numpy.random import randn
 
 from pybrain.structure.evolvables.evolvable import Evolvable
@@ -50,6 +50,7 @@ class ParameterContainer(Evolvable):
     def _setParameters(self, p, owner = None):
         """ @param p: an array of numbers """
         assert self.owner == owner
+        assert isinstance(p, ndarray)        
         self._params = p
         self.paramdim = size(self.params)
                 

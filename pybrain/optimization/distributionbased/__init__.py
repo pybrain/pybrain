@@ -1,3 +1,3 @@
 from cmaes import CMAES
 from fem import FEM
-from enes import ExactNES, OriginalNES
+from nes import ExactNES, OriginalNES

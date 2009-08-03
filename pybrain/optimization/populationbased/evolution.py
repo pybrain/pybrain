@@ -17,9 +17,9 @@ class Evolution(BlackBoxOptimizer):
     minimize = False
     online = False
     
-    def __init__(self, f, x0, **args):
-        BlackBoxOptimizer.__init__(self, f, x0, **args)
+    def _setInitEvaluable(self, evaluable):
         assert self.minimize == False
+        BlackBoxOptimizer._setInitEvaluable(self, evaluable)
         
         # current population
         self.currentpop = []
@@ -27,9 +27,6 @@ class Evolution(BlackBoxOptimizer):
         
         # for analysis purposes, store all kinds of stuff
         self.allgenerations = []
-        
-        self.bestEvaluation = -1e100
-        self.bestEvaluable = self.x0
         
     def stoppingCriterion(self):
         return self.bestEvaluation >= self.desiredEvaluation

@@ -6,7 +6,6 @@ import scipy
 from pybrain.optimization.optimizer import ContinuousOptimizer
 
 
-
 def fullyConnected(lst):
     return dict((i, lst) for i in lst)    
     
@@ -19,40 +18,47 @@ def ring(lst):
 
 
 class ParticleSwarmOptimizer(ContinuousOptimizer):
+    """ Particle Swarm Optimization
     
-    def __init__(self, evaluator, evaluable, size, boundaries=None,
-                 memory=2.0, sociality=2.0, inertia=0.9,
-                 neighbourfunction=fullyConnected,
-                 **kwargs):
-        """Initialize a ParticleSwarmOptimizer with `size` particles.
-        
-        `boundaries` should be a list of (min, max) pairs with the length of the
-        dimensionality of the vector to be optimized (default: +-10). Particles will be
-        initialized with a position drawn uniformly in that interval.
-        
-        `memory` indicates how much the velocity of a particle is affected by
-        its previous best position.
-        `sociality` indicates how much the velocity of a particle is affected by
-        its neighbours best position.
-        `inertia` is a damping factor.
-        """
-        super(ParticleSwarmOptimizer, self).__init__(evaluator, evaluable, **kwargs)
-        
+    `size` determines the number of particles.
+    
+    `boundaries` should be a list of (min, max) pairs with the length of the
+    dimensionality of the vector to be optimized (default: +-10). Particles will be
+    initialized with a position drawn uniformly in that interval.
+    
+    `memory` indicates how much the velocity of a particle is affected by
+    its previous best position.
+    
+    `sociality` indicates how much the velocity of a particle is affected by
+    its neighbours best position.
+    
+    `inertia` is a damping factor.
+    """
+    
+    size = 20
+    boundaries = None
+    
+    memory = 2.0
+    sociality = 2.0
+    inertia = 0.9
+    
+    neighbourfunction = None
+    
+    def _setInitEvaluable(self, evaluable):
+        ContinuousOptimizer._setInitEvaluable(self, evaluable)
         self.dim = self.numParameters
-        self.inertia = inertia
-        self.sociality = sociality
-        self.memory = memory
-        self.neighbourfunction = neighbourfunction
+        if self.neighbourfunction is None:
+            self.neighbourfunction = fullyConnected
         
-        if boundaries is None:
+        if self.boundaries is None:
             maxs = scipy.array([10] * self.dim)
             mins = scipy.array([-10] * self.dim)
         else:
-            mins = scipy.array([min_ for min_, max_ in boundaries])
-            maxs = scipy.array([max_ for min_, max_ in boundaries])
+            mins = scipy.array([min_ for min_, max_ in self.boundaries])
+            maxs = scipy.array([max_ for min_, max_ in self.boundaries])
         
         self.particles = []
-        for _ in xrange(size):
+        for _ in xrange(self.size):
             startingPosition = scipy.random.random(self.dim)
             startingPosition *= (maxs - mins)
             startingPosition += mins

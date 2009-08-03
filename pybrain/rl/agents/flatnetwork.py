@@ -1,7 +1,6 @@
 __author__ = 'Thomas Rueckstiess, ruecksti@in.tum.de'
 
 from learning import LearningAgent
-from pybrain.tools.shortcuts import buildNetwork
 
 
 class FlatNetworkAgent(LearningAgent):
@@ -9,4 +8,5 @@ class FlatNetworkAgent(LearningAgent):
         observations, and does not learn. """
         
     def __init__(self, indim, outdim):        
+        from pybrain.tools.shortcuts import buildNetwork
         LearningAgent.__init__(self, buildNetwork(indim, outdim))
