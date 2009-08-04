@@ -64,7 +64,12 @@ class BlackBoxOptimizer(DirectSearch, PhylogeneticLearner):
             if self.desiredEvaluation is None:
                 self.desiredEvaluation = evaluator.desiredValue             
         #set the starting point for optimization (as provided, or randomly)
-        self._setInitEvaluable(initEvaluable)
+        self._setInitEvaluable(initEvaluable)        
+        self._additionalInit()
+        self._oneEvaluation(self._initEvaluable)
+
+    def _additionalInit(self):
+        """ a method for subclasses that need additional initialization code but don't want to redefine __init__ """
 
     def learn(self, additionalLearningSteps = None):
         """ The main loop that does the learning. """
@@ -81,20 +86,27 @@ class BlackBoxOptimizer(DirectSearch, PhylogeneticLearner):
         abstractMethod()
         
     def _setInitEvaluable(self, evaluable):
-        # If the evaluable is provided as a list of numbers or as an array,
-        # we wrap it into a ParameterContainer.
+        if evaluable is None:
+            # if there is no initial point specified, we start at one that's sampled 
+            # normally around the origin.
+            if self.numParameters is not None:
+                evaluable = randn(self.numParameters)
+            else:
+                raise ValueError('Could not determine the dimensionality of the evaluator. '+\
+                                 'Please provide an initial search point.')   
         if isinstance(evaluable, list):
             evaluable = array(evaluable)
+        
+        # If the evaluable is provided as a list of numbers or as an array,
+        # we wrap it into a ParameterContainer.
         if isinstance(evaluable, ndarray):            
             pc = ParameterContainer(len(evaluable))
             pc._setParameters(evaluable)
             self.wasWrapped = True
             self._initEvaluable = pc
-        elif evaluable is None:
-            raise ValueError('An initial evaluable must be specified to start optimization.')
+            self.numParameters = len(self._initEvaluable)        
         else:
             self._initEvaluable = evaluable
-        self._oneEvaluation(self._initEvaluable)
         
     def _bestFound(self):
         """ return the best found evaluable and its associated fitness. """
@@ -150,23 +162,12 @@ class ContinuousOptimizer(BlackBoxOptimizer):
             
     def _setInitEvaluable(self, evaluable):
         """ If the parameters are wrapped, we keep track of the wrapper explicitly. """
-        if evaluable is None:
-            # if there is no initial point specified, we start at one that's sampled 
-            # normally around the origin.
-            if self.numParameters is not None:
-                evaluable = randn(self.numParameters)
-            else:
-                raise ValueError('Could not determine the dimensionality of the evaluator,'+\
-                                 ' and thus not start the optimization. Please provide an initial search point.')            
         if isinstance(evaluable, ParameterContainer):
             self.wrappingEvaluable = evaluable.copy()
             self.wasUnwrapped = True
-            evaluable = evaluable.params.copy()     
-        elif isinstance(evaluable, list):
-            evaluable = array(evaluable)
-        self.numParameters = len(evaluable)
-        self._initEvaluable = evaluable
-        self._oneEvaluation(self._initEvaluable)
+        BlackBoxOptimizer._setInitEvaluable(self, evaluable)
+        self.wasWrapped = False
+        self._initEvaluable = self._initEvaluable.params.copy()     
         
     def _oneEvaluation(self, evaluable):        
         if self.wasUnwrapped:

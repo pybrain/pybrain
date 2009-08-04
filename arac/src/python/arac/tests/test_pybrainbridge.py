@@ -4,7 +4,7 @@
 """Unittests for the arac.pybrainbridge module."""
 
 
-__author__ = 'Justin S Bayer, bayer.justin@googlemail.com'
+__author__ = 'Justin S Bayer, bayer.justin@googlemail.com' 
 
 
 import unittest

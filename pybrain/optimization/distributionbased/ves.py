@@ -41,8 +41,7 @@ class VanillaGradientEvolutionStrategies(DistributionBasedOptimizer):
     
     minimize = True
     
-    def _setInitEvaluable(self, evaluable):
-        DistributionBasedOptimizer._setInitEvaluable(self, evaluable)
+    def _additionalInit(self):
         xdim = self.numParameters
         assert not self.diagonalOnly, 'Diagonal-only not yet supported'
         self.numParams = xdim + xdim * (xdim+1) / 2
@@ -66,10 +65,6 @@ class VanillaGradientEvolutionStrategies(DistributionBasedOptimizer):
         self.sigma = dot(eye(xdim), self.initCovariances)
         self.factorSigma = cholesky(self.sigma)
         
-        self.reset()
-
-
-    def reset(self):
         self.generation = 0
         self.evalsDone = 0
         

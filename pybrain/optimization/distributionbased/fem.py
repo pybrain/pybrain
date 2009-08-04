@@ -51,8 +51,7 @@ class FEM(DistributionBasedOptimizer):
     
     minimize = False
         
-    def _setInitEvaluable(self, evaluable):
-        DistributionBasedOptimizer._setInitEvaluable(self, evaluable)
+    def _additionalInit(self):
         assert self.numberOfCenters == 1, 'Mixtures of Gaussians not supported yet.'
         assert self.minimize == False
         

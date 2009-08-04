@@ -15,12 +15,10 @@ class Evolution(BlackBoxOptimizer):
     
     # evolution generally tries to maximize fitness, not minimize a function
     minimize = False
-    online = False
     
-    def _setInitEvaluable(self, evaluable):
+    def _additionalInit(self):
         assert self.minimize == False
-        BlackBoxOptimizer._setInitEvaluable(self, evaluable)
-        
+
         # current population
         self.currentpop = []
         self.fitnesses = []

@@ -44,8 +44,7 @@ class ParticleSwarmOptimizer(ContinuousOptimizer):
     
     neighbourfunction = None
     
-    def _setInitEvaluable(self, evaluable):
-        ContinuousOptimizer._setInitEvaluable(self, evaluable)
+    def _additionalInit(self):
         self.dim = self.numParameters
         if self.neighbourfunction is None:
             self.neighbourfunction = fullyConnected

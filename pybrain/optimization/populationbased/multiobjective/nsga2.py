@@ -20,10 +20,9 @@ class MultiObjectiveGA(GA):
     
     startPop = None
         
-    def _setInitEvaluable(self, evaluable):
+    def _additionalInit(self):
         """ The algorithm returns all individuals in the Pareto-front (and their fitnesses). 
         """
-        GA._setInitEvaluable(self, evaluable)
         self.fitnesses = {}    
     
     def stoppingCriterion(self):
