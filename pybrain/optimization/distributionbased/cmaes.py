@@ -65,8 +65,7 @@ class CMAES(ContinuousOptimizer):
         # -------------------- Generation Loop --------------------------------
         arfitness = zeros(lambd)
         arx = zeros((N, lambd))
-        while self.numEvaluations+lambd <= self.maxEvaluations:
-            self.numLearningSteps += 1
+        while not self._stoppingCriterion():
             if self.numEvaluations <= 1 or self.importanceMixing == False:
                 # Generate and evaluate lambda offspring
                 arz = randn(N,lambd)
@@ -119,11 +118,8 @@ class CMAES(ContinuousOptimizer):
             D = diag(sqrt(Ev))      #diag(ravel(sqrt(Ev))) # D contains standard deviations now
             Ev = real(Ev)       # enforce real value
             B = real(B)
-            self._notify()
-
-            # Break, if fitness is good enough
-            if self._stoppingCriterion():
-                break
+            
+            
             # or convergence is reached
             if abs((arfitness[0]-arfitness[-1])/arfitness[0]+arfitness[-1]) <= self.stopPrecision:
                 if self.verbose:
@@ -136,6 +132,10 @@ class CMAES(ContinuousOptimizer):
                     print "Diverged."
                 self.maxLearningSteps = self.numLearningSteps
                 break
+            if not self._stoppingCriterion() and self.maxLearningSteps > self.numLearningSteps+1:
+                self._notify()
+            self.numLearningSteps += 1
+            
             
             
     def _importanceMixing(self, N, xmean, sigma, B, D,

@@ -1,0 +1,7 @@
+PyBrain was developed originally as a joint project between 
+PhD students at IDSIA and at the CogBotLab at the TU Munich.
+
+Part of the development was supported by the Swiss National Science Foundation 
+grants 200021-111968/1 and 200021-113364/1, as well as through the 
+Excellence Cluster Cognition for Technical Systems (CoTeSys)  
+

@@ -2,9 +2,12 @@ __author__ = 'Tom Schaul, tom@idsia.ch'
 
 from scipy import randn, zeros
 from random import choice, random, gauss
-from evolution import Evolution
 
-class GA(Evolution):
+from evolution import Evolution
+from pybrain.optimization.optimizer import ContinuousOptimizer
+
+
+class GA(ContinuousOptimizer, Evolution):
     """ Genetic algorithm """
     
     # selection schemes
@@ -22,21 +25,22 @@ class GA(Evolution):
     initRangeScaling = 10.
     
     def initPopulation(self):
-        self.currentpop = [self.x0]
+        self.currentpop = [self._initEvaluable]
         for dummy in range(self.popsize-1):
-            self.currentpop.append(self.x0+randn(self.xdim)*self.mutationStdDev*self.initRangeScaling)        
+            self.currentpop.append(self._initEvaluable+randn(self.numParameters)*self.mutationStdDev*self.initRangeScaling)        
     
     def crossOver(self, parents, nbChildren):
         """ generate a number of children by doing 1-point cross-over """
+        xdim = self.numParameters
         children = []
         for dummy in range(nbChildren):
             p1 = choice(parents)
-            if self.xdim < 2:
+            if xdim < 2:
                 children.append(p1)
             else:
                 p2 = choice(parents)
-                point = choice(range(self.xdim-1))
-                res = zeros(self.xdim)
+                point = choice(range(xdim-1))
+                res = zeros(xdim)
                 res[:point] = p1[:point]
                 res[point:] = p2[point:]
                 children.append(res)
@@ -45,7 +49,7 @@ class GA(Evolution):
     def mutated(self, indiv):
         """ mutate some genes of the given individual """
         res = indiv.copy()
-        for i in range(self.xdim):
+        for i in range(self.numParameters):
             if random() < self.mutationprob:
                 res[i] = indiv[i] + gauss(0, self.mutationStdDev)
         return res

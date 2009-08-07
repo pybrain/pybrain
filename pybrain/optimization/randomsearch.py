@@ -1,13 +1,10 @@
 __author__ = 'Tom Schaul, tom@idsia.ch'
 
-from scipy import array, ndarray
-
 from pybrain.optimization.optimizer import BlackBoxOptimizer
 from pybrain.structure.modules.module import Module
 from pybrain.structure.evolvables.maskedparameters import MaskedParameters
 from pybrain.structure.evolvables.maskedmodule import MaskedModule
 from pybrain.structure.evolvables.topology import TopologyEvolvable
-from pybrain.structure.parametercontainer import ParameterContainer
 
     
 class RandomSearch(BlackBoxOptimizer):

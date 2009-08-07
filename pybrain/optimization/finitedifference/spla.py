@@ -55,7 +55,7 @@ class SPLA(FDLearner):
         for seq in range(seqLen):
             sym*=-1.0
             _, _, reward = self.ds.getSequence(seq)
-            #add up the rewards of positive and negative perturbation role outs respectivly
+            #add up the rewards of positive and negative perturbation role outs respectively
             if sym==1.0: reward1+=sum(reward)
             else: reward2+=sum(reward)
         #normate rewards by seqLen 
@@ -69,7 +69,7 @@ class SPLA(FDLearner):
         if reward1 > self.best: self.best= reward1
         if reward2 > self.best: self.best= reward2
 
-        #some checks at the first learnign sequence
+        #some checks at the first learning sequence
         if self.baseline==0.0: 
             self.baseline=self.reward/2.0
             fakt=0.0

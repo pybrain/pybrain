@@ -49,7 +49,7 @@ class SimpleSPSA(FDLearner):
         for seq in range(seqLen):
             sym*=-1.0
             _state, _action, reward = self.ds.getSequence(seq)
-            #add up the rewards of positive and negative perturbation role outs respectivly
+            #add up the rewards of positive and negative perturbation role outs respectively
             if sym==1.0: reward1+=sum(reward)
             else: reward2+=sum(reward)
         #normate rewards by seqLen 
@@ -63,17 +63,17 @@ class SimpleSPSA(FDLearner):
         if reward1 > self.best: self.best= reward1
         if reward2 > self.best: self.best= reward2
 
-        #some checks at the first learnign sequence
+        #some checks at the first learning sequence
         if self.baseline==0.0: 
             self.baseline=self.reward*0.99
             fakt=0.0
             if seqLen/2 != float(seqLen)/2.0: 
-                print "ATTENTON!!! SPSA uses symetric sampling! Number of episodes per learning step must be even! (2 for deterministic settings, >2 for stochastic settings) A numer of episodes of ", seqLen, "is odd."
+                print "ATTENTON!!! SPSA uses symmetric sampling! Number of episodes per learning step must be even! (2 for deterministic settings, >2 for stochastic settings) A numer of episodes of ", seqLen, "is odd."
                 while(True): sleep(1)
         else: 
             #calc the gradients
             if reward1!=reward2:
-                #gradient estimate alla SPSA but with liklihood gradient and normalization (see also "update parameters")
+                #gradient estimate alla SPSA but with likelihood gradient and normalization (see also "update parameters")
                 fakt=(reward1-reward2)/(2.0*self.best-reward1-reward2) 
             else: fakt=0.0
         self.baseline=0.9*self.baseline+0.1*self.reward #update baseline

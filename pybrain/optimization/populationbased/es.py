@@ -2,76 +2,60 @@ __author__ = 'Julian Togelius and Tom Schaul, tom@idsia.ch'
 
 from random import shuffle
 
-from pybrain.rl.learners.learner import Learner
+from pybrain.optimization.optimizer import BlackBoxOptimizer
 
     
-class ES(Learner):
+class ES(BlackBoxOptimizer):
     """ Standard evolution strategy, (mu + lambda). """    
     
     mu = 50
     lambada = 50
     
-    noisy = False
-     
-    def __init__(self, evaluator, evaluable, **args):
-        Learner.__init__(self, evaluator, evaluable, **args)
-        
-        # lambada must be mu-ltiple of mu
-        assert self.lambada % self.mu == 0
-        
+    evaluatorIsNoisy = False
+    
+    storeHallOfFame = True
+    
+    def _additionalInit(self):        
+        assert self.lambada % self.mu == 0, 'lambda ('+str(self.lambada)+\
+                                            ') must be multiple of mu ('+str(self.mu)+').'
+        self.hallOfFame = []        
         # population is a list of (fitness, individual) tuples.
-        self.population = [(self.bestEvaluation, self.bestEvaluable.copy())]
-        for dummy in range(1, self.mu + self.lambada):
+        self.population = [(self._oneEvaluation(self._initEvaluable), self._initEvaluable)]
+        for _ in range(1, self.mu + self.lambada):
             x = self.bestEvaluable.copy()
             x.mutate()
-            self.population.append((self.evaluator(x), x))
-        
+            self.population.append((self._oneEvaluation(x), x))        
         self._sortPopulation()
-        self.steps = self.mu+self.lambada
-        # the best per generation stored here
-        self.hallOfFame = [self.population[0][1]]
+        
         
     def __str__(self):
         return 'ES('+str(self.mu)+'+'+str(self.lambada)+')'
         
-    def _learnStep(self):       
-        # do a step only if we have accumulated the resources to do a whole batch.
-        if self.steps % self._stepsPerGeneration() != 0: return
-        
+    def _learnStep(self):               
         # re-evaluate the mu individuals if the fitness function is noisy        
-        if self.noisy:
+        if self.evaluatorIsNoisy:
             for i in range (self.mu):
                 x = self.population[i][1]
-                self.population[i] = (self.evaluator(x), x)
-            self._sortPopulation()
-            
+                self.population[i] = (self._oneEvaluation(x), x)
+            self._sortPopulation(noHallOfFame = True)     
+                   
         # generate the lambada: copy the mu and mu-tate the copies 
         for i in range(self.mu, self.mu + self.lambada):
             x = self.population[i % self.mu][1].copy()
             x.mutate()
-            xFitness = self.evaluator(x)
+            xFitness = self._oneEvaluation(x)
             self.population[i] = (xFitness, x)
-            if self.desiredEvaluation != None and xFitness >= self.desiredEvaluation:
-                self.bestEvaluable, self.bestEvaluation = x, xFitness
-                return
+        self._sortPopulation()      
 
-        self._sortPopulation()
-        self.hallOfFame.append(self.population[0][1])        
-        if self.verbose:
-            print self.steps, 'evals. Best fit:', self.population[0][0]
-
-    def _sortPopulation(self):
+    def _sortPopulation(self, noHallOfFame = False):
         # shuffle-sort the population and fitnesses
         shuffle(self.population)
-        self.population.sort(key = lambda x: -x[0])
-        
-        if self.population[0][0] >= self.bestEvaluation:
-            self.bestEvaluation, self.bestEvaluable = self.population[0]
-            
-    def _stepsPerGeneration(self):            
-        if self.noisy:
-            return self.mu + self.lambada
+        if self.minimize:            
+            self.population.sort(key = lambda x: x[0])
         else:
-            return self.lambada                
-        
+            self.population.sort(key = lambda x: -x[0])
+        if self.storeHallOfFame and not noHallOfFame:
+            # the best per generation stored here
+            self.hallOfFame.append(self.population[0][1])  
+
         

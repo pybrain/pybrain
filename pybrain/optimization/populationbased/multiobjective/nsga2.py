@@ -23,6 +23,7 @@ class MultiObjectiveGA(GA):
     def _additionalInit(self):
         """ The algorithm returns all individuals in the Pareto-front (and their fitnesses). 
         """
+        GA._additionalInit(self)
         self.fitnesses = {}    
     
     def stoppingCriterion(self):
