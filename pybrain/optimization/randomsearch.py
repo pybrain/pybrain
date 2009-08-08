@@ -32,5 +32,5 @@ class WeightMaskGuessing(WeightGuessing):
         if isinstance(evaluable, Module):
             self._initEvaluable = MaskedModule(self._initEvaluable)
         else:
-            self._initEvaluable = MaskedParameters(self._initEvaluable)      
+            self._initEvaluable = MaskedParameters(self._initEvaluable, returnZeros = True)      
         

@@ -1,6 +1,6 @@
 __author__ = 'Daan Wierstra and Tom Schaul'
 
-from scipy import eye, multiply, ones, dot, array, outer, rand, zeros, diag, reshape, randn, exp
+from scipy import eye, multiply, ones, dot, array, outer, rand, zeros, diag, randn, exp
 from scipy.linalg import cholesky, inv, det
 
 from pybrain.optimization.distributionbased.distributionbased import DistributionBasedOptimizer
@@ -39,15 +39,15 @@ class VanillaGradientEvolutionStrategies(DistributionBasedOptimizer):
     importanceMixing = True
     forcedRefresh = 0.01
     
-    minimize = True
+    minimize = False
     
     def _additionalInit(self):
         xdim = self.numParameters
         assert not self.diagonalOnly, 'Diagonal-only not yet supported'
-        self.numParams = xdim + xdim * (xdim+1) / 2
+        self.numDistrParams = xdim + xdim * (xdim+1) / 2
                 
         if self.momentum != None:
-            self.momentumVector = zeros(self.numParams)
+            self.momentumVector = zeros(self.numDistrParams)
         if self.learningRateSigma == None:
             self.learningRateSigma = self.learningRate
         
@@ -65,9 +65,6 @@ class VanillaGradientEvolutionStrategies(DistributionBasedOptimizer):
         self.sigma = dot(eye(xdim), self.initCovariances)
         self.factorSigma = cholesky(self.sigma)
         
-        self.generation = 0
-        self.evalsDone = 0
-        
         # keeping track of history
         self.allSamples = []
         self.allFitnesses = []
@@ -79,9 +76,8 @@ class VanillaGradientEvolutionStrategies(DistributionBasedOptimizer):
         self.allFactorSigmas = [self.factorSigma.copy()]
         
         # for baseline computation
-        self.phiSquareWindow = zeros((self.batchSize, self.numParams))
+        self.phiSquareWindow = zeros((self.batchSize, self.numDistrParams))
         
-
     def _produceNewSample(self, z = None, p = None):
         if z == None:
             p = randn(self.numParameters)
@@ -91,14 +87,12 @@ class VanillaGradientEvolutionStrategies(DistributionBasedOptimizer):
         self.allPs.append(p)
         self.allSamples.append(z)
         fit = self._oneEvaluation(z)
-        self.evalsDone += 1
         self.allFitnesses.append(fit) 
         return z, fit
-    
-    
+        
     def _produceSamples(self):
         """ Append batchsize new samples and evaluate them. """
-        if self.generation == 0 or not self.importanceMixing:
+        if self.numLearningSteps == 0 or not self.importanceMixing:
             for _ in range(self.batchSize):
                 self._produceNewSample()
             self.allGenerated.append(self.batchSize + self.allGenerated[-1])
@@ -108,7 +102,7 @@ class VanillaGradientEvolutionStrategies(DistributionBasedOptimizer):
             newDetFactorSigma = det(self.factorSigma)
             invA = inv(self.factorSigma)
     
-            # All pdfs computed here are off by a coefficient of 1/power(2.0*pi, self.numParams/2.)
+            # All pdfs computed here are off by a coefficient of 1/power(2.0*pi, self.numDistrParams/2.)
             # but as only their relative values matter, we ignore it.
             
             # stochastically reuse old samples, according to the change in distribution
@@ -142,45 +136,47 @@ class VanillaGradientEvolutionStrategies(DistributionBasedOptimizer):
                     if r < 1 - oldPdf/newPdf:
                         self._produceNewSample(sample, p)
                 
+    def _learnStep(self):
+        if self.online:
+            self._onlineLearn()
+        else:
+            self._batchLearn()
 
-    def _batchLearn(self, maxSteps):
+    def _batchLearn(self):
         """ Batch learning. """
         xdim = self.numParameters
-        while (self.evalsDone < maxSteps 
-               and not self.bestEvaluation >= self.desiredEvaluation):
-            # produce samples and evaluate them        
-            try:
-                self._produceSamples()
-                
-                # shape their fitnesses
-                shapedFits = self.shapingFunction(self.allFitnesses[-self.batchSize:])
+        # produce samples and evaluate them        
+        try:
+            self._produceSamples()
             
-                # update parameters (unbiased: divide by batchsize)
-                update = self._calcBatchUpdate(shapedFits) 
-                if self.elitism:
-                    self.x = self.bestEvaluable
-                else:
-                    self.x += self.learningRate * update[:xdim]
-                self.factorSigma += self.learningRateSigma * flat2triu(update[xdim:], xdim)
-                self.sigma = dot(self.factorSigma.T, self.factorSigma)
+            # shape their fitnesses
+            shapedFits = self.shapingFunction(self.allFitnesses[-self.batchSize:])
+        
+            # update parameters (unbiased: divide by batchsize)
+            update = self._calcBatchUpdate(shapedFits) 
+            if self.elitism:
+                self.x = self.bestEvaluable
+            else:
+                self.x += self.learningRate * update[:xdim]
+            self.factorSigma += self.learningRateSigma * flat2triu(update[xdim:], xdim)
+            self.sigma = dot(self.factorSigma.T, self.factorSigma)
+        
+        except ValueError:
+            print 'Numerical Instability. Stopping.'
+            self.maxLearningSteps = self.numLearningSteps
+        
+        if self._hasConverged():
+            print 'Premature convergence. Stopping.'
+            self.maxLearningSteps = self.numLearningSteps
+        
+        if self.verbose:
+            print 'G:', self.numLearningSteps, 'Evals:', self.numEvaluations, 
+            print 'MaxG:', max(self.allFitnesses[-self.batchSize:])
             
-            except ValueError:
-                print 'Numerical Instability. Stopping.'
-                break
-            
-            if self._hasConverged():
-                print 'Premature convergence. Stopping.'
-                break
-            
-            if self.verbose:
-                print 'G:', self.generation, 'Evals:', self.evalsDone, 'MaxG:', max(self.allFitnesses[-self.batchSize:])
-                
-            self.allCenters.append(self.x.copy())
-            self.allFactorSigmas.append(self.factorSigma.copy())
-            self.generation += 1
-
-
-    def _learnStep(self):      
+        self.allCenters.append(self.x.copy())
+        self.allFactorSigmas.append(self.factorSigma.copy())
+        
+    def _onlineLearn(self):      
         """ Online learning. """    
         # produce one sample and evaluate        
         xdim = self.numParameters
@@ -194,14 +190,13 @@ class VanillaGradientEvolutionStrategies(DistributionBasedOptimizer):
         # update parameters
         update = self._calcOnlineUpdate(shapedFits)
         self.x += self.learningRate * update[:xdim]
-        self.factorSigma += self.learningRateSigma * reshape(update[xdim:], (xdim, xdim))
+        self.factorSigma += self.learningRateSigma * flat2triu(update[xdim:], xdim)
         self.sigma = dot(self.factorSigma.T, self.factorSigma)
         
         if len(self.allSamples) % self.batchSize == 0:
             self.generation += 1
             print self.generation, len(self.allSamples), max(self.allFitnesses[-self.batchSize:])
             
-
     def _calcBatchUpdate(self, fitnesses):
         gradient = self._calcVanillaBatchGradient(self.allSamples[-self.batchSize:], fitnesses)
         if self.momentum != None:
@@ -219,7 +214,6 @@ class VanillaGradientEvolutionStrategies(DistributionBasedOptimizer):
             return self.momentumVector
         else:
             return gradient
-
         
     def _logDerivX(self, sample, x, invSigma):
         return dot(invSigma, (sample - x))
@@ -228,27 +222,24 @@ class VanillaGradientEvolutionStrategies(DistributionBasedOptimizer):
         samplesArray = array(samples)
         tmpX = multiply(x, ones((len(samplesArray), self.numParameters)))
         return dot(invSigma, (samplesArray - tmpX).T).T
-    
-    
+        
     def _logDerivFactorSigma(self, sample, x, invSigma, factorSigma):
         logDerivSigma = 0.5 * dot(dot(invSigma, outer(sample-x, sample-x)), invSigma) - 0.5 * invSigma
         if self.vanillaScale:
             logDerivSigma = multiply(outer(diag(abs(self.factorSigma)), diag(abs(self.factorSigma))), logDerivSigma)
         return triu2flat(dot(factorSigma, (logDerivSigma+logDerivSigma.T)))
-
         
     def _logDerivsFactorSigma(self, samples, x, invSigma, factorSigma):
         return [self._logDerivFactorSigma(sample, x, invSigma, factorSigma) for sample in samples]
-                
-                
+                                
     def _calcVanillaBatchGradient(self, samples, shapedfitnesses):
         invSigma = inv(self.sigma)
         
-        phi = zeros((len(samples), self.numParams))
+        phi = zeros((len(samples), self.numDistrParams))
         phi[:, :self.numParameters] = self._logDerivsX(samples, self.x, invSigma)
         logDerivFactorSigma = self._logDerivsFactorSigma(samples, self.x, invSigma, self.factorSigma)
         phi[:, self.numParameters:] = array(logDerivFactorSigma)
-        Rmat = outer(shapedfitnesses, ones(self.numParams))
+        Rmat = outer(shapedfitnesses, ones(self.numDistrParams))
         
         # optimal baseline
         self.phiSquareWindow = multiply(phi, phi)
@@ -259,14 +250,14 @@ class VanillaGradientEvolutionStrategies(DistributionBasedOptimizer):
         
     def _calcVanillaOnlineGradient(self, sample, shapedfitnesses):
         invSigma = inv(self.sigma)
-        phi = zeros(self.numParams)
+        phi = zeros(self.numDistrParams)
         phi[:self.numParameters] = self._logDerivX(sample, self.x, invSigma)    
         logDerivSigma = self._logDerivFactorSigma(sample, self.x, invSigma, self.factorSigma)
         phi[self.numParameters:] = logDerivSigma.flatten()
         index = len(self.allSamples) % self.batchSize
         self.phiSquareWindow[index] = multiply(phi, phi)
         baseline = self._calcBaseline(shapedfitnesses)
-        gradient = multiply((ones(self.numParams)*shapedfitnesses[-1] - baseline), phi)
+        gradient = multiply((ones(self.numDistrParams)*shapedfitnesses[-1] - baseline), phi)
         return gradient
     
     def _calcBaseline(self, shapedfitnesses):

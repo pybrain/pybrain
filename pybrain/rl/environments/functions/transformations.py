@@ -31,7 +31,7 @@ class TranslateFunction(FunctionEnvironment):
         def tf(x):
             if isinstance(x, ParameterContainer):
                 x = x.params
-                return basef.f(x-offset)
+            return basef.f(x-offset)
         self.f = tf
     
 
@@ -50,11 +50,11 @@ class RotateFunction(FunctionEnvironment):
         self.desiredValue = basef.desiredValue            
         self.toBeMinimized = basef.toBeMinimized   
         self.xopt = dot(inv(self.M), self.xopt)
-        def tf(x):
+        def rf(x):
             if isinstance(x, ParameterContainer):
                 x = x.params
             return basef.f(dot(x,self.M))    
-        self.f = tf
+        self.f = rf
         
     
 class CompositionFunction(FunctionEnvironment):

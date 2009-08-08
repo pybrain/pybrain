@@ -24,15 +24,15 @@ class ExactNES(VanillaGradientEvolutionStrategies):
     
     def _calcBatchUpdate(self, fitnesses):
         samples = self.allSamples[-self.batchSize:]
-        d = self.xdim
+        d = self.numParameters
         invA = inv(self.factorSigma)
         invSigma = inv(self.sigma)
         diagInvA = diag(diag(invA))
         
         # efficient computation of V, which corresponds to inv(Fisher)*logDerivs
-        V = zeros((self.numParams,self.batchSize))
+        V = zeros((self.numDistrParams,self.batchSize))
         # u is used to compute the uniform baseline
-        u = zeros(self.numParams)
+        u = zeros(self.numDistrParams)
         for i in range(self.batchSize):
             s = dot(invA.T, (samples[i] - self.x))
             R = outer(s, dot(invA, s)) - diagInvA
@@ -42,7 +42,7 @@ class ExactNES(VanillaGradientEvolutionStrategies):
             V[:d,i] += samples[i]-self.x
             V[d:,i] += flatR
             
-        j = self.numParams -1
+        j = self.numDistrParams -1
         D = 1/invSigma[-1, -1]
         # G corresponds to the blocks of the inv(Fisher)
         G = 1/(invSigma[-1, -1]+invA[-1,-1]**2)
@@ -72,10 +72,10 @@ class ExactNES(VanillaGradientEvolutionStrategies):
 
         # determine the update vector, according to different baselines.
         if self.baselineType == self.BLOCKBASELINE:
-            update = zeros(self.numParams)
+            update = zeros(self.numDistrParams)
             vsquare = multiply(V, V)
-            j = self.numParams-1
-            for k in reversed(range(self.xdim)):
+            j = self.numDistrParams-1
+            for k in reversed(range(self.numParameters)):
                 b0 = sum(vsquare[j-(d-k-1):j+1,:], 0)
                 b = dot(b0, fitnesses) / sum(b0)
                 update[j-(d-k-1):j+1] = dot(V[j-(d-k-1):j+1, :], (fitnesses - b))
@@ -85,9 +85,9 @@ class ExactNES(VanillaGradientEvolutionStrategies):
             update[:j+1] = dot(V[:j+1, :], (fitnesses - b))
             
         elif self.baselineType == self.SPECIFICBASELINE:
-            update = zeros(self.numParams)
+            update = zeros(self.numDistrParams)
             vsquare = multiply(V, V)
-            for j in range(self.numParams):
+            for j in range(self.numDistrParams):
                 b = dot(vsquare[j,:], fitnesses) / sum(vsquare[j,:])
                 update[j] = dot(V[j,:], (fitnesses - b))
         
@@ -110,11 +110,12 @@ class OriginalNES(VanillaGradientEvolutionStrategies):
     is now much simpler too. """
 
     def _calcBatchUpdate(self, fitnesses):
+        xdim = self.numParameters
         invSigma = inv(self.sigma)
         samples = self.allSamples[-self.batchSize:]
-        phi = zeros((self.batchSize, self.numParams+1))
-        phi[:, :self.xdim] = self._logDerivsX(samples, self.x, invSigma)
-        phi[:, self.xdim:-1] = self._logDerivsFactorSigma(samples, self.x, invSigma, self.factorSigma)
+        phi = zeros((self.batchSize, self.numDistrParams+1))
+        phi[:, :xdim] = self._logDerivsX(samples, self.x, invSigma)
+        phi[:, xdim:-1] = self._logDerivsFactorSigma(samples, self.x, invSigma, self.factorSigma)
         phi[:, -1] = 1
         
         update = dot(pinv2(phi), fitnesses)[:-1]
@@ -123,7 +124,7 @@ class OriginalNES(VanillaGradientEvolutionStrategies):
     def _logDerivsFactorSigma(self, samples, mu, invSigma, factorSigma):
         """ Compute the log-derivatives w.r.t. the factorized covariance matrix components. 
         This implementation should be faster than the one in Vanilla. """
-        res = zeros((len(samples), self.numParams-self.xdim))
+        res = zeros((len(samples), self.numDistrParams-self.numParameters))
         invA = inv(factorSigma)
         diagInvA = diag(diag(invA))
         

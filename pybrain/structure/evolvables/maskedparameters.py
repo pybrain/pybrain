@@ -21,6 +21,8 @@ class MaskedParameters(TopologyEvolvable):
     # probability of mask bits being on in a random mask (subject to the constraint above)
     maskOnProbability = 0.5
     
+    # when accessed through .params, the masked values are included (and have value zero).
+    returnZeros = False
     
     def __init__(self, pcontainer, **args):
         TopologyEvolvable.__init__(self, pcontainer, **args)
@@ -40,14 +42,17 @@ class MaskedParameters(TopologyEvolvable):
     
     @property
     def params(self):
-        """ returns an array with only the unmasked parameters """    
-        x = zeros(self.paramdim)
-        paramcount = 0
-        for i in range(len(self.maskableParams)):
-            if self.mask[i] == True:
-                x[paramcount] = self.maskableParams[i] 
-                paramcount += 1
-        return x
+        """ returns an array with (usually) only the unmasked parameters """    
+        if self.returnZeros:
+            return self.pcontainer.params
+        else:
+            x = zeros(self.paramdim)
+            paramcount = 0
+            for i in range(len(self.maskableParams)):
+                if self.mask[i] == True:
+                    x[paramcount] = self.maskableParams[i] 
+                    paramcount += 1
+            return x
     
     def _setParameters(self, x):
         """ sets only the unmasked parameters """
