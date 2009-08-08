@@ -26,11 +26,7 @@ class ES(BlackBoxOptimizer):
             x.mutate()
             self.population.append((self._oneEvaluation(x), x))        
         self._sortPopulation()
-        
-        
-    def __str__(self):
-        return 'ES('+str(self.mu)+'+'+str(self.lambada)+')'
-        
+                
     def _learnStep(self):               
         # re-evaluate the mu individuals if the fitness function is noisy        
         if self.evaluatorIsNoisy:
@@ -57,5 +53,13 @@ class ES(BlackBoxOptimizer):
         if self.storeHallOfFame and not noHallOfFame:
             # the best per generation stored here
             self.hallOfFame.append(self.population[0][1])  
-
-        
+            
+    @property
+    def batchSize(self):
+        if self.evaluatorIsNoisy:
+            return self.mu + self.lambada
+        else:
+            return self.lambada
+            
+    def __str__(self):
+        return 'ES('+str(self.mu)+'+'+str(self.lambada)+')'

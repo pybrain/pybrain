@@ -40,6 +40,11 @@ class BlackBoxOptimizer(DirectSearch, PhylogeneticLearner):
     # providing information during the learning
     listener = None
     verbose = False
+    
+    # some algorithms have a predetermined (minimal) number of 
+    # evaluations they will perform during each learningStep:
+    batchSize = 1
+    
 
     def __init__(self, evaluator, initEvaluable = None, **kwargs):
         """ The evaluator is any callable object (e.g. a lambda function). """
@@ -137,7 +142,7 @@ class BlackBoxOptimizer(DirectSearch, PhylogeneticLearner):
         return res
     
     def _stoppingCriterion(self):
-        if self.maxEvaluations is not None and self.numEvaluations >= self.maxEvaluations:
+        if self.maxEvaluations is not None and self.numEvaluations+self.batchSize > self.maxEvaluations:
             return True
         if self.desiredEvaluation is not None:
             if ((self.minimize and self.bestEvaluation <= self.desiredEvaluation)

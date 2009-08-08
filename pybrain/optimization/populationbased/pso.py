@@ -43,6 +43,8 @@ class ParticleSwarmOptimizer(ContinuousOptimizer):
     inertia = 0.9
     
     neighbourfunction = None
+
+    minimize = False
     
     def _additionalInit(self):
         self.dim = self.numParameters
@@ -89,6 +91,10 @@ class ParticleSwarmOptimizer(ContinuousOptimizer):
             particle.velocity *= self.inertia
             particle.velocity += diff_memory + diff_social
             particle.move()
+            
+    @property 
+    def batchSize(self):
+        return self.size
             
             
 class Particle(object):        

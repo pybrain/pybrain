@@ -3,6 +3,7 @@ __author__ = 'Tom Schaul, tom@idsia.ch'
 from pybrain.optimization.optimizer import BlackBoxOptimizer
 from scipy import exp
 from random import random 
+
     
 class HillClimber(BlackBoxOptimizer):
     """ The simplest kind of stochastic search: hill-climbing in the fitness landscape. """    
@@ -19,6 +20,13 @@ class HillClimber(BlackBoxOptimizer):
         challenger = self.bestEvaluable.copy()
         challenger.mutate()
         self._oneEvaluation(challenger)
+        
+    @property
+    def batchSize(self):
+        if self.evaluatorIsNoisy:
+            return 2
+        else:
+            return 1
         
         
 class StochasticHillClimber(HillClimber):

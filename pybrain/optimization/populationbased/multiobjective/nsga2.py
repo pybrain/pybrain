@@ -10,10 +10,10 @@ class MultiObjectiveGA(GA):
     """ Multi-objective Genetic Algorithm: the fitness is a vector with one entry per objective.
     By default we use NSGA-II selection. """
     
-    topproportion = 0.5
+    topProportion = 0.5
     elitism = True
     
-    popsize = 100
+    populationSize = 100
     mutationStdDev = 1.
     
     allowEquality = True

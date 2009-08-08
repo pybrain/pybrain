@@ -33,10 +33,8 @@ class CMAES(ContinuousOptimizer):
             self._allCenters = []
 
         # Strategy parameter setting: Selection
-        if self.lambd == None:
-            self.lambd = self._heuristicLambda()  # population size, offspring number
-        lambd = self.lambd
-
+        # population size, offspring number
+        lambd = self.batchSize
         mu = int(floor(lambd/2))        # number of parents/points for recombination
         weights = log(mu+1)-log(array(xrange(1,mu+1)))      # use array
         weights = weights/sum(weights)     # normalize recombination weights array
@@ -195,7 +193,8 @@ class CMAES(ContinuousOptimizer):
         for i in xrange(lambd-nreq,lambd): arfitness[i] = self._oneEvaluation(arx[:,i])
         return arz, arx, arfitness, nreq
 
-    def _heuristicLambda(self):
+    @property
+    def batchSize(self):
         return int(4+floor(3*log(self.numParameters)))
     
     

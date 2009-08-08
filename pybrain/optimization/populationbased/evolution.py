@@ -7,7 +7,7 @@ from pybrain.optimization.optimizer import BlackBoxOptimizer
 class Evolution(BlackBoxOptimizer):
     """ Base class for evolutionary algorithms, seen as function optimizers. """
     
-    popsize = 10
+    populationSize = 10
     
     storeAllPopulations = False
     
@@ -32,5 +32,7 @@ class Evolution(BlackBoxOptimizer):
     def produceOffspring(self):
         """ generate the new generation of offspring, given the current population, and their fitnesses """        
         abstractMethod()
-        
-    
+            
+    @property
+    def batchSize(self):
+        return self.populationSize

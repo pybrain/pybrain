@@ -28,7 +28,7 @@ class NelderMead(ContinuousOptimizer):
                  x0 = self.bestEvaluable, 
                  callback = self._callback,
                  ftol = self.stopPrecision, 
-                 maxfun = self.maxEvaluations-self.numEvaluations,
+                 maxfun = self.maxEvaluations-self.numEvaluations-1,
                  disp = self.verbose)
         except DesiredFoundException:
             pass

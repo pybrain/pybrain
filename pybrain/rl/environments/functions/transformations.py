@@ -4,6 +4,7 @@ from scipy import rand, dot
 from scipy.linalg import orth, norm, inv
 
 from function import FunctionEnvironment
+from pybrain.structure.parametercontainer import ParameterContainer
 
 
 class OppositeFunction(FunctionEnvironment):
@@ -25,13 +26,17 @@ class TranslateFunction(FunctionEnvironment):
             offset = rand(basef.xdim)
             offset *= distance/norm(offset)
         self.xopt += offset
-        if isinstance(basef, FunctionEnvironment):
-            self.desiredValue = basef.desiredValue
-        self.f =  lambda x: basef.f(x-offset)
+        self.desiredValue = basef.desiredValue            
+        self.toBeMinimized = basef.toBeMinimized
+        def tf(x):
+            if isinstance(x, ParameterContainer):
+                x = x.params
+                return basef.f(x-offset)
+        self.f = tf
     
 
 class RotateFunction(FunctionEnvironment):
-    """ make the dimensions non-seperable, by applying a matrix transformation to 
+    """ make the dimensions non-separable, by applying a matrix transformation to 
     x before it is given to the function """
     
     def __init__(self, basef, rotMat = None):
@@ -42,10 +47,14 @@ class RotateFunction(FunctionEnvironment):
             self.M = orth(rand(basef.xdim, basef.xdim))
         else:
             self.M = rotMat
-        if isinstance(basef, FunctionEnvironment):
-            self.desiredValue = basef.desiredValue
+        self.desiredValue = basef.desiredValue            
+        self.toBeMinimized = basef.toBeMinimized   
         self.xopt = dot(inv(self.M), self.xopt)
-        self.f = lambda x: basef.f(dot(x,self.M))
+        def tf(x):
+            if isinstance(x, ParameterContainer):
+                x = x.params
+            return basef.f(dot(x,self.M))    
+        self.f = tf
         
     
 class CompositionFunction(FunctionEnvironment):
