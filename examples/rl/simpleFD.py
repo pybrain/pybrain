@@ -29,7 +29,7 @@ env.setNoise(0.01)
 task = MinimizeTask(env)
 # create controller network (flat network)
 net = buildNetwork(1, 1, bias=False)
-net._setParameters(array([0.0]))
+net._setParameters([0.0])
 # create agent with controller and learner
 agent = FiniteDifferenceAgent(net, FDBasic())
 # initialize parameters (variance)

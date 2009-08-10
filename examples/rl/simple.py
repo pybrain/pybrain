@@ -33,7 +33,7 @@ env.setNoise(0.9)
 task = MinimizeTask(env)
 # create controller network (flat network)
 net = buildNetwork(1, 1, bias=False)
-net._setParameters(array([-11.]))
+net._setParameters([-11.])
 # create agent with controller and learner
 agent = PolicyGradientAgent(net, ENAC())
 # initialize parameters (variance)

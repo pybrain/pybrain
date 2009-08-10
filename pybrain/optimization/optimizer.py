@@ -65,14 +65,16 @@ class BlackBoxOptimizer(DirectSearch, PhylogeneticLearner):
             self._allEvaluations = []
         # default settings, if provided by the evaluator:
         if isinstance(evaluator, FitnessEvaluator):
-            if self.desiredEvaluation is None:
-                self.desiredEvaluation = evaluator.desiredValue               
             if self.minimize is not evaluator.toBeMinimized:
                 logging.info('Algorithm is set to minimize='+str(self.minimize)+\
                             ' but evaluator is set to minimize='+str(evaluator.toBeMinimized)+\
                             '.\n The opposite function will be optimized.')
                 self.__evaluator = oppositeFunction(evaluator)
                 self.wasOpposed = True
+                if self.desiredEvaluation is not None:
+                    self.desiredEvaluation *= -1
+            if self.desiredEvaluation is None:
+                self.desiredEvaluation = evaluator.desiredValue               
             if self.numParameters is None:
                 # in some cases, we can deduce the dimension from the provided evaluator:
                 if isinstance(evaluator, FunctionEnvironment):
@@ -123,10 +125,9 @@ class BlackBoxOptimizer(DirectSearch, PhylogeneticLearner):
         
     def _bestFound(self):
         """ return the best found evaluable and its associated fitness. """
-        if self.wasWrapped:
-            return self.bestEvaluable.params.copy(), self.bestEvaluation
-        else:
-            return self.bestEvaluable, self.bestEvaluation
+        bestE = self.bestEvaluable.params.copy() if self.wasWrapped else self.bestEvaluable
+        bestF = -self.bestEvaluation if self.wasOpposed else self.bestEvaluation
+        return bestE, bestF
         
     def _oneEvaluation(self, evaluable):
         """ This method should be called by all optimizers for producing an evaluation. """

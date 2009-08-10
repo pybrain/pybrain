@@ -9,11 +9,11 @@ class GoNorthwardTask(EpisodicTask):
     """ The task of balancing some pole(s) on a cart """
     def __init__(self, env = None, maxsteps = 1000):
         """
-        @param env: (optional) an instance of a CartPoleEnvironment (or a subclass thereof)
+        @param env: (optional) an instance of a ShipSteeringEnvironment (or a subclass thereof)
         @param maxsteps: maximal number of steps (default: 1000) 
         """
         if env == None:
-            env = ShipSteeringEnvironment()
+            env = ShipSteeringEnvironment(render = False)
         EpisodicTask.__init__(self, env) 
         self.N = maxsteps
         self.t = 0
