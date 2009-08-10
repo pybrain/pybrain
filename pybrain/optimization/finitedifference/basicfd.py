@@ -7,10 +7,11 @@ from finitediff import FDLearner
 from pybrain.auxiliary import GradientDescent
 
 class FDBasic(FDLearner):
-    def __init__(self):
-        # standard parameters
-        self.epsilon = 1.0
-        self.gamma = 0.999
+    
+    epsilon = 1.0
+    gamma = 0.999
+        
+    def _additionalInit(self):
         self.gd = GradientDescent()
 
     def setModule(self, module):

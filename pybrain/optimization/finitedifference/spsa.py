@@ -1,21 +1,22 @@
 __author__ = 'Frank Sehnke, sehnke@in.tum.de'
 
-from scipy import zeros, random
+from scipy import zeros, random, inf
 from time import sleep
 from finitediff import FDLearner
 from pybrain.auxiliary import GradientDescent
 
 #This class uses SPSA in general, but uses the likelihood gradient and a simpler exploration decay
 class SimpleSPSA(FDLearner):
-    def __init__(self):
-        # standard parameters
-        self.epsilon = 2.0 #Initial value of exploration size
-        self.baseline=0.0 #Moving average baseline, used just for visualisation
-        self.best=-1000000.0 #TODO ersetzen durch -inf
-        self.symCount=1.0 #Switch for symetric sampling
-        self.gd = GradientDescent()
-        self.gamma=0.9995 #Exploration decay factor
+    
+    epsilon = 2.0 #Initial value of exploration size
+    gamma = 0.9995 #Exploration decay factor
 
+    def _additionalInit(self):
+        self.gd = GradientDescent()
+        self.symCount = 1.0 #Switch for symetric sampling
+        self.baseline = 0.0 #Moving average baseline, used just for visualisation
+        self.best = -inf
+    
     def setModule(self, module):
         """Sets and initializes all module settings"""
         FDLearner.setModule(self, module)

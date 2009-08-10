@@ -10,11 +10,7 @@ class FDLearner(DataSetLearner, BlackBoxOptimizer):
     """ FDLearner is the base class for all Finite Difference Learners. It 
         implements basic common functionality for all FD learners, but 
         can't be used by itself. """
-        
-    def __init__(self):
-        # store original parameters in here
-        self.original = None
-    
+            
     def setData(self, ds):
         """ sets the dataset for the learner. """
         DataSetLearner.setData(self, ds)
@@ -37,7 +33,7 @@ class FDLearner(DataSetLearner, BlackBoxOptimizer):
     def perturbate(self):
         """ perturb the parameters. 
             @note: has to be implemented by all subclasses. """
-        pass
+        abstractMethod()
         
     def disableLearning(self):
         """ disables learning and replaces the current (possibly perturbed)

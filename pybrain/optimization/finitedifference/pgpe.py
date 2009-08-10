@@ -1,21 +1,23 @@
 __author__ = 'Frank Sehnke, sehnke@in.tum.de'
 
-from scipy import ones, zeros, random
+from scipy import ones, zeros, random, inf
 from time import sleep
 from finitediff import FDLearner
 from pybrain.auxiliary import GradientDescent
 
-class SPLA(FDLearner):
-    def __init__(self):
-        # standard parameters
-        self.epsilon = 2.0 #Initial value of sigmas
-        self.baseline=0.0 #Moving average baseline, used for sigma adaption
-        self.best=-1000000.0 #TODO ersetzen durch -inf
-        self.symCount=1.0 #Switch for symetric sampling
+class PGPE(FDLearner):
+    """ Policy Gradients with Parameter Exploration"""
+    
+    epsilon = 2.0 #Initial value of sigmas
+    wDecay = 0.001 #lasso weight decay (0 to deactivate)
+
+    def _additionalInit(self):
         self.gd = GradientDescent()
         self.gdSig = GradientDescent()
-        self.wDecay = 0.001 #lasso weight decay (0 to deactivate)
-
+        self.symCount = 1.0 #Switch for symmetric sampling
+#        self.baseline = 0.0 #Moving average baseline, used just for visualization
+        self.best = -inf
+    
     def setModule(self, module):
         """Sets and initializes all module settings"""
         FDLearner.setModule(self, module)
@@ -95,8 +97,9 @@ class SPLA(FDLearner):
         self.module.reset() # reset the module 
         self.genDifVect() #generate a new perturbation vector
 
-class SPLANoSym(SPLA):
-    #Like normal SPLA but without symetric sampling
+class PGPENoSym(PGPE):
+    """ Like normal PGPE but without symmetric sampling """
+    
     def perturbate(self):
         """ perturb the parameters. """
         self.ds.append('deltas', self.deltas) #add perturbation to the data set
