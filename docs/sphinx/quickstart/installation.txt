@@ -68,13 +68,13 @@ PyBrain
    
 There are two ways of installing PyBrain: you can either go with our stable 
 release on `the webpage <http://pybrain.org/pages/download>`_ or the bleeding 
-edge from our SVN repository. 
+edge from our git repository. 
 
 To check out the PyBrain repository run::
 
-   $ svn co http://pybrain-svn.informatik.tu-muenchen.de/trunk/ pybrain-trunk
+   $ git clone git@github.com:pybrain/pybrain.git pybrain
    
-Change into the directory Pybrain directory after either checking out SVN or 
+Change into the directory Pybrain directory after either checking out got or 
 downloading and extracting the archive. There you run (possibly as a superuser 
 on Unix systems)::
 
