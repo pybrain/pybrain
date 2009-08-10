@@ -1,7 +1,9 @@
 __author__ = 'Tom Schaul, tom@idsia.ch'
 
-from pybrain.utilities import abstractMethod
 from scipy import clip
+
+from pybrain.utilities import abstractMethod
+
 
 class Task(object):
     """ A task is associating a purpose with an environment. It decides how to evaluate the 

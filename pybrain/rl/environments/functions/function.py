@@ -3,11 +3,11 @@ __author__ = 'Tom Schaul, tom@idsia.ch'
 from scipy import zeros, array, ndarray
 
 from pybrain.rl.environments import Environment
-from pybrain.utilities import abstractMethod
 from pybrain.structure.parametercontainer import ParameterContainer
+from pybrain.rl.environments.fitnessevaluator import FitnessEvaluator
 
 
-class FunctionEnvironment(Environment):
+class FunctionEnvironment(Environment, FitnessEvaluator):
     """ A n-to-1 mapping function to be with a single minimum of value zero, at xopt. """
     
     # what input dimensions can the function have?
@@ -34,14 +34,8 @@ class FunctionEnvironment(Environment):
         else:
             self.xopt = xopt
         self.reset()
-        
-    def f(self, x):
-        """ the function itself, to be defined by subclasses """
-        abstractMethod()
 
     def __call__(self, x):
-        """ the f(x) is to be minimized, but evaluators assume that 
-        goal is maximization, so we negate the result here"""
         if isinstance(x, ParameterContainer):
             x = x.params
         assert type(x) == ndarray, 'FunctionEnvironment: Input not understood: '+str(type(x))

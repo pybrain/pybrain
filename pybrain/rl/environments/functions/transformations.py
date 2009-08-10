@@ -1,3 +1,4 @@
+from pybrain.rl.environments.fitnessevaluator import FitnessEvaluator
 __author__ = 'Tom Schaul, tom@idsia.ch'
 
 from scipy import rand, dot
@@ -7,14 +8,21 @@ from function import FunctionEnvironment
 from pybrain.structure.parametercontainer import ParameterContainer
 
 
-class OppositeFunction(FunctionEnvironment):
+def oppositeFunction(basef):
     """ the opposite of a function """
-    def __init__(self, basef):
-        FunctionEnvironment.__init__(self, basef.xdim, basef.xopt)
-        self.f = lambda x: -basef.f(x)
-        self.desiredValue = -basef.desiredValue
-        self.toBeMinimized = not basef.toBeMinimized    
-
+    if isinstance(basef, FitnessEvaluator):
+        if isinstance(basef, FunctionEnvironment):
+            res = FunctionEnvironment(basef.xdim, basef.xopt)
+        else:
+            res = FitnessEvaluator()        
+        res.f = lambda x: -basef.f(x)
+        if not basef.desiredValue is None:
+            res.desiredValue = -basef.desiredValue
+        res.toBeMinimized = not basef.toBeMinimized
+        return res
+    else:    
+        return lambda x: -basef(x)
+            
 
 class TranslateFunction(FunctionEnvironment):
     """ change the position of the optimum """        

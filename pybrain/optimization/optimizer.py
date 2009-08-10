@@ -1,6 +1,9 @@
+from pybrain.rl.environments.fitnessevaluator import FitnessEvaluator
+from pybrain.rl.environments.functions.transformations import oppositeFunction
 __author__ = 'Tom Schaul, tom@idsia.ch'
 
 from scipy import array, randn, ndarray
+import logging
 
 from pybrain.utilities import setAllArgs, abstractMethod
 from pybrain.rl.learners.learner import PhylogeneticLearner
@@ -12,9 +15,9 @@ from pybrain.rl.environments.functions.function import FunctionEnvironment
 class BlackBoxOptimizer(DirectSearch, PhylogeneticLearner):
     """ The super-class for learning algorithms that treat the problem as a black box. 
     At each step they change the policy, and get a fitness value by invoking 
-    the fitness-evaluator (provided as first argument upon initialization).
+    the FitnessEvaluator (provided as first argument upon initialization).
     
-    Evaluable objects can be either arrays of continuous values (also wrapped in ParameterContainer) 
+    Evaluable objects can be lists or arrays of continuous values (also wrapped in ParameterContainer) 
     or subclasses of Evolvable (that define its methods).
     """    
     
@@ -32,6 +35,7 @@ class BlackBoxOptimizer(DirectSearch, PhylogeneticLearner):
     storeAllEvaluated = False
     wasWrapped = False
     wasUnwrapped = False
+    wasOpposed = False
     
     # stopping criteria
     maxEvaluations = 1e6
@@ -60,14 +64,19 @@ class BlackBoxOptimizer(DirectSearch, PhylogeneticLearner):
         elif self.storeAllEvaluations:
             self._allEvaluations = []
         # default settings, if provided by the evaluator:
-        if isinstance(evaluator, FunctionEnvironment):
-            if self.minimize is not evaluator.toBeMinimized:
-                raise TypeError('Algorithm is set to minimize='+str(self.minimize)+\
-                                ' but evaluator is set to minimize='+str(evaluator.toBeMinimized))
-            if self.numParameters is None:
-                self.numParameters = evaluator.xdim
+        if isinstance(evaluator, FitnessEvaluator):
             if self.desiredEvaluation is None:
-                self.desiredEvaluation = evaluator.desiredValue             
+                self.desiredEvaluation = evaluator.desiredValue               
+            if self.minimize is not evaluator.toBeMinimized:
+                logging.info('Algorithm is set to minimize='+str(self.minimize)+\
+                            ' but evaluator is set to minimize='+str(evaluator.toBeMinimized)+\
+                            '.\n The opposite function will be optimized.')
+                self.__evaluator = oppositeFunction(evaluator)
+                self.wasOpposed = True
+            if self.numParameters is None:
+                # in some cases, we can deduce the dimension from the provided evaluator:
+                if isinstance(evaluator, FunctionEnvironment):
+                    self.numParameters = evaluator.xdim          
         #set the starting point for optimization (as provided, or randomly)
         self._setInitEvaluable(initEvaluable)        
         self._additionalInit()
@@ -76,20 +85,6 @@ class BlackBoxOptimizer(DirectSearch, PhylogeneticLearner):
     def _additionalInit(self):
         """ a method for subclasses that need additional initialization code but don't want to redefine __init__ """
 
-    def learn(self, additionalLearningSteps = None):
-        """ The main loop that does the learning. """
-        if additionalLearningSteps is not None:
-            self.maxLearningSteps = self.numLearningSteps + additionalLearningSteps
-        while not self._stoppingCriterion():
-            self._learnStep()
-            self._notify()
-            self.numLearningSteps += 1
-        return self._bestFound()
-        
-    def _learnStep(self):
-        """ The core method to be implemented by all subclasses. """
-        abstractMethod()
-        
     def _setInitEvaluable(self, evaluable):
         if evaluable is None:
             # if there is no initial point specified, we start at one that's sampled 
@@ -108,10 +103,23 @@ class BlackBoxOptimizer(DirectSearch, PhylogeneticLearner):
             pc = ParameterContainer(len(evaluable))
             pc._setParameters(evaluable)
             self.wasWrapped = True
-            self._initEvaluable = pc
-            self.numParameters = len(self._initEvaluable)        
-        else:
-            self._initEvaluable = evaluable
+            evaluable = pc
+        self._initEvaluable = evaluable
+        self.numParameters = len(self._initEvaluable)      
+    
+    def learn(self, additionalLearningSteps = None):
+        """ The main loop that does the learning. """
+        if additionalLearningSteps is not None:
+            self.maxLearningSteps = self.numLearningSteps + additionalLearningSteps
+        while not self._stoppingCriterion():
+            self._learnStep()
+            self._notify()
+            self.numLearningSteps += 1
+        return self._bestFound()
+        
+    def _learnStep(self):
+        """ The core method to be implemented by all subclasses. """
+        abstractMethod()        
         
     def _bestFound(self):
         """ return the best found evaluable and its associated fitness. """
