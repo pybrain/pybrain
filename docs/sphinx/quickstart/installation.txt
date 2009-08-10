@@ -72,7 +72,7 @@ edge from our git repository.
 
 To check out the PyBrain repository run::
 
-   $ git clone git@github.com:pybrain/pybrain.git pybrain
+   $ git clone git://github.com/pybrain/pybrain.git pybrain
    
 Change into the directory Pybrain directory after either checking out got or 
 downloading and extracting the archive. There you run (possibly as a superuser 
