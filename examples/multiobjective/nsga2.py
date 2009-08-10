@@ -3,7 +3,7 @@ on a simple standard benchmark function. """
 
 __author__ = 'Tom Schaul, tom@idsia.ch'
 
-from pybrain.rl.learners import MultiObjectiveGA
+from pybrain.optimization import MultiObjectiveGA
 from pybrain.rl.environments.functions.multiobjective import KurBenchmark
 from pybrain.utilities import storeCallResults
 import pylab

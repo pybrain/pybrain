@@ -192,10 +192,6 @@ class VanillaGradientEvolutionStrategies(DistributionBasedOptimizer):
         self.x += self.learningRate * update[:xdim]
         self.factorSigma += self.learningRateSigma * flat2triu(update[xdim:], xdim)
         self.sigma = dot(self.factorSigma.T, self.factorSigma)
-        
-        if len(self.allSamples) % self.batchSize == 0:
-            self.generation += 1
-            print self.generation, len(self.allSamples), max(self.allFitnesses[-self.batchSize:])
             
     def _calcBatchUpdate(self, fitnesses):
         gradient = self._calcVanillaBatchGradient(self.allSamples[-self.batchSize:], fitnesses)

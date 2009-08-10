@@ -5,7 +5,7 @@ __author__ = 'Tom Schaul, tom@idsia.ch'
 
 from pybrain.rl.tasks.capturegame import CaptureGameTask
 from pybrain.structure.evolvables.cheaplycopiable import CheaplyCopiable
-from pybrain.rl.learners import ES
+from pybrain.optimization import ES
 from pybrain.utilities import storeCallResults
 from pybrain.rl.agents.capturegameplayers.killing import KillingPlayer
 

@@ -22,6 +22,7 @@ from pybrain.rl.environments.functions import SphereFunction
 from pybrain.rl.tasks.pomdp import CheeseMaze
 from pybrain.rl.learners import * #@UnusedWildImport
 from pybrain.optimization import * #@UnusedWildImport
+from pybrain.rl.learners import EpisodicRL
 
 """ The problem we we would like to solve can be anything that has something like a fitness
 function. The following switches between 4 different examples. 

@@ -76,7 +76,7 @@ class ParticleSwarmOptimizer(ContinuousOptimizer):
     
     def _learnStep(self):
         for particle in self.particles:
-            particle.fitness = self._oneEvaluation(particle.position)
+            particle.fitness = self._oneEvaluation(particle.position.copy())
                 
         for particle in self.particles:
             bestPosition = self.best(self.neighbours[particle]).position
@@ -103,7 +103,7 @@ class Particle(object):
         if ((self.minimize and value < self.bestFitness)
             or (not self.minimize and value > self.bestFitness)):
             self.bestFitness = value
-            self.bestPosition = self.position
+            self.bestPosition = self.position.copy()
     
     def _getFitness(self):
         return self._fitness

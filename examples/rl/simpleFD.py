@@ -13,7 +13,7 @@
 from pybrain.tools.shortcuts import buildNetwork
 from pybrain.rl.environments.simple import SimpleEnvironment, MinimizeTask
 from pybrain.rl.agents import FiniteDifferenceAgent
-from pybrain.rl.learners import FDBasic
+from pybrain.optimization import FDBasic
 from pybrain.rl.experiments import EpisodicExperiment
 from scipy import array, mean
 

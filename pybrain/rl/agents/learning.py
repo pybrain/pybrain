@@ -2,9 +2,10 @@ __author__ = 'Thomas Rueckstiess, ruecksti@in.tum.de'
 
 from history import HistoryAgent
 
+
 class LearningAgent(HistoryAgent):
     """ LearningAgent has a module and a learner, that modifies the module. It can
-        have learning enabled or disabled and can be used continously or with episodes.
+        have learning enabled or disabled and can be used continuously or with episodes.
     """
     
     def __init__(self, module, learner = None):

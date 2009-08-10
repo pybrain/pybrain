@@ -13,7 +13,7 @@ from pybrain.tools.shortcuts import buildNetwork
 from pybrain.rl.environments.shipsteer import ShipSteeringEnvironment
 from pybrain.rl.environments.shipsteer import GoNorthwardTask
 from pybrain.rl.agents.finitedifference import FiniteDifferenceAgent
-from pybrain.rl.learners import SimpleSPSA
+from pybrain.optimization import SimpleSPSA
 from pybrain.rl.experiments import EpisodicExperiment
 from cPickle import load, dump
 

@@ -1,5 +1,7 @@
 __author__ = 'Thomas Rueckstiess, ruecksti@in.tum.de'
 
+from scipy import array
+
 from learning import LearningAgent
 from history import HistoryAgent
 from pybrain.structure import GaussianLayer, IdentityConnection, FeedForwardNetwork
@@ -49,7 +51,9 @@ class PolicyGradientAgent(LearningAgent):
         
     def setSigma(self, sigma):
         """ sets variance in the exploration layer """
-        assert len(sigma) == self.explorationlayer.paramdim
+        if isinstance(sigma, list):
+            sigma = array(sigma)
+        assert len(sigma) == self.explorationlayer.paramdim        
         # change the parameters of the exploration layer (owner is self.module)
         self.explorationlayer._setParameters(sigma, self.module)
     

@@ -9,47 +9,54 @@ from pybrain.structure.evolvables.maskedmodule import MaskedModule
 from pybrain.structure.evolvables.topology import TopologyEvolvable
 
 
-class MemeticSearch(BlackBoxOptimizer):
+class MemeticSearch(HillClimber):
     """ Interleaving topology search with local search """
     
-    localSteps = 100
+    localSteps = 50
     localSearchArgs = {}
+    localSearch = HillClimber
     
-    def __init__(self, evaluator, evaluable, localSearch = HillClimber, **args):
-        """ Memetic search """
-        self.localSearch = localSearch
+    def switchMutations(self):
+        """ interchange the mutate() and topologyMutate() operators """
+        tm = self._initEvaluable.__class__.topologyMutate
+        m = self._initEvaluable.__class__.mutate
+        self._initEvaluable.__class__.topologyMutate = m
+        self._initEvaluable.__class__.mutate = tm            
+    
+    def _setInitEvaluable(self, evaluable):
+        BlackBoxOptimizer._setInitEvaluable(self, evaluable)
+        
+        # distinguish modules from parameter containers.
         if not isinstance(evaluable, TopologyEvolvable):
             if isinstance(evaluable, Module):
-                evaluable = MaskedModule(evaluable)
+                self._initEvaluable = MaskedModule(self._initEvaluable)
             else:
-                evaluable = MaskedParameters(evaluable)
-        BlackBoxOptimizer.__init__(self, evaluator, evaluable, **args)
-        
-        
-    def _learnStep(self):
-        # TODO: noisy case
-        # CHECKME: topology mutation after or before local search?
-        
-        # only run a batch after accumulation enough evaluation steps
-        if self.steps % self.localSteps != 0:
-            return
-        
-        # produce a topology mutation
-        challenger = self.bestEvaluable.copy()
-        challenger.topologyMutate()
-        
-        # do a bit of local search on the new topology
-        outsourced = self.localSearch(self.__evaluator, challenger, maxEvaluations = self.localSteps,
-                                      desiredEvaluation = self.desiredEvaluation,
-                                      **self.localSearchArgs)
-        challenger, challengerFitness = outsourced.learn()
-        
-        if challengerFitness >= self.bestEvaluation:
-            # keep the new mask
-            self.bestEvaluable = challenger.copy()
-            self.bestEvaluation = challengerFitness
-        
-        if self.verbose:
-            print 'bits on in new mask', sum(challenger.mask),
-            print self.bestEvaluation, challengerFitness
+                self._initEvaluable = MaskedParameters(self._initEvaluable, returnZeros = True)      
             
+    def _oneEvaluation(self, evaluable):
+        if self.numEvaluations == 0:
+            return BlackBoxOptimizer._oneEvaluation(self, evaluable)
+        else:
+            self.switchMutations()
+            outsourced = self.localSearch(lambda x: BlackBoxOptimizer._oneEvaluation(self, x), evaluable, 
+                                          maxEvaluations = self.localSteps,
+                                          desiredEvaluation = self.desiredEvaluation,
+                                          **self.localSearchArgs)
+            _, fitness = outsourced.learn()
+            self.switchMutations()
+            return fitness
+            
+    def _learnStep(self):
+        self.switchMutations()
+        HillClimber._learnStep(self)
+        self.switchMutations()
+        
+    def _notify(self):
+        HillClimber._notify(self)
+        if self.verbose:
+            print 'bits on in best mask', sum(self.bestEvaluable.mask),
+            
+    @property
+    def batchSize(self):
+        return self.localSteps
+    
