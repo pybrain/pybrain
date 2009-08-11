@@ -10,4 +10,4 @@ from softmax import SoftmaxLayer, PartialSoftmaxLayer
 from statedependentlayer import StateDependentLayer
 from tanhlayer import TanhLayer
 from kohonen import KohonenMap
-from table import ActionValueTable
+from table import Table, ActionValueTable
