@@ -1,10 +1,11 @@
 __author__ = 'Thomas Rueckstiess, ruecksti@in.tum.de'
 
-from pybrain.rl.learners.valuebased.valuebasedlearner import ValueBasedLearner
-from pybrain.rl.learners.datasetlearner import DataSetLearner
+from pybrain.rl.learners.learner import Learner
 
 
-class SARSA(ValueBasedLearner, DataSetLearner):
+class SARSA(Learner):
+    
+    offPolicy = False
     
     def __init__(self, nActions):
         self.alpha = 0.5
@@ -16,8 +17,9 @@ class SARSA(ValueBasedLearner, DataSetLearner):
         self.nActions = nActions
 
     def learn(self):
-        """ learn on the current dataset, for a single step. """
-        """ TODO: also learn on episodic tasks (sum over whole sequence) """
+        """ learn on the current dataset, for a single step. This algorithm is
+            on-policy and can thus not perform batch updates. """
+        
         state, action, reward = self.ds.getSample()
                 
         state = int(state)

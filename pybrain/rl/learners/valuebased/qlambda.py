@@ -1,12 +1,13 @@
 __author__ = 'Thomas Rueckstiess, ruecksti@in.tum.de'
 
-from pybrain.rl.learners.valuebased.valuebasedlearner import ValueBasedLearner
-from pybrain.rl.learners.datasetlearner import DataSetLearner
+from pybrain.rl.learners.learner import Learner
 
 
-class QLambda(ValueBasedLearner, DataSetLearner):
+class QLambda(Learner):
     
-    def __init__(self, nActions):
+    offPolicy = True
+    
+    def __init__(self):
         self.alpha = 0.5
         self.gamma = 0.99
         self.qlambda = 0.9
@@ -14,10 +15,10 @@ class QLambda(ValueBasedLearner, DataSetLearner):
         self.laststate = None
         self.lastaction = None
         
-        self.nActions = nActions
     
     def learn(self):
-        """ learn on the current dataset with eligibility trace """
+        """ learn on the current dataset with an eligibility trace. """
+        
         states = self.ds['state']
         actions = self.ds['action']
         rewards = self.ds['reward']

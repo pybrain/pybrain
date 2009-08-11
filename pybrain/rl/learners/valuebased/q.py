@@ -1,10 +1,11 @@
 __author__ = 'Thomas Rueckstiess, ruecksti@in.tum.de'
 
-from pybrain.rl.learners.valuebased.valuebasedlearner import ValueBasedLearner
-from pybrain.rl.learners.datasetlearner import DataSetLearner
+from pybrain.rl.learners.learner import Learner
 
 
-class Q(ValueBasedLearner, DataSetLearner):
+class Q(Learner):
+    
+    offPolicy = True
     
     def __init__(self, nActions):
         self.alpha = 0.5
@@ -16,23 +17,32 @@ class Q(ValueBasedLearner, DataSetLearner):
         self.nActions = nActions
     
     def learn(self):
-        """ learn on the current dataset, for a single step. """
-        """ TODO: also learn on episodic tasks (sum over whole sequence) """
-        state, action, reward = self.ds.getSample()
+        """ learn on the current dataset, either for many timesteps and
+            even episodes (batch mode) or for a single timestep, if the
+            dataset only contains one sample. Batch mode is possible,
+            because Q-Learning is an off-policy method.
+        """
+        
+        # go through all sequences and timesteps and apply the q-learning
+        # updates iteratively. in continuous mode, this will actually be
+        # called after each timestep and only update one single value.
+        for seq in self.dataset:
+            for state, action, reward in seq:
+                state, action, reward = self.ds.getSample()
                 
-        state = int(state)
-        action = int(action)
+                state = int(state)
+                action = int(action)
         
-        # first learning call has no last state: skip
-        if self.laststate == None:
-            self.lastaction = action
-            self.laststate = state
-            return
+                # first learning call has no last state: skip
+                if self.laststate == None:
+                    self.lastaction = action
+                    self.laststate = state
+                    continue
         
-        qvalue = self.module.getValue(self.laststate, self.lastaction)
-        maxnext = self.module.getValue(state, self.module.getMaxAction(state))
-        self.module.updateValue(self.laststate, self.lastaction, qvalue + self.alpha * (reward + self.gamma * maxnext - qvalue))
+                qvalue = self.module.getValue(self.laststate, self.lastaction)
+                maxnext = self.module.getValue(state, self.module.getMaxAction(state))
+                self.module.updateValue(self.laststate, self.lastaction, qvalue + self.alpha * (reward + self.gamma * maxnext - qvalue))
         
-        # move state to oldstate
-        self.laststate = state
-        self.lastaction = action
+                # move state to oldstate
+                self.laststate = state
+                self.lastaction = action
