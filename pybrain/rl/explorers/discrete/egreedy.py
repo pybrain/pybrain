@@ -13,7 +13,7 @@ class EpsilonGreedyExplorer(DiscreteExplorer):
         behaves.
     """
     
-    def __init__(self, epsilon, decay = 1.):
+    def __init__(self, epsilon = 0.5, decay = 0.99):
         self.epsilon = epsilon
         self.decay = decay
     
