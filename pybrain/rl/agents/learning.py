@@ -1,54 +1,64 @@
 __author__ = 'Thomas Rueckstiess, ruecksti@in.tum.de'
 
-from history import HistoryAgent
+from pybrain.rl.agents.logging import LoggingAgent
 
-
-class LearningAgent(HistoryAgent):
-    """ LearningAgent has a module and a learner, that modifies the module. It can
-        have learning enabled or disabled and can be used continuously or with episodes.
+class LearningAgent(LoggingAgent):
+    """ LearningAgent has a module, a learner, that modifies the module, and an explorer,
+        which perturbs the actions. It can have learning enabled or disabled and can be 
+        used continously or with episodes.
     """
     
-    def __init__(self, module, learner = None):
+    def __init__(self, module, learner = None, explorer = None):
         """ 
         @param module: the acting module
         @param learner: the learner (optional) """
-        HistoryAgent.__init__(self, module.indim, module.outdim)
+        
+        LoggingAgent.__init__(self, module.indim, module.outdim)
+        
         self.module = module
         self.learner = learner
+        self.explorer = explorer
+        
+        # if learner is available, tell it the module and data
         if self.learner:
             self.learner.setModule(self.module)
             self.learner.setData(self.history)
-            self.learning = True
-        else:
-            self.learning = False
-        
-    def enableLearning(self):
-        """ if the agent can learn from experience, then this method enables learning. """
-        if self.learner:
-            self.learning = True
-        
-    def disableLearning(self):
-        """ if the agent can learn from experience, then this method disables learning. """
-        self.learning = False
-        
-    def getAction(self):
-        """ activates the module with the last observation and stores the result as last action. """
-        HistoryAgent.getAction(self)
-        self.lastaction = self.module.activate(self.lastobs)
-        return self.lastaction
-        
-    def newEpisode(self):
-        """ inidicates the beginning of a new episode in the training cycle. """
-        if self.remember:
-            self.history.newSequence()  
             
+        if self.explorer:
+            self.explorer.setModule(self.module)
+        
+        self.learning = True
+        
+    def _getLearning(self):
+        """ returns whether the agent currently learns from experience or not. """
+        return self.__learning
+        
+    def _setLearning(self, flag):
+        """ set whether or not the agent should learn from its experience """
+        if self.learner and self.explorer:
+            self.__learning = flag
+        else:
+            self.__learning = False
+        
+    learning = property(_getLearning, _setLearning)
+    
+    def getAction(self):
+        """ activates the module with the last observation, adds the exploration from
+            the explorer object and stores the result as last action. """
+        LoggingAgent.getAction(self)
+        self.lastaction = self.module.activate(self.lastobs)
+        if self.learning:
+            self.lastaction = self.explorer.activate(self.lastobs, self.lastaction)
+        
+        return self.lastaction
+                    
     def reset(self):
         """ clears the history of the agent and resets the module. """
-        HistoryAgent.reset(self)
+        LoggingAgent.reset(self)
         self.module.reset()
     
-    def learn(self, epochs=1):
+    def learn(self, episodes=1):
         """ calls the learner's learn function, which has access to both module and history. """
         if self.learning:
-            self.learner.learnEpochs(epochs)
+            self.learner.learnEpisodes(episodes)
     

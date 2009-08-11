@@ -16,9 +16,12 @@ class Experiment(object):
         """
         for dummy in range(number):
             reward = self._oneInteraction()
-        return reward
+        return self.stepid
 
     def _oneInteraction(self):
+        """ gives the observation to the agent, takes its resulting action and returns
+            it to the task. then gives the reward to the agent again and returns it.
+        """
         self.stepid += 1
         self.agent.integrateObservation(self.task.getObservation())
         self.task.performAction(self.agent.getAction())
