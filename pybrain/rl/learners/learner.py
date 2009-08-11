@@ -44,6 +44,8 @@ class Learner(Named):
     dataset = None
     module = None
 
+    defaultExploration = None
+
     def setModule(self, module):
         """ sets the module for the learner. """
         self.module = module    

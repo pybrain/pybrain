@@ -1,11 +1,14 @@
 __author__ = 'Thomas Rueckstiess, ruecksti@in.tum.de'
 
 from pybrain.rl.learners.learner import Learner
+from pybrain.rl.explorers.egreedy import EpsilonGreedyExplorer
 
 
 class QLambda(Learner):
     
     offPolicy = True
+    defaultExploration = EpsilonGreedyExplorer
+    
     
     def __init__(self):
         self.alpha = 0.5
