@@ -1,6 +1,7 @@
 __author__ = 'Tom Schaul, tom@idsia.ch'
 
-from experiment import Experiment
+
+from pybrain.rl.experiments.experiment import Experiment
 from pybrain.rl.agents.optimization import OptimizationAgent
 
 

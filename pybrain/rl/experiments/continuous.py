@@ -11,5 +11,6 @@ class ContinuousExperiment(Experiment):
             this function can be made.
         """
         for dummy in range(number):
-            self._oneInteraction()
+            reward = self._oneInteraction()
             self.agent.learn()
+        return self.stepid
