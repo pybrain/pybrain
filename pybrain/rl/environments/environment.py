@@ -4,12 +4,14 @@ from pybrain.utilities import abstractMethod
 
 
 class Environment(object):
-    """ The general interface for whatever we would like to model, learn about, predict, or simply interact in. 
-        We can perform actions, and access (partial) observations. 
+    """ The general interface for whatever we would like to model, learn about, 
+        predict, or simply interact in. We can perform actions, and access 
+        (partial) observations. 
     """       
 
-    #the number of action values the environment accepts
+    # the number of action values the environment accepts
     indim = 0
+    
     # the number of sensor values the environment produces
     outdim = 0
     
@@ -22,7 +24,8 @@ class Environment(object):
         abstractMethod()
                     
     def performAction(self, action):
-        """ perform an action on the world that changes it's internal state (maybe stochastically) 
+        """ perform an action on the world that changes it's internal state (maybe 
+            stochastically).
             @param action: an action that should be executed in the Environment. 
             @type action: by default, this is assumed to be a numpy array of doubles
             @note: This function is abstract and has to be implemented.
@@ -30,7 +33,8 @@ class Environment(object):
         abstractMethod()
 
     def reset(self):
-        """ Most environments will implement this optional method that allows for reinitialization. 
+        """ Most environments will implement this optional method that allows for 
+            reinitialization. 
         """
         
     
