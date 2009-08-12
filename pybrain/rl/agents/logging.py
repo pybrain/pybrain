@@ -39,6 +39,7 @@ class LoggingAgent(Agent):
         """ 2. stores the action in a temporary variable until reward is given. """
         assert self.lastobs != None 
         assert self.lastaction == None
+        
         # implement getAction in subclass and set self.lastaction
    
     def giveReward(self, r):
@@ -61,4 +62,7 @@ class LoggingAgent(Agent):
 
     def reset(self):
         """ clears the history of the agent. """
+        self.lastobs = None
+        self.lastaction = None
+        
         self.history.clear()

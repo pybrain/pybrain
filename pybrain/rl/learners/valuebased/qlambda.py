@@ -1,7 +1,7 @@
 __author__ = 'Thomas Rueckstiess, ruecksti@in.tum.de'
 
 from pybrain.rl.learners.learner import Learner
-from pybrain.rl.explorers.egreedy import EpsilonGreedyExplorer
+from pybrain.rl.explorers.discrete.egreedy import EpsilonGreedyExplorer
 
 
 class QLambda(Learner):
@@ -10,10 +10,10 @@ class QLambda(Learner):
     defaultExploration = EpsilonGreedyExplorer
     
     
-    def __init__(self):
+    def __init__(self, qlambda = 0.9):
         self.alpha = 0.5
         self.gamma = 0.99
-        self.qlambda = 0.9
+        self.qlambda = qlambda
         
         self.laststate = None
         self.lastaction = None
@@ -22,9 +22,11 @@ class QLambda(Learner):
     def learn(self):
         """ learn on the current dataset with an eligibility trace. """
         
-        states = self.ds['state']
-        actions = self.ds['action']
-        rewards = self.ds['reward']
+        states = self.dataset['state']
+        actions = self.dataset['action']
+        rewards = self.dataset['reward']
+        
+        print states.shape, states
         
         for i in range(states.shape[0]-1, 0, -1):
             lbda = self.qlambda**(states.shape[0]-1-i)

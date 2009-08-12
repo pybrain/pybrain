@@ -1,6 +1,7 @@
 __author__ = 'Thomas Rueckstiess, ruecksti@in.tum.de'
 
 from pybrain.rl.agents.logging import LoggingAgent
+from pybrain.rl.explorers.explorer import DiscreteExplorer
 
 class LearningAgent(LoggingAgent):
     """ LearningAgent has a module, a learner, that modifies the module, and an explorer,
@@ -23,10 +24,20 @@ class LearningAgent(LoggingAgent):
         if self.learner:
             self.learner.setModule(self.module)
             self.learner.setData(self.history)
-            
-        if self.explorer:
-            self.explorer.setModule(self.module)
         
+        # if no explorer is given, try the learning algorithm's default explorer
+        if not self.explorer:    
+            try:
+                self.explorer = self.learner.defaultExploration()
+            except(Exception):
+                self.explorer = None            
+        
+        if self.explorer:
+            # discrete explorers need access to the module
+            if isinstance(self.explorer, DiscreteExplorer):
+                self.explorer.setModule(self.module)
+
+            
         self.learning = True
         
     def _getLearning(self):

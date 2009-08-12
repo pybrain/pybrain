@@ -13,7 +13,7 @@ class EpsilonGreedyExplorer(DiscreteExplorer):
         behaves.
     """
     
-    def __init__(self, epsilon = 0.5, decay = 0.99):
+    def __init__(self, epsilon = 0.5, decay = 0.9998):
         self.epsilon = epsilon
         self.decay = decay
     
@@ -25,8 +25,10 @@ class EpsilonGreedyExplorer(DiscreteExplorer):
         assert self.module
         
         if random.random() < self.epsilon:
-            return array([random.randint(self.module.numColumns)])
+            result = array([random.randint(self.module.numColumns)])
         else:
-            return action
+            result = action
             
         self.epsilon *= self.decay
+        
+        return result

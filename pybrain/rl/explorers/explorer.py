@@ -25,7 +25,7 @@ class DiscreteExplorer(Explorer):
         module (which has to of class ActionValueTable).
     """
     
-    self.module = None
+    module = None
     
     def setModule(self, module):
         """ tell the explorer the module (of class ActionValueTable). """

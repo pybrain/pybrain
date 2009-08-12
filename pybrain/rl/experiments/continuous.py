@@ -13,4 +13,5 @@ class ContinuousExperiment(Experiment):
         for dummy in range(number):
             reward = self._oneInteraction()
             self.agent.learn()
+            self.agent.reset()
         return self.stepid

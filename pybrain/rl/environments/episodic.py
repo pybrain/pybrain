@@ -6,10 +6,10 @@ from pybrain.utilities import abstractMethod
 from pybrain.rl.environments.task import Task
 from pybrain.rl.agents.agent import Agent
 from pybrain.structure.modules.module import Module
-from pybrain.rl.evaluator import Evaluator
+# DEBUG: from pybrain.rl.evaluator import Evaluator
 from pybrain.rl.experiments.episodic import EpisodicExperiment
 
-class EpisodicTask(Task, Evaluator):
+class EpisodicTask(Task):  # DEBUG: also inherit from Evaluator
     """ A task that consists of independent episodes. """
 
     # tracking cumulative reward

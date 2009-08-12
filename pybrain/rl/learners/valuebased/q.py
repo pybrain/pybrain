@@ -1,7 +1,7 @@
 __author__ = 'Thomas Rueckstiess, ruecksti@in.tum.de'
 
 from pybrain.rl.learners.learner import Learner
-from pybrain.rl.explorers.egreedy import EpsilonGreedyExplorer
+from pybrain.rl.explorers.discrete.egreedy import EpsilonGreedyExplorer
 
 
 class Q(Learner):
@@ -10,14 +10,12 @@ class Q(Learner):
     defaultExploration = EpsilonGreedyExplorer
     
     
-    def __init__(self, nActions):
+    def __init__(self):
         self.alpha = 0.5
         self.gamma = 0.99
     
         self.laststate = None
         self.lastaction = None
-        
-        self.nActions = nActions
     
     def learn(self):
         """ learn on the current dataset, either for many timesteps and
@@ -31,7 +29,6 @@ class Q(Learner):
         # called after each timestep and only update one single value.
         for seq in self.dataset:
             for state, action, reward in seq:
-                state, action, reward = self.ds.getSample()
                 
                 state = int(state)
                 action = int(action)

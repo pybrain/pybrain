@@ -13,7 +13,7 @@ class BoltzmannExplorer(DiscreteExplorer):
         becomes greedy.
     """
     
-    def __init__(self, tau = 5., decay = 0.99):
+    def __init__(self, tau = 3., decay = 0.9995):
         self.tau = tau
         self.decay = decay
     
