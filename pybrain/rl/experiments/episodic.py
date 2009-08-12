@@ -9,15 +9,16 @@ class EpisodicExperiment(Experiment):
     def doEpisodes(self, number = 1):
         """ returns the rewards of each step as a list """
         all_rewards = []
+        self.agent.newEpisode()
         for dummy in range(number):
             rewards = []
             self.stepid = 0
-            # the agent is informed of the start of the episode
-            self.agent.newEpisode()
             self.task.reset()
             while not self.task.isFinished():
                 r = self._oneInteraction()
                 rewards.append(r)
             all_rewards.append(rewards)
+            # the agent is informed of the end of the episode
+            self.agent.newEpisode()            
         return all_rewards
         

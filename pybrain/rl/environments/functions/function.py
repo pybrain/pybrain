@@ -60,6 +60,7 @@ class FunctionEnvironment(Environment, FitnessEvaluator):
     def indim(self):
         return self.xdim
     
-    outdim = 1
+    # does not provide any observations
+    outdim = 0
     
     

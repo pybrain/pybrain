@@ -13,7 +13,7 @@ from scipy import randn
 from pybrain.tools.shortcuts import buildNetwork
 from pybrain.utilities import storeCallResults
 from pybrain.structure import FullConnection
-from pybrain.rl.environments.functions import OppositeFunction
+from pybrain.rl.environments.functions import oppositeFunction
 from pybrain.structure.evolvables.cheaplycopiable import CheaplyCopiable
 from pybrain.structure.networks.network import Network
 from pybrain.rl.agents.finitedifference import FiniteDifferenceAgent
@@ -80,7 +80,7 @@ print 'fmin', NelderMead(thetask, thenet).learn(maxEvals)
 """ the same, using other algorithms """
 
 print 'CMA', CMAES(thetask, thenet).learn(maxEvals)
-print 'FEM', FEM(OppositeFunction(thetask), thenet).learn(maxEvals)
+print 'FEM', FEM(oppositeFunction(thetask), thenet).learn(maxEvals)
 print 'NES', OriginalNES(thetask, thenet).learn(maxEvals)
 
 
@@ -93,7 +93,7 @@ if isinstance(thetask, EpisodicTask):
     print 'Finite Differences', EpisodicRL(thetask, thenet, subagent = FiniteDifferenceAgent, 
                                            sublearner = FDBasic).learn(maxEvals)   
     print 'SPLA', EpisodicRL(thetask, thenet, subagent = FiniteDifferenceAgent, 
-                             sublearner = SPLA).learn(maxEvals)   
+                             sublearner = PGPE).learn(maxEvals)   
 
 
 """ Evolutionary methods fall in the Learner framework as well. 

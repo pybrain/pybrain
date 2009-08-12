@@ -40,7 +40,7 @@ for runs in range(numbExp):
     # create controller network
     net = buildNetwork(task.outdim, task.indim, outclass=TanhLayer)
     # create agent with controller and learner
-    agent = FiniteDifferenceAgent(net, SimpleSPSA())
+    agent = FiniteDifferenceAgent(net, SimpleSPSA(task, net))
     # learning options
     agent.learner.gd.alpha = 0.5 #step size of parameter adaption
     agent.learner.gamma=0.9993 #exploration decay factor

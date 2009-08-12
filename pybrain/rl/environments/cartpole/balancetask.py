@@ -1,13 +1,17 @@
 __author__ = 'Thomas Rueckstiess and Tom Schaul'
 
+from scipy import pi, dot, array
+
 from pybrain.rl.environments.cartpole.nonmarkovpole import NonMarkovPoleEnvironment
 from pybrain.rl.tasks import EpisodicTask
 from cartpole import CartPoleEnvironment
-from scipy import pi, dot, array
+
 
 class BalanceTask(EpisodicTask):
-
     """ The task of balancing some pole(s) on a cart """
+    
+    desiredValue = 0
+    
     def __init__(self, env = None, maxsteps = 1000):
         """
         @param env: (optional) an instance of a CartPoleEnvironment (or a subclass thereof)
@@ -72,7 +76,6 @@ class JustBalanceTask(BalanceTask):
     def getReward(self):
         angles = map(abs, self.env.getPoleAngles())
         s = abs(self.env.getCartPosition())
-        reward = 0
         if min(angles) < 0.05:
             reward = 0
         elif max(angles) > 0.7 or abs(s) > 2.4:
@@ -80,6 +83,7 @@ class JustBalanceTask(BalanceTask):
         else: 
             reward = -1
         return reward
+    
         
 class EasyBalanceTask(BalanceTask):
     """ this task is a bit easier to learn because it gives gradual feedback
@@ -87,7 +91,6 @@ class EasyBalanceTask(BalanceTask):
     def getReward(self):
         angles = map(abs, self.env.getPoleAngles())
         s = abs(self.env.getCartPosition())
-        reward = 0
         if min(angles) < 0.05 and abs(s) < 0.05:
             reward = 0
         elif max(angles) > 0.7 or abs(s) > 2.4:
@@ -95,6 +98,7 @@ class EasyBalanceTask(BalanceTask):
         else: 
             reward = -abs(s)/2
         return reward   
+    
 
 class LinearizedBalanceTask(BalanceTask):
     """ Here we follow the setup in
@@ -106,8 +110,7 @@ class LinearizedBalanceTask(BalanceTask):
     def getReward(self):
         return dot(self.env.sensors**2, self.Q) + self.env.action[0]**2*0.01
     
-    def isFinished(self):
-        
+    def isFinished(self):        
         if abs(self.env.getPoleAngles()[0]) > 0.5235988:  # pi/6
             # pole has fallen
             return True
@@ -118,3 +121,4 @@ class LinearizedBalanceTask(BalanceTask):
             # maximal timesteps
             return True
         return False
+    

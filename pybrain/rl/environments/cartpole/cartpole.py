@@ -26,6 +26,8 @@ class CartPoleEnvironment(GraphicalEnvironment):
     mc = 1.0
     dt = 0.02    
     
+    randomInitialization = True
+    
     def __init__(self, polelength = None):
         GraphicalEnvironment.__init__(self)
         if polelength != None:
@@ -61,8 +63,12 @@ class CartPoleEnvironment(GraphicalEnvironment):
     def reset(self):
         """ re-initializes the environment, setting the cart back in a random position.
         """
-        angle = random.uniform(-0.2, 0.2)
-        pos = random.uniform(-0.5, 0.5)
+        if self.randomInitialization:
+            angle = random.uniform(-0.2, 0.2)
+            pos = random.uniform(-0.5, 0.5)
+        else:
+            angle = -0.2
+            pos = 0.2
         self.sensors = (angle, 0.0, pos, 0.0)
 
     def _derivs(self, x, t): 

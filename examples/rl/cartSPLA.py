@@ -14,7 +14,7 @@
 from pybrain.tools.shortcuts import buildNetwork
 from pybrain.rl.environments.cartpole import CartPoleEnvironment, BalanceTask
 from pybrain.rl.agents.finitedifference import FiniteDifferenceAgent
-from pybrain.rl.learners import SPLA
+from pybrain.optimization import PGPE as SPLA
 from pybrain.rl.experiments import EpisodicExperiment
 from scipy import random
 

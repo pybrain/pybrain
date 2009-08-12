@@ -9,13 +9,14 @@ class HistoryAgent(Agent):
         be used for learning and is erased by resetting the agent. It also makes sure that integrateObservation,
         getAction and giveReward are called in exactly that order. """
         
+    remember = True
+    
     def __init__(self, indim, outdim):        
         # store input and output dimension
         self.indim = indim
         self.outdim = outdim
                 
-        # create history dataset
-        self.remember = True
+        # create history dataset        
         self.history = ReinforcementDataSet(indim, outdim)
 
         # initialize temporary variables

@@ -14,7 +14,7 @@
 from pybrain.tools.shortcuts import buildNetwork
 from pybrain.rl.environments.simple import SimpleEnvironment, MinimizeTask
 from pybrain.rl.agents import FiniteDifferenceAgent
-from pybrain.rl.learners import SPLA
+from pybrain.optimization import PGPE as SPLA
 from pybrain.rl.experiments import EpisodicExperiment
 from scipy import random
 

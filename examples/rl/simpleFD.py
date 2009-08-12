@@ -15,7 +15,7 @@ from pybrain.rl.environments.simple import SimpleEnvironment, MinimizeTask
 from pybrain.rl.agents import FiniteDifferenceAgent
 from pybrain.optimization import FDBasic
 from pybrain.rl.experiments import EpisodicExperiment
-from scipy import array, mean
+from scipy import mean
 
 from pylab import ion #@UnresolvedImport
 

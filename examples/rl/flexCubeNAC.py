@@ -14,7 +14,7 @@
 from pybrain.tools.shortcuts import buildNetwork
 from pybrain.rl.environments.flexcube import FlexCubeEnvironment, GrowTask
 from pybrain.rl.agents import FiniteDifferenceAgent
-from pybrain.rl.learners import SPLA
+from pybrain.optimization import PGPE as SPLA
 from pybrain.rl.experiments import EpisodicExperiment
 from scipy import mean
 

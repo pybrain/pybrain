@@ -19,11 +19,11 @@ class NetworkError(Exception): pass
 
 
 def buildNetwork(*layers, **options):
-    """Build arbitrary deep networks.
+    """Build arbitrarily deep networks.
     
     `layers` should be a list or tuple of integers, that indicate how many 
-    neurons the layers shoudl have. `bias` and `outputbias` are flags to 
-    indicate wether the network should have the corresponding biases; both
+    neurons the layers should have. `bias` and `outputbias` are flags to 
+    indicate whether the network should have the corresponding biases; both
     default to True.
         
     To adjust the classes for the layers use the `hiddenclass` and  `outclass`
@@ -142,7 +142,7 @@ def _buildNetwork(*layers, **options):
         new_part = True
         for layer in part:
             net.addModule(layer)
-            # Pick class depending on wether we entered a new part
+            # Pick class depending on whether we entered a new part
             if new_part:
                 ConnectionClass = FullConnection
                 if bias:

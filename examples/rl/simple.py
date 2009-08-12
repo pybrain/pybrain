@@ -15,7 +15,7 @@ from pybrain.rl.environments.simple import SimpleEnvironment, MinimizeTask
 from pybrain.rl.agents import PolicyGradientAgent
 from pybrain.rl.learners import ENAC
 from pybrain.rl.experiments import EpisodicExperiment
-from scipy import array, mean, zeros
+from scipy import mean, zeros
 
 
 # for plotting

@@ -116,7 +116,11 @@ print l.learn(75), 'in', l.numLearningSteps, 'total learning steps.'
 # during learning, e.g. for plotting:
 l = algo(f, x0, storeAllEvaluations = True, storeAllEvaluated = True, maxEvaluations = 100)
 l.learn()
-import pylab 
-pylab.plot(map(abs, l._allEvaluations))
-pylab.semilogy()
-pylab.show()
+try:
+    import pylab 
+    pylab.plot(map(abs,l._allEvaluations))
+    pylab.semilogy()
+    pylab.show()
+except ImportError, e:
+    print 'No plotting:', e
+

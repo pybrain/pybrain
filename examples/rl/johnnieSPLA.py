@@ -32,7 +32,7 @@ from pybrain.rl.environments.ode.tasks import StandingTask
 from pybrain.structure.modules.tanhlayer import TanhLayer
 from pybrain.tools.shortcuts import buildNetwork
 from pybrain.rl.agents.finitedifference import FiniteDifferenceAgent
-from pybrain.optimization import SPLA
+from pybrain.optimization import PGPE as SPLA
 from pybrain.rl.experiments import EpisodicExperiment
 from cPickle import load, dump
 
