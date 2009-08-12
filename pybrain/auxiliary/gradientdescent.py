@@ -1,23 +1,15 @@
-#! /usr/bin/env python2.5
-# -*- coding: utf-8 -*-
-
-# $Id$
-
 __author__ = ('Thomas Rueckstiess, ruecksti@in.tum.de'
               'Justin Bayer, bayer.justin@googlemail.com')
 
 
-from copy import deepcopy
-
-from scipy import zeros, asarray, sign, array, cov, dot, clip
+from scipy import zeros, asarray, sign, array, cov, dot, clip, ndarray
 from scipy.linalg import inv
-
 
 
 class GradientDescent(object):
         
     def __init__(self):
-        """ initialise algorithms with standard parameters (typical values given in parentheses)"""
+        """ initialize algorithms with standard parameters (typical values given in parentheses)"""
         
         # --- BackProp parameters ---
         # learning rate (0.1-0.001, down to 1e-7 for RNNs)
@@ -48,7 +40,8 @@ class GradientDescent(object):
         @param values: the list (or array) of parameters to perform gradient descent on
                        (will be copied, original not modified)
         """
-        self.values = deepcopy(values)
+        assert isinstance(values, ndarray)
+        self.values = values.copy()
         if self.rprop:
             self.lastgradient = zeros(len(values), dtype='float64')
             self.rprop_theta = self.lastgradient + self.deltanull      

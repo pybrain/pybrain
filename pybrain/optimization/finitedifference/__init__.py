@@ -1,3 +1,3 @@
-from spsa import SimpleSPSA
-from basicfd import FDBasic
-from pgpe import PGPE, PGPENoSym
+from fd import FiniteDifferences
+#from spsa import SimpleSPSA
+#from pgpe import PGPE, PGPENoSym
