@@ -1,7 +1,8 @@
 from pybrain.rl.environments.mazes import Maze 
 from pybrain.structure.modules import ActionValueTable
-from pybrain.rl.agents import EpsilonGreedyAgent
+from pybrain.rl.agents import LearningAgent
 from pybrain.rl.learners import Q, QLambda, SARSA
+from pybrain.rl.explorers import EpsilonGreedyExplorer, BoltzmannExplorer
 from pybrain.rl.experiments import ContinuousExperiment
 from pybrain.rl import Task
 
@@ -51,7 +52,7 @@ table = ActionValueTable(81, 4)
 table.initialize(1)
 
 # create agent with controller and learner
-agent = EpsilonGreedyAgent(table, QLambda(4))
+agent = LearningAgent(table, QLambda())
 
 experiment = ContinuousExperiment(task, agent)
 

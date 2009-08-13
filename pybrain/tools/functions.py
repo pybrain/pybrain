@@ -73,20 +73,25 @@ def ranking(R):
 
 
 def expln(x):
-    """ This function ensures that the values of the array are always positive. It is 
-        ln(x+1)+1 for x=>0 and exp(x) for x<0. """
+    """ This continuous function ensures that the values of the array are always positive. 
+        It is ln(x+1)+1 for x >= 0 and exp(x) for x < 0. """
     def f(val):
         if val<0:
-            # exponential function for x<0
+            # exponential function for x < 0
             return exp(val)
         else:
-            # natural log function (slightly shifted) for x>=0
+            # natural log function for x >= 0
             return log(val+1.0)+1
-    return array(map(f, x))
+    try:
+        result = array(map(f, x))
+    except TypeError:
+        result = array(f(x))
+    
+    return result
 
 
 def explnPrime(x):
-    """ This function is the first derivative of the self.expln function (above).
+    """ This function is the first derivative of the expln function (above).
         It is needed for the backward pass of the module. """
     def f(val):
         if val<0:
@@ -95,7 +100,12 @@ def explnPrime(x):
         else:
             # linear function for x>=0
             return 1.0/(val+1.0)
-    return array(map(f, x))
+    try:
+        result = array(map(f, x))
+    except TypeError:
+        result = array(f(x))
+        
+    return result
 
 
 def multivariateNormalPdf(z, x, sigma):

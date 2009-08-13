@@ -1,3 +1,5 @@
+# TODO, move to task.py ?
+
 __author__ = 'Tom Schaul, tom@idsia.ch'
 
 from scipy import power
