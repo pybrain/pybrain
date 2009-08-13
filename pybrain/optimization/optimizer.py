@@ -77,6 +77,8 @@ class BlackBoxOptimizer(DirectSearch, PhylogeneticLearner):
 
         # default settings, if provided by the evaluator:
         if isinstance(evaluator, FitnessEvaluator):
+            if self.desiredEvaluation is None:
+                self.desiredEvaluation = evaluator.desiredValue               
             if self.minimize is not evaluator.toBeMinimized:
                 logging.info('Algorithm is set to minimize='+str(self.minimize)+\
                             ' but evaluator is set to minimize='+str(evaluator.toBeMinimized)+\
@@ -85,8 +87,6 @@ class BlackBoxOptimizer(DirectSearch, PhylogeneticLearner):
                 self.wasOpposed = True
                 if self.desiredEvaluation is not None:
                     self.desiredEvaluation *= -1
-            if self.desiredEvaluation is None:
-                self.desiredEvaluation = evaluator.desiredValue               
             if self.numParameters is None:
                 # in some cases, we can deduce the dimension from the provided evaluator:
                 if isinstance(evaluator, FunctionEnvironment):

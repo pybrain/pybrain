@@ -38,7 +38,10 @@ class MaskedParameters(TopologyEvolvable):
         
     @property
     def paramdim(self):
-        return sum(self.mask)
+        if self.returnZeros:
+            return self.pcontainer.paramdim
+        else:
+            return sum(self.mask)
     
     @property
     def params(self):

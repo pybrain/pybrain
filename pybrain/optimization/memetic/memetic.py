@@ -1,3 +1,4 @@
+from pybrain.rl.environments.functions.transformations import oppositeFunction
 __author__ = 'Tom Schaul, tom@idsia.ch'
 
 
@@ -25,7 +26,6 @@ class MemeticSearch(HillClimber):
     
     def _setInitEvaluable(self, evaluable):
         BlackBoxOptimizer._setInitEvaluable(self, evaluable)
-        
         # distinguish modules from parameter containers.
         if not isinstance(evaluable, TopologyEvolvable):
             if isinstance(evaluable, Module):
@@ -38,12 +38,24 @@ class MemeticSearch(HillClimber):
             return BlackBoxOptimizer._oneEvaluation(self, evaluable)
         else:
             self.switchMutations()
-            outsourced = self.localSearch(lambda x: BlackBoxOptimizer._oneEvaluation(self, x), evaluable, 
-                                          maxEvaluations = self.localSteps,
+            if isinstance(evaluable, MaskedParameters):
+                evaluable.returnZeros = False
+                x0 = evaluable.params
+                evaluable.returnZeros = True            
+                def f(x): 
+                    evaluable._setParameters(x)
+                    return BlackBoxOptimizer._oneEvaluation(self, evaluable)
+            else:
+                f = lambda x: BlackBoxOptimizer._oneEvaluation(self, x)
+                x0 = evaluable
+            outsourced = self.localSearch(f, x0, 
+                                          maxEvaluations = self.localSteps, 
                                           desiredEvaluation = self.desiredEvaluation,
                                           **self.localSearchArgs)
+            assert self.localSteps > outsourced.batchSize, 'localSteps too small ('+str(self.localSteps)+\
+                                                '), because local search has a batch size of '+str(outsourced.batchSize)
             _, fitness = outsourced.learn()
-            self.switchMutations()
+            self.switchMutations()  
             return fitness
             
     def _learnStep(self):
@@ -54,7 +66,7 @@ class MemeticSearch(HillClimber):
     def _notify(self):
         HillClimber._notify(self)
         if self.verbose:
-            print 'bits on in best mask', sum(self.bestEvaluable.mask),
+            print '  Bits on in best mask:', sum(self.bestEvaluable.mask)
             
     @property
     def batchSize(self):

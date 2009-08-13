@@ -170,8 +170,7 @@ class VanillaGradientEvolutionStrategies(DistributionBasedOptimizer):
             self.maxLearningSteps = self.numLearningSteps
         
         if self.verbose:
-            print 'G:', self.numLearningSteps, 'Evals:', self.numEvaluations, 
-            print 'MaxG:', max(self.allFitnesses[-self.batchSize:])
+            print 'Evals:', self.numEvaluations, 
             
         self.allCenters.append(self.x.copy())
         self.allFactorSigmas.append(self.factorSigma.copy())

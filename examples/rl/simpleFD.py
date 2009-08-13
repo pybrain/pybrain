@@ -13,7 +13,7 @@
 from pybrain.tools.shortcuts import buildNetwork
 from pybrain.rl.environments.simple import SimpleEnvironment, MinimizeTask
 from pybrain.rl.agents import FiniteDifferenceAgent
-from pybrain.optimization import FDBasic
+from pybrain.optimization import FiniteDifferences
 from pybrain.rl.experiments import EpisodicExperiment
 from scipy import mean
 
@@ -31,7 +31,7 @@ task = MinimizeTask(env)
 net = buildNetwork(1, 1, bias=False)
 net._setParameters([0.0])
 # create agent with controller and learner
-agent = FiniteDifferenceAgent(net, FDBasic())
+agent = FiniteDifferenceAgent(net, FiniteDifferences())
 # initialize parameters (variance)
 #agent.setSigma([-2.])
 # learning options

@@ -44,7 +44,7 @@ class FEM(DistributionBasedOptimizer):
     
     mutative = False
     
-    # initalization parameters
+    # initialization parameters
     rangemins = None
     rangemaxs = None
     initCovariances = None
@@ -131,7 +131,6 @@ class FEM(DistributionBasedOptimizer):
         densities /= sum(densities)
         return densities
 
-
     def _computeUpdateSize(self, densities, sampleIndex):
         """ compute the  the center-update-size for each sample
         using transformed fitnesses """
@@ -144,7 +143,6 @@ class FEM(DistributionBasedOptimizer):
         updateSize = transformedfitnesses[sampleIndex] * densities
         return updateSize * self.forgetFactor
         
-
     def _updateMus(self, updateSize, lastSample):
         for c in range(self.numberOfCenters):
             oldmu = self.mus[c]
@@ -166,9 +164,7 @@ class FEM(DistributionBasedOptimizer):
         
         if self.elitism:
             # dirty hack! TODO: koshify
-            self.mus[0] = self.bestEvaluable.copy()
-            
-                
+            self.mus[0] = self.bestEvaluable.copy()                        
         
     def _updateSigmas(self, updateSize, lastSample):
         for c in range(self.numberOfCenters):
@@ -179,8 +175,6 @@ class FEM(DistributionBasedOptimizer):
             else:
                 self.sigmas[c] += updateSize[c] * 1.2 * outer(dif, dif)
                 
-
-
     def _updateAlphas(self, updateSize):
         for c in range(self.numberOfCenters):
             x = updateSize[c]
@@ -199,7 +193,6 @@ class FEM(DistributionBasedOptimizer):
                 self.mus[c] = self.mus[bestCenter].copy()
                 self.sigmas[c] = 4.0 * self.sigmas[bestCenter].copy()
                 self.sigmas[bestCenter] *= 0.25
-
                 break
             
     def _updateShaping(self):
@@ -226,7 +219,6 @@ class FEM(DistributionBasedOptimizer):
             print fListToString(matchValues, 3)
     
     def _learnStep(self):
-        """  """
         k = len(self.allsamples) % self.windowSize
         sample, fit = self._produceNewSample()
         self.samples[k], self.fitnesses[k] = sample, fit
@@ -235,8 +227,6 @@ class FEM(DistributionBasedOptimizer):
             return
         if self.verbose and len(self.allsamples) % 100 == 0:
             print len(self.allsamples), min(self.fitnesses), max(self.fitnesses)#, self.alphas
-        #print len(self.allsamples), self.fitnesses[k],  self.mus
-        #print self.generation, self.mus
         
         updateSize = self._computeUpdateSize(self._computeDensities(sample), k)
         self.allUpdateSizes.append(deepcopy(updateSize))
@@ -271,5 +261,4 @@ class FEM(DistributionBasedOptimizer):
             else:
                 self.sigmas = [0.5 * sigma for sigma in self.sigmas]
                 #print "-"
-                
-    
+                    
