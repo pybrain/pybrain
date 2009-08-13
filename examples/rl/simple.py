@@ -10,12 +10,13 @@
 # change the 'plotting' flag to False
 #########################################################################
 
+from scipy import array, mean, zeros
+
 from pybrain.tools.shortcuts import buildNetwork
 from pybrain.rl.environments.simple import SimpleEnvironment, MinimizeTask
-from pybrain.rl.agents import PolicyGradientAgent
-from pybrain.rl.learners import ENAC
+from pybrain.rl.agents import LearningAgent
+from pybrain.rl.learners.continuous.policygradients import ENAC
 from pybrain.rl.experiments import EpisodicExperiment
-from scipy import mean, zeros
 
 
 # for plotting
@@ -23,32 +24,30 @@ plotting = True
 
 
 if plotting:
-    from pylab import draw, ion, title, plot, figure, clf 
+    from pylab import draw, ion, title, plot, figure, clf #@UnresolvedImport
     ion()   
 
 # create environment
 env = SimpleEnvironment()
 env.setNoise(0.9)
+
 # create task
 task = MinimizeTask(env)
+
 # create controller network (flat network)
 net = buildNetwork(1, 1, bias=False)
-net._setParameters([-11.])
+net._setParameters(array([-11.]))
+
 # create agent with controller and learner
-agent = PolicyGradientAgent(net, ENAC())
-# initialize parameters (variance)
-agent.setSigma([-2.])
-# learning options
-agent.learner.alpha = 2.
-# agent.learner.rprop = True
-agent.actaspg = False
+agent = LearningAgent(net, ENAC())
+
+# experiment
 experiment = EpisodicExperiment(task, agent)
 
 
 plots = zeros((1000, agent.module.paramdim+1), float)
 
 for updates in range(1000):
-    agent.reset()
     # training step
     experiment.doEpisodes(10)
     agent.learn()

@@ -15,8 +15,8 @@ from pybrain.structure.modules import ActionValueTable
 from pybrain.rl.agents import LearningAgent
 from pybrain.rl.learners import Q, QLambda, SARSA
 from pybrain.rl.explorers import EpsilonGreedyExplorer, BoltzmannExplorer
-from pybrain.rl.experiments import ContinuousExperiment
-from pybrain.rl import Task
+from pybrain.rl.experiments import Experiment
+from pybrain.rl.environments import Task
 
 
 class MazeTask(Task):
@@ -70,7 +70,7 @@ learner = Q()
 agent = LearningAgent(table, learner)
 
 # create experiment
-experiment = ContinuousExperiment(task, agent)
+experiment = Experiment(task, agent)
 
 # prepare plotting
 pylab.gray()
