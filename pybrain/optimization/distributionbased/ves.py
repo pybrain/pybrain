@@ -13,7 +13,7 @@ class VanillaGradientEvolutionStrategies(DistributionBasedOptimizer):
     
     # mandatory parameters
     online = False
-    learningRate = 1.
+    learningRate = 0.01
     learningRateSigma = None # default: the same than learningRate
     
     initialFactorSigma = None # default: identity matrix

@@ -6,7 +6,6 @@ from scipy.linalg import inv, pinv2
 from scipy import outer, dot, multiply, zeros, diag, mat, sum
 
 
-
 class ExactNES(VanillaGradientEvolutionStrategies):
     """ A new version of NES, using the exact instead of the approximate
     Fisher Information Matrix, as well as a number of other improvements.
@@ -21,6 +20,7 @@ class ExactNES(VanillaGradientEvolutionStrategies):
     # the most robust one is also the default:
     baselineType = BLOCKBASELINE
     
+    learningRate = 1.
     
     def _calcBatchUpdate(self, fitnesses):
         samples = self.allSamples[-self.batchSize:]
@@ -108,6 +108,8 @@ class ExactNES(VanillaGradientEvolutionStrategies):
 class OriginalNES(VanillaGradientEvolutionStrategies):    
     """ In the same framework, the formulation of the original NES algorithm (CEC-2008) 
     is now much simpler too. """
+
+    learningRate = 1.
 
     def _calcBatchUpdate(self, fitnesses):
         xdim = self.numParameters

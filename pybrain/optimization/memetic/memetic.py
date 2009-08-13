@@ -1,6 +1,4 @@
-from pybrain.rl.environments.functions.transformations import oppositeFunction
 __author__ = 'Tom Schaul, tom@idsia.ch'
-
 
 from pybrain.optimization.optimizer import BlackBoxOptimizer
 from pybrain.optimization.hillclimber import HillClimber

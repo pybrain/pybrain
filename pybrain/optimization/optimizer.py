@@ -1,4 +1,3 @@
-from twisted.python import runtime
 __author__ = 'Tom Schaul, tom@idsia.ch'
 
 from scipy import array, randn, ndarray, isinf, isnan

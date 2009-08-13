@@ -1,9 +1,9 @@
 __author__ = 'Tom Schaul, tom@idsia.ch; Sun Yi, yi@idsia.ch'
 
 from numpy import floor, log, eye, zeros, array, sqrt, sum, dot, tile, outer, real
-from numpy import exp, diag, power, ravel, minimum, maximum
+from numpy import exp, diag, power, ravel
 from numpy.linalg import eig, norm
-from numpy.random import randn, rand
+from numpy.random import randn
 
 from pybrain.optimization.optimizer import ContinuousOptimizer
 
@@ -16,183 +16,105 @@ class CMAES(ContinuousOptimizer):
 
     minimize = True
     stopPrecision = 1e-6
-    
-    lambd = None        # override CMA heuristics for batch size
-
+        
     storeAllCenters = False
-    
-    # Additional parameters for importance mixing
-    importanceMixing = False
-    forceUpdate = 0.1  # refresh rate
 
-    def _learnStep(self):
-        N = self.numParameters
-        xmean = self._initEvaluable
-        sigma = 0.5         # coordinate wise standard deviation (step size)
+    def _additionalInit(self):
+        assert self.minimize is True 
+        self.center = self._initEvaluable
+        self.stepSize = 0.5         # coordinate wise standard deviation (sigma)
         if self.storeAllCenters:
             self._allCenters = []
 
         # Strategy parameter setting: Selection
         # population size, offspring number
-        lambd = self.batchSize
-        mu = int(floor(lambd/2))        # number of parents/points for recombination
-        weights = log(mu+1)-log(array(xrange(1,mu+1)))      # use array
-        weights = weights/sum(weights)     # normalize recombination weights array
-        mueff=sum(weights)**2/sum(power(weights, 2)) # variance-effective size of mu
+        self.mu = int(floor(self.batchSize/2))        # number of parents/points for recombination
+        self.weights = log(self.mu+1)-log(array(xrange(1,self.mu+1)))      # use array
+        self.weights /= sum(self.weights)     # normalize recombination weights array
+        self.muEff=sum(self.weights)**2/sum(power(self.weights, 2)) # variance-effective size of mu
 
         # Strategy parameter setting: Adaptation
-        cc = 4/float(N+4)               # time constant for cumulation for covariance matrix
-        cs = (mueff+2)/(N+mueff+3)      # t-const for cumulation for sigma control
-        mucov = mueff                   # size of mu used for calculating learning rate ccov
-        ccov = ((1/mucov) * 2/(N+1.4)**2 + (1-1/mucov) *   # learning rate for
-                 ((2*mueff-1)/((N+2)**2+2*mueff)))         # covariance matrix
-        damps = 1 + 2*max(0, sqrt((mueff-1)/(N+1))-1) + cs
-        # damping for sigma usually close to 1 former damp == damps/cs
+        self.cumCov = 4/float(self.numParameters+4)                    # time constant for cumulation for covariance matrix
+        self.cumStep = (self.muEff+2)/(self.numParameters+self.muEff+3)# t-const for cumulation for Size control
+        self.muCov = self.muEff                   # size of mu used for calculating learning rate covLearningRate
+        self.covLearningRate = ((1/self.muCov) * 2/(self.numParameters+1.4)**2 + (1-1/self.muCov) * # learning rate for
+                 ((2*self.muEff-1)/((self.numParameters+2)**2+2*self.muEff)))                       # covariance matrix
+        self.dampings = 1 + 2*max(0, sqrt((self.muEff-1)/(self.numParameters+1))-1) + self.cumStep
+        # damping for stepSize usually close to 1 former damp == self.dampings/self.cumStep
 
         # Initialize dynamic (internal) strategy parameters and constants
-        pc = zeros(N)
-        ps = zeros(N)                   # evolution paths for C and sigma
-        B = eye(N,N)                      # B defines the coordinate system
-        D = eye(N,N)                      # diagonal matrix D defines the scaling
-        C = dot(dot(B,D),dot(B,D).T)                # covariance matrix
-        chiN=N**0.5*(1-1./(4.*N)+1/(21.*N**2))
-        # expectation of ||N(0,I)|| == norm(randn(N,1))
+        self.covPath = zeros(self.numParameters)
+        self.stepPath = zeros(self.numParameters)                   # evolution paths for C and stepSize
+        self.B = eye(self.numParameters,self.numParameters)         # B defines the coordinate system
+        self.D = eye(self.numParameters,self.numParameters)         # diagonal matrix D defines the scaling
+        self.C = dot(dot(self.B,self.D),dot(self.B,self.D).T)       # covariance matrix
+        self.chiN=self.numParameters**0.5*(1-1./(4.*self.numParameters)+1/(21.*self.numParameters**2))
+        # expectation of ||numParameters(0,I)|| == norm(randn(numParameters,1))
+        
+    def _learnStep(self):
+        # Generate and evaluate lambda offspring
+        arz = randn(self.numParameters,self.batchSize)
+        arx = tile(self.center.reshape(self.numParameters,1),(1,self.batchSize))\
+                        + self.stepSize * dot(dot(self.B,self.D), arz)
+        arfitness = zeros(self.batchSize)
+        for k in xrange(self.batchSize):
+            arfitness[k] = self._oneEvaluation(arx[:,k])
+        
+        # Sort by fitness and compute weighted mean into center
+        arfitness, arindex = sorti(arfitness)  # minimization
+        arz = arz[:,arindex]
+        arx = arx[:,arindex]
+        arzsel = arz[:,xrange(self.mu)]
+        arxsel = arx[:,xrange(self.mu)]
+        arxmut = arxsel - tile(self.center.reshape(self.numParameters,1),(1,self.mu))
 
-        xmean0 = zeros(N)
+        zmean = dot(arzsel, self.weights)
+        self.center = dot(arxsel, self.weights)
 
-        # -------------------- Generation Loop --------------------------------
-        arfitness = zeros(lambd)
-        arx = zeros((N, lambd))
-        while not self._stoppingCriterion():
-            if self.numEvaluations <= 1 or self.importanceMixing == False:
-                # Generate and evaluate lambda offspring
-                arz = randn(N,lambd)
-                arx = tile(xmean.reshape(N,1),(1,lambd)) + sigma * dot(dot(B,D), arz)
-                for k in xrange(lambd):
-                    arfitness[k] = self._oneEvaluation(arx[:,k])
-                if self.importanceMixing:
-                    xmean0, sigma0, B0, D0 = xmean.copy(), sigma, B.copy(), D.copy()
-            else:
-                arz, arx, arfitness, _neweval = self._importanceMixing(N, xmean, sigma, B, D,
-                          xmean0, sigma0, B0, D0, arz, arx, arfitness)
-                xmean0, sigma0, B0, D0 = xmean.copy(), sigma, B.copy(), D.copy()
+        if self.storeAllCenters: 
+            self.allCenters.append(self.center)
+
+        # Cumulation: Update evolution paths
+        self.stepPath = (1-self.cumStep)*self.stepPath \
+                + sqrt(self.cumStep*(2-self.cumStep)*self.muEff) * dot(self.B,zmean)         # Eq. (4)
+        hsig = norm(self.stepPath)/sqrt(1-(1-self.cumStep)**(2*self.numEvaluations/float(self.batchSize)))/self.chiN \
+                    < 1.4 + 2./(self.numParameters+1)
+        self.covPath = (1-self.cumCov)*self.covPath + hsig * \
+                sqrt(self.cumCov*(2-self.cumCov)*self.muEff) * dot(dot(self.B,self.D),zmean) # Eq. (2)
+
+        # Adapt covariance matrix C
+        self.C = ((1-self.covLearningRate) * self.C                    # regard old matrix   % Eq. (3)
+             + self.covLearningRate * (1/self.muCov) * (outer(self.covPath,self.covPath) # plus rank one update
+                                   + (1-hsig) * self.cumCov*(2-self.cumCov) * self.C)
+             + self.covLearningRate * (1-1/self.muCov)                 # plus rank mu update
+             * dot(dot(arxmut,diag(self.weights)),arxmut.T)
+            )
+
+        # Adapt step size self.stepSize
+        self.stepSize *= exp((self.cumStep/self.dampings)*(norm(self.stepPath)/self.chiN - 1)) # Eq. (5)
+
+        # Update B and D from C
+        # This is O(n^3). When strategy internal CPU-time is critical, the
+        # next three lines should be executed only every (alpha/covLearningRate/N)-th
+        # iteration, where alpha is e.g. between 0.1 and 10
+        self.C=(self.C+self.C.T)/2 # enforce symmetry
+        Ev, self.B = eig(self.C)          # eigen decomposition, B==normalized eigenvectors
+        Ev = real(Ev)       # enforce real value
+        self.D = diag(sqrt(Ev))      #diag(ravel(sqrt(Ev))) # D contains standard deviations now
+        self.B = real(self.B)
                 
-            # Sort by fitness and compute weighted mean into xmean
-            arfitness, arindex = sorti(arfitness)  # minimization
-            arz = arz[:,arindex]
-            arx = arx[:,arindex]
-            arzsel = arz[:,xrange(mu)]
-            arxsel = arx[:,xrange(mu)]
-            arxmut = arxsel - tile(xmean.reshape(N,1),(1,mu))
-
-            zmean = dot(arzsel, weights)
-            xmean = dot(arxsel, weights)
-
-            if self.storeAllCenters: 
-                self.allCenters.append(xmean)
-
-            # Cumulation: Update evolution paths
-            ps = (1-cs)*ps + sqrt(cs*(2-cs)*mueff) * dot(B,zmean)                 # Eq. (4)
-            hsig = norm(ps)/sqrt(1-(1-cs)**(2*self.numEvaluations/float(lambd)))/chiN < 1.4 + 2./(N+1)
-            pc = (1-cc)*pc + hsig * sqrt(cc*(2-cc)*mueff) * dot(dot(B,D),zmean)    # Eq. (2)
-
-            # Adapt covariance matrix C
-            C = ((1-ccov) * C                    # regard old matrix      % Eq. (3)
-                 + ccov * (1/mucov) * (outer(pc,pc) #pc*pc.T   # plus rank one update
-                                       + (1-hsig) * cc*(2-cc) * C)
-                 + ccov * (1-1/mucov)            # plus rank mu update
-                 * dot(dot(arxmut,diag(weights)),arxmut.T)
-                )
-
-            # Adapt step size sigma
-            sigma = sigma * exp((cs/damps)*(norm(ps)/chiN - 1))             # Eq. (5)
-
-            # Update B and D from C
-            # This is O(N^3). When strategy internal CPU-time is critical, the
-            # next three lines should be executed only every (alpha/ccov/N)-th
-            # iteration, where alpha is e.g. between 0.1 and 10
-            C=(C+C.T)/2 # enforce symmetry
-            Ev, B = eig(C)          # eigen decomposition, B==normalized eigenvectors
-            D = diag(sqrt(Ev))      #diag(ravel(sqrt(Ev))) # D contains standard deviations now
-            Ev = real(Ev)       # enforce real value
-            B = real(B)
+        # convergence is reached
+        if abs((arfitness[0]-arfitness[-1])/arfitness[0]+arfitness[-1]) <= self.stopPrecision:
+            if self.verbose:
+                print "Converged."
+            self.maxLearningSteps = self.numLearningSteps
             
-            
-            # or convergence is reached
-            if abs((arfitness[0]-arfitness[-1])/arfitness[0]+arfitness[-1]) <= self.stopPrecision:
-                if self.verbose:
-                    print "Converged."
-                self.maxLearningSteps = self.numLearningSteps
-                break
-            # or diverge, unfortunately
-            if min(Ev) > 1e5:
-                if self.verbose:
-                    print "Diverged."
-                self.maxLearningSteps = self.numLearningSteps
-                break
-            if not self._stoppingCriterion() and self.maxLearningSteps > self.numLearningSteps+1:
-                self._notify()
-            self.numLearningSteps += 1
-            
-            
-            
-    def _importanceMixing(self, N, xmean, sigma, B, D,
-                          xmean0, sigma0, B0, D0, arz, arx, arfitness):
-        """ Perform importance mixing based on old samples.
-        """
-        # The real covariance matrix (sigma**2) * dot(dot(B,D),dot(B,D).T)
-        lambd = self.lambd
-
-        # Things required to compute the probability
-        Ds, Ds0 = sigma*D, sigma0*D0
-        c = sum(log(diag(Ds)))
-        c0 = sum(log(diag(Ds0)))
-        #print "log|C|/2, log|C0|/2:", c, c0
-        invA = dot(diag(1/diag(Ds)), B.T)
-        invA0 = dot(diag(1/diag(Ds0)), B0.T)
-        ctr = tile(xmean.reshape(N,1), (1,lambd))
-        ctr0 = tile(xmean0.reshape(N,1), (1,lambd))
-        A = sigma * dot(B,D)
-
-        # two auxiliary functions for computing probability
-        def prob(x): return -c-0.5*sum(dot(invA, x-ctr)**2, 0)
-        def prob0(x): return -c0-0.5*sum(dot(invA0, x-ctr0)**2, 0)
-
-        # first step, forward
-        pr, pr0 = prob(arx), prob0(arx)
-        p = minimum(1, exp(pr-pr0)*(1-self.forceUpdate))
-        acpt = rand(lambd) < p
-        t = filter(lambda i: acpt[i], xrange(lambd))
-        #print "use", len(t), "old"
-
-        arx[:,xrange(len(t))] = arx[:,t]
-        arz[:,xrange(len(t))] = arz[:,t]
-        arfitness[range(len(t))] = arfitness[t]
-        nreq = lambd - len(t)   # number of new samples required
-
-        # second step, backward
-        req = nreq
-        while req > 0:
-            splz = randn(N, lambd)
-            splx = ctr + dot(A,splz)
-            pr, pr0 = prob(splx), prob0(splx)
-            p = maximum(self.forceUpdate, 1 - exp(pr0-pr))
-            acpt = rand(lambd) < p
-            t = filter(lambda i: acpt[i], xrange(lambd))
-            #print -len(t),
-            splz = splz[:,t]
-            splx = splx[:,t]
-            if len(t) >= req:
-                arz[:,xrange(lambd-req,lambd)] = splz[:,xrange(req)]
-                arx[:,xrange(lambd-req,lambd)] = splx[:,xrange(req)]
-                break
-            else:
-                arz[:,xrange(lambd-req,lambd-req+len(t))] = splz
-                arx[:,xrange(lambd-req,lambd-req+len(t))] = splx
-                req -= len(t)
-        for i in xrange(lambd-nreq,lambd): arfitness[i] = self._oneEvaluation(arx[:,i])
-        return arz, arx, arfitness, nreq
-
+        # or diverged, unfortunately
+        if min(Ev) > 1e5:
+            if self.verbose:
+                print "Diverged."
+            self.maxLearningSteps = self.numLearningSteps
+                             
     @property
     def batchSize(self):
         return int(4+floor(3*log(self.numParameters)))

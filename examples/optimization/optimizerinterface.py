@@ -27,7 +27,7 @@ algo = HillClimber
 #algo = GA
 #algo = MemeticSearch
 #algo = NelderMead
-#algo = CMAES
+algo = CMAES
 print 'Algorithm:', algo.__name__
 
 
