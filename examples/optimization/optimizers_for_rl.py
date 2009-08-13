@@ -4,31 +4,41 @@ Illustrating how to use optimization algorithms in a reinforcement learning fram
 
 __author__ = 'Tom Schaul, tom@idsia.ch'
 
-
+from pybrain.utilities import fListToString
 from pybrain.rl.environments.cartpole.balancetask import BalanceTask
 from pybrain.tools.shortcuts import buildNetwork
 from pybrain.optimization import HillClimber, CMAES
+from pybrain.rl.learners import ENAC
+from pybrain.rl.agents.learning import LearningAgent
 from pybrain.rl.agents.optimization import OptimizationAgent
 from pybrain.rl.experiments.episodic import EpisodicExperiment
 
 
 # any episodic task
 task = BalanceTask()
-task.env.randomInitialization = False # enforcing deterministic behavior
 
 # any neural network controller
 net = buildNetwork(task.outdim, 1, task.indim)
 
-# any optimization algorithm to be plugged in
+# any optimization algorithm to be plugged in, for example:
+_learner = CMAES(storeAllEvaluations = True)
+# or:
 learner = HillClimber(storeAllEvaluations = True)
-#learner = CMAES(storeAllEvaluations = True)
 
-# the agent
+# in a non-optimization case the agent would be a LearningAgent:
+_agent = LearningAgent(net, ENAC())
+# here it is an OptimizationAgent:
 agent = OptimizationAgent(net, learner)
 
-# now, link those elements with an experiment and learn for a number of episodes.
+# the agent and task are linked in an Experiment
+# and everything else happens under the hood.
 exp = EpisodicExperiment(task, agent)
-exp.doEpisodes(200)
+exp.doEpisodes(100)
 
-print len(agent.learner._allEvaluations)
-print agent.learner._bestFound()
+print 'Episodes learned from:', len(learner._allEvaluations)
+n, fit = learner._bestFound()
+print 'Best fitness found:', fit
+print 'with this network:'
+print n 
+print 'containing these parameters:'
+print fListToString(n.params, 4)
