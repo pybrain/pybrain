@@ -1,91 +1,56 @@
-__author__ = 'Frank Sehnke, sehnke@in.tum.de'
+__author__ = 'Frank Sehnke, sehnke@in.tum.de, Tom Schaul'
 
-from scipy import zeros, random, inf
-from time import sleep
-from finitediff import FDLearner
-from pybrain.auxiliary import GradientDescent
+from scipy import random
 
-#This class uses SPSA in general, but uses the likelihood gradient and a simpler exploration decay
-class SimpleSPSA(FDLearner):
+from fd import FiniteDifferences
+
+
+class SimpleSPSA(FiniteDifferences):
+    """ Simultaneous Perturbation Stochastic Approximation. 
     
-    epsilon = 2.0 #Initial value of exploration size
+    This class uses SPSA in general, but uses the likelihood gradient and a simpler exploration decay.
+    """
+    
+    epsilon = 2. #Initial value of exploration size
     gamma = 0.9995 #Exploration decay factor
-
-    def _additionalInit(self):
-        self.gd = GradientDescent()
-        self.symCount = 1.0 #Switch for symetric sampling
-        self.baseline = 0.0 #Moving average baseline, used just for visualisation
-        self.best = -inf
+    batchSize = 2
     
-    def setModule(self, module):
-        """Sets and initializes all module settings"""
-        FDLearner.setModule(self, module)
-        self.original = zeros(self.module.params.shape) #Stores the parameter set
-        self.module._setParameters(self.original) #initializes the module parameter set to zeros
-        self.gd.init(self.original)
-        self.numOParas=len(self.original)
-        self.genDifVect()
+    def _additionalInit(self):
+        self.baseline = None #Moving average baseline, used just for visualisation            
 
-    def genDifVect(self):
+    def perturbation(self):
         # generates a uniform difference vector with the given epsilon
-        self.deltas = (random.randint(0,2,self.numOParas)*2-1)*self.epsilon
-        
-    def perturbate(self):
-        """ perturb the parameters. """
-        self.symCount*=-1.0 #change sign of perturbation
-        self.ds.append('deltas', self.symCount*self.deltas) #add perturbation to the data set
-        self.module._setParameters(self.original + self.symCount*self.deltas) #set the actual perturbed parameters in module
-
-    def learn(self):
+        deltas = (random.randint(0,2,self.numParameters)*2-1)*self.epsilon
+        # reduce epsilon by factor gamma
+        # as another simplification we let the exploration just decay with gamma. 
+        # Is similar to the decreasing exploration in SPSA but simpler.        
+        self.epsilon *= self.gamma
+        return deltas
+           
+    def _learnStep(self):
         """ calculates the gradient and executes a step in the direction
             of the gradient, scaled with a learning rate alpha. """
-        assert self.ds != None
-        assert self.module != None
-               
-        # calculate the gradient
-        reward1=0.0 #reward of positive perturbation
-        reward2=0.0 #reward of negative perturbation
-        sym=1.0 #perturbation switch
-        seqLen=self.ds.getNumSequences() #number of sequences done for learning
-        for seq in range(seqLen):
-            sym*=-1.0
-            _state, _action, reward = self.ds.getSequence(seq)
-            #add up the rewards of positive and negative perturbation role outs respectively
-            if sym==1.0: reward1+=sum(reward)
-            else: reward2+=sum(reward)
-        #normate rewards by seqLen 
-        reward1/=float(seqLen)
-        reward2/=float(seqLen)
-        self.reward=(reward1+reward2)
-        reward1*=2.0
-        reward2*=2.0
-
-        #check if reward is the best observed up to now
-        if reward1 > self.best: self.best= reward1
-        if reward2 > self.best: self.best= reward2
-
-        #some checks at the first learning sequence
-        if self.baseline==0.0: 
-            self.baseline=self.reward*0.99
-            fakt=0.0
-            if seqLen/2 != float(seqLen)/2.0: 
-                print "ATTENTON!!! SPSA uses symmetric sampling! Number of episodes per learning step must be even! (2 for deterministic settings, >2 for stochastic settings) A numer of episodes of ", seqLen, "is odd."
-                while(True): sleep(1)
+        deltas = self.perturbation()
+        #reward of positive and negative perturbations
+        reward1 = self._oneEvaluation(self.current + deltas)        
+        reward2 = self._oneEvaluation(self.current - deltas)
+        
+        self.mreward=(reward1+reward2)/2.                
+        if self.baseline is None: 
+            # first learning step
+            self.baseline=self.mreward*0.99
+            fakt=0.      
         else: 
             #calc the gradients
             if reward1!=reward2:
                 #gradient estimate alla SPSA but with likelihood gradient and normalization (see also "update parameters")
-                fakt=(reward1-reward2)/(2.0*self.best-reward1-reward2) 
-            else: fakt=0.0
-        self.baseline=0.9*self.baseline+0.1*self.reward #update baseline
+                fakt=(reward1-reward2)/(2.0*self.bestEvaluation-reward1-reward2) 
+            else: 
+                fakt=0.0
+        self.baseline=0.9*self.baseline+0.1*self.mreward #update baseline
             
         # update parameters
         # as a simplification we use alpha = alpha * epsilon**2 for decaying the stepsize instead of the usual use method from SPSA
         # resulting in the same update rule like for PGPE
-        self.original = self.gd(fakt*self.epsilon*self.epsilon/self.deltas)
-        # reduce epsilon by factor gamma
-        # as another simplification we let the exploration just decay with gamma. 
-        # Is similar to the decreasing exploration in SPSA but simpler.
-        self.epsilon *= self.gamma
-        self.module.reset() # reset the module 
-        self.genDifVect() #generate a new perturbation vector
+        self.current = self.gd(fakt*self.epsilon*self.epsilon/deltas)
+        

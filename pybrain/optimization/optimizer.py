@@ -1,9 +1,9 @@
 __author__ = 'Tom Schaul, tom@idsia.ch'
 
-from scipy import array, randn, ndarray
+from scipy import array, randn, ndarray, isinf, isnan
 import logging
 
-from pybrain.utilities import setAllArgs, abstractMethod
+from pybrain.utilities import setAllArgs, abstractMethod, DivergenceError
 from pybrain.rl.learners.learner import PhylogeneticLearner
 from pybrain.rl.learners.directsearch.directsearch import DirectSearch
 from pybrain.structure.parametercontainer import ParameterContainer
@@ -21,7 +21,7 @@ class BlackBoxOptimizer(DirectSearch, PhylogeneticLearner):
     or subclasses of Evolvable (that define its methods).
     """    
     
-    # Minimize or maximize fitness?
+    # Minimize or maximize fitness? By default, all algorithms maximize it.
     minimize = False
 
     # Is there a known value of sufficient fitness?
@@ -53,7 +53,6 @@ class BlackBoxOptimizer(DirectSearch, PhylogeneticLearner):
     # evaluations they will perform during each learningStep:
     batchSize = 1
     
-
     def __init__(self, evaluator, initEvaluable = None, **kwargs):
         """ The evaluator is any callable object (e.g. a lambda function). """
         # set all algorithm-specific parameters in one go:
@@ -86,7 +85,8 @@ class BlackBoxOptimizer(DirectSearch, PhylogeneticLearner):
         #set the starting point for optimization (as provided, or randomly)
         self._setInitEvaluable(initEvaluable)        
         self._additionalInit()
-        self._oneEvaluation(self._initEvaluable)
+        self.bestEvaluable = self._initEvaluable
+        self.bestEvaluation = None
 
     def _additionalInit(self):
         """ a method for subclasses that need additional initialization code but don't want to redefine __init__ """
@@ -119,9 +119,13 @@ class BlackBoxOptimizer(DirectSearch, PhylogeneticLearner):
         if additionalLearningSteps is not None:
             self.maxLearningSteps = self.numLearningSteps + additionalLearningSteps
         while not self._stoppingCriterion():
-            self._learnStep()
-            self._notify()
-            self.numLearningSteps += 1
+            try:
+                self._learnStep()
+                self._notify()
+                self.numLearningSteps += 1
+            except DivergenceError:
+                logging.warning("Algorithm diverged. Stopped after "+str(self.numLearningSteps)+" learning steps.")
+                break
         return self._bestFound()
         
     def _learnStep(self):
@@ -143,6 +147,10 @@ class BlackBoxOptimizer(DirectSearch, PhylogeneticLearner):
             res = self.__evaluator(evaluable.params)
         else:            
             res = self.__evaluator(evaluable)
+        # detect numerical instability
+        if isnan(res) or isinf(res):
+            raise DivergenceError
+            
         # always keep track of the best
         if (self.numEvaluations == 0
             or (self.minimize and res <= self.bestEvaluation)
@@ -169,7 +177,7 @@ class BlackBoxOptimizer(DirectSearch, PhylogeneticLearner):
     def _stoppingCriterion(self):
         if self.maxEvaluations is not None and self.numEvaluations+self.batchSize > self.maxEvaluations:
             return True
-        if self.desiredEvaluation is not None:
+        if self.desiredEvaluation is not None and self.bestEvaluation is not None:
             if ((self.minimize and self.bestEvaluation <= self.desiredEvaluation)
                 or (not self.minimize and self.bestEvaluation >= self.desiredEvaluation)):
                 return True

@@ -14,7 +14,7 @@ class FiniteDifferences(ContinuousOptimizer):
     
     epsilon = 1.0
     gamma = 0.999
-    batchSize = 10
+    batchSize = 10    
         
     def _setInitEvaluable(self, evaluable):
         ContinuousOptimizer._setInitEvaluable(self, evaluable)

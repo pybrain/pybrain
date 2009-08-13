@@ -586,3 +586,7 @@ def avgFoundAfter(decreasingTargetValues, listsOfActualValues, batchSize = 1):
     tmp = array(res)
     summed = sum(tmp, axis = 0)[1:]
     return summed/float(numLists)*batchSize
+
+
+class DivergenceError(Exception):
+    """ Raised when an algorithm diverges. """
