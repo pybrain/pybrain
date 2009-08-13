@@ -30,8 +30,10 @@ else:
 net = CheaplyCopiable(net)
 print net.name, 'has', net.paramdim, 'trainable parameters.'
 
-learner = ES(task, net, mu = 5, lambada = 5, verbose = True, noisy = True)
-newnet, f = learner.learn(50)
+learner = ES(task, net, mu = 5, lambada = 5, 
+             verbose = True, evaluatorIsNoisy = True,
+             maxEvaluations = 50)
+newnet, f = learner.learn()
 
 # now, let's take the result, and compare it's performance on a larger game-baord (to the original one)
 newsize = 7
@@ -46,6 +48,6 @@ print 'New net on big board score:', newtask(bignew)
 
 
 # plot the progression
-from pylab import plot, show #@UnresolvedImport
+from pylab import plot, show
 plot(res)
 show()

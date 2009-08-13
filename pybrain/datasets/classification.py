@@ -1,4 +1,3 @@
-# $Id$
 __author__ = "Martin Felder, felder@in.tum.de"
 
 from numpy import zeros, where, ravel, r_, single

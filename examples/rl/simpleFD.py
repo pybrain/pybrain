@@ -17,7 +17,7 @@ from pybrain.optimization import FiniteDifferences
 from pybrain.rl.experiments import EpisodicExperiment
 from scipy import mean
 
-from pylab import ion #@UnresolvedImport
+from pylab import ion
 
 # for plotting
 ion()   

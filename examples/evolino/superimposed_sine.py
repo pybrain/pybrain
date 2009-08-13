@@ -2,7 +2,7 @@
 
 __author__ = 'Michael Isik'
 
-from pylab import plot, show, ion, cla, subplot, title, figlegend, draw #@UnresolvedImport
+from pylab import plot, show, ion, cla, subplot, title, figlegend, draw
 import numpy
 
 from pybrain.structure.modules.evolinonetwork import EvolinoNetwork

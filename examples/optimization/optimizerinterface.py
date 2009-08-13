@@ -129,7 +129,7 @@ print l.learn(75), 'in', l.numLearningSteps, 'total learning steps.'
 
 # Finally you can set storage settings and then access all evaluations made
 # during learning, e.g. for plotting:
-l = algo(f, x0, storeAllEvaluations = True, storeAllEvaluated = True, maxEvaluations = 100)
+l = algo(f, x0, storeAllEvaluations = True, storeAllEvaluated = True, maxEvaluations = 150)
 l.learn()
 try:
     import pylab 

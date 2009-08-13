@@ -4,7 +4,7 @@ __author__ = 'Tom Schaul, tom@idsia.ch'
 
 from scipy import zeros, r_, cos, sin, pi, array, dot, sqrt, diag
 from scipy.linalg import svd
-from pylab import figure, plot, show, meshgrid, contour, savefig, colorbar #@UnresolvedImport
+from pylab import figure, plot, show, meshgrid, contour, savefig, colorbar
 from pybrain.rl.environments.functions import FunctionEnvironment
 from inspect import isclass
 

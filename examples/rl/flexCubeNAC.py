@@ -19,7 +19,7 @@ from pybrain.rl.experiments import EpisodicExperiment
 from scipy import mean
 
 # for plotting
-from pylab import ion,clf, plot, draw #@UnresolvedImport
+from pylab import ion,clf, plot, draw 
 
 ion() 
 

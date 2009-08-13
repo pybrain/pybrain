@@ -1,10 +1,11 @@
 __author__ = 'Thomas Rueckstiess, ruecksti@in.tum.de'
 
-from pylab import ion, figure, draw, Rectangle, Line2D #@UnresolvedImport
+from pylab import ion, figure, draw, Rectangle, Line2D
 from scipy import cos, sin
 from pybrain.rl.environments.renderer import Renderer
 import threading
 import time 
+
 
 class CartPoleRenderer(Renderer):  
     def __init__(self):

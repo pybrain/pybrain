@@ -22,7 +22,7 @@ from pybrain.rl.agents.finitedifference import FiniteDifferenceAgent
 from pybrain.optimization import PGPE as SPLA
 from pybrain.rl.experiments import EpisodicExperiment
 from pybrain.tools.plotting import MultilinePlotter
-from pylab import figure, ion #@UnresolvedImport
+from pylab import figure, ion 
 from cPickle import load, dump
 from scipy import random
 

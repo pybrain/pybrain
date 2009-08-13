@@ -23,7 +23,7 @@ plotting = True
 
 
 if plotting:
-    from pylab import draw, ion, title, plot, figure, clf #@UnresolvedImport
+    from pylab import draw, ion, title, plot, figure, clf 
     ion()   
 
 # create environment

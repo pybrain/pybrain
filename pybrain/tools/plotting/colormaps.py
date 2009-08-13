@@ -1,6 +1,6 @@
 __author__ = 'Tom Schaul, tom@idsia.ch'
 
-from pylab import figure, savefig, imshow, axes, axis, cm, show #@UnresolvedImport
+from pylab import figure, savefig, imshow, axes, axis, cm, show
 from scipy import array, amin, amax
 
 
