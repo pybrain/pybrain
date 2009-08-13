@@ -7,12 +7,13 @@ from pybrain.rl.explorers.discrete.egreedy import EpsilonGreedyExplorer
 class Q(Learner):
     
     offPolicy = True
+    batchMode = True
     defaultExploration = EpsilonGreedyExplorer
     
     
-    def __init__(self):
-        self.alpha = 0.5
-        self.gamma = 0.99
+    def __init__(self, alpha=0.5, gamma=0.99):
+        self.alpha = alpha
+        self.gamma = gamma
     
         self.laststate = None
         self.lastaction = None
@@ -24,10 +25,18 @@ class Q(Learner):
             because Q-Learning is an off-policy method.
         """
         
-        # go through all sequences and timesteps and apply the q-learning
-        # updates iteratively. in continuous mode, this will actually be
-        # called after each timestep and only update one single value.
-        for seq in self.dataset:
+        # in batchMode, the algorithm goes through all the samples in the
+        # history and performs an update on each of them. if batchMode is
+        # False, only the last data sample is considered. The user has to
+        # make sure themself to keep the dataset consistent with the
+        # agent's history.
+        
+        if self.batchMode:
+            samples = self.dataset
+        else:
+            samples = [[self.dataset.getSample()]]
+
+        for seq in samples:
             for state, action, reward in seq:
                 
                 state = int(state)

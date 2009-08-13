@@ -9,9 +9,8 @@ class ContinuousExperiment(Experiment):
         """ executes a number of steps while learning continuously.
             no reset is performed, such that consecutive calls to 
             this function can be made.
-        """
+        """ 
         for dummy in range(number):
             reward = self._oneInteraction()
             self.agent.learn()
-            self.agent.reset()
         return self.stepid

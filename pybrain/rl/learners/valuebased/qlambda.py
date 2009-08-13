@@ -10,9 +10,9 @@ class QLambda(Learner):
     defaultExploration = EpsilonGreedyExplorer
     
     
-    def __init__(self, qlambda = 0.9):
-        self.alpha = 0.5
-        self.gamma = 0.99
+    def __init__(self, alpha=0.5, gamma=0.99, qlambda = 0.9):
+        self.alpha = alpha
+        self.gamma = gamma
         self.qlambda = qlambda
         
         self.laststate = None
@@ -25,8 +25,6 @@ class QLambda(Learner):
         states = self.dataset['state']
         actions = self.dataset['action']
         rewards = self.dataset['reward']
-        
-        print states.shape, states
         
         for i in range(states.shape[0]-1, 0, -1):
             lbda = self.qlambda**(states.shape[0]-1-i)

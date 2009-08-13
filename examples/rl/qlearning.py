@@ -1,3 +1,15 @@
+__author__ = 'Thomas Rueckstiess, ruecksti@in.tum.de'
+
+
+""" This example demonstrates how to use the discrete Reinforcement Learning
+    algorithms (SARSA, Q, Q(lambda)) in a classical fully observable MDP 
+    maze task. The goal point is the top right free field.
+"""
+
+from scipy import *
+import sys, time
+import pylab
+
 from pybrain.rl.environments.mazes import Maze 
 from pybrain.structure.modules import ActionValueTable
 from pybrain.rl.agents import LearningAgent
@@ -6,10 +18,6 @@ from pybrain.rl.explorers import EpsilonGreedyExplorer, BoltzmannExplorer
 from pybrain.rl.experiments import ContinuousExperiment
 from pybrain.rl import Task
 
-from scipy import *
-
-import sys, time
-import pylab
 
 class MazeTask(Task):
     def getReward(self):
@@ -22,16 +30,22 @@ class MazeTask(Task):
         return reward
     
     def performAction(self, action):
-        """ a filtered mapping towards performAction of the underlying environment. """
+        """ The action vector is stripped and the only element is cast to integer and given 
+            to the super class. 
+        """
         Task.performAction(self, int(action[0]))
 
     
     def getObservation(self):
-        """ a filtered mapping to getSample of the underlying environment. """
+        """ The agent receives it's position in the maze, to make this a fully observable
+            MDP problem.
+        """
         obs = array([self.env.perseus[0] * self.env.mazeTable.shape[0] + self.env.perseus[1]])   
         return obs   
 
-# create environment
+
+
+# create the maze with walls (1)
 envmatrix = array([[1, 1, 1, 1, 1, 1, 1, 1, 1],
                    [1, 0, 0, 1, 0, 0, 0, 0, 1],
                    [1, 0, 0, 1, 0, 0, 1, 0, 1],
@@ -47,24 +61,31 @@ env = Maze(envmatrix, (7, 7))
 # create task
 task = MazeTask(env)
 
-# create the ActionValueTable
+# create value table and initialize
 table = ActionValueTable(81, 4)
 table.initialize(1)
 
-# create agent with controller and learner
-agent = LearningAgent(table, QLambda())
+# create agent with controller and learner - use Q(), SARSA() or QLambda() here
+learner = Q()
+agent = LearningAgent(table, learner)
 
+# create experiment
 experiment = ContinuousExperiment(task, agent)
 
+# prepare plotting
 pylab.gray()
 pylab.ion()
 
-for i in range(100000):
-    experiment.doInteractionsAndLearn()
+for i in range(1000):
     
-    if i % 100 == 0:
-        pylab.pcolor(table.values.max(1).reshape(9,9))
-        pylab.draw()
-        agent.reset()
+    # interact with the environment (here in batch mode)
+    experiment.doInteractions(100)
+    agent.learn()
+    agent.reset()
+    
+    # and draw the table
+    pylab.pcolor(table.values.max(1).reshape(9,9))
+    pylab.draw()
+
     
 
