@@ -1,3 +1,4 @@
+from twisted.python import runtime
 __author__ = 'Tom Schaul, tom@idsia.ch'
 
 from scipy import array, randn, ndarray, isinf, isnan
@@ -53,12 +54,11 @@ class BlackBoxOptimizer(DirectSearch, PhylogeneticLearner):
     # evaluations they will perform during each learningStep:
     batchSize = 1
     
-    def __init__(self, evaluator, initEvaluable = None, **kwargs):
+    def __init__(self, evaluator = None, initEvaluable = None, **kwargs):
         """ The evaluator is any callable object (e.g. a lambda function). """
         # set all algorithm-specific parameters in one go:
         setAllArgs(self, kwargs)
         # bookkeeping
-        self.__evaluator = evaluator
         self.numEvaluations = 0      
         self.numLearningSteps = 0
         if self.storeAllEvaluated:
@@ -66,6 +66,15 @@ class BlackBoxOptimizer(DirectSearch, PhylogeneticLearner):
             self._allEvaluations = []
         elif self.storeAllEvaluations:
             self._allEvaluations = []
+            
+        if evaluator is not None:
+            self.setEvaluator(evaluator, initEvaluable)
+        else:
+            self.__evaluator = None
+        
+    def setEvaluator(self, evaluator, initEvaluable = None):
+        self.__evaluator = evaluator        
+
         # default settings, if provided by the evaluator:
         if isinstance(evaluator, FitnessEvaluator):
             if self.minimize is not evaluator.toBeMinimized:
@@ -87,7 +96,7 @@ class BlackBoxOptimizer(DirectSearch, PhylogeneticLearner):
         self._additionalInit()
         self.bestEvaluable = self._initEvaluable
         self.bestEvaluation = None
-
+        
     def _additionalInit(self):
         """ a method for subclasses that need additional initialization code but don't want to redefine __init__ """
 
@@ -116,6 +125,7 @@ class BlackBoxOptimizer(DirectSearch, PhylogeneticLearner):
     
     def learn(self, additionalLearningSteps = None):
         """ The main loop that does the learning. """
+        assert self.__evaluator is not None, "No evaluator has been set. Learning cannot start."
         if additionalLearningSteps is not None:
             self.maxLearningSteps = self.numLearningSteps + additionalLearningSteps
         while not self._stoppingCriterion():
@@ -135,7 +145,10 @@ class BlackBoxOptimizer(DirectSearch, PhylogeneticLearner):
     def _bestFound(self):
         """ return the best found evaluable and its associated fitness. """
         bestE = self.bestEvaluable.params.copy() if self.wasWrapped else self.bestEvaluable
-        bestF = -self.bestEvaluation if self.wasOpposed else self.bestEvaluation
+        if self.bestEvaluation is None:
+            bestF = None
+        else:
+            bestF = -self.bestEvaluation if self.wasOpposed else self.bestEvaluation
         return bestE, bestF
         
     def _oneEvaluation(self, evaluable):

@@ -65,6 +65,21 @@ try:
 except ValueError, e:
     print 'Error caught:', e
     
+# Initialization can also take place in 2 steps, first with the settings and then with the 
+# evaluator function:
+l = algo()
+l.setEvaluator(f)
+
+# Learning can only be called after the second step, otherwise:
+l = algo()
+try:
+    l.learn(0)
+except AssertionError, e:
+    print 'Error caught:', e
+l.setEvaluator(f)
+# no error anymore
+l.learn(0)
+    
 # a very similar interface can be used to optimize the parameters of a Module
 # (here a neural network controller) on an EpisodicTask
 task = GoNorthwardTask()

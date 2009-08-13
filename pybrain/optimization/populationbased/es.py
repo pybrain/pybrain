@@ -22,7 +22,7 @@ class ES(BlackBoxOptimizer):
         # population is a list of (fitness, individual) tuples.
         self.population = [(self._oneEvaluation(self._initEvaluable), self._initEvaluable)]
         for _ in range(1, self.mu + self.lambada):
-            x = self.bestEvaluable.copy()
+            x = self._initEvaluable.copy()
             x.mutate()
             self.population.append((self._oneEvaluation(x), x))        
         self._sortPopulation()

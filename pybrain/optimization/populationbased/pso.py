@@ -2,6 +2,7 @@ __author__ = ('Julian Togelius, julian@idsia.ch',
               'Justin S Bayer, bayer.justin@googlemail.com')
 
 import scipy
+import logging
 
 from pybrain.optimization.optimizer import ContinuousOptimizer
 
@@ -45,6 +46,11 @@ class ParticleSwarmOptimizer(ContinuousOptimizer):
     neighbourfunction = None
 
     minimize = False
+    
+    def _setInitEvaluable(self, evaluable):
+        if evaluable is not None:
+            logging.warning("Initial point provided was ignored.")
+        ContinuousOptimizer._setInitEvaluable(self, evaluable)        
     
     def _additionalInit(self):
         self.dim = self.numParameters
