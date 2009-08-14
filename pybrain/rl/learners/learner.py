@@ -58,7 +58,7 @@ class Learner(Named):
     def learnOnDataset(self, dataset, *args, **kwargs):
         """ set the dataset, and learn """
         self.setData(dataset)
-        self.learnEpochs(*args, **kwargs)
+        self.learnEpisodes(*args, **kwargs)
 
     def learnEpisodes(self, episodes = 1, *args, **kwargs):
         """ learn on the current dataset, for a number of episodes """
