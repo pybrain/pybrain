@@ -4,8 +4,8 @@ from pybrain.rl import EpisodicTask
 from inspect import isclass
 from pybrain.utilities import  Named
 from pybrain.rl.environments.twoplayergames import CaptureGame
-from pybrain.rl.agents.capturegameplayers import RandomCapturePlayer, ModuleDecidingPlayer
-from pybrain.rl.agents.capturegameplayers.captureplayer import CapturePlayer
+from pybrain.rl.environments.twoplayergames.capturegameplayers import RandomCapturePlayer, ModuleDecidingPlayer
+from pybrain.rl.environments.twoplayergames.capturegameplayers.captureplayer import CapturePlayer
 from pybrain.structure.modules.module import Module
 
 

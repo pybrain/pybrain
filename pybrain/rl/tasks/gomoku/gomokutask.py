@@ -4,8 +4,8 @@ from pybrain.rl import EpisodicTask
 from inspect import isclass
 from pybrain.utilities import  Named
 from pybrain.rl.environments.twoplayergames import GomokuGame
-from pybrain.rl.agents.gomokuplayers import RandomGomokuPlayer, ModuleDecidingPlayer
-from pybrain.rl.agents.gomokuplayers.gomokuplayer import GomokuPlayer
+from pybrain.rl.environments.twoplayergames.gomokuplayers import RandomGomokuPlayer, ModuleDecidingPlayer
+from pybrain.rl.environments.twoplayergames.gomokuplayers.gomokuplayer import GomokuPlayer
 from pybrain.structure.modules.module import Module
 
 

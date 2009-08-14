@@ -7,7 +7,7 @@ from pybrain.rl.tasks.capturegame import CaptureGameTask
 from pybrain.structure.evolvables.cheaplycopiable import CheaplyCopiable
 from pybrain.optimization import ES
 from pybrain.utilities import storeCallResults
-from pybrain.rl.agents.capturegameplayers.killing import KillingPlayer
+from pybrain.rl.environments.twoplayergames.capturegameplayers.killing import KillingPlayer
 
 # task settings: opponent, averaging to reduce noise, board size, etc.
 size = 5

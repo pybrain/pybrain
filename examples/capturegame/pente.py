@@ -4,8 +4,8 @@ convolutional network to play a game of Pente. """
 __author__ = 'Tom Schaul, tom@idsia.ch'
 
 from pybrain.rl.environments.twoplayergames.pente import PenteGame
-from pybrain.rl.agents.gomokuplayers.randomplayer import RandomGomokuPlayer
-from pybrain.rl.agents.gomokuplayers.moduledecision import ModuleDecidingPlayer
+from pybrain.rl.environments.twoplayergames.gomokuplayers.randomplayer import RandomGomokuPlayer
+from pybrain.rl.environments.twoplayergames.gomokuplayers.moduledecision import ModuleDecidingPlayer
 from pybrain.structure.networks.custom.convboard import ConvolutionalBoardNetwork
 
 dim = 7

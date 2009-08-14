@@ -7,8 +7,8 @@
 __author__ = 'Tom Schaul, tom@idsia.ch'
 
 from pybrain.rl.environments.twoplayergames import CaptureGame
-from pybrain.rl.agents.capturegameplayers import RandomCapturePlayer, KillingPlayer, ModuleDecidingPlayer
-from pybrain.rl.agents.capturegameplayers.clientwrapper import ClientCapturePlayer
+from pybrain.rl.environments.twoplayergames.capturegameplayers import RandomCapturePlayer, KillingPlayer, ModuleDecidingPlayer
+from pybrain.rl.environments.twoplayergames.capturegameplayers.clientwrapper import ClientCapturePlayer
 from pybrain.rl.experiments import Tournament
 from pybrain.tools.shortcuts import buildNetwork
 from pybrain import SigmoidLayer

@@ -1,9 +1,9 @@
 __author__ = 'Tom Schaul, tom@idsia.ch'
 
 from capturetask import CaptureGameTask
-from pybrain.rl.agents.capturegameplayers import ModuleDecidingPlayer
+from pybrain.rl.environments.twoplayergames.capturegameplayers import ModuleDecidingPlayer
 from pybrain.rl.environments.twoplayergames import CaptureGame
-from pybrain.rl.agents.capturegameplayers.captureplayer import CapturePlayer
+from pybrain.rl.environments.twoplayergames.capturegameplayers.captureplayer import CapturePlayer
 from pybrain.structure.networks.custom.capturegame import CaptureGameNetwork
 
 
