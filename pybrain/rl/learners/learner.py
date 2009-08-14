@@ -37,7 +37,7 @@ class PhylogeneticLearner(EpisodicLearner):
     It makes use of only the cumulative reward (=fitness) at the end of the episode.
     """
 
-class Learner(Named):
+class Learner(object):
     """ A Learner determines how to change the adaptive parameters of a module.
         It requires access to a ReinforcementDataSet object (which provides state-action-reward tuples). """
 

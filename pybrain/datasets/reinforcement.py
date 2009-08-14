@@ -59,7 +59,7 @@ class PolicyGradientDataSet(ReinforcementDataSet):
             which is necessary for the calculation of the gradient. 'action' contains
             the action without exploration, while 'exploration' contains the explorative
             action returned by the explorer. """
-        ReinforcementDataSet.__init__(self)
+        ReinforcementDataSet.__init__(self, statedim, actiondim)
 
         # add an additional field and link it to the other fields
         self.addField('exploration', actiondim)

@@ -16,6 +16,7 @@ class LoggingAgent(Agent):
     
     lastobs = None
     lastaction = None
+    lastreward = None
     
     
     def __init__(self, indim, outdim):        
@@ -30,15 +31,15 @@ class LoggingAgent(Agent):
     def integrateObservation(self, obs):
         """ 1. stores the observation received in a temporary variable until action is called and
             reward is given. """
-        assert self.lastobs == None
-        assert self.lastaction == None
-        
         self.lastobs = obs
+        self.lastaction = None
+        self.lastreward = None
         
     def getAction(self):
         """ 2. stores the action in a temporary variable until reward is given. """
         assert self.lastobs != None 
         assert self.lastaction == None
+        assert self.lastreward == None
         
         # implement getAction in subclass and set self.lastaction
    
@@ -47,16 +48,20 @@ class LoggingAgent(Agent):
         # step 3: assume that state and action have been set
         assert self.lastobs != None
         assert self.lastaction != None
+        assert self.lastreward == None
 
         # if logging is off, clear history and only store last sample
         if not self.logging:
             self.history.clear()
         
+        self.lastreward = r
+        
+        # store experience in history
+        self._storeExperience()
+    
+    def _storeExperience(self):
         # store state, action and reward in dataset
-        self.history.addSample(self.lastobs, self.lastaction, r)
-
-        self.lastobs = None
-        self.lastaction = None
+        self.history.addSample(self.lastobs, self.lastaction, self.lastreward)
     
     def newEpisode(self):
         """ inidicates the beginning of a new episode in the training cycle. """
@@ -67,5 +72,6 @@ class LoggingAgent(Agent):
         """ clears the history of the agent. """
         self.lastobs = None
         self.lastaction = None
+        self.lastreward = None
         
         self.history.clear()
