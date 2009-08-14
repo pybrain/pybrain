@@ -1,6 +1,6 @@
 __author__ = 'Thomas Rueckstiess, ruecksti@in.tum.de'
 
-from pybrain.rl.tasks import EpisodicTask
+from pybrain.rl.environments import EpisodicTask
 from scipy import pi
 
 class GradualRewardTask(EpisodicTask):

@@ -1,6 +1,6 @@
 __author__ = 'Frank Sehnke, sehnke@in.tum.de'
 
-from pybrain.rl.tasks import EpisodicTask
+from pybrain.rl.environments import EpisodicTask
 from pybrain.rl.environments.ode.sensors import * #@UnusedWildImport
 from scipy import  ones, tanh, clip
 

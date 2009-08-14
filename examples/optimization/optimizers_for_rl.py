@@ -8,8 +8,8 @@ from pybrain.utilities import fListToString
 from pybrain.rl.environments.cartpole.balancetask import BalanceTask
 from pybrain.tools.shortcuts import buildNetwork
 from pybrain.optimization import HillClimber, CMAES
-from pybrain.rl.learners import ENAC
-from pybrain.rl.agents.learning import LearningAgent
+# from pybrain.rl.learners.continuous.policygradients import ENAC
+# from pybrain.rl.agents.learning import LearningAgent
 from pybrain.rl.agents.optimization import OptimizationAgent
 from pybrain.rl.experiments.episodic import EpisodicExperiment
 
@@ -21,12 +21,12 @@ task = BalanceTask()
 net = buildNetwork(task.outdim, 1, task.indim)
 
 # any optimization algorithm to be plugged in, for example:
-_learner = CMAES(storeAllEvaluations = True)
+# learner = CMAES(storeAllEvaluations = True)
 # or:
 learner = HillClimber(storeAllEvaluations = True)
 
 # in a non-optimization case the agent would be a LearningAgent:
-_agent = LearningAgent(net, ENAC())
+# agent = LearningAgent(net, ENAC())
 # here it is an OptimizationAgent:
 agent = OptimizationAgent(net, learner)
 

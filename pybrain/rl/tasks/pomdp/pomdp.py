@@ -2,7 +2,7 @@ __author__ = 'Tom Schaul, tom@idsia.ch'
 
 from scipy import ndarray
 
-from pybrain.rl.tasks import EpisodicTask
+from pybrain.rl.environments import EpisodicTask
 from pybrain.utilities import Named, drawIndex
 
 

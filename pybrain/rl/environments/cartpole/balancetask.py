@@ -3,7 +3,7 @@ __author__ = 'Thomas Rueckstiess and Tom Schaul'
 from scipy import pi, dot, array
 
 from pybrain.rl.environments.cartpole.nonmarkovpole import NonMarkovPoleEnvironment
-from pybrain.rl.tasks import EpisodicTask
+from pybrain.rl.environments import EpisodicTask
 from cartpole import CartPoleEnvironment
 
 
