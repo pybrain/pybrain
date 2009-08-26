@@ -6,7 +6,7 @@ from pybrain.utilities import abstractMethod, Named
 from pybrain.structure.modules.table import ActionValueTable
 
 
-class Explorer(Named):
+class Explorer(object):
     """ An Explorer object is used in Agents, receives the current state
         and action (from the controller Module) and returns an explorative
         action that is executed instead the given action.
@@ -28,11 +28,11 @@ class DiscreteExplorer(Explorer):
     __module = None
     
     def _setModule(self, module):
-        """ tell the explorer the module (of class ActionValueTable). """
+        """ tell the explorer the module (has to be ActionValueTable). """
         assert isinstance(module, ActionValueTable)
-        self.module = module
+        self.__module = module
     
     def _getModule(self):
-        return __module
+        return self.__module
     
     module = property(_getModule, _setModule)    
