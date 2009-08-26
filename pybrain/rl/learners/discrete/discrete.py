@@ -7,6 +7,18 @@ class DiscreteLearner(Learner):
     
     offPolicy = False
     batchMode = True
-    
-    explorer = EpsilonGreedyExplorer()
-    
+
+    __module = None
+
+    def __init__(self):
+        # create default explorer and hand it the module
+        self.explorer = EpsilonGreedyExplorer()
+
+    def _setModule(self, module):
+        self.explorer.module = module
+        self.__module = module
+
+    def _getModule(self):
+        return self.__module
+
+    module = property(_getModule, _setModule)
