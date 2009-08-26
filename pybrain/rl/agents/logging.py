@@ -35,6 +35,7 @@ class LoggingAgent(Agent):
         self.lastaction = None
         self.lastreward = None
         
+    
     def getAction(self):
         """ 2. stores the action in a temporary variable until reward is given. """
         assert self.lastobs != None 
@@ -43,6 +44,7 @@ class LoggingAgent(Agent):
         
         # implement getAction in subclass and set self.lastaction
    
+    
     def giveReward(self, r):
         """ 3. stores observation, action and reward in the history dataset. """
         # step 3: assume that state and action have been set
@@ -56,18 +58,16 @@ class LoggingAgent(Agent):
         
         self.lastreward = r
         
-        # store experience in history
-        self._storeExperience()
-    
-    def _storeExperience(self):
         # store state, action and reward in dataset
         self.history.addSample(self.lastobs, self.lastaction, self.lastreward)
-    
+        
+            
     def newEpisode(self):
         """ inidicates the beginning of a new episode in the training cycle. """
         if self.logging:
             self.history.newSequence()  
 
+    
     def reset(self):
         """ clears the history of the agent. """
         self.lastobs = None
