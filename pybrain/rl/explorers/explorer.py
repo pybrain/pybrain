@@ -25,10 +25,14 @@ class DiscreteExplorer(Explorer):
         module (which has to of class ActionValueTable).
     """
     
-    module = None
+    __module = None
     
-    def setModule(self, module):
+    def _setModule(self, module):
         """ tell the explorer the module (of class ActionValueTable). """
         assert isinstance(module, ActionValueTable)
         self.module = module
-             
+    
+    def _getModule(self):
+        return __module
+    
+    module = property(_getModule, _setModule)    
