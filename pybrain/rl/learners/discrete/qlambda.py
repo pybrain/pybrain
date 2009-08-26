@@ -1,14 +1,12 @@
 __author__ = 'Thomas Rueckstiess, ruecksti@in.tum.de'
 
-from pybrain.rl.learners.learner import Learner
-from pybrain.rl.explorers.discrete.egreedy import EpsilonGreedyExplorer
+from pybrain.rl.learners.discrete.discrete import DiscreteLearner
 
 
-class QLambda(Learner):
+class QLambda(DiscreteLearner):
     
     offPolicy = True
-    defaultExploration = EpsilonGreedyExplorer
-    
+    batchMode = False
     
     def __init__(self, alpha=0.5, gamma=0.99, qlambda = 0.9):
         self.alpha = alpha

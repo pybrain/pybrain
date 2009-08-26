@@ -1,14 +1,12 @@
 __author__ = 'Thomas Rueckstiess, ruecksti@in.tum.de'
 
-from pybrain.rl.learners.learner import Learner
-from pybrain.rl.explorers.discrete.egreedy import EpsilonGreedyExplorer
+from pybrain.rl.learners.discrete.discrete import DiscreteLearner
 
 
 class SARSA(Learner):
     
     offPolicy = False
     batchMode = True
-    defaultExploration = EpsilonGreedyExplorer
     
     def __init__(self, alpha=0.5, gamma=0.99):
         self.alpha = alpha
