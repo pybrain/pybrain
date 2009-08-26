@@ -64,3 +64,6 @@ class Learner(object):
         """ learn on the current dataset, for a single episode
             @note: has to be implemented by all subclasses. """
         abstractMethod()
+
+    def reset(self):
+        pass
