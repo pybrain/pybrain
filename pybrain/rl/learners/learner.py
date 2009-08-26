@@ -43,6 +43,7 @@ class Learner(object):
 
     dataset = None
     module = None
+    
     explorer = None
 
     def learnOnDataset(self, dataset, *args, **kwargs):
@@ -58,7 +59,7 @@ class Learner(object):
     def explore(self, state, action):
         assert self.explorer
         return self.explorer.activate(state, action)
-    
+
     def learn(self):
         """ learn on the current dataset, for a single episode
             @note: has to be implemented by all subclasses. """
