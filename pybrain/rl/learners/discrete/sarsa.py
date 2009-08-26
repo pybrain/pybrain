@@ -3,12 +3,14 @@ __author__ = 'Thomas Rueckstiess, ruecksti@in.tum.de'
 from pybrain.rl.learners.discrete.discrete import DiscreteLearner
 
 
-class SARSA(Learner):
+class SARSA(DiscreteLearner):
     
     offPolicy = False
     batchMode = True
     
     def __init__(self, alpha=0.5, gamma=0.99):
+        DiscreteLearner.__init__(self)
+
         self.alpha = alpha
         self.gamma = gamma
     

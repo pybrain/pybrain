@@ -9,6 +9,8 @@ class QLambda(DiscreteLearner):
     batchMode = False
     
     def __init__(self, alpha=0.5, gamma=0.99, qlambda = 0.9):
+        DiscreteLearner.__init__(self)
+
         self.alpha = alpha
         self.gamma = gamma
         self.qlambda = qlambda

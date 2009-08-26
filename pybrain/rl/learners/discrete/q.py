@@ -9,6 +9,8 @@ class Q(DiscreteLearner):
     batchMode = True
     
     def __init__(self, alpha=0.5, gamma=0.99):
+        DiscreteLearner.__init__(self)
+        
         self.alpha = alpha
         self.gamma = gamma
     
