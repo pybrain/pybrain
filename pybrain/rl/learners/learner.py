@@ -43,17 +43,7 @@ class Learner(object):
 
     dataset = None
     module = None
-
-    defaultExploration = None
-
-    def setModule(self, module):
-        """ sets the module for the learner. """
-        self.module = module    
-
-    def setData(self, rldataset):
-        """ sets the dataset for the learner. """
-        assert isinstance(rldataset, ReinforcementDataSet)
-        self.dataset = rldataset
+    explorer = None
 
     def learnOnDataset(self, dataset, *args, **kwargs):
         """ set the dataset, and learn """
@@ -65,6 +55,10 @@ class Learner(object):
         for dummy in range(episodes):
             self.learn(*args, **kwargs)
 
+    def explore(self, state, action):
+        assert self.explorer
+        return self.explorer.activate(state, action)
+    
     def learn(self):
         """ learn on the current dataset, for a single episode
             @note: has to be implemented by all subclasses. """
