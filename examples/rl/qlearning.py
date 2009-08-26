@@ -14,12 +14,13 @@ from pybrain.rl.environments.mazes import Maze
 from pybrain.structure.modules import ActionValueTable
 from pybrain.rl.agents import LearningAgent
 from pybrain.rl.learners import Q, QLambda, SARSA
-from pybrain.rl.explorers import EpsilonGreedyExplorer, BoltzmannExplorer
 from pybrain.rl.experiments import Experiment
 from pybrain.rl.environments import Task
 
 
 class MazeTask(Task):
+    """ We have to write our own MazeTask to make the problem fully observable MDP. """
+    
     def getReward(self):
         """ compute and return the current reward (i.e. corresponding to the last action performed) """
         if self.env.goal == self.env.perseus:
@@ -37,7 +38,7 @@ class MazeTask(Task):
 
     
     def getObservation(self):
-        """ The agent receives it's position in the maze, to make this a fully observable
+        """ The agent receives its position in the maze, to make this a fully observable
             MDP problem.
         """
         obs = array([self.env.perseus[0] * self.env.mazeTable.shape[0] + self.env.perseus[1]])   
@@ -61,12 +62,12 @@ env = Maze(envmatrix, (7, 7))
 # create task
 task = MazeTask(env)
 
-# create value table and initialize
+# create value table and initialize with ones
 table = ActionValueTable(81, 4)
-table.initialize(1)
+table.initialize(1.)
 
-# create agent with controller and learner - use Q(), SARSA() or QLambda() here
-learner = Q()
+# create agent with controller and learner - use SARSA(), Q() or QLambda() here
+learner = SARSA()
 agent = LearningAgent(table, learner)
 
 # create experiment
