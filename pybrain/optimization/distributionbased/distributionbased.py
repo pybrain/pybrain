@@ -12,6 +12,14 @@ class DistributionBasedOptimizer(ContinuousOptimizer):
     online = False
     batchSize = 100
     
+    # distribution types
+    GAUSSIAN = 1
+    CAUCHY = 2
+    GENERALIZEDGAUSSIAN = 3
+    STUDENTT = 4    
+    
+    distributionType = GAUSSIAN
+    
     def _updateDistribution(self, dparamDeltas):
         """ Update the parameters of the current distribution, directly. """
         

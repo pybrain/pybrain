@@ -18,7 +18,7 @@ function. The following switches between two different examples.
 
 The variable 'theparams' contains the trainable parameters that affect the fitness. """
 
-if True:
+if False:
     """ Simple function optimization:
     here the parameters are learned directly. """    
     from scipy import randn

@@ -6,6 +6,7 @@ from scipy.linalg import inv, pinv2
 from scipy import outer, dot, multiply, zeros, diag, mat, sum
 
 
+
 class ExactNES(VanillaGradientEvolutionStrategies):
     """ A new version of NES, using the exact instead of the approximate
     Fisher Information Matrix, as well as a number of other improvements.
