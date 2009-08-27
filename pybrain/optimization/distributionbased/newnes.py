@@ -1,13 +1,12 @@
+__author__ = 'Tom Schaul, Daan Wierstra, Tobias Glasmachers'
+
 from pybrain.tools.rankingfunctions import TopLinearRanking
 from pybrain.optimization.distributionbased.distributionbased import DistributionBasedOptimizer
 
 from scipy.stats import cauchy
 from random import gauss, uniform
-from scipy.linalg import norm, expm2, inv, det
-from scipy import zeros, dot, array, exp, randn, eye, outer, diag, power, sqrt, mean, log, pi
-
-
-__author__ = 'Daan Wierstra, Tom Schaul, Tobias Glasmachers'
+from scipy.linalg import norm, expm2, logm
+from scipy import zeros, dot, array, exp, randn, eye, outer, sqrt
 
 
 class NES(DistributionBasedOptimizer):
@@ -28,31 +27,31 @@ class NES(DistributionBasedOptimizer):
     shapingFunction = TopLinearRanking(topFraction = 0.5)
 
     # variations for the algorithm
+    naturalGradient = True
     elitism = False    
     coupledDimensions = True    
     symmetricSampling = False
-    importanceMixing = True
+    importanceMixing = False
     forcedRefresh = 0.01
     
     # fixed settings
     minimize = False
     storeAllEvaluations = True
     
-    
     def _additionalInit(self):
         assert not self.minimize
         assert self.storeAllEvaluations
+        assert not self.elitism
+        assert not self.importanceMixing, 'Does not work yet'
         if self.batchSize is None:
             self.batchSize = 10*self.numParameters
         assert not (self.symmetricSampling and self.batchSize % 2 == 1)
         if self.learningRate is None:
             self.learningRate = 1.
         self._allSampled = []
-        self.center = self._initEvaluable
-        self.lastCenter = None
-        self.transformer = eye(self.numParameters)
-        self.lastTransformer = None
-        self.detDiffTransformers = 1.
+        self.center = self._initEvaluable        
+        self.C = eye(self.numParameters)
+        self.A = sqrtm(self.C)
         
     def _produceRadius(self):
         if self.distributionType == self.GAUSSIAN:
@@ -61,9 +60,9 @@ class NES(DistributionBasedOptimizer):
             return cauchy()
         else:
             raise NotImplementedError('Distribution type '+str(self.distributionType)+' not yet implemented.')        
-            
+    
     def _coordTransform(self, sample):        
-        return dot(self.transformer.T, sample)+self.center
+        return dot(self.A, sample)+self.center
     
     def _produceSample(self):
         """ Generate a new sample, and its transformation into the current coordinate system,
@@ -96,39 +95,39 @@ class NES(DistributionBasedOptimizer):
                     self._oneEvaluation(tsample)
                     self._allSampled.append(sample)
                         
-        else:
-            dCenter = self.center - self.lastCenter
-            def oldpdf(s):
-                s = dot(dA.T, s) - dCenter        
-                return exp(-0.5*dot(s,s)) / self.detDiffTransformers
-            def newpdf(s):
-                return exp(-0.5*dot(s,s))
-            oldpoints, oldfitnesses, newpoints = importanceMixing(self._allSampled[-self.batchSize:], 
-                                                                  self._allEvaluations[-self.batchSize:], 
-                                                                  oldpdf, newpdf, 
-                                                                  self._produceSample
-                                                                  )
-            if self.symmetricSampling and len(oldpoints)%2 == 1:
-                oldpoints.pop()
-                oldfitnesses.pop()
-            for sample, f in zip(oldpoints, oldfitnesses):
-                self._allSampled.append(sample)
-                self._allEvaluations.append(f)
-                
-            if self.symmetricSampling:
-                for sample in newpoints[:self.batchSize-len(oldpoints)]:                
-                    sym_sample = -sample
-                    tsample = self.coordTransform(sample)
-                    sym_tsample = self.coordTransform(sym_sample)
-                    self._oneEvaluation(tsample)
-                    self._oneEvaluation(sym_tsample)
-                    self._allSampled.append(sample)
-                    self._allSampled.append(sym_sample)    
-            else:                    
-                for sample in newpoints:
-                    tsample = self.coordTransform(sample)
-                    self._oneEvaluation(tsample)
-                    self._allSampled.append(sample)
+#        else:
+#            dCenter = self.center - self.lastCenter
+#            def oldpdf(s):
+#                s = dot(dA.T, s) - dCenter        
+#                return exp(-0.5*dot(s,s)) / self.detDiffTransformers
+#            def newpdf(s):
+#                return exp(-0.5*dot(s,s))
+#            oldpoints, oldfitnesses, newpoints = importanceMixing(self._allSampled[-self.batchSize:], 
+#                                                                  self._allEvaluations[-self.batchSize:], 
+#                                                                  oldpdf, newpdf, 
+#                                                                  self._produceSample
+#                                                                  )
+#            if self.symmetricSampling and len(oldpoints)%2 == 1:
+#                oldpoints.pop()
+#                oldfitnesses.pop()
+#            for sample, f in zip(oldpoints, oldfitnesses):
+#                self._allSampled.append(sample)
+#                self._allEvaluations.append(f)
+#                
+#            if self.symmetricSampling:
+#                for sample in newpoints[:self.batchSize-len(oldpoints)]:                
+#                    sym_sample = -sample
+#                    tsample = self.coordTransform(sample)
+#                    sym_tsample = self.coordTransform(sym_sample)
+#                    self._oneEvaluation(tsample)
+#                    self._oneEvaluation(sym_tsample)
+#                    self._allSampled.append(sample)
+#                    self._allSampled.append(sym_sample)    
+#            else:                    
+#                for sample in newpoints:
+#                    tsample = self.coordTransform(sample)
+#                    self._oneEvaluation(tsample)
+#                    self._allSampled.append(sample)
                     
     def _learnStep(self):
         self._produceSamples()
@@ -137,92 +136,29 @@ class NES(DistributionBasedOptimizer):
         shapedFits = self.shapingFunction(fits)
         self._updateCoordinateSystem(array(samples), shapedFits)
         
-    def _updateCoordinateSystem(self, samples, fits):
-        self.lastCenter = self.center
-        self.lastTransformer = self.transformer
-        fits /= sum(fits)
+    def _updateCoordinateSystem(self, samples, utils):
+        """ the clean code! """
+        centergradient = dot(samples.T, utils)
+        dCenter = self.learningRate * centergradient / self.batchSize * sqrt(self.numParameters)
+        self.center = dot(self.A, dCenter) + self.center
         
-        # baseline
-        #fits -= 1./self.batchSize
-        
-        # update center
-        centergradient = dot(samples.T, fits)
-        dCenter = self.learningRate * centergradient 
-        
-        # update covariance matrix
-        gradientL = zeros((self.numParameters, self.numParameters))
-        numGradientL = zeros((self.numParameters, self.numParameters))
-        
-        L = zeros((self.numParameters, self.numParameters))
-        x = zeros(self.numParameters)
-        def xxx(L, x, s):
-            return log(1./sqrt(det(expm2(L))
-                       /power(2*pi, self.numParameters)) 
-                       * exp(-0.5*dot(s-x, dot(expm2(-L), (s-x)))))
-            
-        
-        for s, fit in zip(samples, fits):
-            gradientL +=  fit * (0.5 * outer(s,s) - 0.5 * eye(self.numParameters))  
-            
-            if True:
-                for i in range(self.numParameters):
-                    for j in range(i+1):
-                        if i == j:
-                            L[i,j] -= 5e-6 * sqrt(2)
-                            v1 = xxx(L, x, s)
-                            L[i,j] += 1e-5 * sqrt(2)
-                            v2 = xxx(L, x, s)
-                            L[i,j] -= 5e-6 * sqrt(2)                            
-                            numGradientL[i,j] += fit * (v2-v1) / 1e-5
-                        else:
-                            L[i,j] -= 5e-6
-                            L[j,i] -= 5e-6
-                            v1 = xxx(L, x, s)
-                            L[i,j] += 1e-5
-                            L[j,i] += 1e-5
-                            v2 = xxx(L, x, s)
-                            L[i,j] -= 5e-6
-                            L[j,i] -= 5e-6
-                            numGradientL[j,i] += fit * (v2-v1) / 1e-5
-                            numGradientL[i,j] += fit * (v2-v1) / 1e-5
-                        #print i, j, (v2-v1) / 1e-15
-        if True:
-            print gradientL
-            print numGradientL
-            print 
-            
-        # MAGIC CORRECTION BASED ON BASES WITH MAGIC NUMBERS
-        gradientL *= 2
-        gradientL -= 0.5* diag(diag(gradientL))
-        
-            
-        dL = self.learningRate * gradientL 
-        dTransformer =  expm2(0.5 * dL)
-        
-        self.center = self.lastCenter + dot(self.lastTransformer.T, dCenter)   
-        self.transformer = dot(dTransformer, self.lastTransformer)
-        
-        
-        if self.numLearningSteps % 10 == 0:
-            print 'sdet', power(det(self.transformer), 1./self.numParameters)
-            #print 'A_new', self.transformer
-            print 'Amean', mean(abs(self.transformer))
-            print 'mu_new', self.center
-            print
-        
-        
+        gradientL = zeros((self.numParameters, self.numParameters))                 
+        for s, u in zip(samples, utils):
+            gradientL +=  u * (outer(s,s) - eye(self.numParameters))        
+        dL = self.learningRate * gradientL / self.batchSize        
+        self.C = expm2(logm(self.C)+dL)        
+        self.A = sqrtm(self.C)        
+   
         # transform the previous samples to the new coordinate system
-        for i in range(self.batchSize):        
-            self._allSampled[-(i+1)] = dot(inv(dTransformer), (self._allSampled[-(i+1)] - dCenter))
+        #for i in range(self.batchSize):        
+        #    self._allSampled[-(i+1)] = dot(inv(dTransformer), (self._allSampled[-(i+1)] - dCenter))
         
-    def _updateCenter(self, samples, fits):        
-        if self.elitism:
-            self.x = self.bestEvaluable
-        else:
-            uCenter = 0 # TODO        
-            self.center += self.learningRate * uCenter            
     
     
+def sqrtm(M):
+    """ symmetric semi-definite positive square root of a matrix """
+    return expm2(0.5 * logm(M))
+   
             
 def importanceMixing(oldpoints, oldfitnesses, oldpdf, newpdf, newdistr, forcedRefresh = 0.01):
     """  """
@@ -236,8 +172,7 @@ def importanceMixing(oldpoints, oldfitnesses, oldpdf, newpdf, newdistr, forcedRe
             reusefitnesses.append(f)
         # never use only old samples
         if batch - len(reusepoints) < batch * forcedRefresh:
-            break
-    
+            break    
     newpoints = []
     # add the remaining ones
     while len(reusepoints) < len(oldpoints):
@@ -247,7 +182,6 @@ def importanceMixing(oldpoints, oldfitnesses, oldpdf, newpdf, newdistr, forcedRe
             newpoints.append(sample)
         else:
             if r < 1 - oldpdf(sample)/newpdf(sample):
-                newpoints.append(sample)  
-            
+                newpoints.append(sample)              
     return reusepoints, reusefitnesses, newpoints    
     
