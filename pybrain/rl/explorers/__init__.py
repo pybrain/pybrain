@@ -1,1 +1,2 @@
 from discrete import EpsilonGreedyExplorer, BoltzmannExplorer
+from continuous import NormalExplorer

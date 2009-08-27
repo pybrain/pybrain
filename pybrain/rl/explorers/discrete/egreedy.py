@@ -2,7 +2,7 @@ __author__ = "Thomas Rueckstiess, ruecksti@in.tum.de"
 
 from scipy import random, array
 
-from pybrain.rl.explorers.explorer import DiscreteExplorer
+from pybrain.rl.explorers.discrete.discrete import DiscreteExplorer
 
 
 class EpsilonGreedyExplorer(DiscreteExplorer):
@@ -14,10 +14,11 @@ class EpsilonGreedyExplorer(DiscreteExplorer):
     """
     
     def __init__(self, epsilon = 0.5, decay = 0.9998):
+        DiscreteExplorer.__init__(self)
         self.epsilon = epsilon
         self.decay = decay
     
-    def activate(self, state, action):
+    def _forwardImplementation(self, inbuf, outbuf):
         """ Draws a random number between 0 and 1. If the number is less
             than epsilon, a random action is chosen. If it is equal or
             larger than epsilon, the greedy action is returned.
@@ -25,10 +26,8 @@ class EpsilonGreedyExplorer(DiscreteExplorer):
         assert self.module
         
         if random.random() < self.epsilon:
-            result = array([random.randint(self.module.numColumns)])
+            outbuf[:] = array([random.randint(self.module.numColumns)])
         else:
-            result = action
+            outbuf[:] = inbuf
             
         self.epsilon *= self.decay
-        
-        return result

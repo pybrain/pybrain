@@ -14,6 +14,7 @@ from pybrain.rl.environments.mazes import Maze
 from pybrain.structure.modules import ActionValueTable
 from pybrain.rl.agents import LearningAgent
 from pybrain.rl.learners import Q, QLambda, SARSA
+from pybrain.rl.explorers import BoltzmannExplorer
 from pybrain.rl.experiments import Experiment
 from pybrain.rl.environments import Task
 
@@ -68,6 +69,10 @@ table.initialize(1.)
 
 # create agent with controller and learner - use SARSA(), Q() or QLambda() here
 learner = SARSA()
+
+# standard exploration is e-greedy, but a different type can be chosen as well
+# learner.explorer = BoltzmannExplorer()
+
 agent = LearningAgent(table, learner)
 
 # create experiment
