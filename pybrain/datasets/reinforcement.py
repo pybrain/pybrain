@@ -53,23 +53,3 @@ class ReinforcementDataSet(SequentialDataSet):
         return creator, args, state, iter([]), iter({})
 
 
-class PolicyGradientDataSet(ReinforcementDataSet):
-    def __init__(self, statedim, actiondim):
-        """ Like ReinforcementDataSet but it has an additional field 'exploration',
-            which is necessary for the calculation of the gradient. 'action' contains
-            the action without exploration, while 'exploration' contains the explorative
-            action returned by the explorer. """
-        ReinforcementDataSet.__init__(self, statedim, actiondim)
-
-        # add an additional field and link it to the other fields
-        self.addField('exploration', actiondim)
-        self.linkFields(['state', 'action', 'exploration', 'reward'])
-
-    def addSample(self, state, action, exploration, reward):
-        """ adds a new sample consisting of state, action, exploration, reward. 
-            @param state: the current state of the world
-            @param action: the action returned by the module
-            @param exploration: the actually executed explorative action
-            @param reward: the received reward value"""
-        self.appendLinked(state, action, exploration, reward)
-
