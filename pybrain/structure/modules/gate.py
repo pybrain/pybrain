@@ -15,8 +15,8 @@ class MultiplicationLayer(NeuronLayer):
     """Layer that implements pairwise multiplication."""
 
     def __init__(self, dim, name=None):
-        self.setArgs(dim=dim)
         Module.__init__(self, 2 * dim, dim, name)
+        self.setArgs(dim=dim, name=self.name)
     
     def _forwardImplementation(self, inbuf, outbuf):
         outbuf += inbuf[:self.outdim] * inbuf[self.outdim:]
@@ -35,8 +35,8 @@ class GateLayer(NeuronLayer):
     is the vector of inputs."""
     
     def __init__(self, dim, name=None):
-        self.setArgs(dim=dim)
         Module.__init__(self, 2 * dim, dim, name)
+        self.setArgs(dim=dim, name=self.name)
     
     def _forwardImplementation(self, inbuf, outbuf):
         outbuf += sigmoid(inbuf[:self.outdim]) * inbuf[self.outdim:]
@@ -58,8 +58,8 @@ class DoubleGateLayer(NeuronLayer):
     of inputs."""
     
     def __init__(self, dim, name=None):
-        self.setArgs(dim=dim)
         Module.__init__(self, 2 * dim, 2 * dim, name)
+        self.setArgs(dim=dim, name=self.name)
     
     def _forwardImplementation(self, inbuf, outbuf):
         dim = self.indim / 2
@@ -83,8 +83,8 @@ class SwitchLayer(NeuronLayer):
     """Layer that implements pairwise multiplication."""
 
     def __init__(self, dim, name=None):
-        self.setArgs(dim=dim)
         Module.__init__(self, dim, dim * 2, name)
+        self.setArgs(dim=dim, name=self.name)
     
     def _forwardImplementation(self, inbuf, outbuf):
         outbuf[:self.indim] += sigmoid(inbuf)
