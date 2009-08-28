@@ -8,6 +8,12 @@ import pybrain #@UnusedImport
 from scipy import array #@UnusedImport
 
 
+try:
+  import arac.pybrainbridge
+except ImportError:
+  pass
+
+
 class NetworkReader(XMLHandling):
     """ A class that can take read a network from an XML file """
     
