@@ -15,6 +15,7 @@ class MultiplicationLayer(NeuronLayer):
     """Layer that implements pairwise multiplication."""
 
     def __init__(self, dim, name=None):
+        self.setArgs(dim=dim)
         Module.__init__(self, 2 * dim, dim, name)
     
     def _forwardImplementation(self, inbuf, outbuf):
@@ -34,6 +35,7 @@ class GateLayer(NeuronLayer):
     is the vector of inputs."""
     
     def __init__(self, dim, name=None):
+        self.setArgs(dim=dim)
         Module.__init__(self, 2 * dim, dim, name)
     
     def _forwardImplementation(self, inbuf, outbuf):
@@ -56,6 +58,7 @@ class DoubleGateLayer(NeuronLayer):
     of inputs."""
     
     def __init__(self, dim, name=None):
+        self.setArgs(dim=dim)
         Module.__init__(self, 2 * dim, 2 * dim, name)
     
     def _forwardImplementation(self, inbuf, outbuf):
@@ -80,6 +83,7 @@ class SwitchLayer(NeuronLayer):
     """Layer that implements pairwise multiplication."""
 
     def __init__(self, dim, name=None):
+        self.setArgs(dim=dim)
         Module.__init__(self, dim, dim * 2, name)
     
     def _forwardImplementation(self, inbuf, outbuf):

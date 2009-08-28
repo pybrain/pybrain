@@ -1,5 +1,5 @@
 from biasunit import BiasUnit
-from gate import GateLayer
+from gate import GateLayer, DoubleGateLayer, MultiplicationLayer, SwitchLayer
 from gaussianlayer import GaussianLayer
 from linearlayer import LinearLayer
 from lstm import LSTMLayer
