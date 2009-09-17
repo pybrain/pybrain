@@ -32,8 +32,8 @@ class EpisodicExperiment(Experiment):
             self.optimizer.learn()
         else:            
             all_rewards = []
-            self.agent.newEpisode()
             for dummy in range(number):
+                self.agent.newEpisode()
                 rewards = []
                 self.stepid = 0
                 self.task.reset()
@@ -41,7 +41,6 @@ class EpisodicExperiment(Experiment):
                     r = self._oneInteraction()
                     rewards.append(r)
                 all_rewards.append(rewards)
-                # the agent is informed of the end of the episode
-                self.agent.newEpisode()            
+          
             return all_rewards
         
