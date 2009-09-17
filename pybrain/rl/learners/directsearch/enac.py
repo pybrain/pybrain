@@ -2,7 +2,7 @@ __author__ = 'Thomas Rueckstiess, ruecksti@in.tum.de'
 
 
 from policygradient import PolicyGradientLearner
-from scipy import ones, dot
+from scipy import ones, dot, ravel, r_
 from scipy.linalg import pinv
 
 
@@ -16,20 +16,27 @@ class ENAC(PolicyGradientLearner):
         
     def calculateGradient(self):
         # normalize rewards
-        # self.ds.data['reward'] /= max(ravel(abs(self.ds.data['reward'])))
+        # self.dataset.data['reward'] /= max(ravel(abs(self.dataset.data['reward'])))
         
         # initialize variables
-        R = ones((self.ds.getNumSequences(), 1), float)
-        X = ones((self.ds.getNumSequences(), self.ds.getDimension('loglh')+1), float)
+        R = ones((self.dataset.getNumSequences(), 1), float)
+        X = ones((self.dataset.getNumSequences(), self.loglh.getDimension('loglh')+1), float)
 
         # collect sufficient statistics
-        for n in range(self.ds.getNumSequences()):
-            _state, _action, reward, loglh = self.ds.getSequence(n)
+        print self.dataset.getNumSequences()
+        for n in range(self.dataset.getNumSequences()):
+            _state, _action, reward = self.dataset.getSequence(n)
+            seqidx = ravel(self.dataset['sequence_index'])
+            if n == self.dataset.getNumSequences() - 1:
+                # last sequence until end of dataset
+                loglh = self.loglh['loglh'][seqidx[n]:, :]
+            else:
+                loglh = self.loglh['loglh'][seqidx[n]:seqidx[n+1], :]
+            
             X[n, :-1] = sum(loglh, 0)
             R[n, 0] = sum(reward, 0)
         
         # linear regression
         beta = dot(pinv(X), R)
-        
         return beta[:-1]
         

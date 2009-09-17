@@ -1,62 +1,63 @@
-#########################################################################
-# Reinforcement Learning with Policy Gradients on the SimpleEnvironment 
-#
-# SimpleEnvironment is a one-dimensional quadratic function with its
-# maximum at x=0. Additionally, noise can be added (setNoise(variance)).
-# The Agent can make steps in either direction and has receives reward 
-# equal to the negative function value. The optimal parameter is -10.0
+__author__ = 'Thomas Rueckstiess, ruecksti@in.tum.de'
 
-# Requirements: pylab (for plotting only). If not available, 
-# change the 'plotting' flag to False
-#########################################################################
+
+""" This example demonstrates how to use the continuous Reinforcement Learning
+    algorithms (ENAC, Reinforce) in a simple minimization task. 
+
+    SimpleEnvironment is a one-dimensional quadratic function with its
+    maximum at x=0. Additionally, noise can be added by setNoise(variance).
+    The Agent can make steps in either direction and receives reward 
+    equal to the negative function value. The optimal parameter is -10.0
+   
+    Requirements: pylab (for plotting only). If not available, 
+    change the 'plotting' flag to False.
+"""
 
 from scipy import array, mean, zeros
 
+from pybrain.rl.environments.simple import SimpleEnvironment, MinimizeTask 
 from pybrain.tools.shortcuts import buildNetwork
-from pybrain.rl.environments.simple import SimpleEnvironment, MinimizeTask
 from pybrain.rl.agents import LearningAgent
-from pybrain.rl.learners.continuous.policygradients import ENAC
+from pybrain.rl.learners import ENAC, Reinforce
 from pybrain.rl.experiments import EpisodicExperiment
-
 
 # for plotting
 plotting = True
 
-
 if plotting:
-    from pylab import draw, ion, title, plot, figure, clf #@UnresolvedImport
+    from pylab import draw, ion, title, plot, figure, clf
     ion()   
 
 # create environment
 env = SimpleEnvironment()
-env.setNoise(0.9)
+env.setNoise(0.1)
 
 # create task
 task = MinimizeTask(env)
 
-# create controller network (flat network)
-net = buildNetwork(1, 1, bias=False)
-net._setParameters(array([-11.]))
+# create controller network (no hidden layer, no bias) and initialize
+net = buildNetwork(1, 1, bias=False, outputbias=False)
+net._setParameters(array([-9.]))
 
 # create agent with controller and learner
-agent = LearningAgent(net, ENAC())
-
+agent = LearningAgent(net, Reinforce())
+agent.learner.learningRate = 0.002
+agent.learner.gd.momentum = 0.9
 # experiment
 experiment = EpisodicExperiment(task, agent)
-
 
 plots = zeros((1000, agent.module.paramdim+1), float)
 
 for updates in range(1000):
     # training step
-    experiment.doEpisodes(10)
+    experiment.doEpisodes(20)
     agent.learn()
     print "parameters:", agent.module.params
-
+    print "sigma:", agent.learner.explorer.params
     # append mean reward to sr array
     ret = []
-    for n in range(agent.history.getNumSequences()):
-        state, action, reward, _ = agent.history.getSequence(n)
+    for n in range(agent.history.getNumSequences()-1):
+        state, action, reward = agent.history.getSequence(n)
         ret.append( sum(reward, 0).item() )
 
     plots[updates, 0] = mean(ret)
@@ -72,4 +73,6 @@ for updates in range(1000):
         clf()
         title('Weight value')
         plot(plots[0:updates, 1])
-        draw()  
+        draw()
+    agent.reset()
+    

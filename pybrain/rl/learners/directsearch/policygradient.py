@@ -5,6 +5,8 @@ from pybrain.utilities import abstractMethod
 from pybrain.auxiliary import GradientDescent
 from pybrain.rl.explorers import NormalExplorer
 from pybrain.datasets.dataset import DataSet
+from pybrain.structure.networks import FeedForwardNetwork
+from pybrain.structure.connections import IdentityConnection
 
 from scipy import ravel, array, zeros
 
@@ -25,17 +27,19 @@ class PolicyGradientLearner(Learner):
     
     _module = None
     
-    def __init__(self):
+    def __init__(self):        
+        # gradient descender
+        self.gd = GradientDescent()
+        
         # create default explorer
         self.explorer = None
         
-        # gradient descender
-        self.gd_module = GradientDescent()
-        self.gd_explorer = GradientDescent()
+        # loglh dataset
+        self.loglh = None
         
-        # loglh datasets
-        self.loglh_module = None
-        self.loglh_explorer = None
+        # network to tie module and explorer together
+        self.network = None
+        
     
     def _setLearningRate(self, alpha):
         """ pass the alpha value through to the gradient descent object """
@@ -54,13 +58,18 @@ class PolicyGradientLearner(Learner):
         # initialize explorer
         self.explorer = NormalExplorer(module.outdim)
         
-        # initialize gradient descenders
-        self.gd_module.init(module.params) 
-        self.gd_explorer.init(self.explorer.params)
+        # build network
+        self.network = FeedForwardNetwork()
+        self.network.addInputModule(module)
+        self.network.addOutputModule(self.explorer)
+        self.network.addConnection(IdentityConnection(self._module, self.explorer))
+        self.network.sortModules()
         
-        # initialize loglh datasets
-        self.loglh_module = LoglhDataSet(module.paramdim) 
-        self.loglh_explorer = LoglhDataSet(self.explorer.paramdim)      
+        # initialize gradient descender
+        self.gd.init(self.network.params) 
+        
+        # initialize loglh dataset
+        self.loglh = LoglhDataSet(self.network.paramdim)    
     
     def _getModule(self):
         return self._module
@@ -74,47 +83,31 @@ class PolicyGradientLearner(Learner):
         assert self.module != None
                 
         # calculate the gradient with the specific function from subclass
-        gradient_module, gradient_explorer = self.calculateGradients()
+        gradient = self.calculateGradient()
 
         # scale gradient if it has too large values
-        if max(gradient_module) > 1000:
-            gradient_module = gradient_module / max(gradient_module) * 1000
+        if max(gradient) > 1000:
+            gradient = gradient / max(gradient) * 1000
         
         # update the parameters of the module
-        p = self.gd_module(gradient_module)
-        self.module._setParameters(p)
-        self.module.reset()
-        
-        # scale gradient if it has too large values
-        if max(gradient_explorer) > 1000:
-            gradient_explorer = gradient_explorer / max(gradient_explorer) * 1000
-        
-        # update the parameters of the explorer
-        p = self.gd_explorer(gradient_explorer)
-        self.explorer._setParameters(p)
-        self.explorer.reset()
-        
+        p = self.gd(gradient.flatten())
+        self.network._setParameters(p)
+        self.network.reset()
     
     def explore(self, state, action):
         # forward pass of exploration
-        explorative = Learner.explore(self, state, action).copy()
+        explorative = Learner.explore(self, state, action)
         
-        # backward pass and store derivs of explorer
-        self.explorer.backward()
-        self.loglh_explorer.appendLinked(self.explorer.derivs.copy())
-        
-        # propagate inerr of explorer through module and store derivs
-        expl_inerr = self.explorer.inputerror[self.explorer.offset]
-        self.module.backActivate(expl_inerr)
-        self.loglh_module.appendLinked(self.module.derivs.copy())
+        # backward pass through network and store derivs
+        self.network.backward()
+        self.loglh.appendLinked(self.network.derivs.copy())
         
         return explorative
     
     
     def reset(self):
-        self.loglh_module.clear()
-        self.loglh_explorer.clear()
+        self.loglh.clear() 
     
     
-    def calculateGradients(self):
+    def calculateGradient(self):
         abstractMethod()

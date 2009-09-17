@@ -4,63 +4,50 @@ from scipy import random, ndarray
 from copy import copy
 
 from pybrain.rl.explorers.explorer import Explorer
-from pybrain.tools.functions import expln
+from pybrain.tools.functions import expln, explnPrime
+from pybrain.structure.parametercontainer import ParameterContainer
 
 
-class NormalExplorer(Explorer):
+class NormalExplorer(Explorer, ParameterContainer):
     """ A continuous explorer, that perturbs the resulting action with
         additive, normally distributed random noise. The exploration
-        has a parameter(s) sigma, which are related to the distribution's 
+        has parameter(s) sigma, which are related to the distribution's 
         standard deviation. In order to allow for negative values of sigma, 
         the real std. derivation is a transformation of sigma according
         to the expln() function (see pybrain.tools.functions).
     """
     
-    def __init__(self, sigma = 2., decay=None, covariance='spherical'):
-        """ takes an initial value for sigma, an optional decay multiplier
-            and a covariance choice, which can be one of:
-            - spherical: one single value multiplied by Eye(n) to get the
-              covariance matrix
-            - diagonal: n-dimensional vector representing the diagonal
-              of the covariance matrix
-            - full: the full covariance matrix
-        """
-        assert covariance in ['diagonal', 'spherical', 'full'], \
-            'unknown covariance type: %s'%covariance
-        
-        self.actions = []
-        self.covariance = covariance
-        self.sigma = sigma
-        self.decay = decay
-    
-    
-    def activate(self, state, action):
-        """ 
-        """
-        # save a copy of the deterministic action
-        self.actions.append(copy(action))
-        
-        if self.covariance == 'full':
-            assert isinstance(self.sigma, ndarray), 'sigma is not a covariance matrix'
-            assert self.sigma.shape[0] == self.sigma.shape[1] == len(action), \
-                'shape mismatch for covariance matrix'
-        
-            r = random.multivariate_normal([0]*len(action), expln(sigma))
-        
-        else:
-            if self.covariance == 'diagonal':
-                assert len(self.sigma) == len(action), 'shape mismatch for sigma vector'
+    def __init__(self, dim, sigma = 0.):
+            Explorer.__init__(self, dim, dim)
+            self.dim = dim
             
-            r = random.normal(0, self.sigma, len(action))
+            # initialize parameters to sigma
+            ParameterContainer.__init__(self, dim, stdParams = 0)
+            self.sigma = [sigma]*dim
 
-        action += r
-        
-        if self.decay != None:
-            self.sigma *= self.decay
-        
-        return action
+    def _setSigma(self, sigma):
+        """ Wrapper method to set the sigmas (the parameters of the module) to a
+            certain value. 
+        """
+        assert len(sigma) == self.dim
+        self._params *= 0
+        self._params += sigma
+
+    def _getSigma(self):
+        return self.params
     
-    
-    def clear(self):
-        self.actions = []
+    sigma = property(_getSigma, _setSigma)
+
+    def _forwardImplementation(self, inbuf, outbuf):
+        outbuf[:] = random.normal(inbuf, expln(self.sigma))
+
+    def _backwardImplementation(self, outerr, inerr, outbuf, inbuf):
+        expln_sigma = expln(self.sigma)
+        self._derivs += ((outbuf - inbuf)**2 - expln_sigma**2) / expln_sigma * explnPrime(self.sigma)
+        inerr[:] = (outbuf - inbuf)
         
+        # auto-alpha 
+        # inerr /= expln_sigma**2
+        # self._derivs /= expln_sigma**2
+        
+    

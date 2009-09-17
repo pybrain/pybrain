@@ -1,7 +1,7 @@
 __author__ = 'Thomas Rueckstiess, ruecksti@in.tum.de'
 
 from policygradient import PolicyGradientLearner
-from scipy import mean
+from scipy import mean,ravel,array
 
 
 class Reinforce(PolicyGradientLearner):
@@ -19,15 +19,17 @@ class Reinforce(PolicyGradientLearner):
         # self.ds.data['reward'] /= max(ravel(abs(self.ds.data['reward'])))
         
         # initialize variables
-        returns = self.ds.getSumOverSequences('reward')
-        loglhs = self.ds.getSumOverSequences('loglh')
-                
-        # only take better half of returns/loglhs
-        # loglhs = loglhs[where(returns > mean(returns))[0],:]
-        # returns = returns[where(returns > mean(returns))[0], :]
+        returns = self.dataset.getSumOverSequences('reward')
+        seqidx = ravel(self.dataset['sequence_index'])
+       
+        # sum of sequences up to n-1
+        loglhs = [sum(self.loglh['loglh'][seqidx[n]:seqidx[n+1], :]) for n in range(self.dataset.getNumSequences()-1)]
+        # append sum of last sequence as well
+        loglhs.append(sum(self.loglh['loglh'][seqidx[-1]:, :]))
+        loglhs = array(loglhs)
         
         baselines = mean(loglhs**2 * returns, 0) / mean(loglhs**2, 0)
         gradient = mean(loglhs * (returns-baselines), 0)
         
-        return gradient
+        return -gradient
                 
