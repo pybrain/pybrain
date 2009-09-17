@@ -41,7 +41,7 @@ net._setParameters(array([-9.]))
 
 # create agent with controller and learner
 agent = LearningAgent(net, Reinforce())
-agent.learner.learningRate = 0.002
+agent.learner.learningRate = 0.01
 agent.learner.gd.momentum = 0.9
 # experiment
 experiment = EpisodicExperiment(task, agent)
