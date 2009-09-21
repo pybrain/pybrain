@@ -10,9 +10,6 @@ class Reinforce(PolicyGradientLearner):
         Connectionist Reinforcement Learning"). It uses optimal
         baselines and calculates the gradient with the log likelihoods
         of the taken actions. """ 
-         
-    def __init__(self):
-        PolicyGradientLearner.__init__(self)
 
     def calculateGradient(self):
         # normalize rewards
@@ -29,7 +26,8 @@ class Reinforce(PolicyGradientLearner):
         loglhs = array(loglhs)
         
         baselines = mean(loglhs**2 * returns, 0) / mean(loglhs**2, 0)
-        gradient = mean(loglhs * (returns-baselines), 0)
+        # TODO: why gradient negative?
+        gradient = -mean(loglhs * (returns-baselines), 0)
         
-        return -gradient
+        return gradient
                 

@@ -1,9 +1,7 @@
-__author__ = 'Tom Schaul, tom@idsia.ch'
+__author__ = 'Thomas Rueckstiess, ruecksti@in.tum.de'
 
-from pybrain.rl.learners.learner import Learner
-
-
-class DirectSearch(Learner):
-    """ Learning algorithm that operates directly on policies, without trying to learn 
-    a value-function for each (believed) state. """
-    
+class DirectSearchLearner(Learner):
+    """ Meta-class to distinguish direct search learners from other types,
+        such as value-based learners.
+    """
+    pass

@@ -39,7 +39,8 @@ class PhylogeneticLearner(EpisodicLearner):
 
 class Learner(object):
     """ A Learner determines how to change the adaptive parameters of a module.
-        It requires access to a ReinforcementDataSet object (which provides state-action-reward tuples). """
+        It requires access to a ReinforcementDataSet object (which provides 
+        state-action-reward tuples). """
 
     dataset = None
     module = None
