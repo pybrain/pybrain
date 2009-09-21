@@ -34,11 +34,10 @@ class QLambda(DiscreteLearner):
                 
             state = int(states[i])
             laststate = int(states[i-1])
-            action = int(actions[i])
+            # action = int(actions[i])
             lastaction = int(actions[i-1])
             reward = int(rewards[i])
 
-        
             qvalue = self.module.getValue(laststate, lastaction)
             maxnext = self.module.getValue(state, self.module.getMaxAction(state))
             self.module.updateValue(laststate, lastaction, qvalue + self.alpha * lbda * (reward + self.gamma * maxnext - qvalue))

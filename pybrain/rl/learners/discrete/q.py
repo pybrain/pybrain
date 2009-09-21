@@ -19,17 +19,16 @@ class Q(DiscreteLearner):
     
     def learn(self):
         """ learn on the current dataset, either for many timesteps and
-            even episodes (batch mode) or for a single timestep, if the
-            dataset only contains one sample. Batch mode is possible,
-            because Q-Learning is an off-policy method.
+            even episodes (batchMode = True) or for a single timestep 
+            (batchMode = False). Batch mode is possible, because Q-Learning 
+            is an off-policy method.
+
+            in batchMode, the algorithm goes through all the samples in the
+            history and performs an update on each of them. if batchMode is
+            False, only the last data sample is considered. The user himself
+            has to make sure to keep the dataset consistent with the agent's 
+            history.
         """
-        
-        # in batchMode, the algorithm goes through all the samples in the
-        # history and performs an update on each of them. if batchMode is
-        # False, only the last data sample is considered. The user has to
-        # make sure themself to keep the dataset consistent with the
-        # agent's history.
-        
         if self.batchMode:
             samples = self.dataset
         else:

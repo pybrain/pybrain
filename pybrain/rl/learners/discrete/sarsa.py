@@ -18,13 +18,14 @@ class SARSA(DiscreteLearner):
         self.lastaction = None
 
     def learn(self):
-        """ learn on the current dataset, for a single step. """
+        """ learn on the current dataset, for a single step.
         
-        # in batchMode, the algorithm goes through all the samples in the
-        # history and performs an update on each of them. if batchMode is
-        # False, only the last data sample is considered. The user has to
-        # make sure themself to keep the dataset consistent with the
-        # agent's history.
+            in batchMode, the algorithm goes through all the samples in the
+            history and performs an update on each of them. if batchMode is
+            False, only the last data sample is considered. The user himself
+            has to make sure to keep the dataset consistent with the agent's 
+            history.
+        """
         
         if self.batchMode:
             samples = self.dataset
