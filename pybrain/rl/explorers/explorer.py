@@ -13,9 +13,13 @@ class Explorer(Module):
     """
 
     def activate(self, state, action):
-        """ the super class ignores the state and simply passes the
+        """ the super class commonly ignores the state and simply passes the
             action through the module. implement _forwardImplementation()
             in subclasses.
         """
         return Module.activate(self, action)
+    
         
+    def newEpisode(self):
+        """ informs the explorer about the start of a new episode. """
+        pass

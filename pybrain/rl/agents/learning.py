@@ -53,6 +53,15 @@ class LearningAgent(LoggingAgent):
             
         return self.lastaction
                     
+
+    def newEpisode(self):
+        """ inidicates the beginning of a new episode in the training cycle. """
+        if self.logging:
+            self.history.newSequence()
+        
+        # inform learner about the start of a new episode
+        if self.learning:
+            self.learner.newEpisode() 
     
     def reset(self):
         """ clears the history of the agent and resets the module and learner. """

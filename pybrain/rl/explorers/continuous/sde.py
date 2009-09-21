@@ -18,7 +18,7 @@ class StateDependentExplorer(Explorer, ParameterContainer):
         to the expln() function (see pybrain.tools.functions).
     """
     
-    def __init__(self, statedim, actiondim, sigma = 0.):
+    def __init__(self, statedim, actiondim, sigma = -2.):
             Explorer.__init__(self, actiondim, actiondim)
             self.statedim = statedim
             self.actiondim = actiondim
@@ -46,25 +46,39 @@ class StateDependentExplorer(Explorer, ParameterContainer):
     
     sigma = property(_getSigma, _setSigma)
 
-
+    def newEpisode(self):
+        """ randomizes the matrix values for exploration during one episode. """
+        self.explmatrix = random.normal(0., expln(self.sigma), self.explmatrix.shape)
+        
     def activate(self, state, action):
         """ the super class commonly ignores the state and simply passes the
             action through the module. implement _forwardImplementation()
             in subclasses.
         """
         self.state = state
-        print "sigma", self.sigma
-        self.explmatrix = random.normal(0., expln(self.sigma), self.explmatrix.shape)
         return Module.activate(self, action)
 
     def _forwardImplementation(self, inbuf, outbuf):
         outbuf[:] = inbuf + dot(self.state, self.explmatrix)
 
     def _backwardImplementation(self, outerr, inerr, outbuf, inbuf):
-        expln_sigma = expln(self.sigma)
-        self._derivs += 0.000001
-        inerr[:] = (outbuf - inbuf)
-        
+        expln_params = expln(self.params
+                        ).reshape(len(outbuf), len(self.state))
+        explnPrime_params = explnPrime(self.params
+                        ).reshape(len(outbuf), len(self.state))
+    
+        idx = 0
+        for j in xrange(len(outbuf)):
+            sigma_subst2 = dot(self.state**2,expln_params[j,:]**2) 
+            for i in xrange(len(self.state)):
+                self._derivs[idx] = ((outbuf[j] - inbuf[j])**2 - sigma_subst2) / sigma_subst2 * \
+                    self.state[i]**2*expln_params[j,i]*explnPrime_params[j,i]
+                # if self.autoalpha and sigma_subst2 != 0:
+                # self._derivs[idx] /= sigma_subst2
+                idx += 1
+            inerr[j] = (outbuf[j] - inbuf[j])
+            # if not self.autoalpha and sigma_subst2 != 0:
+            #     inerr[j] /= sigma_subst2        
         # auto-alpha 
         # inerr /= expln_sigma**2
         # self._derivs /= expln_sigma**2

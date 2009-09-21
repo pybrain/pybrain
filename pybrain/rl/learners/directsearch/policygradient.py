@@ -32,7 +32,7 @@ class PolicyGradientLearner(Learner):
         self.gd = GradientDescent()
         
         # create default explorer
-        self.explorer = None
+        self._explorer = None
         
         # loglh dataset
         self.loglh = None
@@ -56,13 +56,41 @@ class PolicyGradientLearner(Learner):
         self._module = module
         
         # initialize explorer
-        self.explorer = NormalExplorer(module.outdim)
+        self._explorer = NormalExplorer(module.outdim)
         
         # build network
+        self._initializeNetwork()
+    
+    def _getModule(self):
+        return self._module
+        
+    module = property(_getModule, _setModule)
+    
+    def _setExplorer(self, explorer):
+        """ assign non-standard explorer to the policy gradient learner.
+            requires the module to be set beforehand.
+        """
+        assert self._module
+        
+        self._explorer = explorer
+        
+        # build network
+        self._initializeNetwork()
+
+    def _getExplorer(self):
+        return self._explorer
+    
+    explorer = property(_getExplorer, _setExplorer)
+        
+    
+    def _initializeNetwork(self):
+        """ build the combined network consisting of the module and
+            the explorer and initializing the log likelihoods dataset.
+        """
         self.network = FeedForwardNetwork()
-        self.network.addInputModule(module)
-        self.network.addOutputModule(self.explorer)
-        self.network.addConnection(IdentityConnection(self._module, self.explorer))
+        self.network.addInputModule(self._module)
+        self.network.addOutputModule(self._explorer)
+        self.network.addConnection(IdentityConnection(self._module, self._explorer))
         self.network.sortModules()
         
         # initialize gradient descender
@@ -70,11 +98,7 @@ class PolicyGradientLearner(Learner):
         
         # initialize loglh dataset
         self.loglh = LoglhDataSet(self.network.paramdim)    
-    
-    def _getModule(self):
-        return self._module
         
-    module = property(_getModule, _setModule)   
         
     def learn(self):
         """ calls the gradient calculation function and executes a step in direction
@@ -84,7 +108,7 @@ class PolicyGradientLearner(Learner):
                 
         # calculate the gradient with the specific function from subclass
         gradient = self.calculateGradient()
-
+        print "gradient", gradient
         # scale gradient if it has too large values
         if max(gradient) > 1000:
             gradient = gradient / max(gradient) * 1000
@@ -104,7 +128,9 @@ class PolicyGradientLearner(Learner):
         
         return explorative
     
-    
+    def newEpisode(self):
+        self.explorer.newEpisode()
+        
     def reset(self):
         self.loglh.clear() 
     
