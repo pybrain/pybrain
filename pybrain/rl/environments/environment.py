@@ -15,6 +15,16 @@ class Environment(object):
     # the number of sensor values the environment produces
     outdim = 0
     
+    # discrete state space
+    discreteStates = False
+    
+    # discrete action space
+    discreteActions = False
+    
+    # number of possible actions for discrete action space
+    numActions = None
+    
+    
     def getSensors(self):
         """ the currently visible state of the world (the observation may be 
             stochastic - repeated calls returning different values)

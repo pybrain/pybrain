@@ -35,7 +35,7 @@ class BoltzmannExplorer(DiscreteExplorer):
         """
         assert self.module 
         
-        values = self.module.values[self._state, :].flatten()
+        values = self.module.getActionValues(self._state)
         action = drawGibbs(values, self.tau)
         
         self.tau *= self.decay

@@ -26,7 +26,7 @@ class EpsilonGreedyExplorer(DiscreteExplorer):
         assert self.module
         
         if random.random() < self.epsilon:
-            outbuf[:] = array([random.randint(self.module.numColumns)])
+            outbuf[:] = array([random.randint(self.module.numActions)])
         else:
             outbuf[:] = inbuf
             
