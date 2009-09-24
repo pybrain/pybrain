@@ -164,9 +164,9 @@ class GaussianProcess:
             
             # plot training set
             plot(self.trainx, self.trainy, 'bx')
-            # plot mean (black)
+            # plot mean (blue)
             plot(self.testx, self.pred_mean, 'b', linewidth=1)
-            # plot variance (semi-transp)
+            # plot variance (as "polygon" going from left to right for upper half and back for lower half)
             fillx = r_[ravel(self.testx), ravel(self.testx[::-1])]
             filly = r_[self.pred_mean+2*diag(self.pred_cov), self.pred_mean[::-1]-2*diag(self.pred_cov)[::-1]]
             fill(fillx, filly, facecolor='gray', edgecolor='white', alpha=0.3)
