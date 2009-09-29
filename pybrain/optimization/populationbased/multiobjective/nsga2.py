@@ -1,6 +1,5 @@
 __author__ = 'Justin Bayer, Tom Schaul, {justin,tom}@idsia.ch'
 
-from scipy import array
 from pybrain.optimization.populationbased.ga import GA
 import collections
 
@@ -17,52 +16,28 @@ class MultiObjectiveGA(GA):
     mutationStdDev = 1.
     
     allowEquality = True
-    
-    startPop = None
-        
-    def _additionalInit(self):
-        """ The algorithm returns all individuals in the Pareto-front (and their fitnesses). 
-        """
-        GA._additionalInit(self)
-        self.fitnesses = {}    
-    
-    def stoppingCriterion(self):
-        # TODO: what can be put here?
-        return False
-    
-    def initPopulation(self):
-        if self.startPop == None:
-            GA.initPopulation(self)
-            self.currentpop = map(tuple, self.currentpop)
-        else:
-            self.currentpop = self.startPop
-         
-    def mutated(self, indiv):
-        return tuple(GA.mutated(self,array(indiv)))
-     
-    def oneGeneration(self):
+
+    def _learnStep(self):
         """ do one generation step """
         # evaluate fitness
-        for indiv in self.currentpop:
-            if indiv not in self.fitnesses:
-                self.fitnesses[indiv] = self.evaluator(array(indiv))
-                self.steps += 1
+        self.fitnesses = dict([(tuple(indiv), self._oneEvaluation(indiv)) for indiv in self.currentpop])
+        if self.storeAllPopulations:
+            self._allGenerations.append((self.currentpop, self.fitnesses))
         
-        self.allgenerations.append((self.currentpop))
         if self.elitism:    
-            self.bestEvaluable = list(non_dominated_front(self.currentpop,
+            self.bestEvaluable = list(non_dominated_front(map(tuple, self.currentpop),
                                                           key=lambda x: self.fitnesses[x],
                                                           allowequality = self.allowEquality))
         else:
-            self.bestEvaluable = list(non_dominated_front(self.currentpop+self.bestEvaluable,
+            self.bestEvaluable = list(non_dominated_front(map(tuple, self.currentpop)+self.bestEvaluable,
                                                           key=lambda x: self.fitnesses[x],
                                                           allowequality = self.allowEquality))
-        self.bestEvaluation = map(lambda indiv: self.fitnesses[indiv], self.bestEvaluable)
-        
+        self.bestEvaluation = [self.fitnesses[indiv] for indiv in self.bestEvaluable]        
         self.produceOffspring()
-        
-    def select(self):
-        return nsga2select(self.currentpop, self.fitnesses, self.selectionSize(), self.allowEquality)    
+    
+    def select(self):        
+        return nsga2select(map(tuple, self.currentpop), self.fitnesses, 
+                           self.selectionSize, self.allowEquality)    
                 
     
 

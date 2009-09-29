@@ -147,7 +147,7 @@ class BlackBoxOptimizer(DirectSearch, PhylogeneticLearner):
         if self.bestEvaluation is None:
             bestF = None
         else:
-            bestF = -self.bestEvaluation if self.wasOpposed else self.bestEvaluation
+            bestF = -self.bestEvaluation if (self.wasOpposed and type(self.bestEvaluation) is float) else self.bestEvaluation
         return bestE, bestF
         
     def _oneEvaluation(self, evaluable):
@@ -159,17 +159,20 @@ class BlackBoxOptimizer(DirectSearch, PhylogeneticLearner):
             res = self.__evaluator(evaluable.params)
         else:            
             res = self.__evaluator(evaluable)
-        # detect numerical instability
-        if isnan(res) or isinf(res):
-            raise DivergenceError
-            
-        # always keep track of the best
-        if (self.numEvaluations == 0
-            or (self.minimize and res <= self.bestEvaluation)
-            or (not self.minimize and res >= self.bestEvaluation)):
-            self.bestEvaluation = res
-            self.bestEvaluable = evaluable.copy()
+        
         self.numEvaluations += 1
+        
+        if type(res) is float:
+            # detect numerical instability
+            if isnan(res) or isinf(res):
+                raise DivergenceError
+                
+            # always keep track of the best
+            if (self.numEvaluations == 0
+                or (self.minimize and res <= self.bestEvaluation)
+                or (not self.minimize and res >= self.bestEvaluation)):
+                self.bestEvaluation = res
+                self.bestEvaluable = evaluable.copy()
         
         # if desired, also keep track of all evaluables and/or their fitness.                        
         if self.storeAllEvaluated:
@@ -180,7 +183,7 @@ class BlackBoxOptimizer(DirectSearch, PhylogeneticLearner):
             else:            
                 self._allEvaluated.append(evaluable.copy())        
         if self.storeAllEvaluations:
-            if self.wasOpposed:
+            if self.wasOpposed or type(res) is not float:
                 self._allEvaluations.append(res)
             else:
                 self._allEvaluations.append(-res)

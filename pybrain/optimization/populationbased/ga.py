@@ -24,17 +24,22 @@ class GA(ContinuousOptimizer, Evolution):
     mutationStdDev = 0.5
     initRangeScaling = 10.
     
+    initialPopulation = None
+    
     def initPopulation(self):
-        self.currentpop = [self._initEvaluable]
-        for dummy in range(self.populationSize-1):
-            self.currentpop.append(self._initEvaluable+randn(self.numParameters)
-                                   *self.mutationStdDev*self.initRangeScaling)        
+        if self.initialPopulation is not None:
+            self.currentpop = self.initialPopulation
+        else:
+            self.currentpop = [self._initEvaluable]
+            for _ in range(self.populationSize-1):
+                self.currentpop.append(self._initEvaluable+randn(self.numParameters)
+                                       *self.mutationStdDev*self.initRangeScaling)        
     
     def crossOver(self, parents, nbChildren):
         """ generate a number of children by doing 1-point cross-over """
         xdim = self.numParameters
         children = []
-        for dummy in range(nbChildren):
+        for _ in range(nbChildren):
             p1 = choice(parents)
             if xdim < 2:
                 children.append(p1)
