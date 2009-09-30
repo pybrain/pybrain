@@ -1,6 +1,6 @@
 __author__ = 'Tom Schaul, tom@idsia.ch'
 
-from scipy import array, randn, ndarray, isinf, isnan
+from scipy import array, randn, ndarray, isinf, isnan, isscalar
 import logging
 
 from pybrain.utilities import setAllArgs, abstractMethod, DivergenceError
@@ -147,7 +147,7 @@ class BlackBoxOptimizer(DirectSearch, PhylogeneticLearner):
         if self.bestEvaluation is None:
             bestF = None
         else:
-            bestF = -self.bestEvaluation if (self.wasOpposed and type(self.bestEvaluation) is float) else self.bestEvaluation
+            bestF = -self.bestEvaluation if (self.wasOpposed and isscalar(self.bestEvaluation)) else self.bestEvaluation
         return bestE, bestF
         
     def _oneEvaluation(self, evaluable):
@@ -162,7 +162,7 @@ class BlackBoxOptimizer(DirectSearch, PhylogeneticLearner):
         
         self.numEvaluations += 1
         
-        if type(res) is float:
+        if isscalar(res):
             # detect numerical instability
             if isnan(res) or isinf(res):
                 raise DivergenceError
@@ -183,7 +183,7 @@ class BlackBoxOptimizer(DirectSearch, PhylogeneticLearner):
             else:            
                 self._allEvaluated.append(evaluable.copy())        
         if self.storeAllEvaluations:
-            if self.wasOpposed or type(res) is not float:
+            if self.wasOpposed or not isscalar(res):
                 self._allEvaluations.append(res)
             else:
                 self._allEvaluations.append(-res)
@@ -192,7 +192,7 @@ class BlackBoxOptimizer(DirectSearch, PhylogeneticLearner):
     def _stoppingCriterion(self):
         if self.maxEvaluations is not None and self.numEvaluations+self.batchSize > self.maxEvaluations:
             return True
-        if self.desiredEvaluation is not None and self.bestEvaluation is not None:
+        if self.desiredEvaluation is not None and self.bestEvaluation is not None and isscalar(self.bestEvaluation):
             if ((self.minimize and self.bestEvaluation <= self.desiredEvaluation)
                 or (not self.minimize and self.bestEvaluation >= self.desiredEvaluation)):
                 return True

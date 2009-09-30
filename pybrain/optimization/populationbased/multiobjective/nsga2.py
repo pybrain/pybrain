@@ -2,6 +2,7 @@ __author__ = 'Justin Bayer, Tom Schaul, {justin,tom}@idsia.ch'
 
 from pybrain.optimization.populationbased.ga import GA
 import collections
+from scipy import array, tile, sum
 
 # TODO: not very elegant, because of the conversions between tuples and arrays all the time...
 
@@ -17,6 +18,8 @@ class MultiObjectiveGA(GA):
     
     allowEquality = True
 
+    minimize = False
+    
     def _learnStep(self):
         """ do one generation step """
         # evaluate fitness
@@ -36,8 +39,8 @@ class MultiObjectiveGA(GA):
         self.produceOffspring()
     
     def select(self):        
-        return nsga2select(map(tuple, self.currentpop), self.fitnesses, 
-                           self.selectionSize, self.allowEquality)    
+        return map(array, nsga2select(map(tuple, self.currentpop), self.fitnesses, 
+                                      self.selectionSize, self.allowEquality))    
                 
     
 
@@ -157,6 +160,7 @@ def _non_dominated_front_fast(iterable, key=lambda x: x, allowequality = True):
                 res.remove(j)
     return res
 
+
 def _non_dominated_front_merge(iterable, key=lambda x: x, allowequality = True):
     items = list(iterable)
     l = len(items)
@@ -170,8 +174,53 @@ def _non_dominated_front_merge(iterable, key=lambda x: x, allowequality = True):
     else:
         return _non_dominated_front_fast(items, key, allowequality)
 
+    
+def _non_dominated_front_arr(iterable, key=lambda x: x, allowequality = True):
+    """Return a subset of items from iterable which are not dominated by any
+    other item in iterable. 
+    
+    Faster version, based on boolean matrix manipulations.
+    """
+    items = list(iterable)
+    fits = map(key, items)
+    l = len(items)
+    x = array(fits)
+    a = tile(x, (l, 1, 1))
+    b = a.transpose((1, 0, 2))
+    if allowequality:
+        ndom = sum(a <= b, axis = 2)
+    else:
+        ndom = sum(a < b, axis = 2)
+    ndom = array(ndom, dtype = bool)    
+    res = set()
+    for ii in range(l):
+        res.add(ii)
+        for ij in list(res):
+            if ii == ij:
+                continue
+            if not ndom[ij,ii]: 
+                res.remove(ii)
+                break
+            elif not ndom[ii,ij]:
+                res.remove(ij)    
+    return set(map(lambda i: items[i], res))  
 
-non_dominated_front = _non_dominated_front_merge
+
+def _non_dominated_front_merge_arr(iterable, key=lambda x: x, allowequality = True):
+    items = list(iterable)
+    l = len(items)
+    if l > 100:
+        part1 = list(_non_dominated_front_merge_arr(items[:l/2], key, allowequality))
+        part2 = list(_non_dominated_front_merge_arr(items[l/2:], key, allowequality))
+        if len(part1) >= l/3 or len(part2) >= l/3:
+            return _non_dominated_front_arr(part1+part2, key, allowequality)
+        else:
+            return _non_dominated_front_merge_arr(part1+part2, key, allowequality)
+    else:
+        return _non_dominated_front_arr(items, key, allowequality)
+
+
+non_dominated_front = _non_dominated_front_merge_arr
 
 
 def non_dominated_sort(iterable, key=lambda x: x, allowequality = True):
