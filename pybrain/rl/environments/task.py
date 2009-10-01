@@ -1,6 +1,6 @@
 __author__ = 'Tom Schaul, tom@idsia.ch'
 
-from scipy import clip
+from scipy import clip, asarray
 
 from pybrain.utilities import abstractMethod
 
@@ -35,7 +35,7 @@ class Task(object):
         
     def getObservation(self):
         """ a filtered mapping to getSample of the underlying environment. """
-        sensors = self.env.getSensors()
+        sensors = self.env.getSensors()       
         if self.sensor_limits:
             sensors = self.normalize(sensors)
         return sensors
@@ -56,7 +56,7 @@ class Task(object):
                 result.append((s-l[0]) / (l[1]-l[0]) * 2 - 1.0)
         if self.clipping:
             clip(result, -1, 1)
-        return result   
+        return asarray(result)  
 
     def denormalize(self, actors):
         """ limits is a list of 2-tuples, one tuple per parameter, giving min and max for that parameter.
