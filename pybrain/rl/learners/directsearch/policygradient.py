@@ -3,7 +3,7 @@ __author__ = 'Thomas Rueckstiess, ruecksti@in.tum.de'
 from pybrain.rl.learners.directsearch.directsearch import DirectSearchLearner
 from pybrain.utilities import abstractMethod
 from pybrain.auxiliary import GradientDescent
-from pybrain.rl.explorers import NormalExplorer
+from pybrain.rl.explorers.continuous.normal import NormalExplorer
 from pybrain.datasets.dataset import DataSet
 from pybrain.structure.networks import FeedForwardNetwork
 from pybrain.structure.connections import IdentityConnection
@@ -120,7 +120,7 @@ class PolicyGradientLearner(DirectSearchLearner):
     
     def explore(self, state, action):
         # forward pass of exploration
-        explorative = Learner.explore(self, state, action)
+        explorative = DirectSearchLearner.explore(self, state, action)
         
         # backward pass through network and store derivs
         self.network.backward()

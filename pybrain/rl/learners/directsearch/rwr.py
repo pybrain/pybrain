@@ -5,14 +5,14 @@ from scipy import zeros, array, mean, randn, exp, dot, argmax
 from pybrain.datasets import ReinforcementDataSet, ImportanceDataSet, SequentialDataSet
 from pybrain.supervised import BackpropTrainer
 from pybrain.utilities import drawIndex
-from pybrain.rl.learners.learner import Learner
+from pybrain.rl.learners.directsearch.directsearch import DirectSearchLearner
 
 
 # TODO: greedy runs: start once in every possible starting state!
 # TODO: supervised: train-set, test-set, early stopping -> actual convergence!
 
 
-class RWR(Learner):
+class RWR(DirectSearchLearner):
     """ Reward-weighted regression.
     
     The algorithm is currently limited to discrete-action episodic tasks, subclasses of POMDPTasks.

@@ -1,6 +1,6 @@
 __author__ = 'Thomas Rueckstiess, ruecksti@in.tum.de'
 
-from policygradient import PolicyGradientLearner
+from pybrain.rl.learners.directsearch.policygradient import PolicyGradientLearner
 from scipy import mean,ravel,array
 
 
