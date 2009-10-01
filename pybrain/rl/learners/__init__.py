@@ -1,2 +1,2 @@
-from discrete import Q, QLambda, SARSA
-from directsearch import RWR, ENAC, Reinforce
+from directsearch.__init__ import *
+from valuebased.__init__ import *
