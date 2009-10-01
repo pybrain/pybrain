@@ -1,7 +1,7 @@
 __author__ = "Thomas Rueckstiess, ruecksti@in.tum.de"
 
 from pybrain.rl.explorers.explorer import Explorer
-from pybrain.rl.learners.valuebased import ActionValueInterface
+# from pybrain.rl.learners.valuebased.interface import ActionValueInterface
 
 class DiscreteExplorer(Explorer):
     """ discrete explorers choose one of the available actions from the
@@ -17,7 +17,8 @@ class DiscreteExplorer(Explorer):
     
     def _setModule(self, module):
         """ tell the explorer the module (has to be ActionValueTable). """
-        assert isinstance(module, ActionValueInterface)
+        # removed: cause for circular import
+        # assert isinstance(module, ActionValueInterface)
         self._module = module
     
     def _getModule(self):

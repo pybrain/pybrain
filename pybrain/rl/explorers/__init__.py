@@ -1,2 +1,2 @@
-from discrete import EpsilonGreedyExplorer, BoltzmannExplorer
-from continuous import NormalExplorer
+from discrete.__init__ import *
+from continuous.__init__ import *

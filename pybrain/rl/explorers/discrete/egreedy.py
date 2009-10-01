@@ -4,7 +4,6 @@ from scipy import random, array
 
 from pybrain.rl.explorers.discrete.discrete import DiscreteExplorer
 
-
 class EpsilonGreedyExplorer(DiscreteExplorer):
     """ A discrete explorer, that executes the original policy in most cases, 
         but sometimes returns a random action (uniformly drawn) instead. The
@@ -13,7 +12,7 @@ class EpsilonGreedyExplorer(DiscreteExplorer):
         behaves.
     """
     
-    def __init__(self, epsilon = 0.5, decay = 0.9998):
+    def __init__(self, epsilon = 0.2, decay = 0.9998):
         DiscreteExplorer.__init__(self)
         self.epsilon = epsilon
         self.decay = decay
@@ -31,3 +30,4 @@ class EpsilonGreedyExplorer(DiscreteExplorer):
             outbuf[:] = inbuf
             
         self.epsilon *= self.decay
+        
