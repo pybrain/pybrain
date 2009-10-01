@@ -1,15 +1,15 @@
 __author__ = 'Thomas Rueckstiess, ruecksti@in.tum.de'
 
-from pybrain.rl.learners.discrete.discrete import DiscreteLearner
+from pybrain.rl.learners.valuebased.valuebased import ValueBasedLearner
 
 
-class SARSA(DiscreteLearner):
+class SARSA(ValueBasedLearner):
     
     offPolicy = False
     batchMode = True
     
     def __init__(self, alpha=0.5, gamma=0.99):
-        DiscreteLearner.__init__(self)
+        ValueBasedLearner.__init__(self)
 
         self.alpha = alpha
         self.gamma = gamma

@@ -1,6 +1,6 @@
 __author__ = 'Thomas Rueckstiess, ruecksti@in.tum.de'
 
-from scipy import random, argmax
+from scipy import random, argmax, array, r_, asarray
 from pybrain.utilities import abstractMethod
 from pybrain.structure.modules import Table, Module
 from pybrain.tools.shortcuts import buildNetwork
@@ -54,20 +54,27 @@ class ActionValueTable(Table, ActionValueInterface):
 
 
 class ActionValueNetwork(Module, ActionValueInterface):
-    def __init__(self, dimState, numActions):
-        self.module = buildNetwork(dimState + numActions, dimState + numActions, 1)
+    def __init__(self, dimState, numActions, name=None):
+        Module.__init__(self, dimState, 1, name)
+        self.network = buildNetwork(dimState + numActions, dimState + numActions, 1)
         self.numActions = numActions
     
     def _forwardImplementation(self, inbuf, outbuf):
         """ takes a vector of length 1 (the state coordinate) and returns
             the action with the maximum value over all actions for this state.
         """
-        outbuf[0] = self.getMaxAction(inbuf[0])
+        outbuf[0] = self.getMaxAction(asarray(inbuf))
+
+    # not needed
+    # def _backwardImplementation(self, outerr, inerr, outbuf, inbuf):
+    #     """ refers to the module's backwardImplementation. """
+    #     self.network._backwardImplementation(outerr, inerr, outbuf, inbuf)
 
     def getMaxAction(self, state):
         """ returns the action with the maximal value for the given state. """
-        return argmax(self.getActionValues())
+        return argmax(self.getActionValues(state))
 
     def getActionValues(self, state):
-        values = array([self.module.activate(c_[state, one_to_n(i)]) for i in range(self.numActions)])
+        """ runs forward activation for each of the actions and returns all values. """
+        values = array([self.network.activate(r_[state, one_to_n(i, self.numActions)]) for i in range(self.numActions)])
         return values
