@@ -3,7 +3,7 @@ __author__ = 'Thomas Rueckstiess, ruecksti@in.tum.de'
 from matplotlib.mlab import rk4 
 from math import sin, cos
 import time
-from scipy import eye, matrix, random
+from scipy import eye, matrix, random, asarray
 
 from pybrain.rl.environments.graphical import GraphicalEnvironment
 
@@ -44,7 +44,7 @@ class CartPoleEnvironment(GraphicalEnvironment):
             vector has 4 elements: theta, theta', s, s' (s being the distance from the
             origin).
         """
-        return self.sensors
+        return asarray(self.sensors)
                             
     def performAction(self, action):
         """ stores the desired action for the next runge-kutta step.

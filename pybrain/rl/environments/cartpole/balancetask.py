@@ -33,7 +33,7 @@ class BalanceTask(EpisodicTask):
         
         self.sensor_limits = [None]*4
         # actor between -10 and 10 Newton
-        self.actor_limits = [(-10, 10)]
+        self.actor_limits = [(-50, 50)]
         
     def reset(self):
         EpisodicTask.reset(self)
@@ -99,6 +99,51 @@ class EasyBalanceTask(BalanceTask):
             reward = -abs(s)/2
         return reward   
     
+    
+
+class DiscreteBalanceTask(BalanceTask):
+    """ here there are 3 discrete actions, left, right, nothing. """
+    
+    def __init__(self, env = None, maxsteps = 1000):
+        """
+        @param env: (optional) an instance of a CartPoleEnvironment (or a subclass thereof)
+        @param maxsteps: maximal number of steps (default: 1000) 
+        """
+        if env == None:
+            env = CartPoleEnvironment()
+        EpisodicTask.__init__(self, env) 
+        self.N = maxsteps
+        self.t = 0
+        
+        # no scaling of sensors
+        self.sensor_limits = [None]*2
+        
+        # scale actor
+        self.actor_limits = [(-50, 50)]
+
+        
+    def getObservation(self):
+        """ a filtered mapping to getSample of the underlying environment. """
+        sensors = self.env.getSensors()[:2]   
+        if self.sensor_limits:
+            sensors = self.normalize(sensors)
+        return sensors
+        
+    def performAction(self, action):
+        action = action-1.
+        BalanceTask.performAction(self, action)
+    
+    def getReward(self):
+        angles = map(abs, self.env.getPoleAngles())
+        s = abs(self.env.getCartPosition())
+        if min(angles) < 0.05:
+            reward = 1.0
+        elif max(angles) > 0.7 or abs(s) > 2.4:
+            reward = -1. * (self.N - self.t)
+        else: 
+            reward = 0.0
+        return reward
+
 
 class LinearizedBalanceTask(BalanceTask):
     """ Here we follow the setup in
