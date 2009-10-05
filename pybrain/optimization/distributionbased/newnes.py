@@ -6,7 +6,7 @@ from pybrain.optimization.distributionbased.distributionbased import Distributio
 from scipy.stats import cauchy
 from random import gauss, uniform
 from scipy.linalg import norm, expm2, logm
-from scipy import zeros, dot, array, exp, randn, eye, outer, sqrt
+from scipy import zeros, dot, array,  randn, eye, outer, sqrt
 
 
 class NES(DistributionBasedOptimizer):
@@ -35,11 +35,11 @@ class NES(DistributionBasedOptimizer):
     forcedRefresh = 0.01
     
     # fixed settings
-    minimize = False
+    mustMaximize = True
     storeAllEvaluations = True
     
+    
     def _additionalInit(self):
-        assert not self.minimize
         assert self.storeAllEvaluations
         assert not self.elitism
         assert not self.importanceMixing, 'Does not work yet'

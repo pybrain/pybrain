@@ -49,6 +49,7 @@ class MemeticSearch(HillClimber):
             outsourced = self.localSearch(f, x0, 
                                           maxEvaluations = self.localSteps, 
                                           desiredEvaluation = self.desiredEvaluation,
+                                          minimize = self.minimize,
                                           **self.localSearchArgs)
             assert self.localSteps > outsourced.batchSize, 'localSteps too small ('+str(self.localSteps)+\
                                                 '), because local search has a batch size of '+str(outsourced.batchSize)

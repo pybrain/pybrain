@@ -45,7 +45,7 @@ class ParticleSwarmOptimizer(ContinuousOptimizer):
     
     neighbourfunction = None
 
-    minimize = False
+    mustMaximize = True 
     
     def _setInitEvaluable(self, evaluable):
         if evaluable is not None:
@@ -104,18 +104,6 @@ class ParticleSwarmOptimizer(ContinuousOptimizer):
             
             
 class Particle(object):        
-    def _setFitness(self, value):
-        self._fitness = value
-        if ((self.minimize and value < self.bestFitness)
-            or (not self.minimize and value > self.bestFitness)):
-            self.bestFitness = value
-            self.bestPosition = self.position.copy()
-    
-    def _getFitness(self):
-        return self._fitness
-    
-    fitness = property(_getFitness, _setFitness)
-    
     def __init__(self, start, minimize):
         """Initialize a Particle at the given start vector."""
         self.minimize = minimize
@@ -128,6 +116,18 @@ class Particle(object):
             self.bestFitness = scipy.inf
         else:
             self.bestFitness = -scipy.inf
+    
+    def _setFitness(self, value):
+        self._fitness = value
+        if ((self.minimize and value < self.bestFitness)
+            or (not self.minimize and value > self.bestFitness)):
+            self.bestFitness = value
+            self.bestPosition = self.position.copy()
+    
+    def _getFitness(self):
+        return self._fitness
+    
+    fitness = property(_getFitness, _setFitness)
     
     def move(self):
         self.position += self.velocity

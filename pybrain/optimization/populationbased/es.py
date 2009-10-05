@@ -15,6 +15,8 @@ class ES(BlackBoxOptimizer):
     
     storeHallOfFame = True
     
+    mustMaximize = True
+    
     def _additionalInit(self):        
         assert self.lambada % self.mu == 0, 'lambda ('+str(self.lambada)+\
                                             ') must be multiple of mu ('+str(self.mu)+').'
@@ -46,10 +48,7 @@ class ES(BlackBoxOptimizer):
     def _sortPopulation(self, noHallOfFame = False):
         # shuffle-sort the population and fitnesses
         shuffle(self.population)
-        if self.minimize:            
-            self.population.sort(key = lambda x: x[0])
-        else:
-            self.population.sort(key = lambda x: -x[0])
+        self.population.sort(key = lambda x: -x[0])
         if self.storeHallOfFame and not noHallOfFame:
             # the best per generation stored here
             self.hallOfFame.append(self.population[0][1])  

@@ -11,8 +11,9 @@ class Evolution(BlackBoxOptimizer):
     
     storeAllPopulations = False
     
+    mustMaximize = True
+    
     def _additionalInit(self):
-        assert self.minimize == False
         self.currentpop = []
         self.fitnesses = []
         self._allGenerations = []

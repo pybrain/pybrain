@@ -18,7 +18,7 @@ class MultiObjectiveGA(GA):
     
     allowEquality = True
 
-    minimize = False
+    mustMaximize = True
     
     def _learnStep(self):
         """ do one generation step """

@@ -15,7 +15,7 @@ class NelderMead(ContinuousOptimizer):
     # acceptable relative error in the evaluator for convergence.
     stopPrecision = 1e-6
     
-    minimize = True
+    mustMinimize = True
     
       
     def _callback(self, *_):

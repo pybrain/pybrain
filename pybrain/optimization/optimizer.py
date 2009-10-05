@@ -21,8 +21,11 @@ class BlackBoxOptimizer(DirectSearch, PhylogeneticLearner):
     or subclasses of Evolvable (that define its methods).
     """    
     
-    # Minimize or maximize fitness? By default, all algorithms maximize it.
-    minimize = False
+    # Minimize cost or maximize fitness? By default, all functions are maximized
+    minimize = None
+    # some algorithms are designed for minimization only, those can put this flag:
+    mustMinimize = False
+    mustMaximize = False
 
     # Is there a known value of sufficient fitness?
     desiredEvaluation = None    
@@ -72,29 +75,42 @@ class BlackBoxOptimizer(DirectSearch, PhylogeneticLearner):
             self.__evaluator = None
         
     def setEvaluator(self, evaluator, initEvaluable = None):
-        self.__evaluator = evaluator        
-
         # default settings, if provided by the evaluator:
         if isinstance(evaluator, FitnessEvaluator):
             if self.desiredEvaluation is None:
                 self.desiredEvaluation = evaluator.desiredValue               
-            if self.minimize is not evaluator.toBeMinimized:
-                logging.info('Algorithm is set to minimize='+str(self.minimize)+\
-                            ' but evaluator is set to minimize='+str(evaluator.toBeMinimized)+\
-                            '.\n The opposite function will be optimized.')
-                self.__evaluator = oppositeFunction(evaluator)
-                self.wasOpposed = True
-                if self.desiredEvaluation is not None:
-                    self.desiredEvaluation *= -1
+            if self.minimize is None:
+                self.minimize = evaluator.toBeMinimized 
             if self.numParameters is None:
                 # in some cases, we can deduce the dimension from the provided evaluator:
                 if isinstance(evaluator, FunctionEnvironment):
-                    self.numParameters = evaluator.xdim          
+                    self.numParameters = evaluator.xdim
+        
+        # minimization vs. maximization: priority to algorithm requirements, then evaluator, default = maximize
+        if self.mustMinimize:
+            if self.minimize is not True:
+                self.wasOpposed = True
+            self.minimize = True
+            assert not self.mustMaximize
+        if self.mustMaximize:
+            if self.minimize is True:
+                self.wasOpposed = True
+            self.minimize = False
+        if self.minimize is None:
+            self.minimize = False
+                                
+        if self.wasOpposed:
+            self.__evaluator = oppositeFunction(evaluator)
+            if self.desiredEvaluation is not None:
+                self.desiredEvaluation *= -1
+        else:
+            self.__evaluator = evaluator        
+                              
         #set the starting point for optimization (as provided, or randomly)
         self._setInitEvaluable(initEvaluable)        
+        self.bestEvaluation = None
         self._additionalInit()
         self.bestEvaluable = self._initEvaluable
-        self.bestEvaluation = None
         
     def _additionalInit(self):
         """ a method for subclasses that need additional initialization code but don't want to redefine __init__ """
@@ -144,10 +160,10 @@ class BlackBoxOptimizer(DirectSearch, PhylogeneticLearner):
     def _bestFound(self):
         """ return the best found evaluable and its associated fitness. """
         bestE = self.bestEvaluable.params.copy() if self.wasWrapped else self.bestEvaluable
-        if self.bestEvaluation is None:
-            bestF = None
+        if self.wasOpposed and isscalar(self.bestEvaluation):
+            bestF = -self.bestEvaluation
         else:
-            bestF = -self.bestEvaluation if (self.wasOpposed and isscalar(self.bestEvaluation)) else self.bestEvaluation
+            bestF = self.bestEvaluation
         return bestE, bestF
         
     def _oneEvaluation(self, evaluable):
@@ -159,9 +175,6 @@ class BlackBoxOptimizer(DirectSearch, PhylogeneticLearner):
             res = self.__evaluator(evaluable.params)
         else:            
             res = self.__evaluator(evaluable)
-        
-        self.numEvaluations += 1
-        
         if isscalar(res):
             # detect numerical instability
             if isnan(res) or isinf(res):
@@ -169,10 +182,13 @@ class BlackBoxOptimizer(DirectSearch, PhylogeneticLearner):
                 
             # always keep track of the best
             if (self.numEvaluations == 0
+                or self.bestEvaluation is None
                 or (self.minimize and res <= self.bestEvaluation)
                 or (not self.minimize and res >= self.bestEvaluation)):
                 self.bestEvaluation = res
                 self.bestEvaluable = evaluable.copy()
+        
+        self.numEvaluations += 1
         
         # if desired, also keep track of all evaluables and/or their fitness.                        
         if self.storeAllEvaluated:
@@ -183,10 +199,10 @@ class BlackBoxOptimizer(DirectSearch, PhylogeneticLearner):
             else:            
                 self._allEvaluated.append(evaluable.copy())        
         if self.storeAllEvaluations:
-            if self.wasOpposed or not isscalar(res):
-                self._allEvaluations.append(res)
-            else:
+            if self.wasOpposed and isscalar(res):
                 self._allEvaluations.append(-res)
+            else:
+                self._allEvaluations.append(res)
         return res
     
     def _stoppingCriterion(self):
@@ -196,7 +212,7 @@ class BlackBoxOptimizer(DirectSearch, PhylogeneticLearner):
             if ((self.minimize and self.bestEvaluation <= self.desiredEvaluation)
                 or (not self.minimize and self.bestEvaluation >= self.desiredEvaluation)):
                 return True
-        if self.maxLearningSteps is not None and self.numLearningSteps >= self.maxLearningSteps:
+        if self.maxLearningSteps is not None and self.numLearningSteps > self.maxLearningSteps:
             return True
         return False
     

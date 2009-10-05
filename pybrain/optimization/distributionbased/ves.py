@@ -39,7 +39,7 @@ class VanillaGradientEvolutionStrategies(DistributionBasedOptimizer):
     importanceMixing = True
     forcedRefresh = 0.01
     
-    minimize = False
+    mustMaximize = True
     
     def _additionalInit(self):
         xdim = self.numParameters

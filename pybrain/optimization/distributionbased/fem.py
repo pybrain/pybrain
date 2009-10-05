@@ -49,11 +49,10 @@ class FEM(DistributionBasedOptimizer):
     rangemaxs = None
     initCovariances = None
     
-    minimize = False
+    mustMaximize = True
         
     def _additionalInit(self):
         assert self.numberOfCenters == 1, 'Mixtures of Gaussians not supported yet.'
-        assert self.minimize == False
         
         xdim = self.numParameters
         self.alphas = ones(self.numberOfCenters)/float(self.numberOfCenters)

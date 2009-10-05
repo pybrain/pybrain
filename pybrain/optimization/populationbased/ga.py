@@ -26,6 +26,8 @@ class GA(ContinuousOptimizer, Evolution):
     
     initialPopulation = None
     
+    mustMaximize = True
+    
     def initPopulation(self):
         if self.initialPopulation is not None:
             self.currentpop = self.initialPopulation

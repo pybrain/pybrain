@@ -14,13 +14,12 @@ class CMAES(ContinuousOptimizer):
     This code is a close transcription of the provided matlab code.
     """
 
-    minimize = True
+    mustMinimize = True
     stopPrecision = 1e-6
         
     storeAllCenters = False
 
     def _additionalInit(self):
-        assert self.minimize is True 
         self.center = self._initEvaluable
         self.stepSize = 0.5         # coordinate wise standard deviation (sigma)
         if self.storeAllCenters:
