@@ -67,7 +67,8 @@ class LearningAgent(LoggingAgent):
         """ clears the history of the agent and resets the module and learner. """
         LoggingAgent.reset(self)
         self.module.reset()
-        self.learner.reset()
+        if self.learning:
+            self.learner.reset()
     
     
     def learn(self, episodes=1):
