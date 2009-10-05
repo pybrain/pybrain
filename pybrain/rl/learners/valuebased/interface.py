@@ -3,6 +3,7 @@ __author__ = 'Thomas Rueckstiess, ruecksti@in.tum.de'
 from scipy import random, argmax, array, r_, asarray
 from pybrain.utilities import abstractMethod
 from pybrain.structure.modules import Table, Module
+from pybrain.structure.parametercontainer import ParameterContainer
 from pybrain.tools.shortcuts import buildNetwork
 from pybrain.tools.oneofn import *
 
@@ -27,9 +28,9 @@ class ActionValueTable(Table, ActionValueInterface):
 
     def __init__(self, numStates, numActions, name=None):
         Module.__init__(self, 1, 1, name)
+        ParameterContainer.__init__(self, numStates*numActions)
         self.numRows = numStates
         self.numColumns = numActions
-        self.values = random.random((numStates, numActions))
 
     @property
     def numActions(self):
@@ -43,14 +44,14 @@ class ActionValueTable(Table, ActionValueInterface):
 
     def getMaxAction(self, state):
         """ returns the action with the maximal value for the given state. """
-        return argmax(self.values[state,:].flatten())
+        return argmax(self.params.reshape(self.numRows, self.numColumns)[state,:].flatten())
 
     def getActionValues(self, state):
-        return self.values[state, :].flatten()
+        return self.params.reshape(self.numRows, self.numColumns)[state, :].flatten()
 
     def initialize(self, value=0.0):
         """ initializes the whole table with the given value. """
-        self.values[:,:] = value       
+        self._params[:] = value       
 
 
 class ActionValueNetwork(Module, ActionValueInterface):
