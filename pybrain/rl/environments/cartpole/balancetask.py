@@ -145,6 +145,21 @@ class DiscreteBalanceTask(BalanceTask):
         return reward
 
 
+
+
+class DiscreteNoHelpTask(DiscreteBalanceTask):
+    def getReward(self):
+        angles = map(abs, self.env.getPoleAngles())
+        s = abs(self.env.getCartPosition())
+        if max(angles) > 0.7 or abs(s) > 2.4:
+            reward = -1. * (self.N - self.t)
+        else: 
+            reward = 0.0
+        return reward   
+    
+
+
+
 class LinearizedBalanceTask(BalanceTask):
     """ Here we follow the setup in
     Peters J, Vijayakumar S, Schaal S (2003) Reinforcement learning for humanoid robotics.
