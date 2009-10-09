@@ -128,12 +128,8 @@ class PolicyGradientLearner(DirectSearchLearner):
         
         return explorative
     
-    def newEpisode(self):
-        self.explorer.newEpisode()
-        
     def reset(self):
         self.loglh.clear() 
-    
     
     def calculateGradient(self):
         abstractMethod()

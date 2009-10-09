@@ -63,8 +63,9 @@ class Learner(object):
 
     def newEpisode(self):
         """ informs the learner that a new episode has started. """
-        pass
-        
+        if self.explorer:
+            self.explorer.newEpisode()
+
     def learn(self):
         """ learn on the current dataset, for a single episode
             @note: has to be implemented by all subclasses. """
