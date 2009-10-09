@@ -66,11 +66,6 @@ class ActionValueNetwork(Module, ActionValueInterface):
         """
         outbuf[0] = self.getMaxAction(asarray(inbuf))
 
-    # not needed
-    # def _backwardImplementation(self, outerr, inerr, outbuf, inbuf):
-    #     """ refers to the module's backwardImplementation. """
-    #     self.network._backwardImplementation(outerr, inerr, outbuf, inbuf)
-
     def getMaxAction(self, state):
         """ returns the action with the maximal value for the given state. """
         return argmax(self.getActionValues(state))
