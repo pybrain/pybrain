@@ -1,8 +1,8 @@
 __author__ = 'Frank Sehnke, sehnke@in.tum.de'
 
 import sensors
-from pybrain.rl.environments.serverInterface import GraphicalEnvironment
-from renderInterface import FlexCubeRenderInterface
+from pybrain.rl.environments.serverinterface import GraphicalEnvironment
+from renderinterface import FlexCubeRenderInterface
 from scipy import ones, zeros, array, clip, arange, sqrt 
 from time import sleep
 
