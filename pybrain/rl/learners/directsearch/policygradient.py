@@ -8,8 +8,6 @@ from pybrain.datasets.dataset import DataSet
 from pybrain.structure.networks import FeedForwardNetwork
 from pybrain.structure.connections import IdentityConnection
 
-from scipy import ravel, array, zeros
-
 
 class LoglhDataSet(DataSet):
     def __init__(self, dim):

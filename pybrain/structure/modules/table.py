@@ -1,6 +1,6 @@
 __author__ = 'Thomas Rueckstiess, ruecksti@in.tum.de'
 
-from scipy import zeros
+
 from pybrain.structure.modules.module import Module
 from pybrain.structure.parametercontainer import ParameterContainer
 

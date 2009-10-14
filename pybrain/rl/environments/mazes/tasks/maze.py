@@ -4,7 +4,7 @@ from scipy import array
 
 from pomdp import POMDPTask
 from pybrain.rl.environments.mazes import Maze
-from pybrain.rl.tasks.task import Task
+from pybrain.rl.environments.task import Task
 
 
 class MazeTask(POMDPTask):

@@ -1,7 +1,6 @@
 from pybrain.rl.learners.valuebased.valuebased import ValueBasedLearner
 from pybrain.datasets import SupervisedDataSet
 from pybrain.supervised.trainers.rprop import RPropMinusTrainer
-from pybrain.supervised.trainers.backprop import BackpropTrainer
 
 from scipy import r_
 from pybrain.tools.oneofn import one_to_n

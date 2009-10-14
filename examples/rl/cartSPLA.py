@@ -13,7 +13,7 @@
 
 from pybrain.tools.shortcuts import buildNetwork
 from pybrain.rl.environments.cartpole import CartPoleEnvironment, BalanceTask
-from pybrain.rl.agents.finitedifference import FiniteDifferenceAgent
+from pybrain.rl.agents import LearningAgent
 from pybrain.optimization import PGPE as SPLA
 from pybrain.rl.experiments import EpisodicExperiment
 from scipy import random
@@ -26,7 +26,7 @@ for runs in range(numbExp):
     # create controller network
     net = buildNetwork(4, 1, bias=False)
     # create agent with controller and learner
-    agent = FiniteDifferenceAgent(net, SPLA())
+    agent = LearningAgent(net, SPLA())
     # learning options
     agent.learner.gd.alpha = 0.05
     agent.learner.gdSig.alpha = 0.1

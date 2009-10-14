@@ -1,13 +1,12 @@
 __author__ = "Thomas Rueckstiess, ruecksti@in.tum.de"
 
-from scipy import random, ndarray, dot
-from copy import copy
+from scipy import random, dot
 
 from pybrain.structure.modules.module import Module
 from pybrain.rl.explorers.explorer import Explorer
 from pybrain.tools.functions import expln, explnPrime
 from pybrain.structure.parametercontainer import ParameterContainer
-from pybrain.structure import LinearLayer
+
 
 class StateDependentExplorer(Explorer, ParameterContainer):
     """ A continuous explorer, that perturbs the resulting action with

@@ -5,8 +5,7 @@ determine when an algorithm is not applicable for a problem. """
 __author__ = 'Tom Schaul, tom@idsia.ch, Thomas Rueckstiess, ruecksti@in.tum.de'
 
 
-from pybrain.utilities import abstractMethod, Named
-from pybrain.datasets import ReinforcementDataSet
+from pybrain.utilities import abstractMethod
 
 
 # class Learner(object):

@@ -19,7 +19,9 @@ matplotlib.use('TkAgg')
 
 from pybrain.rl.environments.shipsteer import ShipSteeringEnvironment
 from pybrain.rl.environments.shipsteer import GoNorthwardTask
-from pybrain.rl import StateDependentAgent, ENAC, EpisodicExperiment
+from pybrain.rl.agents import LearningAgent
+from pybrain.rl.learners.directsearch.enac import ENAC
+from pybrain.rl.experiments.episodic import EpisodicExperiment
 
 from pybrain.tools.shortcuts import buildNetwork
 from pybrain.tools.plotting import MultilinePlotter
@@ -46,7 +48,7 @@ net = buildNetwork(task.outdim, task.indim, bias=False)
 
 
 # create agent
-agent = StateDependentAgent(net, ENAC())
+agent = LearningAgent(net, ENAC())
 agent.learner.gd.rprop = True
 # only relevant for RP
 agent.learner.gd.deltamin = 0.0001

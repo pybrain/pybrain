@@ -13,7 +13,7 @@
 
 from pybrain.tools.shortcuts import buildNetwork
 from pybrain.rl.environments.simple import SimpleEnvironment, MinimizeTask
-from pybrain.rl.agents import FiniteDifferenceAgent
+from pybrain.rl.agents import LearningAgent
 from pybrain.optimization import PGPE as SPLA
 from pybrain.rl.experiments import EpisodicExperiment
 from scipy import random
@@ -28,7 +28,7 @@ for runs in range(numbExp):
     # create controller network (flat network)
     net = buildNetwork(1, 1, bias=False)
     # create agent with controller and learner
-    agent = FiniteDifferenceAgent(net, SPLA())
+    agent = LearningAgent(net, SPLA())
     # learning options
     agent.learner.gd.alpha = 0.03
     agent.learner.gdSig.alpha = 0.1

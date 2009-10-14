@@ -1,10 +1,10 @@
 __author__ = "Thomas Rueckstiess, ruecksti@in.tum.de"
 
-from scipy import random, array
 
 from pybrain.rl.explorers.discrete.discrete import DiscreteExplorer
 from pybrain.rl.learners.valuebased.interface import ActionValueTable, ActionValueNetwork
 from copy import deepcopy
+
 
 class DiscreteStateDependentExplorer(DiscreteExplorer):
     """ A discrete explorer, that directly manipulates the ActionValue

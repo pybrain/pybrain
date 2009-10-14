@@ -12,7 +12,7 @@ from pybrain.structure.modules.tanhlayer import TanhLayer
 from pybrain.tools.shortcuts import buildNetwork
 from pybrain.rl.environments.shipsteer import ShipSteeringEnvironment
 from pybrain.rl.environments.shipsteer import GoNorthwardTask
-from pybrain.rl.agents.finitedifference import FiniteDifferenceAgent
+from pybrain.rl.agents import LearningAgent
 from pybrain.optimization import SimpleSPSA
 from pybrain.rl.experiments import EpisodicExperiment
 from cPickle import load, dump
@@ -40,7 +40,7 @@ for runs in range(numbExp):
     # create controller network
     net = buildNetwork(task.outdim, task.indim, outclass=TanhLayer)
     # create agent with controller and learner
-    agent = FiniteDifferenceAgent(net, SimpleSPSA(task, net))
+    agent = LearningAgent(net, SimpleSPSA(task, net))
     # learning options
     agent.learner.gd.alpha = 0.5 #step size of parameter adaption
     agent.learner.gamma=0.9993 #exploration decay factor

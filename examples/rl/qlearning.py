@@ -6,12 +6,11 @@ __author__ = 'Thomas Rueckstiess, ruecksti@in.tum.de'
     maze task. The goal point is the top right free field.
 """
 
-from scipy import *
-import sys, time
+from scipy import array
 import pylab
 
 from pybrain.rl.environments.mazes import Maze 
-from pybrain.structure.modules import ActionValueTable
+from pybrain.rl.learners.valuebased.interface import ActionValueTable
 from pybrain.rl.agents import LearningAgent
 from pybrain.rl.learners import Q, QLambda, SARSA
 from pybrain.rl.explorers import BoltzmannExplorer

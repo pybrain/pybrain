@@ -12,7 +12,8 @@ what they do.
 
 But first of all, we need to import the RL components from pybrain:
 """ 
-from pybrain.rl import PolicyGradientAgent, ENAC
+from pybrain.rl.agents import LearningAgent 
+from pybrain.rl.learners.directsearch.enac import ENAC
 from pybrain.rl.environments.cartpole import BalanceTask, CartPoleEnvironment
 from pybrain.tools.shortcuts import buildNetwork
 
@@ -40,7 +41,7 @@ for policy gradient agents, which we won't cover in this tutorial. Let's just
 use the ENAC learning algorithm now and create the agent.
 """
 controller = buildNetwork(4, 1, bias=False)
-agent = PolicyGradientAgent(controller, ENAC())
+agent = LearningAgent(controller, ENAC())
 
 """
 So far, there is no connection between the agent and the environment. In fact,

@@ -4,7 +4,6 @@ from scipy import array, randn, ndarray, isinf, isnan, isscalar
 import logging
 
 from pybrain.utilities import setAllArgs, abstractMethod, DivergenceError
-from pybrain.rl.learners.learner import Learner
 from pybrain.rl.learners.directsearch.directsearch import DirectSearchLearner
 from pybrain.structure.parametercontainer import ParameterContainer
 from pybrain.rl.environments.functions.function import FunctionEnvironment

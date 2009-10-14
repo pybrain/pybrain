@@ -18,7 +18,7 @@ from scipy import array, mean, zeros
 from pybrain.rl.environments.simple import SimpleEnvironment, MinimizeTask 
 from pybrain.tools.shortcuts import buildNetwork
 from pybrain.rl.agents import LearningAgent
-from pybrain.rl.learners import ENAC, Reinforce
+from pybrain.rl.learners import Reinforce
 from pybrain.rl.experiments import EpisodicExperiment
 
 # for plotting

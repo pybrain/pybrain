@@ -31,7 +31,7 @@ from pybrain.rl.environments.ode import JohnnieEnvironment
 from pybrain.rl.environments.ode.tasks import StandingTask
 from pybrain.structure.modules.tanhlayer import TanhLayer
 from pybrain.tools.shortcuts import buildNetwork
-from pybrain.rl.agents.finitedifference import FiniteDifferenceAgent
+from pybrain.rl.agents import LearningAgent
 from pybrain.optimization import PGPE as SPLA
 from pybrain.rl.experiments import EpisodicExperiment
 from cPickle import load, dump
@@ -63,7 +63,7 @@ for runs in range(numbExp):
     # create controller network
     net = buildNetwork(len(task.getObservation()), hiddenUnits, env.actLen, outclass=TanhLayer)    
     # create agent with controller and learner
-    agent = FiniteDifferenceAgent(net, SPLA())
+    agent = LearningAgent(net, SPLA())
     # learning options
     agent.learner.gd.alpha = 0.2 #step size of \mu adaption
     agent.learner.gdSig.alpha = 0.085 #step size of \sigma adaption

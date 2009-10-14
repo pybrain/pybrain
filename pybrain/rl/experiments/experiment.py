@@ -14,8 +14,8 @@ class Experiment(object):
         """ The default implementation directly maps the methods of the agent and the task.
             Returns the number of interactions done.
         """
-        for dummy in range(number):
-            reward = self._oneInteraction()
+        for _ in range(number):
+            self._oneInteraction()
         return self.stepid
 
     def _oneInteraction(self):

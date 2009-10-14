@@ -13,7 +13,7 @@
 
 from pybrain.tools.shortcuts import buildNetwork
 from pybrain.rl.environments.flexcube import FlexCubeEnvironment, GrowTask
-from pybrain.rl.agents import FiniteDifferenceAgent
+from pybrain.rl.agents import LearningAgent
 from pybrain.optimization import PGPE as SPLA
 from pybrain.rl.experiments import EpisodicExperiment
 from scipy import mean
@@ -30,7 +30,7 @@ task = GrowTask(env)
 # create controller network (flat network)
 net = buildNetwork(32, 10, 12)
 # create agent with controller and learner
-agent = FiniteDifferenceAgent(net, SPLA())
+agent = LearningAgent(net, SPLA())
 # learning options
 agent.learner.gd.alpha = 0.05
 agent.learner.gdSig.alpha = 0.1

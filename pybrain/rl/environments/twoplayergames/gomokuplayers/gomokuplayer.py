@@ -1,6 +1,7 @@
 __author__ = 'Tom Schaul, tom@idsia.ch'
 
-from pybrain.rl import Agent
+
+from pybrain.rl.agents.agent import Agent
 from pybrain.rl.environments.twoplayergames import GomokuGame
 
 

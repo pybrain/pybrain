@@ -18,7 +18,7 @@ from pybrain.structure.modules.tanhlayer import TanhLayer
 from pybrain.tools.shortcuts import buildNetwork
 from pybrain.rl.environments.shipsteer import ShipSteeringEnvironment
 from pybrain.rl.environments.shipsteer import GoNorthwardTask
-from pybrain.rl.agents.finitedifference import FiniteDifferenceAgent
+from pybrain.rl.agents import LearningAgent
 from pybrain.optimization import PGPE as SPLA
 from pybrain.rl.experiments import EpisodicExperiment
 from pybrain.tools.plotting import MultilinePlotter
@@ -56,7 +56,7 @@ for runs in range(numbExp):
     # create controller network
     net = buildNetwork(task.outdim, task.indim, outclass=TanhLayer)
     # create agent with controller and learner
-    agent = FiniteDifferenceAgent(net, SPLA())
+    agent = LearningAgent(net, SPLA())
     # learning options
     agent.learner.gd.alpha = 0.3 #step size of \mu adaption
     agent.learner.gdSig.alpha = 0.15 #step size of \sigma adaption

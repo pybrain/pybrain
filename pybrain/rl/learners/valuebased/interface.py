@@ -1,11 +1,12 @@
 __author__ = 'Thomas Rueckstiess, ruecksti@in.tum.de'
 
-from scipy import random, argmax, array, r_, asarray
+from scipy import argmax, array, r_, asarray
 from pybrain.utilities import abstractMethod
 from pybrain.structure.modules import Table, Module
 from pybrain.structure.parametercontainer import ParameterContainer
 from pybrain.tools.shortcuts import buildNetwork
-from pybrain.tools.oneofn import *
+from pybrain.tools.oneofn import one_to_n
+
 
 class ActionValueInterface(object):
     """ Interface for different ActionValue modules, like the

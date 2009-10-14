@@ -1,8 +1,6 @@
 __author__ = "Thomas Rueckstiess, ruecksti@in.tum.de"
 
-from scipy import random
 
-from pybrain.utilities import abstractMethod, Named
 from pybrain.structure.modules.module import Module
 
 

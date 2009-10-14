@@ -1,8 +1,8 @@
 __author__ = 'Thomas Rueckstiess, ruecksti@in.tum.de'
 
-from scipy import random, reshape, dot, outer, eye
+from scipy import reshape, dot, outer, eye
 from pybrain.structure.connections import FullConnection
-from pybrain.structure.parametercontainer import ParameterContainer
+
 
 class FullNotSelfConnection(FullConnection):
     """Connection which connects every element from the first module's 
@@ -18,11 +18,11 @@ class FullNotSelfConnection(FullConnection):
             self.indim, self.outdim)
     
     def _forwardImplementation(self, inbuf, outbuf):
-       p = reshape(self.params, (self.outdim, self.indim)) * (1-eye(self.outdim))
-       outbuf += dot(p, inbuf)
+        p = reshape(self.params, (self.outdim, self.indim)) * (1-eye(self.outdim))
+        outbuf += dot(p, inbuf)
 
     def _backwardImplementation(self, outerr, inerr, inbuf):
-       p = reshape(self.params, (self.outdim, self.indim)) * (1-eye(self.outdim))
-       inerr += dot(p.T, outerr)
-       ds = self.derivs
-       ds += outer(inbuf, outerr).T.flatten()   
+        p = reshape(self.params, (self.outdim, self.indim)) * (1-eye(self.outdim))
+        inerr += dot(p.T, outerr)
+        ds = self.derivs
+        ds += outer(inbuf, outerr).T.flatten()   
