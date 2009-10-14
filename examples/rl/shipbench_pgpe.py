@@ -1,5 +1,5 @@
 #########################################################################
-# Reinforcement Learning with PGPE/SPLA on the ShipSteering Environment
+# Reinforcement Learning with PGPE on the ShipSteering Environment
 #
 # Requirements: 
 #   pybrain (tested on rev. 1195, ship env rev. 1202)
@@ -19,7 +19,7 @@ from pybrain.tools.shortcuts import buildNetwork
 from pybrain.rl.environments.shipsteer import ShipSteeringEnvironment
 from pybrain.rl.environments.shipsteer import GoNorthwardTask
 from pybrain.rl.agents import LearningAgent
-from pybrain.optimization import PGPE as SPLA
+from pybrain.optimization import PGPE 
 from pybrain.rl.experiments import EpisodicExperiment
 from pybrain.tools.plotting import MultilinePlotter
 from pylab import figure, ion 
@@ -56,7 +56,7 @@ for runs in range(numbExp):
     # create controller network
     net = buildNetwork(task.outdim, task.indim, outclass=TanhLayer)
     # create agent with controller and learner
-    agent = LearningAgent(net, SPLA())
+    agent = LearningAgent(net, PGPE())
     # learning options
     agent.learner.gd.alpha = 0.3 #step size of \mu adaption
     agent.learner.gdSig.alpha = 0.15 #step size of \sigma adaption
@@ -68,7 +68,7 @@ for runs in range(numbExp):
     epis=2000/batch/prnts
     
     #actual roll outs
-    filename="dataSPLA08NoRew"+repr(int(random.random()*1000000.0))+".dat"
+    filename="dataPGPE08NoRew"+repr(int(random.random()*1000000.0))+".dat"
     wf = open(filename, 'wb')
     for updates in range(epis):
         for i in range(prnts):

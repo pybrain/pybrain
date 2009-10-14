@@ -1,5 +1,5 @@
 #########################################################################
-# Reinforcement Learning with PGPE/SPLA on the CCRL ODE Environment 
+# Reinforcement Learning with PGPE on the CCRL ODE Environment 
 #
 # The CCRL robot is a body structure with 2x 7 DoF Arms.
 # Complex grasping tasks can be learned with this environment.
@@ -28,7 +28,7 @@ from pybrain.rl.environments.ode.tasks import CCRLGlasVarTask
 from pybrain.structure.modules.tanhlayer import TanhLayer
 from pybrain.tools.shortcuts import buildNetwork
 from pybrain.rl.agents import LearningAgent
-from pybrain.optimization import PGPE as SPLA
+from pybrain.optimization import PGPE
 from pybrain.rl.experiments import EpisodicExperiment
 from cPickle import load, dump
 
@@ -59,7 +59,7 @@ for runs in range(numbExp):
     # create controller network
     net = buildNetwork(len(task.getObservation()), hiddenUnits, env.actLen, outclass=TanhLayer)    
     # create agent with controller and learner
-    agent = LearningAgent(net, SPLA())
+    agent = LearningAgent(net, PGPE())
     # learning options
     agent.learner.gd.alpha = 0.2 #step size of \mu adaption
     agent.learner.gdSig.alpha = 0.085 #step size of \sigma adaption

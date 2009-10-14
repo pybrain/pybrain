@@ -93,7 +93,7 @@ class NoRewardTask(EpisodicTask):
     def isFinished(self):
         return (self.epiStep>=self.epiLen)
 
-#Aim is to maximize the edge lengths (best reward: 3096.167, SPLA)      
+#Aim is to maximize the edge lengths (best reward: 3096.167, PGPE)      
 class GrowTask(NoRewardTask):
     def __init__(self, env):
         NoRewardTask.__init__(self, env)
@@ -104,7 +104,7 @@ class GrowTask(NoRewardTask):
         self.env.mySensors=sensors.Sensors(self.obsSensors+self.rewardSensor)  
         self.epiLen=200 #suggested episode length
         
-#Aim is to maximize the distance to the starting point  (best reward: 406.43, SPLA)
+#Aim is to maximize the distance to the starting point  (best reward: 406.43, PGPE)
 class WalkTask(NoRewardTask):
     def __init__(self, env):
         NoRewardTask.__init__(self, env)

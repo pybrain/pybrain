@@ -6,7 +6,6 @@
 # Author: Frank Sehnke, sehnke@in.tum.de
 #########################################################################
 __author__ = "Martin Felder, Frank Sehnke"
-__version__ = '$Id: shipbenchSPLA.py 1305 2008-06-10 11:51:18Z sehnke $' 
 
 from pybrain.structure.modules.tanhlayer import TanhLayer
 from pybrain.tools.shortcuts import buildNetwork
@@ -52,7 +51,7 @@ for runs in range(numbExp):
     epis=10000/batch/prnts
     
     #actual roll outs
-    #filename="dataSPLA08NoRew"+repr(int(random.random()*1000000.0))+".dat"
+    #filename="dataPGPE08NoRew"+repr(int(random.random()*1000000.0))+".dat"
     #wf = open(filename, 'wb')
     for updates in range(epis):
         for i in range(prnts):

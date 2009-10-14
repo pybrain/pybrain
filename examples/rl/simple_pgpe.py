@@ -14,7 +14,7 @@
 from pybrain.tools.shortcuts import buildNetwork
 from pybrain.rl.environments.simple import SimpleEnvironment, MinimizeTask
 from pybrain.rl.agents import LearningAgent
-from pybrain.optimization import PGPE as SPLA
+from pybrain.optimization import PGPE
 from pybrain.rl.experiments import EpisodicExperiment
 from scipy import random
 
@@ -28,7 +28,7 @@ for runs in range(numbExp):
     # create controller network (flat network)
     net = buildNetwork(1, 1, bias=False)
     # create agent with controller and learner
-    agent = LearningAgent(net, SPLA())
+    agent = LearningAgent(net, PGPE())
     # learning options
     agent.learner.gd.alpha = 0.03
     agent.learner.gdSig.alpha = 0.1
@@ -37,7 +37,7 @@ for runs in range(numbExp):
     agent.learner.initSigmas()
     # agent.learner.rprop = True
     experiment = EpisodicExperiment(task, agent)
-    batch=2 #with spla this must be a even number (2 for all deterministic settings)
+    batch=2 #with PGPE this must be a even number (2 for all deterministic settings)
     prnts=1 
     epis=200/batch/prnts
     save=True
@@ -58,7 +58,7 @@ for runs in range(numbExp):
     if save:
         fnStart="dataSimple"
         fnExp=repr(int(agent.learner.gd.alpha*100))+"m"+repr(int(agent.learner.gdSig.alpha*100))+"s"+repr(batch/2)+"b"+repr(int(agent.learner.epsilon*10))+"e"
-        fnIdent="SPLA"+repr(int(random.random()*1000000.0))
+        fnIdent="PGPE"+repr(int(random.random()*1000000.0))
         filename=fnStart+fnExp+fnIdent+".dat"
         file = open(filename,"w")
         rlLen=len(rl)
@@ -69,7 +69,7 @@ for runs in range(numbExp):
      
         fnStart="dataSimplePara"
         fnExp=repr(int(agent.learner.gd.alpha*100))+"m"+repr(int(agent.learner.gdSig.alpha*100))+"s"+repr(batch/2)+"b"+repr(int(agent.learner.epsilon*10))+"e"
-        fnIdent="SPLA"+repr(int(random.random()*1000000.0))
+        fnIdent="PGPE"+repr(int(random.random()*1000000.0))
         filename=fnStart+fnExp+fnIdent+".dat"
         file = open(filename,"w")
         rlLen=len(pr)

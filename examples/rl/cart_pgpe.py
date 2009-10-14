@@ -14,7 +14,7 @@
 from pybrain.tools.shortcuts import buildNetwork
 from pybrain.rl.environments.cartpole import CartPoleEnvironment, BalanceTask
 from pybrain.rl.agents import LearningAgent
-from pybrain.optimization import PGPE as SPLA
+from pybrain.optimization import PGPE
 from pybrain.rl.experiments import EpisodicExperiment
 from scipy import random
 
@@ -26,7 +26,7 @@ for runs in range(numbExp):
     # create controller network
     net = buildNetwork(4, 1, bias=False)
     # create agent with controller and learner
-    agent = LearningAgent(net, SPLA())
+    agent = LearningAgent(net, PGPE())
     # learning options
     agent.learner.gd.alpha = 0.05
     agent.learner.gdSig.alpha = 0.1
@@ -54,7 +54,7 @@ for runs in range(numbExp):
     if save:
         fnStart="dataCartMom"
         fnExp=repr(int(agent.learner.gd.alpha*100))+"m"+repr(int(agent.learner.gdSig.alpha*100))+"s"+repr(batch/2)+"b"+repr(int(agent.learner.epsilon*10))+"e"
-        fnIdent="SPLA"+repr(int(random.random()*1000000.0))
+        fnIdent="PGPE"+repr(int(random.random()*1000000.0))
         filename=fnStart+fnExp+fnIdent+".dat"
         file = open(filename,"w")
         rlLen=len(rl)
