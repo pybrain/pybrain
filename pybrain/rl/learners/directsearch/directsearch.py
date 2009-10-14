@@ -1,9 +1,22 @@
-__author__ = 'Thomas Rueckstiess, ruecksti@in.tum.de'
+""" The code for all black-box optimization algorithms is located in  
+the pybrain/optimization directory (to avoid duplicating files). 
+Those algorithms can perfectly be used on (episodic) RL tasks anyway.
 
-from pybrain.rl.learners.learner import Learner
+See also examples/optimization/optimizers_for_rl.py
+"""
+
+__author__ = 'Tom Schaul and Thomas Rueckstiess, tom@idsia.ch, ruecksti@in.tum.de'
+
+from pybrain.rl.learners.learner import Learner, EpisodicLearner
+
 
 class DirectSearchLearner(Learner):
-    """ Meta-class to distinguish direct search learners from other types,
-        such as value-based learners.
+    """ The class of learners that (in contrast to value-based learners) 
+    searches directly in policy space.
     """
-    pass
+    
+            
+class PhylogeneticLearner(EpisodicLearner, DirectSearchLearner):
+    """ The opposite of an ontogenetic algorithm. 
+    It makes use exclusively of the cumulative reward (=fitness) at the end of the episode.
+    """

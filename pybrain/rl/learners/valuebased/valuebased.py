@@ -1,9 +1,10 @@
 __author__ = 'Thomas Rueckstiess, ruecksti@in.tum.de'
 
-from pybrain.rl.learners.learner import Learner
+from pybrain.rl.learners.learner import ExploringLearner, DataSetLearner, OntogeneticLearner
 from pybrain.rl.explorers.discrete.egreedy import EpsilonGreedyExplorer
 
-class ValueBasedLearner(Learner):
+
+class ValueBasedLearner(OntogeneticLearner, ExploringLearner, DataSetLearner):
     
     offPolicy = False
     batchMode = True

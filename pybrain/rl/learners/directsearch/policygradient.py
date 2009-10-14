@@ -1,6 +1,7 @@
 __author__ = 'Thomas Rueckstiess, ruecksti@in.tum.de'
 
 from pybrain.rl.learners.directsearch.directsearch import DirectSearchLearner
+from pybrain.rl.learners.learner import DataSetLearner, ExploringLearner
 from pybrain.utilities import abstractMethod
 from pybrain.auxiliary import GradientDescent
 from pybrain.rl.explorers.continuous.normal import NormalExplorer
@@ -17,7 +18,7 @@ class LoglhDataSet(DataSet):
         self.index = 0
         
 
-class PolicyGradientLearner(DirectSearchLearner):
+class PolicyGradientLearner(DirectSearchLearner, DataSetLearner, ExploringLearner):
     """ PolicyGradientLearner is a super class for all continuous direct search
         algorithms that use the log likelihood of the executed action to update
         the weights. Subclasses are ENAC, GPOMDP, or REINFORCE.
@@ -118,7 +119,7 @@ class PolicyGradientLearner(DirectSearchLearner):
     
     def explore(self, state, action):
         # forward pass of exploration
-        explorative = DirectSearchLearner.explore(self, state, action)
+        explorative = ExploringLearner.explore(self, state, action)
         
         # backward pass through network and store derivs
         self.network.backward()

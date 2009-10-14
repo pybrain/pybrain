@@ -2,10 +2,11 @@ __author__ = 'Thomas Rueckstiess, ruecksti@in.tum.de'
 
 from pybrain.rl.agents.logging import LoggingAgent
 
+
 class LearningAgent(LoggingAgent):
     """ LearningAgent has a module, a learner, that modifies the module, and an explorer,
         which perturbs the actions. It can have learning enabled or disabled and can be 
-        used continously or with episodes.
+        used continuously or with episodes.
     """
     
     def __init__(self, module, learner = None):
@@ -19,7 +20,7 @@ class LearningAgent(LoggingAgent):
         self.learner = learner
                 
         # if learner is available, tell it the module and data
-        if self.learner:
+        if self.learner is not None:
             self.learner.module = self.module
             self.learner.dataset = self.history
         
@@ -33,7 +34,7 @@ class LearningAgent(LoggingAgent):
     
     def _setLearning(self, flag):
         """ set whether or not the agent should learn from its experience """
-        if self.learner:
+        if self.learner is not None:
             self.__learning = flag
         else:
             self.__learning = False
@@ -55,7 +56,7 @@ class LearningAgent(LoggingAgent):
                     
 
     def newEpisode(self):
-        """ inidicates the beginning of a new episode in the training cycle. """
+        """ indicates the beginning of a new episode in the training cycle. """
         if self.logging:
             self.history.newSequence()
         
