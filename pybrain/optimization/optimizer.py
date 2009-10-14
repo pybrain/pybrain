@@ -5,14 +5,14 @@ import logging
 
 from pybrain.utilities import setAllArgs, abstractMethod, DivergenceError
 from pybrain.rl.learners.learner import Learner
-from pybrain.rl.learners.directsearch.directsearch import DirectSearch
+from pybrain.rl.learners.directsearch.directsearch import DirectSearchLearner
 from pybrain.structure.parametercontainer import ParameterContainer
 from pybrain.rl.environments.functions.function import FunctionEnvironment
 from pybrain.rl.environments.fitnessevaluator import FitnessEvaluator
 from pybrain.rl.environments.functions.transformations import oppositeFunction
 
 
-class BlackBoxOptimizer(DirectSearch, Learner):
+class BlackBoxOptimizer(DirectSearchLearner):
     """ The super-class for learning algorithms that treat the problem as a black box. 
     At each step they change the policy, and get a fitness value by invoking 
     the FitnessEvaluator (provided as first argument upon initialization).

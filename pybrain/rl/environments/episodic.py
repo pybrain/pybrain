@@ -8,10 +8,11 @@ from pybrain.utilities import abstractMethod
 from pybrain.rl.environments.task import Task
 from pybrain.rl.agents.agent import Agent
 from pybrain.structure.modules.module import Module
-# DEBUG: from pybrain.rl.evaluator import Evaluator
+from pybrain.rl.environments.fitnessevaluator import FitnessEvaluator
 from pybrain.rl.experiments.episodic import EpisodicExperiment
 
-class EpisodicTask(Task):  # DEBUG: also inherit from Evaluator
+
+class EpisodicTask(Task, FitnessEvaluator):
     """ A task that consists of independent episodes. """
 
     # tracking cumulative reward
@@ -54,18 +55,19 @@ class EpisodicTask(Task):  # DEBUG: also inherit from Evaluator
         """ the accumulated reward since the start of the episode """
         return self.cumreward
         
-
+    def f(self, x):
         """ An episodic task can be used as an evaluation function of a module that produces actions 
         from observations, or as an evaluator of an agent. """
-        if isinstance(module, Module):
-            module.reset()
-            self.reset()
-            while not self.isFinished():
-                self.performAction(module.activate(self.getObservation()))
-            return self.getTotalReward()
-        elif isinstance(module, Agent):
-            EpisodicExperiment(self, module).doEpisodes(self.batchSize)
-            return self.getTotalReward() / float(self.batchSize)
-        else:
-            raise NotImplementedError('Missing implementation for '+module.__class__.__name__+' evaluation')
-        
+        r = 0.
+        for _ in range(self.batchSize):
+            if isinstance(x, Module):
+                x.reset()
+                self.reset()
+                while not self.isFinished():
+                    self.performAction(x.activate(self.getObservation()))
+            elif isinstance(x, Agent):
+                EpisodicExperiment(self, x).doEpisodes()
+            else:
+                raise ValueError(self.__class__.__name__+' cannot evaluate the fitness of '+str(type(x)))
+            r += self.getTotalReward()
+        return r / float(self.batchSize) 

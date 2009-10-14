@@ -15,28 +15,6 @@ from pybrain.datasets import ReinforcementDataSet
 #     to increase the expected reward/fitness. """
     
     
-class OntogeneticLearner(Learner):
-    """ The class of classical RL algorithms. 
-    They make use of observations, actions and rewards. """
-    
-    
-class OffPolicyLearner(Learner):
-    """ A kind of learner that can learn from offline data,
-    gathered independently of the current policy (usually at an earlier time).
-    
-    All off-policy learners can also learn on-policy. """
-    
-    
-class EpisodicLearner(Learner):
-    """ Assumes the task is episodic, not life-long,
-    and therefore does a learning step only after the end of each episode. """
-    
-    
-class PhylogeneticLearner(EpisodicLearner):
-    """ The opposite of an ontogenetic algorithm. 
-    It makes use of only the cumulative reward (=fitness) at the end of the episode.
-    """
-
 class Learner(object):
     """ A Learner determines how to change the adaptive parameters of a module.
         It requires access to a ReinforcementDataSet object (which provides 
@@ -73,3 +51,26 @@ class Learner(object):
 
     def reset(self):
         pass
+
+
+class OntogeneticLearner(Learner):
+    """ The class of classical RL algorithms. 
+    They make use of observations, actions and rewards. """
+    
+    
+class OffPolicyLearner(Learner):
+    """ A kind of learner that can learn from offline data,
+    gathered independently of the current policy (usually at an earlier time).
+    
+    All off-policy learners can also learn on-policy. """
+    
+    
+class EpisodicLearner(Learner):
+    """ Assumes the task is episodic, not life-long,
+    and therefore does a learning step only after the end of each episode. """
+    
+    
+class PhylogeneticLearner(EpisodicLearner):
+    """ The opposite of an ontogenetic algorithm. 
+    It makes use of only the cumulative reward (=fitness) at the end of the episode.
+    """
