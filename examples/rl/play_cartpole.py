@@ -19,7 +19,7 @@ episodes = 100
 epilen = 200
 
 if len(sys.argv) < 5:
-    sys.exit('please give 4 parameters. run: "python play.py <p1> <p2> <p3> <p4>"\n')
+    sys.exit('please give 4 parameters. run: "python play_catpole.py <p1> <p2> <p3> <p4>"\n')
      
 # create environment
 env = CartPoleEnvironment()    
