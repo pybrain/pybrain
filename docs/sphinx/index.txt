@@ -46,6 +46,8 @@ Tutorial
    tutorial/intro
    tutorial/netmodcon
    tutorial/fnn
+   tutorial/datasets
+   tutorial/reinforcement-learning
    
 
 API
@@ -57,8 +59,9 @@ API
    
    api/structure/*
    api/datasets/*
-   api/*
    api/supervised/*
+   api/*
+   api/supervised/knn/lsh/*
    
    
 Indices and tables

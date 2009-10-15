@@ -46,10 +46,10 @@ class Validator(object):
             @param output: array of output values
             @param target: array of target values
             @param importance: each squared error will be multiplied with its
-                               corresponding importance value. After summing
-                               up these values, the result will be divided by the
-                               sum of all importance values for normalization
-                               purposes.
+            corresponding importance value. After summing
+            up these values, the result will be divided by the
+            sum of all importance values for normalization
+            purposes.
         """
         # assert equal shapes
         output = array(output)
@@ -152,7 +152,7 @@ class ModuleValidator(object):
             stored inside dataset.
             @param module: Object of any subclass of pybrain's Module type
             @param dataset: Dataset object at least containing the fields
-                            'input' and 'target' (for example SupervisedDataSet)
+            'input' and 'target' (for example SupervisedDataSet)
         """
         return ModuleValidator.validate(
             Validator.classificationPerformance,
@@ -164,7 +164,7 @@ class ModuleValidator(object):
         """ Returns the mean squared error.
             @param module: Object of any subclass of pybrain's Module type
             @param dataset: Dataset object at least containing the fields
-                            'input' and 'target' (for example SupervisedDataSet)
+            'input' and 'target' (for example SupervisedDataSet)
         """
         return ModuleValidator.validate(
             Validator.MSE,
@@ -180,10 +180,10 @@ class ModuleValidator(object):
             through the valfunc function and returns the result.
 
             @param valfunc: A function expecting arrays for output, target and
-                            importance (optional). See Validator.MSE for an example.
+            importance (optional). See Validator.MSE for an example.
             @param module:  Object of any subclass of pybrain's Module type
             @param dataset: Dataset object at least containing the fields
-                            'input' and 'target' (for example SupervisedDataSet)
+            'input' and 'target' (for example SupervisedDataSet)
         """
         target = dataset.getField('target')
         output = ModuleValidator.calculateModuleOutput(module, dataset)
