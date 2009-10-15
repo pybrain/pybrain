@@ -1,4 +1,9 @@
 *.pyc
 *.egg-info
 *.xml
+*.o
+*.so
 .settings
+build
+dist
+docs/sphinx/.build
