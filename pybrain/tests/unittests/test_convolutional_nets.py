@@ -55,7 +55,7 @@ because a cluster-size of 3x3 makes their input look identical.
 
 Now let's use the network, and play a game with it:
 
-    >>> from pybrain.rl.tasks.capturegame.capturetask import CaptureGameTask
+    >>> from pybrain.rl.environments.twoplayergames import CaptureGameTask
     >>> t = CaptureGameTask(4)
     >>> tmp = t(N)    
 

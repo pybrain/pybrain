@@ -3,4 +3,4 @@ try:
 except ImportError:
     raise ImportError('This task needs to be compiled. Please use the script: cartpolecompile.py')
 
-from cartpoleenv import CartPoleTask
+from cartpoleenv import FastCartPoleTask

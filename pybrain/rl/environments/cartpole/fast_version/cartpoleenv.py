@@ -10,12 +10,12 @@ from pybrain.rl import EpisodicTask
 try: 
     import cartpolewrap as impl
 except ImportError, e:
-    logging.error("CartPoleTask is wrapping C code that needs to be compiled - it's simple: run .../cartpolecompile.py")
+    logging.error("FastCartPoleTask is wrapping C code that needs to be compiled - it's simple: run .../cartpolecompile.py")
     raise e
 
 
 
-class CartPoleTask(EpisodicTask):
+class FastCartPoleTask(EpisodicTask):
     """ A Python wrapper of the standard C implentation of the pole-balancing task, directly using the 
     reference code of Faustino Gomez. """
     
@@ -125,7 +125,7 @@ class CartPoleTask(EpisodicTask):
 if __name__ == '__main__':
     from pybrain.rl import EpisodicExperiment
     from pybrain.rl.agents import FlatNetworkAgent
-    x = CartPoleTask()
+    x = FastCartPoleTask()
     a = FlatNetworkAgent(x.outdim, x.indim)
     e = EpisodicExperiment(x, a)
     e.doEpisodes(2)

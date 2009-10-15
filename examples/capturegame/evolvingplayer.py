@@ -3,7 +3,7 @@ which uses a MDRNN as network, with a simple ES algorithm."""
 
 __author__ = 'Tom Schaul, tom@idsia.ch'
 
-from pybrain.rl.tasks.capturegame import CaptureGameTask
+from pybrain.rl.environments.twoplayergames import CaptureGameTask
 from pybrain.structure.evolvables.cheaplycopiable import CheaplyCopiable
 from pybrain.optimization import ES
 from pybrain.utilities import storeCallResults
