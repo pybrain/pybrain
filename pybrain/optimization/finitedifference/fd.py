@@ -7,19 +7,28 @@ from pybrain.auxiliary import GradientDescent
 from pybrain.optimization.optimizer import ContinuousOptimizer
 
 
-# TODO: a more elegant way to set the gradient descent parameters on initialization
-
 class FiniteDifferences(ContinuousOptimizer):
     """ Basic finite difference method. """
     
     epsilon = 1.0
     gamma = 0.999
     batchSize = 10    
+    
+    # gradient descent parameters
+    learningRate = 0.1
+    learningRateDecay = None
+    momentum = 0.0
+    rprop = False
         
     def _setInitEvaluable(self, evaluable):
         ContinuousOptimizer._setInitEvaluable(self, evaluable)
         self.current = self._initEvaluable
-        self.gd = GradientDescent()     
+        self.gd = GradientDescent()
+        self.gd.alpha = self.learningRate
+        if self.learningRateDecay is not None:
+            self.gd.alphadecay = self.learningRateDecay
+        self.gd.momentum = self.momentum     
+        self.gd.rprop = self.rprop
         self.gd.init(self._initEvaluable)
 
     def perturbation(self):
