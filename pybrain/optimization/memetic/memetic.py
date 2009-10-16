@@ -1,14 +1,11 @@
 __author__ = 'Tom Schaul, tom@idsia.ch'
 
-from pybrain.optimization.optimizer import BlackBoxOptimizer
+from pybrain.optimization.optimizer import BlackBoxOptimizer, TopologyOptimizer
 from pybrain.optimization.hillclimber import HillClimber
-from pybrain.structure.modules.module import Module
 from pybrain.structure.evolvables.maskedparameters import MaskedParameters
-from pybrain.structure.evolvables.maskedmodule import MaskedModule
-from pybrain.structure.evolvables.topology import TopologyEvolvable
 
 
-class MemeticSearch(HillClimber):
+class MemeticSearch(HillClimber, TopologyOptimizer):
     """ Interleaving topology search with local search """
     
     localSteps = 50
@@ -20,16 +17,7 @@ class MemeticSearch(HillClimber):
         tm = self._initEvaluable.__class__.topologyMutate
         m = self._initEvaluable.__class__.mutate
         self._initEvaluable.__class__.topologyMutate = m
-        self._initEvaluable.__class__.mutate = tm            
-    
-    def _setInitEvaluable(self, evaluable):
-        BlackBoxOptimizer._setInitEvaluable(self, evaluable)
-        # distinguish modules from parameter containers.
-        if not isinstance(evaluable, TopologyEvolvable):
-            if isinstance(evaluable, Module):
-                self._initEvaluable = MaskedModule(self._initEvaluable)
-            else:
-                self._initEvaluable = MaskedParameters(self._initEvaluable, returnZeros = True)      
+        self._initEvaluable.__class__.mutate = tm                
             
     def _oneEvaluation(self, evaluable):
         if self.numEvaluations == 0:

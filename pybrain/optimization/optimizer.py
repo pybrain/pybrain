@@ -9,6 +9,10 @@ from pybrain.structure.parametercontainer import ParameterContainer
 from pybrain.rl.environments.functions.function import FunctionEnvironment
 from pybrain.rl.environments.fitnessevaluator import FitnessEvaluator
 from pybrain.rl.environments.functions.transformations import oppositeFunction
+from pybrain.structure.evolvables.maskedmodule import MaskedModule
+from pybrain.structure.evolvables.maskedparameters import MaskedParameters
+from pybrain.structure.evolvables.topology import TopologyEvolvable
+from pybrain.structure.modules.module import Module
 
 
 class BlackBoxOptimizer(DirectSearchLearner):
@@ -80,10 +84,13 @@ class BlackBoxOptimizer(DirectSearchLearner):
                 self.desiredEvaluation = evaluator.desiredValue               
             if self.minimize is None:
                 self.minimize = evaluator.toBeMinimized 
-            if self.numParameters is None:
-                # in some cases, we can deduce the dimension from the provided evaluator:
-                if isinstance(evaluator, FunctionEnvironment):
+            # in some cases, we can deduce the dimension from the provided evaluator:
+            if isinstance(evaluator, FunctionEnvironment):
+                if self.numParameters is None:            
                     self.numParameters = evaluator.xdim
+                elif self.numParameters is not evaluator.xdim:
+                    raise ValueError("Parameter dimension mismatch: evaluator expects "+str(evaluator.xdim)\
+                                     +" but it was set to "+str(self.numParameters)+".")
         
         # minimization vs. maximization: priority to algorithm requirements, then evaluator, default = maximize
         if self.mustMinimize:
@@ -135,7 +142,12 @@ class BlackBoxOptimizer(DirectSearchLearner):
             evaluable = pc
         self._initEvaluable = evaluable
         if isinstance(self._initEvaluable, ParameterContainer):
-            self.numParameters = len(self._initEvaluable)      
+            if self.numParameters is None:            
+                self.numParameters = len(self._initEvaluable)
+            elif self.numParameters is not len(self._initEvaluable):
+                raise ValueError("Parameter dimension mismatch: evaluator expects "+str(self.numParameters)\
+                                 +" but the evaluable has "+str(len(self._initEvaluable))+".")
+                  
     
     def learn(self, additionalLearningSteps = None):
         """ The main loop that does the learning. """
@@ -251,3 +263,19 @@ class ContinuousOptimizer(BlackBoxOptimizer):
         return bestE, bestF
    
     
+class TopologyOptimizer(BlackBoxOptimizer):
+    """ A class of algorithms that changes the topology as well as the parameters.
+    It does not accept an arbitrary Evolvable as initial point, only a 
+    ParameterContainer (or a continuous vector). """
+        
+    def _setInitEvaluable(self, evaluable):
+        BlackBoxOptimizer._setInitEvaluable(self, evaluable)
+        # distinguish modules from parameter containers.
+        if not isinstance(evaluable, TopologyEvolvable):
+            if isinstance(evaluable, Module):
+                self._initEvaluable = MaskedModule(self._initEvaluable)
+            else:
+                self._initEvaluable = MaskedParameters(self._initEvaluable, returnZeros = True)   
+    
+     
+        
