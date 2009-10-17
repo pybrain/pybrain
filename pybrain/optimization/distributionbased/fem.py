@@ -48,8 +48,6 @@ class FEM(DistributionBasedOptimizer):
     rangemins = None
     rangemaxs = None
     initCovariances = None
-    
-    mustMaximize = True
         
     def _additionalInit(self):
         assert self.numberOfCenters == 1, 'Mixtures of Gaussians not supported yet.'
@@ -84,6 +82,9 @@ class FEM(DistributionBasedOptimizer):
         self.allUpdateSizes = []
         self.allfitnesses = []
         self.meanShifts = [zeros((self.numParameters)) for _ in range(self.numberOfCenters)]
+        
+        self._oneEvaluation(self._initEvaluable)
+        
                 
     def _produceNewSample(self):
         """ returns a new sample, its fitness and its densities """        
@@ -102,12 +103,16 @@ class FEM(DistributionBasedOptimizer):
         if self.sampleElitism and len(self.allsamples) > self.windowSize and len(self.allsamples) % self.windowSize == 0:
             sample = self.bestEvaluable.copy()
         fit = self._oneEvaluation(sample)
-        self.allfitnesses.append(fit)
-    
-        if fit >= self.bestEvaluation or len(self.allsamples) == 0:
+        
+        if ((not self.minimize and fit >= self.bestEvaluation)
+            or (self.minimize and fit <= self.bestEvaluation)
+            or len(self.allsamples) == 0):
             # used to determine which center produced the current best
             self.bestChosenCenter = chosenOne
             self.bestSigma = self.sigmas[chosenOne].copy()
+        if self.minimize:
+            fit = -fit
+        self.allfitnesses.append(fit)
         self.allsamples.append(sample)
         return sample, fit
         

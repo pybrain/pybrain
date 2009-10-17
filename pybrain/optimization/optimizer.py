@@ -104,7 +104,6 @@ class BlackBoxOptimizer(DirectSearchLearner):
             self.minimize = False
         if self.minimize is None:
             self.minimize = False
-                                
         if self.wasOpposed:
             self.__evaluator = oppositeFunction(evaluator)
             if self.desiredEvaluation is not None:
@@ -190,7 +189,6 @@ class BlackBoxOptimizer(DirectSearchLearner):
             # detect numerical instability
             if isnan(res) or isinf(res):
                 raise DivergenceError
-                
             # always keep track of the best
             if (self.numEvaluations == 0
                 or self.bestEvaluation is None

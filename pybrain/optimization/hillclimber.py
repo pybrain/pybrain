@@ -10,6 +10,9 @@ class HillClimber(BlackBoxOptimizer):
 
     evaluatorIsNoisy = False
     
+    def _additionalInit(self):
+        self._oneEvaluation(self._initEvaluable)
+    
     def _learnStep(self):
         """ generate a new evaluable by mutation, compare them, and keep the best. """
         # re-evaluate the current individual in case the evaluator is noisy

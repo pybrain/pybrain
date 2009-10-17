@@ -139,18 +139,31 @@ def testContinuousInterface(algo):
 
 def testMinMax(algo):
     """ Verify that the algorithm is doing the minimization/maximization consistently. """
-    amin = algo(sf, xa1, minimize = True)
+    if (issubclass(algo, bbo.TopologyOptimizer)
+        or algo == StochasticHillClimber):
+        # TODO
+        return True
+    
+    xa1[0] = 2
+    evalx = sf(xa1)    
+    
     amax = algo(sf, xa1, minimize = False)
-    evalx = sf(xa1)
+    assert amax.minimize is False or amax.mustMinimize, 'Max: Attribute not set correctly.'+str(amax.minimize)+str(amax.mustMinimize)
+    x, xv = amax.learn(1)
+    assert sf(x) == xv, 'Evaluation does not fit: '+str((sf(x), xv))
+    assert xv >= evalx, 'Evaluation did not increase: '+str(xv)+' (init: '+str(evalx)+')'
+    
+    xa1[0] = 2
+    amin = algo(sf, xa1, minimize = True)
+    assert amin.minimize is True or amin.mustMaximize, 'Min: Attribute not set correctly.'+str(amin.minimize)+str(amin.mustMaximize)
+    x, xv = amin.learn(1)
+    assert sf(x) == xv, 'Evaluation does not fit: '+str((sf(x), xv))
+    assert xv <= evalx, 'Evaluation did not decrease: '+str(xv)+' (init: '+str(evalx)+')'
     assert ((amin.minimize is not amax.minimize) 
             or not (amin.wasOpposed is amax.wasOpposed)), 'Inconsistent flags.' 
-    x, xv = amin.learn(1)
-    assert sf(x) == xv, 'Evaluation does not fit: %f<>$f' % (sf(x), xv)
-    assert xv <= evalx, 'Evaluation did not decrease: %f (init: %f)' % (xv, evalx)
-    x, xv = amax.learn(1)
-    assert sf(x) == xv, 'Evaluation does not fit: %f<>$f' % (sf(x), xv)
-    assert xv >= evalx, 'Evaluation did not increase: %f (init: %f)' % (xv, evalx)
+        
     return True
+    
     
 
 
@@ -231,7 +244,6 @@ if __name__ == '__main__':
                                  ), 
                       globals().values())
     
-    
     print 'Optimization algorithms to be tested:', len(allalgos)
     print    
     print 'Note: this collection of tests may take quite some time.'
@@ -241,7 +253,7 @@ if __name__ == '__main__':
              testContinuousInterface,
              testOnModuleAndTask,
              testOnEvolvable,
-             #testMinMax,
+             testMinMax,
              ]
     
     testAll(tests, allalgos, tolerant = True)
