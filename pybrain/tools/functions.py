@@ -47,26 +47,29 @@ def semilinearPrime(x):
 
 
 def safeExp(x):
-    """ bounded range for the exponential function """         
+    """ Bounded range for the exponential function (won't rpoduce inf or NaN). """         
     return exp(clip(x, -500, 500))
 
 
 def sigmoid(x):
+    """ Logistic sigmoid function. """
     return 1./(1.+safeExp(-x))
 
 
 def sigmoidPrime(x):
+    """ Derivative of logistic sigmoid. """
     tmp = sigmoid(x)
     return tmp*(1-tmp)
 
 
 def tanhPrime(x):
+    """ Derivative of tanh. """
     tmp = tanh(x)
     return 1-tmp*tmp
     
             
 def ranking(R):
-    """ produce a linear ranking of the values in R """        
+    """ Produces a linear ranking of the values in R. """        
     l = sorted(list(enumerate(R)), cmp = lambda a,b: cmp(a[1],b[1]))
     l = sorted(list(enumerate(l)), cmp = lambda a,b: cmp(a[1],b[1]))
     return array(map(lambda (r, dummy): r, l))
@@ -125,7 +128,7 @@ def simpleMultivariateNormalPdf(z, detFactorSigma):
 
 
 def multivariateCauchy(mu, sigma, onlyDiagonal = True):
-    """ Generate a sample according to a given multivariate Cauchy distribution. """
+    """ Generates a sample according to a given multivariate Cauchy distribution. """
     if not onlyDiagonal:
         u, s, d = svd(sigma)
         coeffs = sqrt(s)
@@ -138,8 +141,8 @@ def multivariateCauchy(mu, sigma, onlyDiagonal = True):
     return res+mu 
 
         
-def ApproxChiFunction(dim):
-    """ Chi (expectation of the length of a normal random vector) 
-    approximation accoring to: Ostermeier 1997 """
+def approxChiFunction(dim):
+    """ Returns Chi (expectation of the length of a normal random vector) 
+    approximation according to: Ostermeier 1997. """
     dim = float(dim)
     return sqrt(dim) * (1 - 1/(4*dim) + 1/(21* dim**2))

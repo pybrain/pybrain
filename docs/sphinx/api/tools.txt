@@ -36,3 +36,27 @@
 
 .. autofunction:: testOnSequenceData
 
+.. rubric:: Auxiliary functions
+
+.. automodule:: pybrain.tools.functions
+
+.. autofunction:: semilinear
+
+.. autofunction:: semilinearPrime
+
+.. autofunction:: sigmoid
+
+.. autofunction:: sigmoidPrime
+
+.. autofunction:: tanhPrime
+
+.. autofunction:: safeExp
+
+.. autofunction:: ranking
+
+.. autofunction:: multivariateNormalPdf
+
+.. autofunction:: simpleMultivariateNormalPdf
+
+.. autofunction:: multivariateCauchy
+

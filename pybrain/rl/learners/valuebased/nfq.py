@@ -1,11 +1,13 @@
+from scipy import r_
+
 from pybrain.rl.learners.valuebased.valuebased import ValueBasedLearner
 from pybrain.datasets import SupervisedDataSet
 from pybrain.supervised.trainers.rprop import RPropMinusTrainer
+from pybrain.utilities import one_to_n
 
-from scipy import r_
-from pybrain.tools.oneofn import one_to_n
 
 class NFQ(ValueBasedLearner):
+    """ Neuro-fitted Q-learning"""
     
     def __init__(self):
         ValueBasedLearner.__init__(self)

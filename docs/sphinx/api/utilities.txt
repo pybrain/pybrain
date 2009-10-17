@@ -1,0 +1,37 @@
+:mod:`utilities` -- Simple but useful Utility Functions
+=======================================================
+
+.. automodule:: pybrain.utilities
+
+.. rubric:: Tools for binary encodings
+
+.. autofunction:: one_to_n
+
+.. autofunction:: n_to_one
+
+.. autofunction:: int2gray
+
+.. autofunction:: asBinary
+
+.. rubric:: Tools for sets
+
+.. autofunction:: reachable
+
+.. autofunction:: crossproduct
+
+.. rubric:: Matrix tools
+
+.. autofunction:: triu2flat
+
+.. autofunction:: flat2triu
+
+.. autofunction:: blockList2Matrix
+
+.. autofunction:: blockCombine
+
+.. rubric:: Stochastic index choices
+
+.. autofunction:: drawIndex
+
+.. autofunction:: drawGibbs
+

@@ -23,6 +23,7 @@ known_extensions = {
     'svm': 'libsvm',
     'pkl': 'pickle',
     'nc' : 'netcdf' }
+
     
 def abstractMethod():
     """ This should be called when an abstract method is called that should have been 
@@ -41,7 +42,8 @@ def combineLists(lsts):
 
 
 def drawIndex(probs, tolerant = False):
-    """ draws an index given an array of probabilities """
+    """ Draws an index given an array of probabilities.
+    @param tolerant: if set to True, the array is normalized to sum to 1.  """
     if not sum(probs) < 1.00001 or not sum(probs) > 0.99999:
         if tolerant:
             probs /= sum(probs)
@@ -58,7 +60,7 @@ def drawIndex(probs, tolerant = False):
 
 
 def drawGibbs(vals, temperature = 1.):
-    """ return the index of the sample drawn by a softmax. """
+    """ Return the index of the sample drawn by a softmax (Gibbs). """
     if temperature == 0:
         # randomly pick one of the values with the max value.
         m = max(vals)
@@ -110,6 +112,7 @@ def setAllArgs(obj, argdict):
                 if not hasattr(obj, '_unknown_argdict'):
                     obj._unknown_argdict = {}
                 obj._unknown_argdict[n] = argdict[n]
+                
                 
 def linscale(d, lim):
     """ utility function to linearly scale array d to the interval defined by lim """
@@ -358,12 +361,12 @@ def _import(name):
 # tools for binary Gray code manipulation:
 
 def int2gray(i):
-    """ return the value of val in Gray encoding."""
+    """ Returns the value of an integer in Gray encoding."""
     return i ^ (i >> 1)
 
     
 def gray2int(g, size):
-    """ transform a gray code back into an integer """
+    """ Transforms a Gray code back into an integer. """
     res = 0
     for i in reversed(range(size)):
         gi = (g>>i)%2
@@ -376,7 +379,7 @@ def gray2int(g, size):
 
     
 def asBinary(i):
-    """ produce a string of an integers binary representation.
+    """ Produces a string from an integer's binary representation.
     (preceding zeros removed). """
     if i > 1:
         if i%2 == 1:
@@ -385,7 +388,19 @@ def asBinary(i):
             return asBinary(i>>1)+'0'
     else:
         return str(i)    
+    
+    
+def one_to_n(val, maxval):
+    """ Returns a 1-in-n binary encoding of a non-negative integer. """
+    a = zeros(maxval, float)
+    a[val] = 1.
+    return a
 
+
+def n_to_one(arr):
+    """ Returns the reverse of a 1-in-n binary encoding. """
+    return where(arr == 1)[0][0]
+    
 
 def canonicClassString(x):
     """ the __class__ attribute changed from old-style to new-style classes... """
@@ -406,9 +421,9 @@ def decrementAny(tup):
     
     
 def reachable(stepFunction, start, destinations):
-    """ determine the subset of destinations that can be reached from a set of starting positions,
+    """ Determines the subset of destinations that can be reached from a set of starting positions,
     while using stepFunction (which produces a list of neighbor states) to navigate. 
-    Use breadth-first search. """
+    Uses breadth-first search. """
     if len(start) == 0:
         return {}
     
@@ -438,7 +453,7 @@ def reachable(stepFunction, start, destinations):
     
     
 def crossproduct(ss, row=None, level=0):
-    """Return the crossproduct of the sets given in `ss`."""
+    """Returns the cross-product of the sets given in `ss`."""
     if row is None:
         row = []
     if len(ss) > 1:
@@ -509,7 +524,7 @@ def permuteToBlocks2d(arr, blockheight, blockwidth):
         
 
 def triu2flat(m):
-    """ Flatten an upper triangular matrix, returning a vector of the 
+    """ Flattens an upper triangular matrix, returning a vector of the 
     non-zero elements. """
     dim = m.shape[0]
     res = zeros(dim*(dim+1)/2)
@@ -521,7 +536,7 @@ def triu2flat(m):
 
 
 def flat2triu(a, dim):
-    """ Produce an upper triangular matrix of dimension dim from the elements of the given vector. """
+    """ Produces an upper triangular matrix of dimension dim from the elements of the given vector. """
     res = zeros((dim, dim))
     index = 0
     for row in range(dim):
@@ -531,7 +546,7 @@ def flat2triu(a, dim):
 
 
 def blockList2Matrix(l):
-    """ Convert a list of matrices into a corresponding big block-diagonal one. """
+    """ Converts a list of matrices into a corresponding big block-diagonal one. """
     dims = [m.shape[0] for m in l]
     s = sum(dims)
     res = zeros((s,s))

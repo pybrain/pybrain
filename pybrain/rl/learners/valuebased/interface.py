@@ -5,7 +5,7 @@ from pybrain.utilities import abstractMethod
 from pybrain.structure.modules import Table, Module
 from pybrain.structure.parametercontainer import ParameterContainer
 from pybrain.tools.shortcuts import buildNetwork
-from pybrain.tools.oneofn import one_to_n
+from pybrain.utilities import one_to_n
 
 
 class ActionValueInterface(object):
