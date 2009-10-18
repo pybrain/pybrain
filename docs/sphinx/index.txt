@@ -5,23 +5,23 @@
 Welcome to PyBrain's documentation!
 ===================================
 
-The documentation is build up in the following parts: first, there is the 
-quickstart tutorial which aims at getting you started with PyBrain as quickly as 
+The documentation is build up in the following parts: first, there is the
+quickstart tutorial which aims at getting you started with PyBrain as quickly as
 possible. This is the right place for you if you just want get a feel for the
 library or if you never used PyBrain before.
 
-Although the quickstart uses supervised learning with neural networks as an 
+Although the quickstart uses supervised learning with neural networks as an
 example, this does not mean that that's it. PyBrain is not only about supervised
 learning and neural networks.
 
 While the quickstart should be read sequentially, the tutorial's chapters can be
-read mostly independent of each other. 
+read mostly independent of each other.
 
-In case this does not suffice, we also have an API reference, the 
+In case this does not suffice, we also have an API reference, the
 :ref:`modindex`. Most of the packages and modules of PyBrain are auto-documented
 there.
 
-If at any point the documentation does not suffice, you can always get help at 
+If at any point the documentation does not suffice, you can always get help at
 the pybrain Google Group at http://groups.google.com/group/pybrain.
 
 
@@ -30,8 +30,9 @@ Quickstart
 
 .. toctree::
     :maxdepth: 1
-    
+
     quickstart/installation
+    quickstart/fast-pybrain
     quickstart/network
     quickstart/dataset
     quickstart/training
@@ -42,13 +43,20 @@ Tutorial
 
 .. toctree::
    :maxdepth: 2
-   
+
    tutorial/intro
    tutorial/netmodcon
    tutorial/fnn
-   tutorial/datasets
-   tutorial/reinforcement-learning
-   
+
+
+Advanced
+--------
+
+.. toctree::
+   :maxdepth: 1
+
+   advanced/fast-pybrain
+
 
 API
 ---
@@ -56,14 +64,14 @@ API
 .. toctree::
    :maxdepth: 1
    :glob:
-   
+
    api/structure/*
    api/datasets/*
    api/supervised/*
    api/*
    api/supervised/knn/lsh/*
-   
-   
+
+
 Indices and tables
 ==================
 

@@ -35,7 +35,7 @@ master_doc = 'index'
 
 # General substitutions.
 project = 'PyBrain'
-copyright = '2008, Idsia & CogBotLab'
+copyright = '2009, CogBotLab & Idsia'
 
 # The default replacements for |version| and |release|, also used in various
 # other places throughout the built documents.

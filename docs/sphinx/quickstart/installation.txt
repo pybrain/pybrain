@@ -68,7 +68,7 @@ PyBrain
 
 There are three ways of installing PyBrain: you can either go with our stable
 release on `the webpage <http://pybrain.org/pages/download>`_ or the bleeding
-edge from our git repository. 
+edge from our git repository.
 
 To check out the PyBrain repository run::
 
