@@ -1,21 +1,19 @@
-# $Id$
-
 from __future__ import with_statement
 
 __author__ = 'Thomas Rueckstiess, ruecksti@in.tum.de'
 
 import random
 import pickle
-
 from itertools import chain
-
 from scipy import zeros, resize, ravel, asarray
 
 from pybrain.utilities import Serializable
 
+
 class OutOfSyncError(Exception): pass
 class VectorFormatError(Exception): pass
 class NoLinkedFieldsError(Exception): pass
+
 
 class DataSet(Serializable):
     """DataSet is a general base class for other data set classes 

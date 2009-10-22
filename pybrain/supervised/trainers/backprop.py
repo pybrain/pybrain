@@ -48,12 +48,14 @@ class BackpropTrainer(Trainer):
         
     def train(self):
         """Train the associated module for one epoch."""
+        assert len(self.ds) > 0, "Dataset cannot be empty."
         self.module.resetDerivatives()
         errors = 0        
         ponderation = 0.
         shuffledSequences = []
         for seq in self.ds._provideSequences():
             shuffledSequences.append(seq)
+        print len(shuffledSequences)
         shuffle(shuffledSequences)
         for seq in shuffledSequences:
             e, p = self._calcDerivs(seq)
@@ -101,7 +103,7 @@ class BackpropTrainer(Trainer):
                 # ndarray class fixes something,
                 str(outerr)
                 self.module.backActivate(outerr)
-                        
+            
         return error, ponderation
             
     def _checkGradient(self, dataset=None, silent=False):
@@ -206,6 +208,9 @@ class BackpropTrainer(Trainer):
         # validation.
         trainingData, validationData = (
             dataset.splitWithProportion(1 - validationProportion))
+        if not (len(trainingData) >0 and len(validationData)):
+            raise ValueError("Provided dataset too small to be split into training "+
+                             "and validation sets with proportion "+str(validationProportion))
         self.ds = trainingData
         bestweights = self.module.params.copy()
         bestverr = self.testOnData(validationData)

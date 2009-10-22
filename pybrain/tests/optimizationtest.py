@@ -8,6 +8,8 @@ It tests
  - the behavior when optimizing an Evolvable
  - the behavior when optimizing a ParameterContainer
  - consistency w.r.t. minimization/maximization
+ 
+Tests to be added:
  - tolerance of problems that have a constant fitness
  - tolerance of problems that have adversarial (strictly decreasing) fitness
  - handling one-dimensional and high-dimensional spaces

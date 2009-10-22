@@ -5,6 +5,7 @@ from scipy import isscalar
 
 from dataset import DataSet
 from pybrain.utilities import fListToString
+
     
 class SupervisedDataSet(DataSet): 
     """SupervisedDataSets have two fields, one for input and one for the target.
@@ -113,7 +114,5 @@ class SupervisedDataSet(DataSet):
                 rightDs.addSample(*sp)
             index += 1
         return leftDs, rightDs
-        
-        
         
         
