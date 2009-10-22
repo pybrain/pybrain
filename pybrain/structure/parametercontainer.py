@@ -49,12 +49,19 @@ class ParameterContainer(Evolvable):
     
     def _setParameters(self, p, owner = None):
         """ @param p: an array of numbers """
-        assert self.owner == owner
         if isinstance(p, list):
             p = array(p)
-        assert isinstance(p, ndarray)        
-        self._params = p
-        self.paramdim = size(self.params)
+        assert isinstance(p, ndarray)      
+          
+        if self.owner == self:
+            # the object owns it parameter array, which means it cannot be set, 
+            # only updated with new values.  
+            self._params[:] = p
+        elif self.owner != owner:
+            raise Exception("Parameter ownership mismatch: cannot set to new array.")
+        else:
+            self._params = p
+            self.paramdim = size(self.params)
                 
     @property
     def derivs(self):

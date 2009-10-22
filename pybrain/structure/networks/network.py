@@ -308,4 +308,5 @@ class Network(Module, ParameterContainer):
             print "Network cannot be converted."
             return None
         
+        cnet.owner = cnet        
         return cnet

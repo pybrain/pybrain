@@ -55,7 +55,6 @@ class BackpropTrainer(Trainer):
         shuffledSequences = []
         for seq in self.ds._provideSequences():
             shuffledSequences.append(seq)
-        print len(shuffledSequences)
         shuffle(shuffledSequences)
         for seq in shuffledSequences:
             e, p = self._calcDerivs(seq)
