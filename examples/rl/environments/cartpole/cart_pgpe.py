@@ -24,14 +24,14 @@ for runs in range(numbExp):
     # create agent with controller and learner (and its options)
     agent = OptimizationAgent(net, PGPE(learningRate = 0.05,
                                         sigmaLearningRate = 0.1,
-                                        momentum = 0.9,
-                                        epsilon = 6.0,
+                                        momentum = 0.0,
+                                        epsilon = 2.0,
                                         #rprop = True,
                                         ))
     
     experiment = EpisodicExperiment(task, agent)
-    batch=16
-    prnts=10
+    batch=2
+    prnts=80
     epis=5000/batch/prnts
     save=False
 
