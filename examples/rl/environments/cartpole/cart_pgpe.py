@@ -22,7 +22,7 @@ for runs in range(numbExp):
     # create controller network
     net = buildNetwork(4, 1, bias=False)
     # create agent with controller and learner (and its options)
-    agent = OptimizationAgent(net, PGPE(learningRate = 0.05,
+    agent = OptimizationAgent(net, PGPE(learningRate = 0.5,
                                         sigmaLearningRate = 0.1,
                                         momentum = 0.0,
                                         epsilon = 2.0,
@@ -32,7 +32,7 @@ for runs in range(numbExp):
     experiment = EpisodicExperiment(task, agent)
     batch=2
     prnts=80
-    epis=5000/batch/prnts
+    epis=2000/batch/prnts
     save=False
 
     rl=[]
