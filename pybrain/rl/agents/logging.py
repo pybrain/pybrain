@@ -52,14 +52,11 @@ class LoggingAgent(Agent):
         assert self.lastaction != None
         assert self.lastreward == None
 
-        # if logging is off, clear history and only store last sample
-        if not self.logging:
-            self.history.clear()
-        
         self.lastreward = r
         
-        # store state, action and reward in dataset
-        self.history.addSample(self.lastobs, self.lastaction, self.lastreward)
+        # store state, action and reward in dataset if logging is enabled
+        if self.logging:
+            self.history.addSample(self.lastobs, self.lastaction, self.lastreward)
         
             
     def newEpisode(self):
