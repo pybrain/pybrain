@@ -44,7 +44,7 @@ class Maze(Environment, Named):
     
     allActions = [N, E, S, W]        
     
-    #stochasticity
+    # stochasticity
     stochAction = 0.
     stochObs = 0.    
     
