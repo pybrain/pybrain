@@ -18,7 +18,7 @@ from scipy import array, mean, zeros
 from pybrain.rl.environments.simple import SimpleEnvironment, MinimizeTask 
 from pybrain.tools.shortcuts import buildNetwork
 from pybrain.rl.agents import LearningAgent
-from pybrain.rl.learners import Reinforce
+from pybrain.rl.learners import ENAC, Reinforce
 from pybrain.rl.experiments import EpisodicExperiment
 
 # for plotting
@@ -41,8 +41,13 @@ net._setParameters(array([-9.]))
 
 # create agent with controller and learner
 agent = LearningAgent(net, Reinforce())
-agent.learner.learningRate = 0.01
-agent.learner.gd.momentum = 0.9
+agent.learner.learningRate = 0.1
+
+# use SDE
+# from pybrain.rl.explorers.continuous.sde import StateDependentExplorer
+# explorer = StateDependentExplorer(agent.module.indim, agent.module.outdim)
+# agent.learner.explorer = explorer
+
 # experiment
 experiment = EpisodicExperiment(task, agent)
 
@@ -75,4 +80,3 @@ for updates in range(1000):
         plot(plots[0:updates, 1])
         draw()
     agent.reset()
-    
