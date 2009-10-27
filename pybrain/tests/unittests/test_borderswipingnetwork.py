@@ -73,7 +73,7 @@ from pybrain import ModuleMesh, LinearLayer, TanhLayer
     
     
 def nearlyEqual(lst1, lst2, tolerance=0.001):
-    """Tell wether the itemwise differences of the two lists is never bigger 
+    """Tell whether the itemwise differences of the two lists is never bigger 
     than tolerance."""
     return all(abs(i - j) <= tolerance for i, j in zip(lst1, lst2))
     

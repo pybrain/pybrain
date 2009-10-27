@@ -5,11 +5,8 @@
 __author__ = 'Justin S Bayer, bayer.justin@googlemail.com'
 
 
-import os
-import sys
-
 from setuptools import setup, find_packages
-from distutils.ccompiler import new_compiler
+
 
 setup(
     name="PyBrain",

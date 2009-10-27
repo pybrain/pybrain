@@ -9,9 +9,9 @@ from scipy import array #@UnusedImport
 
 
 try:
-  import arac.pybrainbridge
+    import arac.pybrainbridge #@UnusedImport
 except ImportError:
-  pass
+    pass
 
 
 class NetworkReader(XMLHandling):

@@ -12,8 +12,8 @@ import pylab
 from pybrain.rl.environments.mazes import Maze 
 from pybrain.rl.learners.valuebased.interface import ActionValueTable
 from pybrain.rl.agents import LearningAgent
-from pybrain.rl.learners import Q, QLambda, SARSA
-from pybrain.rl.explorers import BoltzmannExplorer
+from pybrain.rl.learners import Q, QLambda, SARSA #@UnusedImport
+from pybrain.rl.explorers import BoltzmannExplorer #@UnusedImport
 from pybrain.rl.experiments import Experiment
 from pybrain.rl.environments import Task
 

@@ -237,12 +237,12 @@ class GridSearch(svm_model):
         """ redraw the updated grid interactively """
         import pylab as p 
         if len(db) <= 3 or not self.plotflag: return
-        begin_level = round(max(map(lambda(x):x[2],db))) - 3
-        step_size = 0.25
+        #begin_level = round(max(map(lambda(x):x[2],db))) - 3
+        #step_size = 0.25
         nContours = 25
-        suffix = ''
-        if eta is not None:
-            suffix = " (ETA: %5.2f min)" % eta
+        #suffix = ''
+        #if eta is not None:
+        #    suffix = " (ETA: %5.2f min)" % eta
         def cmp (x,y):
             if x[0] < y[0]: return -1
             if x[0] > y[0]: return 1
