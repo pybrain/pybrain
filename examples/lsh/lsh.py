@@ -1,26 +1,18 @@
-__author__ = 'Justin Bayer, bayer.justin@googlemail.com'
-
-# TODO: fails with this error:
-#scipy.weave.build_tools.CompileError: error: Command "g++ -pthread -fno-strict-aliasing -DNDEBUG -g -O2 -Wall -fPIC -I/usr/lib/python2.5/site-packages/scipy/weave -I/usr/lib/python2.5/site-packages/scipy/weave/scxx -I/usr/lib/python2.5/site-packages/scipy/weave/blitz -I/usr/lib/python2.5/site-packages/numpy/core/include -I/usr/include/python2.5 -c /home/schaul/.python25_compiled/sc_7b6768c2ff54e960602210632893e4e71.cpp -o /tmp/schaul/python25_intermediate/compiler_8397cf93b7ff1fb23260bbad08eebda6/home/schaul/.python25_compiled/sc_7b6768c2ff54e960602210632893e4e71.o" failed with exit status 1
-# should give a more informative message 
-# worked before though... 
-
 #! /usr/bin/env python2.5
 
 from __future__ import division
 
-import logging
 
+__author__ = 'Justin Bayer, bayer.justin@googlemail.com'
+
+
+import logging
 from random import shuffle
 
 from pylab import show, plot, clf 
 from pybrain.supervised.knn.lsh.nearoptimal import MultiDimHash
 from scipy import random, array, dot, zeros
 from scipy.linalg import orth
-
-
-# Use inlined version
-MultiDimHash._findLocalBall = MultiDimHash._findLocalBall_inline
 
 
 def randomRotation(dim):
@@ -46,14 +38,14 @@ def makeData(amount = 10000):
     
 if __name__ == '__main__':
     # Amount of dimensions to test with
-    dimensions = 8
+    dimensions = 3
     
     loglevel = logging.DEBUG
     logging.basicConfig(level=loglevel, 
                         format='%(asctime)s %(levelname)s %(message)s')
     
     logging.info("Making dataset...")
-    data = makeData()
+    data = makeData(1000)
     
     logging.info("Making random projection...")
     proj = zeros((2, dimensions))
