@@ -47,6 +47,7 @@ Tutorial
    tutorial/intro
    tutorial/netmodcon
    tutorial/fnn
+   tutorial/optimization
 
 
 Advanced
@@ -66,6 +67,7 @@ API
    :glob:
 
    api/structure/*
+   api/optimization/*
    api/datasets/*
    api/supervised/*
    api/*
