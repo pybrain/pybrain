@@ -75,8 +75,9 @@ nnet = buildNetwork(task.outdim, 2, task.indim)
 class SimpleEvo(Evolvable):
     def __init__(self, x): self.x = x    
     def mutate(self):      self.x += random() - 0.3    
-    def copy(self):        return evo(self.x)
+    def copy(self):        return SimpleEvo(self.x)
     def randomize(self):   self.x = 10*random() - 2   
+    def __repr__(self):     return '--%.3f--' % self.x   
     
 evo1 = SimpleEvo(-3.) 
 
@@ -175,16 +176,6 @@ def testOnModuleAndTask(algo):
     return True
 
 
-
-class evo(Evolvable):
-    def __init__(self, x): self.x = x    
-    def mutate(self):      self.x += random() - 0.3    
-    def copy(self):        return evo(self.x)
-    def randomize(self):   self.x = 10*random() - 2
-    
-evoEval = lambda e: e.x
-evo1 = evo(-3.) 
-
 def testOnEvolvable(algo):
     if issubclass(algo, bbo.ContinuousOptimizer):
         return True
@@ -237,8 +228,12 @@ def testAll(tests, allalgos, tolerant = True):
 
 
 
-if __name__ == '__main__':    
+if __name__ == '__main__':
     from pybrain.optimization import *  #@UnusedWildImport
+    l = HillClimber(evoEval, evo1, maxEvaluations = 50)
+    print l.learn()
+    
+if False:    
     
     allalgos = filter(lambda c: (isclass(c) 
                                  and issubclass(c, bbo.BlackBoxOptimizer)

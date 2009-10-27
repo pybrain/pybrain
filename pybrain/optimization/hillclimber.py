@@ -37,6 +37,7 @@ class StochasticHillClimber(HillClimber):
     go to a worse point with a probability that decreases with increasing drop in fitness
     (and depends on a temperature parameter). """
     
+    #: The larger the temperature, the more explorative (less greedy) it behaves. 
     temperature = 1.
     
     def _learnStep(self):
