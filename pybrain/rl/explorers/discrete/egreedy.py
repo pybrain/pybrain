@@ -12,7 +12,7 @@ class EpsilonGreedyExplorer(DiscreteExplorer):
         behaves.
     """
     
-    def __init__(self, epsilon = 0.2, decay = 0.9998):
+    def __init__(self, epsilon = 0.3, decay = 0.9999):
         DiscreteExplorer.__init__(self)
         self.epsilon = epsilon
         self.decay = decay
@@ -30,4 +30,5 @@ class EpsilonGreedyExplorer(DiscreteExplorer):
             outbuf[:] = inbuf
             
         self.epsilon *= self.decay
+        print self.epsilon
         
