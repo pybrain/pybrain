@@ -24,33 +24,33 @@ class UDPServer(object):
     def __init__(self, ip="127.0.0.1", port="21560", buf="1024"):
         #Socket settings
         self.host = ip
-        self.inPort = eval(port)+1
+        self.inPort = eval(port) + 1
         self.outPort = eval(port)
         self.buf = eval(buf) #16384
-        self.addr = (self.host,self.inPort)
+        self.addr = (self.host, self.inPort)
 
         #Create socket and bind to address
-        self.UDPInSock = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
+        self.UDPInSock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.UDPInSock.bind(self.addr)
 
         #Client lists
-        self.clients=0
-        self.cIP=[]
-        self.addrList=[]
-        self.UDPOutSockList=[]
+        self.clients = 0
+        self.cIP = []
+        self.addrList = []
+        self.UDPOutSockList = []
         print "listening on port", self.inPort    
 
     # Adding a client to the list
     def addClient(self, cIP):
         self.cIP.append(cIP)
         self.addrList.append((cIP, self.outPort))
-        self.UDPOutSockList.append(socket.socket(socket.AF_INET,socket.SOCK_DGRAM))
+        self.UDPOutSockList.append(socket.socket(socket.AF_INET, socket.SOCK_DGRAM))
         print "client", cIP, "connected"
-        self.clients+=1
+        self.clients += 1
 
     # Listen for clients
     def listen(self):
-        if self.clients<1:
+        if self.clients < 1:
             self.UDPInSock.settimeout(10)    
             try: 
                 cIP = self.UDPInSock.recv(self.buf)
@@ -61,29 +61,29 @@ class UDPServer(object):
             self.UDPInSock.settimeout(2)
             try:
                 cIP = self.UDPInSock.recv(self.buf)
-                newClient=True
+                newClient = True
                 for i in self.cIP:
                     if cIP == i: 
-                        newClient=False
+                        newClient = False
                         break
                 #Adding new client
                 if newClient: self.addClient(cIP)
             except:
                 print "All clients disconnected"
-                self.clients=0
-                self.cIP=[]
-                self.addrList=[]
-                self.UDPOutSockList=[]
+                self.clients = 0
+                self.cIP = []
+                self.addrList = []
+                self.UDPOutSockList = []
                 print "listening on port", self.inPort    
             
     
     # Sending the actual data too all clients
     def send(self, arrayList):         
-        sendString=repr(arrayList)
-        count=0
+        sendString = repr(arrayList)
+        count = 0
         for i in self.UDPOutSockList:
             i.sendto(sendString, self.addrList[count])
-            count+=1
+            count += 1
 
 # The client class
 class UDPClient(object):
@@ -91,11 +91,11 @@ class UDPClient(object):
         #UDP Sttings
         self.host = servIP
         self.inPort = eval(port)
-        self.outPort = eval(port)+1
-        self.inAddr = (ownIP,self.inPort)
-        self.outAddr = (self.host,self.outPort)
-        self.ownIP=ownIP
-        self.buf=eval(buf) #16384
+        self.outPort = eval(port) + 1
+        self.inAddr = (ownIP, self.inPort)
+        self.outAddr = (self.host, self.outPort)
+        self.ownIP = ownIP
+        self.buf = eval(buf) #16384
 
         # Create sockets
         self.createSockets()
@@ -103,14 +103,14 @@ class UDPClient(object):
     # Listen for data from server
     def listen(self, arrayList=None):
         # Send alive signal (own IP adress)
-        self.UDPOutSock.sendto(self.ownIP,self.outAddr)
+        self.UDPOutSock.sendto(self.ownIP, self.outAddr)
         # if there is no data from Server for 10 seconds server is propably down
         self.UDPInSock.settimeout(10) 
         try:
             data = self.UDPInSock.recv(self.buf)
 
             try:              
-                arrayList=eval(data)
+                arrayList = eval(data)
                 return arrayList
             except:
                 print "Unsupported data format received from", self.outAddr, "!"
@@ -120,11 +120,12 @@ class UDPClient(object):
             print "Server has quit!"
             return None
             # Try to recreate sockets
-            self.createSockets()
+            #self.createSockets()
 
     # Creating the sockets
     def createSockets(self):
-        self.UDPOutSock = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
-        self.UDPOutSock.sendto(self.ownIP,self.outAddr)
-        self.UDPInSock = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
+        self.UDPOutSock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        self.UDPOutSock.sendto(self.ownIP, self.outAddr)
+        self.UDPInSock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.UDPInSock.bind(self.inAddr)
+

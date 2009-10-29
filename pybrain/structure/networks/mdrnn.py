@@ -30,7 +30,7 @@ class _Mdrnn(_FeedForwardNetwork):
         self.shape = shape
         self.hiddendim = hiddendim
         self.outsize = outsize
-        self.blockshape= blockshape
+        self.blockshape = blockshape
         self.indim = reduce(operator.mul, shape, 1)
         self.blocksize = reduce(operator.mul, blockshape, 1)
         self.sequenceLength = self.indim / self.blocksize
@@ -42,7 +42,7 @@ class _Mdrnn(_FeedForwardNetwork):
         
     def _makeMdrnnLayer(self):
         """Return an MdrnnLayer suitable for this network."""
-        return MdrnnLayer(self.timedim, self.shape, self.hiddendim, 
+        return MdrnnLayer(self.timedim, self.shape, self.hiddendim,
                           self.outsize, self.blockshape)
                           
     def _standardPermutation(self):

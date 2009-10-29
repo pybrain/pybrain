@@ -29,7 +29,7 @@ class ActionValueTable(Table, ActionValueInterface):
 
     def __init__(self, numStates, numActions, name=None):
         Module.__init__(self, 1, 1, name)
-        ParameterContainer.__init__(self, numStates*numActions)
+        ParameterContainer.__init__(self, numStates * numActions)
         self.numRows = numStates
         self.numColumns = numActions
 
@@ -45,7 +45,7 @@ class ActionValueTable(Table, ActionValueInterface):
 
     def getMaxAction(self, state):
         """ returns the action with the maximal value for the given state. """
-        return argmax(self.params.reshape(self.numRows, self.numColumns)[state,:].flatten())
+        return argmax(self.params.reshape(self.numRows, self.numColumns)[state, :].flatten())
 
     def getActionValues(self, state):
         return self.params.reshape(self.numRows, self.numColumns)[state, :].flatten()
@@ -75,3 +75,4 @@ class ActionValueNetwork(Module, ActionValueInterface):
         """ runs forward activation for each of the actions and returns all values. """
         values = array([self.network.activate(r_[state, one_to_n(i, self.numActions)]) for i in range(self.numActions)])
         return values
+

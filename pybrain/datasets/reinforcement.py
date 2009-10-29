@@ -41,7 +41,7 @@ class ReinforcementDataSet(SequentialDataSet):
     def getSumOverSequences(self, field):
         sums = zeros((self.getNumSequences(), self.getDimension(field)))
         for n in range(self.getNumSequences()):
-            sums[n,:] = sum(self._getSequenceField(n,field), 0)       
+            sums[n, :] = sum(self._getSequenceField(n, field), 0)       
         return sums
         
     def __reduce__(self):

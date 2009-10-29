@@ -23,7 +23,7 @@ class PGPE(FiniteDifferences):
         self.gdSig = GradientDescent()
         self.gdSig.alpha = self.sigmaLearningRate
         self.gdSig.rprop = self.rprop
-        self.sigList = ones(self.numParameters)*self.epsilon #Stores the list of standard deviations (sigmas)
+        self.sigList = ones(self.numParameters) * self.epsilon #Stores the list of standard deviations (sigmas)
         self.gdSig.init(self.sigList)
         self.baseline = None
         
@@ -38,37 +38,37 @@ class PGPE(FiniteDifferences):
         #reward of positive and negative perturbations
         reward1 = self._oneEvaluation(self.current + deltas)        
         reward2 = self._oneEvaluation(self.current - deltas)
-        self.mreward=(reward1+reward2)/2.                
+        self.mreward = (reward1 + reward2) / 2.                
         if self.baseline is None: 
             # first learning step
-            self.baseline=self.mreward
-            fakt=0.
-            fakt2=0.          
+            self.baseline = self.mreward
+            fakt = 0.
+            fakt2 = 0.          
         else: 
             #calc the gradients
-            if reward1!=reward2:
+            if reward1 != reward2:
                 #gradient estimate alla SPSA but with likelihood gradient and normalization
-                fakt=(reward1-reward2)/(2.*self.bestEvaluation-reward1-reward2) 
+                fakt = (reward1 - reward2) / (2. * self.bestEvaluation - reward1 - reward2) 
             else: 
-                fakt=0.
+                fakt = 0.
             #normalized sigma gradient with moving average baseline
-            fakt2=(self.mreward-self.baseline)/(self.bestEvaluation-self.baseline)             
+            fakt2 = (self.mreward - self.baseline) / (self.bestEvaluation - self.baseline)             
         #update baseline        
-        self.baseline=0.9*self.baseline+0.1*self.mreward             
+        self.baseline = 0.9 * self.baseline + 0.1 * self.mreward             
         # update parameters and sigmas
-        self.current = self.gd(fakt*deltas-self.current*self.sigList*self.wDecay)   
-        if fakt2> 0.: #for sigma adaption alg. follows only positive gradients
+        self.current = self.gd(fakt * deltas - self.current * self.sigList * self.wDecay)   
+        if fakt2 > 0.: #for sigma adaption alg. follows only positive gradients
             if self.exploration == "global":         
                 #apply sigma update globally        
-                self.sigList = self.gdSig(fakt2*((self.deltas**2).sum()-(self.sigList**2).sum())
-                                          /(self.sigList*float(self.numParameters)))
+                self.sigList = self.gdSig(fakt2 * ((self.deltas ** 2).sum() - (self.sigList ** 2).sum())
+                                          / (self.sigList * float(self.numParameters)))
             elif self.exploration == "local":
                 #apply sigma update locally
-                self.sigList = self.gdSig(fakt2*(deltas*deltas-self.sigList*self.sigList)/self.sigList) 
+                self.sigList = self.gdSig(fakt2 * (deltas * deltas - self.sigList * self.sigList) / self.sigList) 
             elif self.exploration == "cma":
                 #I have to think about that - needs also an option in perturbation
                 raise NotImplementedError()
             else:
-                raise NotImplementedError(str(self.exploration)+" not a known exploration parameter setting.")
+                raise NotImplementedError(str(self.exploration) + " not a known exploration parameter setting.")
             
         

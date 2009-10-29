@@ -27,45 +27,45 @@ class CMAES(ContinuousOptimizer):
 
         # Strategy parameter setting: Selection
         # population size, offspring number
-        self.mu = int(floor(self.batchSize/2))        # number of parents/points for recombination
-        self.weights = log(self.mu+1)-log(array(xrange(1,self.mu+1)))      # use array
+        self.mu = int(floor(self.batchSize / 2))        # number of parents/points for recombination
+        self.weights = log(self.mu + 1) - log(array(xrange(1, self.mu + 1)))      # use array
         self.weights /= sum(self.weights)     # normalize recombination weights array
-        self.muEff=sum(self.weights)**2/sum(power(self.weights, 2)) # variance-effective size of mu
+        self.muEff = sum(self.weights) ** 2 / sum(power(self.weights, 2)) # variance-effective size of mu
 
         # Strategy parameter setting: Adaptation
-        self.cumCov = 4/float(self.numParameters+4)                    # time constant for cumulation for covariance matrix
-        self.cumStep = (self.muEff+2)/(self.numParameters+self.muEff+3)# t-const for cumulation for Size control
+        self.cumCov = 4 / float(self.numParameters + 4)                    # time constant for cumulation for covariance matrix
+        self.cumStep = (self.muEff + 2) / (self.numParameters + self.muEff + 3)# t-const for cumulation for Size control
         self.muCov = self.muEff                   # size of mu used for calculating learning rate covLearningRate
-        self.covLearningRate = ((1/self.muCov) * 2/(self.numParameters+1.4)**2 + (1-1/self.muCov) * # learning rate for
-                 ((2*self.muEff-1)/((self.numParameters+2)**2+2*self.muEff)))                       # covariance matrix
-        self.dampings = 1 + 2*max(0, sqrt((self.muEff-1)/(self.numParameters+1))-1) + self.cumStep
+        self.covLearningRate = ((1 / self.muCov) * 2 / (self.numParameters + 1.4) ** 2 + (1 - 1 / self.muCov) * # learning rate for
+                 ((2 * self.muEff - 1) / ((self.numParameters + 2) ** 2 + 2 * self.muEff)))                       # covariance matrix
+        self.dampings = 1 + 2 * max(0, sqrt((self.muEff - 1) / (self.numParameters + 1)) - 1) + self.cumStep
         # damping for stepSize usually close to 1 former damp == self.dampings/self.cumStep
 
         # Initialize dynamic (internal) strategy parameters and constants
         self.covPath = zeros(self.numParameters)
         self.stepPath = zeros(self.numParameters)                   # evolution paths for C and stepSize
-        self.B = eye(self.numParameters,self.numParameters)         # B defines the coordinate system
-        self.D = eye(self.numParameters,self.numParameters)         # diagonal matrix D defines the scaling
-        self.C = dot(dot(self.B,self.D),dot(self.B,self.D).T)       # covariance matrix
-        self.chiN=self.numParameters**0.5*(1-1./(4.*self.numParameters)+1/(21.*self.numParameters**2))
+        self.B = eye(self.numParameters, self.numParameters)         # B defines the coordinate system
+        self.D = eye(self.numParameters, self.numParameters)         # diagonal matrix D defines the scaling
+        self.C = dot(dot(self.B, self.D), dot(self.B, self.D).T)       # covariance matrix
+        self.chiN = self.numParameters ** 0.5 * (1 - 1. / (4. * self.numParameters) + 1 / (21. * self.numParameters ** 2))
         # expectation of ||numParameters(0,I)|| == norm(randn(numParameters,1))
         
     def _learnStep(self):
         # Generate and evaluate lambda offspring
-        arz = randn(self.numParameters,self.batchSize)
-        arx = tile(self.center.reshape(self.numParameters,1),(1,self.batchSize))\
-                        + self.stepSize * dot(dot(self.B,self.D), arz)
+        arz = randn(self.numParameters, self.batchSize)
+        arx = tile(self.center.reshape(self.numParameters, 1), (1, self.batchSize))\
+                        + self.stepSize * dot(dot(self.B, self.D), arz)
         arfitness = zeros(self.batchSize)
         for k in xrange(self.batchSize):
-            arfitness[k] = self._oneEvaluation(arx[:,k])
+            arfitness[k] = self._oneEvaluation(arx[:, k])
         
         # Sort by fitness and compute weighted mean into center
         arfitness, arindex = sorti(arfitness)  # minimization
-        arz = arz[:,arindex]
-        arx = arx[:,arindex]
-        arzsel = arz[:,xrange(self.mu)]
-        arxsel = arx[:,xrange(self.mu)]
-        arxmut = arxsel - tile(self.center.reshape(self.numParameters,1),(1,self.mu))
+        arz = arz[:, arindex]
+        arx = arx[:, arindex]
+        arzsel = arz[:, xrange(self.mu)]
+        arxsel = arx[:, xrange(self.mu)]
+        arxmut = arxsel - tile(self.center.reshape(self.numParameters, 1), (1, self.mu))
 
         zmean = dot(arzsel, self.weights)
         self.center = dot(arxsel, self.weights)
@@ -74,36 +74,36 @@ class CMAES(ContinuousOptimizer):
             self.allCenters.append(self.center)
 
         # Cumulation: Update evolution paths
-        self.stepPath = (1-self.cumStep)*self.stepPath \
-                + sqrt(self.cumStep*(2-self.cumStep)*self.muEff) * dot(self.B,zmean)         # Eq. (4)
-        hsig = norm(self.stepPath)/sqrt(1-(1-self.cumStep)**(2*self.numEvaluations/float(self.batchSize)))/self.chiN \
-                    < 1.4 + 2./(self.numParameters+1)
-        self.covPath = (1-self.cumCov)*self.covPath + hsig * \
-                sqrt(self.cumCov*(2-self.cumCov)*self.muEff) * dot(dot(self.B,self.D),zmean) # Eq. (2)
+        self.stepPath = (1 - self.cumStep) * self.stepPath \
+                + sqrt(self.cumStep * (2 - self.cumStep) * self.muEff) * dot(self.B, zmean)         # Eq. (4)
+        hsig = norm(self.stepPath) / sqrt(1 - (1 - self.cumStep) ** (2 * self.numEvaluations / float(self.batchSize))) / self.chiN \
+                    < 1.4 + 2. / (self.numParameters + 1)
+        self.covPath = (1 - self.cumCov) * self.covPath + hsig * \
+                sqrt(self.cumCov * (2 - self.cumCov) * self.muEff) * dot(dot(self.B, self.D), zmean) # Eq. (2)
 
         # Adapt covariance matrix C
-        self.C = ((1-self.covLearningRate) * self.C                    # regard old matrix   % Eq. (3)
-             + self.covLearningRate * (1/self.muCov) * (outer(self.covPath,self.covPath) # plus rank one update
-                                   + (1-hsig) * self.cumCov*(2-self.cumCov) * self.C)
-             + self.covLearningRate * (1-1/self.muCov)                 # plus rank mu update
-             * dot(dot(arxmut,diag(self.weights)),arxmut.T)
+        self.C = ((1 - self.covLearningRate) * self.C                    # regard old matrix   % Eq. (3)
+             + self.covLearningRate * (1 / self.muCov) * (outer(self.covPath, self.covPath) # plus rank one update
+                                   + (1 - hsig) * self.cumCov * (2 - self.cumCov) * self.C)
+             + self.covLearningRate * (1 - 1 / self.muCov)                 # plus rank mu update
+             * dot(dot(arxmut, diag(self.weights)), arxmut.T)
             )
 
         # Adapt step size self.stepSize
-        self.stepSize *= exp((self.cumStep/self.dampings)*(norm(self.stepPath)/self.chiN - 1)) # Eq. (5)
+        self.stepSize *= exp((self.cumStep / self.dampings) * (norm(self.stepPath) / self.chiN - 1)) # Eq. (5)
 
         # Update B and D from C
         # This is O(n^3). When strategy internal CPU-time is critical, the
         # next three lines should be executed only every (alpha/covLearningRate/N)-th
         # iteration, where alpha is e.g. between 0.1 and 10
-        self.C=(self.C+self.C.T)/2 # enforce symmetry
+        self.C = (self.C + self.C.T) / 2 # enforce symmetry
         Ev, self.B = eig(self.C)          # eigen decomposition, B==normalized eigenvectors
         Ev = real(Ev)       # enforce real value
         self.D = diag(sqrt(Ev))      #diag(ravel(sqrt(Ev))) # D contains standard deviations now
         self.B = real(self.B)
                 
         # convergence is reached
-        if abs((arfitness[0]-arfitness[-1])/arfitness[0]+arfitness[-1]) <= self.stopPrecision:
+        if abs((arfitness[0] - arfitness[-1]) / arfitness[0] + arfitness[-1]) <= self.stopPrecision:
             if self.verbose:
                 print "Converged."
             self.maxLearningSteps = self.numLearningSteps
@@ -116,12 +116,13 @@ class CMAES(ContinuousOptimizer):
                              
     @property
     def batchSize(self):
-        return int(4+floor(3*log(self.numParameters)))
+        return int(4 + floor(3 * log(self.numParameters)))
     
     
 def sorti(vect):
     """ sort, but also return the indices-changes """
-    tmp = sorted(map(lambda (x,y): (y,x), enumerate(ravel(vect))))
+    tmp = sorted(map(lambda (x, y): (y, x), enumerate(ravel(vect))))
     res1 = array(map(lambda x: x[0], tmp))
     res2 = array(map(lambda x: int(x[1]), tmp))
     return res1, res2
+

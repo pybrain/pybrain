@@ -89,7 +89,7 @@ for i in range(1000):
     agent.reset()
     
     # and draw the table
-    pylab.pcolor(table.values.max(1).reshape(9,9))
+    pylab.pcolor(table.values.max(1).reshape(9, 9))
     pylab.draw()
 
     

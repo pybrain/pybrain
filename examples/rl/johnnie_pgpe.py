@@ -50,10 +50,10 @@ def saveWeights(filename, w):
     filepointer.close()
 
 hiddenUnits = 4
-loadNet=False
-saveNet=False
-saveName="stand.wgt"
-numbExp=1 #number of experiments
+loadNet = False
+saveNet = False
+saveName = "stand.wgt"
+numbExp = 1 #number of experiments
 for runs in range(numbExp):
     # create environment
     #Options: Bool(OpenGL), Bool(Realtime simu. while client is connected), ServerIP(default:localhost), Port(default:21560)
@@ -71,16 +71,16 @@ for runs in range(numbExp):
     
     #Loading weights
     if loadNet:
-        agent.learner.original=loadWeights("stand.wgt")
+        agent.learner.original = loadWeights("stand.wgt")
         agent.learner.gd.init(agent.learner.original)
-        agent.learner.epsilon=0.2
+        agent.learner.epsilon = 0.2
         agent.learner.initSigmas()
 
-    batch=2 #number of samples per gradient estimate
+    batch = 2 #number of samples per gradient estimate
     #create experiment
     experiment = EpisodicExperiment(task, agent)
-    prnts=1 #frequency of console output
-    epis=5000000/batch/prnts
+    prnts = 1 #frequency of console output
+    epis = 5000000 / batch / prnts
     
     #actual roll outs
     for updates in range(epis):
@@ -89,8 +89,9 @@ for runs in range(numbExp):
             agent.learn() #learn from the gather experience
             agent.reset() #reset agent and environment
         #print out related data
-        print "Step: ", runs, "/", (updates+1)*batch*prnts, "Best: ", agent.learner.best, 
+        print "Step: ", runs, "/", (updates + 1) * batch * prnts, "Best: ", agent.learner.best,
         print "Base: ", agent.learner.baseline, "Reward: ", agent.learner.reward 
         #Saving weights
         if saveNet:
-            if updates/100 == float(updates)/100.0: saveWeights(saveName, agent.learner.original)  
+            if updates / 100 == float(updates) / 100.0: saveWeights(saveName, agent.learner.original)  
+

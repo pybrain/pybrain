@@ -1,8 +1,7 @@
 __author__ = 'Michael Isik'
 
-
 from random import uniform, random, gauss
-from numpy  import tan,pi
+from numpy  import tan, pi
 
 
 class UniformVariate:
@@ -24,27 +23,27 @@ class CauchyVariate:
         """ @param x0: Median and mode of the Cauchy distribution
             @param alpha: scale
         """
-        self.x0    = x0
+        self.x0 = x0
         self.alpha = alpha
 
-    def getSample(self, x0 = None, alpha = None):
-        if x0    is None: x0    = self.x0
+    def getSample(self, x0=None, alpha=None):
+        if x0    is None: x0 = self.x0
         if alpha is None: alpha = self.alpha
         uniform_variate = random()
-        cauchy_variate = x0 + alpha * tan( pi * ( uniform_variate - 0.5 ) )
+        cauchy_variate = x0 + alpha * tan(pi * (uniform_variate - 0.5))
         return cauchy_variate
 
 
 class GaussianVariate:
-    def __init__(self, x0 = 0., alpha = 1.):
+    def __init__(self, x0=0., alpha=1.):
         """ @param x0: Mean
             @param alpha: standard deviation
         """
-        self.x0    = x0
+        self.x0 = x0
         self.alpha = alpha
 
-    def getSample(self, x0 = None, alpha = None):
-        if x0    is None: x0    = self.x0
+    def getSample(self, x0=None, alpha=None):
+        if x0    is None: x0 = self.x0
         if alpha is None: alpha = self.alpha
         return gauss(x0, alpha)
 
