@@ -114,7 +114,7 @@ class SimplePopulation(Population):
             If n is greater than the number of individuals inside the population
             all individuals are returned.
         """
-        return set( self.getBestIndividualsSorted(n) )
+        return set(self.getBestIndividualsSorted(n))
 
     def getBestIndividualsSorted(self, n):
         return self.getSortedIndividualList()[:n]
@@ -125,7 +125,7 @@ class SimplePopulation(Population):
             If n is greater than the number of individuals inside the population
             all individuals are returned.
         """
-        return set( self.getSortedIndividualList()[-n:] )
+        return set(self.getSortedIndividualList()[-n:])
 
     def removeWorstIndividuals(self, n):
         """ Removes the n individuals with the lowest fitness ranking.
@@ -139,7 +139,7 @@ class SimplePopulation(Population):
     def getSortedIndividualList(self):
         """ Returns a sorted list of all individuals with descending fitness values. """
         fitness = self._fitness
-        return sorted( fitness.iterkeys(), key=lambda(k): -fitness[k] )
+        return sorted(fitness.iterkeys(), key=lambda(k):-fitness[k])
 
 
     def getIndividualsN(self):
@@ -151,3 +151,4 @@ class SimplePopulation(Population):
 
 
                                                  
+

@@ -11,7 +11,7 @@ class RPropMinusTrainer(BackpropTrainer):
         by RProp without weight backtracking (aka RProp-, cf. [Igel&Huesken, Neurocomputing 50, 2003]) 
         and without ponderation, ie. all training samples have the same weight. """
         
-    def __init__(self, module, etaminus = 0.5, etaplus = 1.2, deltamin = 1.0e-6, deltamax = 5.0, delta0 = 0.1, **kwargs):
+    def __init__(self, module, etaminus=0.5, etaplus=1.2, deltamin=1.0e-6, deltamax=5.0, delta0=0.1, **kwargs):
         """ Set up training algorithm parameters, and objects associated with the trainer.
             @param module: the module whose parameters should be trained. 
             @param etaminus: factor by which step width is decreased when overstepping (0.5)
@@ -42,11 +42,11 @@ class RPropMinusTrainer(BackpropTrainer):
             errors += e
             ponderation += p
         if self.verbose:
-            print "epoch %6d  total error %12.5g   avg weight  %12.5g" % (self.epoch, errors/ponderation, 
-                                                                          sqrt((self.module.params**2).mean()))
-        self.module._setParameters(self.descent(self.module.derivs - self.weightdecay*self.module.params))
+            print "epoch %6d  total error %12.5g   avg weight  %12.5g" % (self.epoch, errors / ponderation,
+                                                                          sqrt((self.module.params ** 2).mean()))
+        self.module._setParameters(self.descent(self.module.derivs - self.weightdecay * self.module.params))
         self.epoch += 1
         self.totalepochs += 1
-        return errors/ponderation
+        return errors / ponderation
 
     

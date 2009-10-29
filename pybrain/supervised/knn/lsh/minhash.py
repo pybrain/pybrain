@@ -1,5 +1,3 @@
-#! /usr/bin/env python 2.5
-# -*- coding: utf-8 -*-
 from __future__ import division
 
 
@@ -67,7 +65,7 @@ class MinHash(object):
     def __getPermutations(self):
         return self._permutations
     
-    permutations = property(__getPermutations, 
+    permutations = property(__getPermutations,
                             __setPermutations)
     
     def __init__(self, dim, nPermutations):
@@ -91,7 +89,7 @@ class MinHash(object):
     def _checkItem(self, item):
         if item.ndim != 1:
             raise ValueError, "Only one dimensional arrays are supported"
-        if item.shape != (self.dim, ):
+        if item.shape != (self.dim,):
             raise ValueError, "Array has wrong size"
         
     def _hash(self, item):
@@ -126,7 +124,7 @@ class MinHash(object):
         self._checkItem(item)
         
         candidates = self.buckets[self._hash(item)]
-        candidates.sort(key=lambda x: jacardCoefficient(x[0], item), 
+        candidates.sort(key=lambda x: jacardCoefficient(x[0], item),
                         reverse=True)
         return candidates[:k]
         

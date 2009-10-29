@@ -1,6 +1,6 @@
 __author__ = 'Tom Schaul, tom@idsia.ch'
 
-from scipy import array,zeros
+from scipy import array, zeros
 from random import random
 
 from maze import MazeTask
@@ -25,11 +25,11 @@ class ShuttleDocking(MazeTask):
     finalReward = 10
     bangPenalty = -3
     
-    initPos = [(1,1)]
-    topology = array([[1]*7,
+    initPos = [(1, 1)]
+    topology = array([[1] * 7,
                       [1, 0, 0, 0, 0, 0, 1],
-                      [1]*7,])
-    goal = (1,5)
+                      [1] * 7, ])
+    goal = (1, 5)
     
     Backup = 0
     Forward = 1
@@ -50,9 +50,9 @@ class ShuttleDocking(MazeTask):
             if random() > 0.7:
                 res[self.env.perseusDir] = 1
             else:
-                res[(self.env.perseusDir+2)%4] =1
+                res[(self.env.perseusDir + 2) % 4] = 1
         else:
-            res[(self.env.perseusDir+2)%4] =1
+            res[(self.env.perseusDir + 2) % 4] = 1
         return res
         
     def performAction(self, action):

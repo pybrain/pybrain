@@ -64,8 +64,8 @@ class Network(Module, ParameterContainer):
                     [sortedByName(self.connections[m]) for m in self.modulesSorted])),
         }
         
-        s = ("%(name)s\n" +
-             "   Modules:\n    %(modules)s\n" +
+        s = ("%(name)s\n" + 
+             "   Modules:\n    %(modules)s\n" + 
              "   Connections:\n    %(connections)s\n") % params
         
         return s
@@ -149,20 +149,20 @@ class Network(Module, ParameterContainer):
         for m in self.modules:
             m.reset()    
     
-    def _setParameters(self, p, owner = None):        
+    def _setParameters(self, p, owner=None):        
         """ put slices of this array back into the modules """        
         ParameterContainer._setParameters(self, p, owner)
         index = 0
         for x in self._containerIterator():
-            x._setParameters(self.params[index:index+x.paramdim], self)
+            x._setParameters(self.params[index:index + x.paramdim], self)
             index += x.paramdim
     
-    def _setDerivatives(self, d, owner = None):
+    def _setDerivatives(self, d, owner=None):
         """ put slices of this array back into the modules """        
         ParameterContainer._setDerivatives(self, d, owner)
         index = 0
         for x in self._containerIterator():
-            x._setDerivatives(self.derivs[index:index+x.paramdim], self)
+            x._setDerivatives(self.derivs[index:index + x.paramdim], self)
             index += x.paramdim
         
     def _forwardImplementation(self, inbuf, outbuf):
@@ -186,13 +186,13 @@ class Network(Module, ParameterContainer):
         for c in combineLists(self.connections.values()):
             graph[c.inmod].append(c.outmod)
             # Update the count of incoming arcs in outnode.
-            graph[c.outmod][0] +=1 
+            graph[c.outmod][0] += 1 
 
         # Find all roots (nodes with zero incoming arcs).
         roots = [node for (node, nodeinfo) in graph.items() if nodeinfo[0] == 0]
         
         # Make sure the ordering on all runs is the same.
-        roots.sort(key = lambda x: x.name)        
+        roots.sort(key=lambda x: x.name)        
         
         # Repeatedly emit a root and remove it from the graph. Removing
         # a node may convert some of the node's direct children into roots.
@@ -263,7 +263,7 @@ class Network(Module, ParameterContainer):
         for m in self.modules:
             m._resetBuffers(length)
     
-    def copy(self, keepBuffers = False):
+    def copy(self, keepBuffers=False):
         if not keepBuffers:
             self._resetBuffers()
         cp = Evolvable.copy(self)

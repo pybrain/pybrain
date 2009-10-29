@@ -116,9 +116,9 @@ def testEquivalence(net):
                     ch = cnet['hidden0']
                     print 'ni', input, net.inputbuffer.T
                     print 'ci', input, cnet.inputbuffer.T
-                    print 'hni',h.inputbuffer.T[0]
+                    print 'hni', h.inputbuffer.T[0]
                     print 'hci', ch.inputbuffer.T[0]
-                    print 'hnout',h.outputbuffer.T[0]
+                    print 'hnout', h.outputbuffer.T[0]
                     print 'hcout', ch.outputbuffer.T[0]
                     print
                     
@@ -126,7 +126,7 @@ def testEquivalence(net):
         for input, _ in ds:
             res = net.activate(input)
             cres = cnet.activate(input)
-    if epsilonCheck(sum(res-cres), 0.001):
+    if epsilonCheck(sum(res - cres), 0.001):
         return True
     else:
         print 'in-net', net.inputbuffer.T

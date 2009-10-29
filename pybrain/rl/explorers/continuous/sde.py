@@ -17,20 +17,20 @@ class StateDependentExplorer(Explorer, ParameterContainer):
         to the expln() function (see pybrain.tools.functions).
     """
     
-    def __init__(self, statedim, actiondim, sigma = -2.):
-            Explorer.__init__(self, actiondim, actiondim)
-            self.statedim = statedim
-            self.actiondim = actiondim
-            
-            # initialize parameters to sigma
-            ParameterContainer.__init__(self, actiondim, stdParams = 0)
-            self.sigma = [sigma]*actiondim
-            
-            # exploration matrix (linear function)
-            self.explmatrix = random.normal(0., expln(self.sigma), (statedim, actiondim))
-            
-            # store last state
-            self.state = None
+    def __init__(self, statedim, actiondim, sigma= -2.):
+        Explorer.__init__(self, actiondim, actiondim)
+        self.statedim = statedim
+        self.actiondim = actiondim
+        
+        # initialize parameters to sigma
+        ParameterContainer.__init__(self, actiondim, stdParams=0)
+        self.sigma = [sigma] * actiondim
+        
+        # exploration matrix (linear function)
+        self.explmatrix = random.normal(0., expln(self.sigma), (statedim, actiondim))
+        
+        # store last state
+        self.state = None
 
     def _setSigma(self, sigma):
         """ Wrapper method to set the sigmas (the parameters of the module) to a
@@ -68,10 +68,10 @@ class StateDependentExplorer(Explorer, ParameterContainer):
     
         idx = 0
         for j in xrange(len(outbuf)):
-            sigma_subst2 = dot(self.state**2,expln_params[j,:]**2) 
+            sigma_subst2 = dot(self.state ** 2, expln_params[j, :]**2) 
             for i in xrange(len(self.state)):
-                self._derivs[idx] = ((outbuf[j] - inbuf[j])**2 - sigma_subst2) / sigma_subst2 * \
-                    self.state[i]**2*expln_params[j,i]*explnPrime_params[j,i]
+                self._derivs[idx] = ((outbuf[j] - inbuf[j]) ** 2 - sigma_subst2) / sigma_subst2 * \
+                    self.state[i] ** 2 * expln_params[j, i] * explnPrime_params[j, i]
                 # if self.autoalpha and sigma_subst2 != 0:
                 # self._derivs[idx] /= sigma_subst2
                 idx += 1
@@ -82,3 +82,4 @@ class StateDependentExplorer(Explorer, ParameterContainer):
         # inerr /= expln_sigma**2
         # self._derivs /= expln_sigma**2
         
+

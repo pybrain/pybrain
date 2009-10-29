@@ -29,16 +29,16 @@ class HandicapCaptureTask(CaptureGameTask):
         CaptureGameTask.__init__(self, *args, **kargs)
         self.size = self.env.size
         # the maximal handicap given is a full line of stones along the second line.
-        self.maxHandicaps = (self.size-2)*2+(self.size-4)*2
+        self.maxHandicaps = (self.size - 2) * 2 + (self.size - 4) * 2
             
     def winProp(self, h):
         w, t, wms, lms = self.results[h]
         if t > 0:
-            res = (w-t/2.)/(t/2.) 
+            res = (w - t / 2.) / (t / 2.) 
             if wms > 0:
-                res += 0.1/(t*wms)            
+                res += 0.1 / (t * wms)            
             if lms > 0:
-                res -= 1. /(t*lms)
+                res -= 1. / (t * lms)
             return res
         else:
             return 0.
@@ -56,25 +56,25 @@ class HandicapCaptureTask(CaptureGameTask):
         return False
     
     def bestHandicap(self):
-        return max(self.results.keys())-1 
+        return max(self.results.keys()) - 1 
     
     def fluctuating(self):
         """ Is the highest handicap unstable? """
         high = self.bestHandicap()
         if high > 0:
-            if self.results[high][1] >= 2*self.minEvals and self.results[high-1][1] >= 2*self.minEvals:
-                return self.goUp(high-1) and self.goDown(high)
+            if self.results[high][1] >= 2 * self.minEvals and self.results[high - 1][1] >= 2 * self.minEvals:
+                return self.goUp(high - 1) and self.goDown(high)
         return False
     
     def stable(self, h):
         return (self.fluctuating() 
-                or (self.results[h][1] >= 2*self.minEvals and (not self.goUp(h)) and (not self.goDown(h)))
-                or (self.results[h][1] >= 2*self.minEvals and self.goUp(h) and h >= self.maxHandicaps)
-                or (self.results[h][1] >= 2*self.minEvals and self.goDown(h) and h == 0))
+                or (self.results[h][1] >= 2 * self.minEvals and (not self.goUp(h)) and (not self.goDown(h)))
+                or (self.results[h][1] >= 2 * self.minEvals and self.goUp(h) and h >= self.maxHandicaps)
+                or (self.results[h][1] >= 2 * self.minEvals and self.goDown(h) and h == 0))
     
     def addResult(self, h, win, moves):
-        if h+1 not in self.results:
-            self.results[h+1] = [0,0,0,0]
+        if h + 1 not in self.results:
+            self.results[h + 1] = [0, 0, 0, 0]
         self.results[h][1] += 1
         if win == True: 
             self.results[h][0] += 1
@@ -85,11 +85,11 @@ class HandicapCaptureTask(CaptureGameTask):
     def reset(self):
         # stores [wins, total, sum(moves-til-win), sum(moves-til-lose)] 
         # for each handicap-key
-        self.results = {0: [0,0,0,0]}
+        self.results = {0: [0, 0, 0, 0]}
             
     def __call__(self, player):          
         if not isinstance(player, CapturePlayer):
-            player = ModuleDecidingPlayer(player, self.env, greedySelection = True)
+            player = ModuleDecidingPlayer(player, self.env, greedySelection=True)
         player.color = CaptureGame.WHITE
         self.opponent.color = CaptureGame.BLACK
         self.reset()
@@ -112,12 +112,12 @@ class HandicapCaptureTask(CaptureGameTask):
         if not self.fluctuating():
             return high + self.winProp(high)
         else:
-            return (high-0.5) + (self.winProp(high)+self.winProp(high-1))/2.
+            return (high - 0.5) + (self.winProp(high) + self.winProp(high - 1)) / 2.
 
         
 if __name__ == '__main__':
     from pybrain.rl.environments.twoplayergames.capturegameplayers import RandomCapturePlayer, KillingPlayer
-    h = HandicapCaptureTask(4, opponentStart = False)
+    h = HandicapCaptureTask(4, opponentStart=False)
     p1 = RandomCapturePlayer(h.env)
     p1 = KillingPlayer(h.env)
     print h(p1)

@@ -105,3 +105,4 @@ if __name__ == "__main__":
     setUpLogging()
     runner = TextTestRunner()
     runner.run(make_test_suite())
+

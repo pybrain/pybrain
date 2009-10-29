@@ -20,7 +20,7 @@ class CaptureGame(TwoPlayerGame):
     
     startcolor = BLACK
     
-    def __init__(self, size, suicideenabled = True):
+    def __init__(self, size, suicideenabled=True):
         """ the size of the board is generally between 3 and 19. """
         self.size = size
         self.suicideenabled = suicideenabled
@@ -30,7 +30,7 @@ class CaptureGame(TwoPlayerGame):
         """ an iterator over all the positions of the board. """
         for i in range(self.size):
             for j in range(self.size):            
-                yield (i,j)
+                yield (i, j)
 
     def reset(self):
         """ empty the board. """
@@ -46,11 +46,11 @@ class CaptureGame(TwoPlayerGame):
     
     @property
     def indim(self):
-        return self.size**2
+        return self.size ** 2
     
     @property
     def outdim(self):
-        return 2*self.size**2
+        return 2 * self.size ** 2
         
     def getBoardArray(self):
         """ an array with thow boolean values per position, indicating 
@@ -58,9 +58,9 @@ class CaptureGame(TwoPlayerGame):
         a = zeros(self.outdim)
         for i, p in enumerate(self._iterPos()):
             if self.b[p] == self.WHITE:
-                a[2*i] = 1
+                a[2 * i] = 1
             elif self.b[p] == self.BLACK:
-                a[2*i+1] = 1                
+                a[2 * i + 1] = 1                
         return a
     
     def isLegal(self, c, pos):
@@ -102,11 +102,11 @@ class CaptureGame(TwoPlayerGame):
         s = ''
         for i in range(self.size):
             for j in range(self.size):            
-                val = self.b[(i,j)]
+                val = self.b[(i, j)]
                 if val == self.EMPTY: s += ' .'
                 elif val == self.BLACK: s += ' X'
                 elif val == self.WHITE: s += ' O'
-                else: s += ' '+str(val)
+                else: s += ' ' + str(val)
             s += '\n'
         if self.winner:
             if self.winner == self.BLACK:
@@ -115,24 +115,24 @@ class CaptureGame(TwoPlayerGame):
                 w = 'White (*)'
             else:
                 w = self.winner    
-            s += 'Winner: '+w
-            s += ' (moves done:'+str(self.movesDone)+')\n'
+            s += 'Winner: ' + w
+            s += ' (moves done:' + str(self.movesDone) + ')\n'
         return s
     
     def _neighbors(self, pos):
         """ the 4 neighboring positions """
         res = []
-        if pos[1] < self.size -1: res.append((pos[0], pos[1]+1))
-        if pos[1] > 0: res.append((pos[0], pos[1]-1))
-        if pos[0] < self.size -1: res.append((pos[0]+1, pos[1]))
-        if pos[0] > 0: res.append((pos[0]-1, pos[1]))
+        if pos[1] < self.size - 1: res.append((pos[0], pos[1] + 1))
+        if pos[1] > 0: res.append((pos[0], pos[1] - 1))
+        if pos[0] < self.size - 1: res.append((pos[0] + 1, pos[1]))
+        if pos[0] > 0: res.append((pos[0] - 1, pos[1]))
         return res
     
     def _setStone(self, c, pos):
         """ set stone, and update liberties and groups. """
         self.b[pos] = c
         merge = False
-        self.groups[pos] = self.size*pos[0]+pos[1]
+        self.groups[pos] = self.size * pos[0] + pos[1]
         freen = filter(lambda n: self.b[n] == self.EMPTY, self._neighbors(pos))
         self.liberties[self.groups[pos]] = set(freen)
         for n in self._neighbors(pos):
@@ -198,7 +198,7 @@ class CaptureGame(TwoPlayerGame):
         if self.b[pos] == self.EMPTY:
             return None
         g = self.groups[pos]
-        return len(filter(lambda x: x==g, self.groups.values()))
+        return len(filter(lambda x: x == g, self.groups.values()))
     
     def getLegals(self, c):
         """ return all the legal positions for a color """
@@ -226,7 +226,7 @@ class CaptureGame(TwoPlayerGame):
             c = -c
         return nbmoves
     
-    def giveHandicap(self, h, color = BLACK):
+    def giveHandicap(self, h, color=BLACK):
         i = 0
         for pos in self._handicapIterator():
             i += 1
@@ -238,18 +238,18 @@ class CaptureGame(TwoPlayerGame):
     def _handicapIterator(self):
         s = self.size
         assert s > 2
-        yield (1,1)
+        yield (1, 1)
         if s > 3:
             # 4 corners
-            yield (s-2, s-2)
-            yield (1, s-2)
-            yield (s-2, 1)
+            yield (s - 2, s - 2)
+            yield (1, s - 2)
+            yield (s - 2, 1)
         if s > 4:
-            for i in range(2,s-2):
+            for i in range(2, s - 2):
                 yield (i, 1)
-                yield (i, s-2)
+                yield (i, s - 2)
                 yield (1, i)
-                yield (s-2, i)
+                yield (s - 2, i)
             
     def playToTheEnd(self, p1, p2):
         """ alternate playing moves between players until the game is over. """
@@ -261,5 +261,5 @@ class CaptureGame(TwoPlayerGame):
         while not self.gameOver():
             p = players[i]
             self.performAction(p.getAction())
-            i = (i+1)%2
+            i = (i + 1) % 2
                         

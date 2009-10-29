@@ -55,7 +55,8 @@ class UDPServer(object):
             try: 
                 cIP = self.UDPInSock.recv(self.buf)
                 self.addClient(cIP)
-            except: pass
+            except: 
+                pass
         else:  
             # At least one client has to send a sign of life during 2 seconds
             self.UDPInSock.settimeout(2)
@@ -67,7 +68,8 @@ class UDPServer(object):
                         newClient = False
                         break
                 #Adding new client
-                if newClient: self.addClient(cIP)
+                if newClient: 
+                    self.addClient(cIP)
             except:
                 print "All clients disconnected"
                 self.clients = 0

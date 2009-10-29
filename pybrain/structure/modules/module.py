@@ -40,10 +40,10 @@ class Module(Named):
         # TODO: it should be possible to use less than these buffers. For some
         # methods, an error is not completely necessary. (e.g. evolution)
         self.bufferlist = [] if not self.bufferlist else self.bufferlist
-        self.bufferlist += [('inputbuffer', indim), 
-                            ('inputerror', indim), 
-                            ('outputbuffer', outdim), 
-                            ('outputerror', outdim),]
+        self.bufferlist += [('inputbuffer', indim),
+                            ('inputerror', indim),
+                            ('outputbuffer', outdim),
+                            ('outputerror', outdim), ]
                 
         self.indim = indim
         self.outdim = outdim
@@ -69,14 +69,14 @@ class Module(Named):
             
     def forward(self):
         """Produce the output from the input."""
-        self._forwardImplementation(self.inputbuffer[self.offset], 
+        self._forwardImplementation(self.inputbuffer[self.offset],
                                     self.outputbuffer[self.offset])
         
     def backward(self):
         """Produce the input error from the output error."""
-        self._backwardImplementation(self.outputerror[self.offset], 
-                                     self.inputerror[self.offset], 
-                                     self.outputbuffer[self.offset], 
+        self._backwardImplementation(self.outputerror[self.offset],
+                                     self.inputerror[self.offset],
+                                     self.outputbuffer[self.offset],
                                      self.inputbuffer[self.offset])        
         
     def reset(self):
@@ -91,10 +91,10 @@ class Module(Named):
         and return the output."""        
         dataset.reset()
         self.reset()
-        out = zeros( (len(dataset), self.outdim) )
+        out = zeros((len(dataset), self.outdim))
         for i, sample in enumerate(dataset):
             # FIXME: Can we always assume that sample[0] is the input data?
-            out[i,:] = self.activate(sample[0])
+            out[i, :] = self.activate(sample[0])
         self.reset()
         dataset.reset()
         return out

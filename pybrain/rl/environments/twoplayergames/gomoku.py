@@ -26,7 +26,7 @@ class GomokuGame(TwoPlayerGame):
         """ an iterator over all the positions of the board. """
         for i in range(self.size[0]):
             for j in range(self.size[1]):            
-                yield (i,j)
+                yield (i, j)
 
     def reset(self):
         """ empty the board. """
@@ -39,11 +39,11 @@ class GomokuGame(TwoPlayerGame):
     def _fiveRow(self, color, pos):
         """ Is this placement the 5th in a row? """
         # TODO: more efficient...
-        for dir in [(0,1), (1,0), (1,1), (1,-1)]:
+        for dir in [(0, 1), (1, 0), (1, 1), (1, -1)]:
             found = 1
             for d in [-1, 1]:
                 for i in range(1, 5):
-                    next = (pos[0]+dir[0]*i*d, pos[1]+dir[1]*i*d)
+                    next = (pos[0] + dir[0] * i * d, pos[1] + dir[1] * i * d)
                     if (next[0] < 0 or next[0] >= self.size[0]
                         or next[1] < 0 or next[1] >= self.size[1]
                         or self.b[next] != color):
@@ -56,11 +56,11 @@ class GomokuGame(TwoPlayerGame):
         
     @property
     def indim(self):
-        return self.size[0]*self.size[1]
+        return self.size[0] * self.size[1]
     
     @property
     def outdim(self):
-        return 2*self.size[0]*self.size[1]
+        return 2 * self.size[0] * self.size[1]
         
     def getBoardArray(self):
         """ an array with thow boolean values per position, indicating 
@@ -68,9 +68,9 @@ class GomokuGame(TwoPlayerGame):
         a = zeros(self.outdim)
         for i, p in enumerate(self._iterPos()):
             if self.b[p] == self.WHITE:
-                a[2*i] = 1
+                a[2 * i] = 1
             elif self.b[p] == self.BLACK:
-                a[2*i+1] = 1                
+                a[2 * i + 1] = 1                
         return a
     
     def isLegal(self, c, pos):
@@ -101,11 +101,11 @@ class GomokuGame(TwoPlayerGame):
         s = ''
         for i in range(self.size[0]):
             for j in range(self.size[1]):            
-                val = self.b[(i,j)]
+                val = self.b[(i, j)]
                 if val == self.EMPTY: s += ' _'
                 elif val == self.BLACK: s += ' #'
                 elif val == self.WHITE: s += ' *'
-                else: s += ' '+str(val)
+                else: s += ' ' + str(val)
             s += '\n'
         if self.winner:
             if self.winner == self.BLACK:
@@ -114,17 +114,17 @@ class GomokuGame(TwoPlayerGame):
                 w = 'White (*)'
             else:
                 w = self.winner    
-            s += 'Winner: '+w
-            s += ' (moves done:'+str(self.movesDone)+')\n'
+            s += 'Winner: ' + w
+            s += ' (moves done:' + str(self.movesDone) + ')\n'
         return s
     
     def _neighbors(self, pos):
         """ the 4 neighboring positions """
         res = []
-        if pos[1] < self.size -1: res.append((pos[0], pos[1]+1))
-        if pos[1] > 0: res.append((pos[0], pos[1]-1))
-        if pos[0] < self.size -1: res.append((pos[0]+1, pos[1]))
-        if pos[0] > 0: res.append((pos[0]-1, pos[1]))
+        if pos[1] < self.size - 1: res.append((pos[0], pos[1] + 1))
+        if pos[1] > 0: res.append((pos[0], pos[1] - 1))
+        if pos[0] < self.size - 1: res.append((pos[0] + 1, pos[1]))
+        if pos[0] > 0: res.append((pos[0] - 1, pos[1]))
         return res
     
     def _setStone(self, c, pos):
@@ -149,6 +149,6 @@ class GomokuGame(TwoPlayerGame):
         while not self.gameOver():
             p = players[i]
             self.performAction(p.getAction())
-            i = (i+1)%2
+            i = (i + 1) % 2
                         
         

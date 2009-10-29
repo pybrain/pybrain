@@ -43,3 +43,4 @@ class NFQ(ValueBasedLearner):
         trainer.trainEpochs(1)
          
         
+

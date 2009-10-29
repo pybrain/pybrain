@@ -13,8 +13,8 @@ class SimpleController(Agent):
         self.distanceToCurrentWP = obs[2]
         self.angleToNextWP = obs[3]
         self.distanceToNextWP = obs[4]
-        self.angleToOtherVehicle =obs[5]
-        self.distanceToOtherVehicle =obs[6]
+        self.angleToOtherVehicle = obs[5]
+        self.distanceToOtherVehicle = obs[6]
         
         
     def getAction(self):

@@ -41,7 +41,7 @@ class RWR(DirectSearchLearner):
     resetAllWeights = False
     netweights = 0.01
     
-    def __init__(self, net, task, valueNetwork = None, **args):
+    def __init__(self, net, task, valueNetwork=None, **args):
         self.net = net
         self.task = task
         self.setArgs(**args)
@@ -62,15 +62,15 @@ class RWR(DirectSearchLearner):
         self.valueDs = SequentialDataSet(self.task.outdim, 1)
         
         # prepare the supervised trainers
-        self.bp = BackpropTrainer(self.net, self.weightedDs, self.learningRate, 
-                                  self.momentum, verbose= False,
-                                  batchlearning = True)            
+        self.bp = BackpropTrainer(self.net, self.weightedDs, self.learningRate,
+                                  self.momentum, verbose=False,
+                                  batchlearning=True)            
         
         # CHECKME: outsource
         self.vnet = valueNetwork
         if valueNetwork != None:
-            self.vbp = BackpropTrainer(self.vnet, self.valueDs, self.valueLearningRate, 
-                                       self.valueMomentum, verbose = self.verbose)
+            self.vbp = BackpropTrainer(self.vnet, self.valueDs, self.valueLearningRate,
+                                       self.valueMomentum, verbose=self.verbose)
             
         # keep information:
         self.totalSteps = 0
@@ -80,7 +80,7 @@ class RWR(DirectSearchLearner):
         return exp(self.tau * R)        
     
     def updateTau(self, R, U):
-        self.tau = sum(U)/dot((R - self.task.minReward), U)
+        self.tau = sum(U) / dot((R - self.task.minReward), U)
         
     def reset(self):
         self.weightedDs.clear()
@@ -90,7 +90,7 @@ class RWR(DirectSearchLearner):
         if self.vnet != None:
             self.vbp.momentumvector *= 0.0
             if self.resetAllWeights:
-                self.vnet.params[:] = randn(len(self.vnet.params))*self.netweights            
+                self.vnet.params[:] = randn(len(self.vnet.params)) * self.netweights            
             
     def greedyEpisode(self):
         """ run one episode with greedy decisions, return the list of rewards recieved."""
@@ -114,7 +114,7 @@ class RWR(DirectSearchLearner):
         for b in range(batches):
             if self.verbose:
                 print
-                print 'Batch', b+1
+                print 'Batch', b + 1
             self.reset()
             self.learnOneBatch()
             self.totalEpisodes += self.batchSize
@@ -123,10 +123,10 @@ class RWR(DirectSearchLearner):
             rws = 0.
             for dummy in range(self.greedyRuns):
                 tmp = self.greedyEpisode()
-                rws += (sum(tmp)/float(len(tmp)))
-            self.greedyAvg.append(rws/self.greedyRuns)
+                rws += (sum(tmp) / float(len(tmp)))
+            self.greedyAvg.append(rws / self.greedyRuns)
             if self.verbose:
-                print '::', round(rws/self.greedyRuns, 5), '::'
+                print '::', round(rws / self.greedyRuns, 5), '::'
             
     def learnOneBatch(self):
         # collect a batch of runs as experience
@@ -138,7 +138,7 @@ class RWR(DirectSearchLearner):
             self.valueDs.newSequence()
             self.task.reset()
             self.net.reset()
-            acts, obss, rewards = [],[],[]
+            acts, obss, rewards = [], [], []
             while not self.task.isFinished():
                 obs = self.task.getObservation()
                 act = self.net.activate(obs)
@@ -150,7 +150,7 @@ class RWR(DirectSearchLearner):
                 y[chosen] = 1
                 acts.append(y)
                 rewards.append(reward)
-            avgReward += sum(rewards)/float(len(rewards))
+            avgReward += sum(rewards) / float(len(rewards))
             
             # compute the returns from the list of rewards
             current = 0        
@@ -168,7 +168,7 @@ class RWR(DirectSearchLearner):
             
         r0s = array(r0s)  
         self.totalSteps += sum(lens)
-        avgLen = sum(lens)/float(self.batchSize)
+        avgLen = sum(lens) / float(self.batchSize)
         avgR0 = mean(r0s)
         avgReward /= self.batchSize
         if self.verbose:
@@ -233,18 +233,19 @@ class RWR(DirectSearchLearner):
 #                    rvindex += 1
                     
         # train the acting network                
-        tmp1, tmp2 = self.bp.trainUntilConvergence(maxEpochs = self.maxEpochs, 
-                                                   validationProportion = self.validationProportion,
-                                                   continueEpochs = self.continueEpochs,
-                                                   verbose = self.verbose)
+        tmp1, tmp2 = self.bp.trainUntilConvergence(maxEpochs=self.maxEpochs,
+                                                   validationProportion=self.validationProportion,
+                                                   continueEpochs=self.continueEpochs,
+                                                   verbose=self.verbose)
         if self.supervisedPlotting:
             from pylab import plot, legend, figure, clf, draw
             figure(1)
             clf()
-            plot(tmp1, label = 'train')
-            plot(tmp2, label = 'valid')
+            plot(tmp1, label='train')
+            plot(tmp2, label='valid')
             legend()
             draw()  
             
         return avgLen, avgR0                        
     
+

@@ -62,15 +62,15 @@ class Coevolution(Named):
         # build initial populations
         self._initPopulation(seeds)
         
-    def learn(self, maxSteps = None):
+    def learn(self, maxSteps=None):
         """ Toplevel function, can be called iteratively.
         @return: best evaluable found in the last generation. """
         if maxSteps != None:
             maxSteps += self.steps
         while True:
-            if maxSteps != None and self.steps+self._stepsPerGeneration() > maxSteps:
+            if maxSteps != None and self.steps + self._stepsPerGeneration() > maxSteps:
                 break
-            if self.maxEvaluations != None and self.steps+self._stepsPerGeneration() > self.maxEvaluations:
+            if self.maxEvaluations != None and self.steps + self._stepsPerGeneration() > self.maxEvaluations:
                 break
             if self.maxGenerations != None and self.generation >= self.maxGenerations:
                 break
@@ -101,7 +101,7 @@ class Coevolution(Named):
             if p.parent != None:
                 tmp = p.copy()
                 tmp.parent = p.parent
-                tmp._setParameters(p.params * childportion + p.parent.params * (1-childportion))
+                tmp._setParameters(p.params * childportion + p.parent.params * (1 - childportion))
                 pop[i] = tmp
                     
     def _evaluatePopulation(self):
@@ -126,7 +126,7 @@ class Coevolution(Named):
                 for opp in hoF:
                     fit += self._beats(p, opp)     
             if self.absEvalProportion > 0 and self.absEvaluator != None:
-                fit = (1-self.absEvalProportion) * fit + self.absEvalProportion * self.absEvaluator(p)           
+                fit = (1 - self.absEvalProportion) * fit + self.absEvalProportion * self.absEvaluator(p)           
             fitnesses.append(fit)
         return fitnesses
             
@@ -140,7 +140,7 @@ class Coevolution(Named):
         """ build a population, with mutated copies from the provided
         seed pool until it has the desired size. """
         res = seeds[:]
-        for dummy in range(size-len(seeds)):
+        for dummy in range(size - len(seeds)):
             chosen = choice(seeds)
             tmp = chosen.copy()
             tmp.mutate()
@@ -154,7 +154,7 @@ class Coevolution(Named):
         # combine population with their fitness, then sort, only by fitness
         s = zip(fits, pop)
         shuffle(s)
-        s.sort(key = lambda x: -x[0])
+        s.sort(key=lambda x:-x[0])
         # select...
         selected = map(lambda x: x[1], s[:self._numSelected()])
         # ... and reproduce
@@ -164,7 +164,7 @@ class Coevolution(Named):
                 self._averageWithParents(newpop, self.parentChildAverage)
         else:
             newpop = self._extendPopulation(selected, self.populationSize
-                                            +self._numSelected()) [self._numSelected():]
+                                            + self._numSelected()) [self._numSelected():]
             if self.parentChildAverage < 1:
                 self._averageWithParents(newpop[self._numSelected():], self.parentChildAverage)
         return newpop
@@ -172,14 +172,14 @@ class Coevolution(Named):
     def _beats(self, h, p):
         """ determine the empirically observed score of p playing opp (starting or not). 
         If they never played, assume 0. """
-        if (h,p) not in self.allResults:
+        if (h, p) not in self.allResults:
             return 0
         else:
-            hpgames, hscore = self.allResults[(h,p)][1:3]
-            phgames, pscore = self.allResults[(p,h)][1:3]
-            return (hscore-pscore)/float(hpgames+phgames)            
+            hpgames, hscore = self.allResults[(h, p)][1:3]
+            phgames, pscore = self.allResults[(p, h)][1:3]
+            return (hscore - pscore) / float(hpgames + phgames)            
                 
-    def _doTournament(self, pop1, pop2, tournamentSize = None):
+    def _doTournament(self, pop1, pop2, tournamentSize=None):
         """ Play a tournament. 
         @param tournamentSize: If unspecified, play all-against-all 
         """
@@ -208,7 +208,7 @@ class Coevolution(Named):
             played += self.allResults[(opp, p)][1]
         # slightly bias the global score in favor of players with more games (just for tie-breaking)
         played += 0.01
-        return scoresum/played
+        return scoresum / played
                 
     def _sharedSampling(self, numSelect, selectFrom, relativeTo):
         """ Build a shared sampling set of opponents """
@@ -222,9 +222,9 @@ class Coevolution(Named):
                 if self._beats(p, opp) > 0:
                     beaten.append(opp)
             tmp[p] = beaten
-        beatlist = map(lambda (p, beaten): (len(beaten), self._globalScore(p), p),  tmp.items())
+        beatlist = map(lambda (p, beaten): (len(beaten), self._globalScore(p), p), tmp.items())
         shuffle(beatlist)
-        beatlist.sort(key = lambda x: x[:2])
+        beatlist.sort(key=lambda x: x[:2])
         best = beatlist[-1][2]
         unBeaten = list(set(relativeTo).difference(tmp[best]))
         otherSelect = selectFrom[:]
@@ -236,33 +236,33 @@ class Coevolution(Named):
         if p not in self.allOpponents:
             self.allOpponents[p] = []
         self.allOpponents[p].append(opp)
-        if (p,opp) not in self.allResults:
-            self.allResults[(p,opp)] = [0,0,0.,[]]
+        if (p, opp) not in self.allResults:
+            self.allResults[(p, opp)] = [0, 0, 0., []]
         res = self.relEvaluator(p, opp)
         if res > 0:
-            self.allResults[(p,opp)][0] += 1
-        self.allResults[(p,opp)][1] += 1
-        self.allResults[(p,opp)][2] += res
-        self.allResults[(p,opp)][3].append(res)
+            self.allResults[(p, opp)][0] += 1
+        self.allResults[(p, opp)][1] += 1
+        self.allResults[(p, opp)][2] += res
+        self.allResults[(p, opp)][3].append(res)
         self.steps += 1
     
     def __str__(self):
         s = 'Coevolution ('
         s += str(self._numSelected())
         if self.elitism:
-            s += '+'+str(self.populationSize-self._numSelected())
+            s += '+' + str(self.populationSize - self._numSelected())
         else:
-            s += ','+str(self.populationSize)
+            s += ',' + str(self.populationSize)
         s += ')'
         if self.parentChildAverage < 1:
-            s += ' p_c_avg='+str(self.parentChildAverage)
+            s += ' p_c_avg=' + str(self.parentChildAverage)
         return s
                                      
     def _numSelected(self):
-        return int(self.populationSize*self.selectionProportion)
+        return int(self.populationSize * self.selectionProportion)
     
     def _stepsPerGeneration(self):
-        res = self.populationSize*self.tournamentSize * 2
+        res = self.populationSize * self.tournamentSize * 2
         return res
     
     
@@ -271,19 +271,19 @@ class Coevolution(Named):
     
 if __name__ == '__main__':
     # TODO: convert to unittest
-    x = Coevolution(None, [None], populationSize = 1)
-    x.allResults[(1,2)] = [1,1,1,[]]
-    x.allResults[(2,1)] = [-1,1,-1,[]]
-    x.allResults[(2,5)] = [1,1,2,[]]
-    x.allResults[(5,2)] = [-1,1,-1,[]]
-    x.allResults[(2,3)] = [1,1,3,[]]
-    x.allResults[(3,2)] = [-1,1,-1,[]]
-    x.allResults[(4,3)] = [1,1,4,[]]
-    x.allResults[(3,4)] = [-1,1,-1,[]]
+    x = Coevolution(None, [None], populationSize=1)
+    x.allResults[(1, 2)] = [1, 1, 1, []]
+    x.allResults[(2, 1)] = [-1, 1, -1, []]
+    x.allResults[(2, 5)] = [1, 1, 2, []]
+    x.allResults[(5, 2)] = [-1, 1, -1, []]
+    x.allResults[(2, 3)] = [1, 1, 3, []]
+    x.allResults[(3, 2)] = [-1, 1, -1, []]
+    x.allResults[(4, 3)] = [1, 1, 4, []]
+    x.allResults[(3, 4)] = [-1, 1, -1, []]
     x.allOpponents[1] = [2]
-    x.allOpponents[2] = [1,5]
-    x.allOpponents[3] = [2,4]
+    x.allOpponents[2] = [1, 5]
+    x.allOpponents[3] = [2, 4]
     x.allOpponents[4] = [3]
     x.allOpponents[5] = [2]
-    print x._sharedSampling(4, [1,2,3,4,5], [1,2,3,4,6,7,8,9])
+    print x._sharedSampling(4, [1, 2, 3, 4, 5], [1, 2, 3, 4, 6, 7, 8, 9])
     print 'should be', [4, 1, 2, 5]

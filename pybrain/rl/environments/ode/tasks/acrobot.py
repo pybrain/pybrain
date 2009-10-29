@@ -30,6 +30,7 @@ class GradualRewardTask(EpisodicTask):
         j = jointSense[0]
         v = veloSense[0] 
         
-        reward = (abs(j))**2 - 0.2*abs(v)
+        reward = (abs(j)) ** 2 - 0.2 * abs(v)
         # time.sleep(0.001)
         return reward
+

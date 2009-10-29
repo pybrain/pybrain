@@ -53,12 +53,12 @@ class ODEViewer(object):
         glutKeyboardFunc (self._keyfunc)
 
 
-        self.dt = 1.0/self.fps
+        self.dt = 1.0 / self.fps
         self.lasttime = time.time()
         self.starttime = self.lasttime
 
         # initialize udp client
-        self.client=UDPClient(servIP, ownIP, port, buf)
+        self.client = UDPClient(servIP, ownIP, port, buf)
     
 
     def start(self):
@@ -68,7 +68,7 @@ class ODEViewer(object):
     
     def setFrameRate(self, fps):
         self.fps = fps
-        self.dt = 1.0/self.fps 
+        self.dt = 1.0 / self.fps 
     
     def setCaptureScreen(self, capture):
         self.captureScreen = capture
@@ -85,7 +85,6 @@ class ODEViewer(object):
     def setCenterObj(self, obj):
         self.centerObj = obj
     
-
     
     def updateData(self):        
         try: 
@@ -121,12 +120,12 @@ class ODEViewer(object):
         glEnable(GL_LIGHTING)
         glLightfv(GL_LIGHT1, GL_AMBIENT, [0.5, 0.5, 0.5, 1.0])
         glLightfv(GL_LIGHT1, GL_DIFFUSE, [1.0, 1.0, 1.0, 1.0])
-        glLightfv(GL_LIGHT1, GL_POSITION,[0.0, 5.0, 5.0, 1.0])
+        glLightfv(GL_LIGHT1, GL_POSITION, [0.0, 5.0, 5.0, 1.0])
         glEnable(GL_LIGHT1)
 
         # enable material coloring
-        glEnable(GL_COLOR_MATERIAL);
-        glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
+        glEnable(GL_COLOR_MATERIAL)
+        glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE)
 
         glEnable(GL_NORMALIZE)
     
@@ -138,7 +137,7 @@ class ODEViewer(object):
         # Projection mode
         glMatrixMode(GL_PROJECTION)
         glLoadIdentity()
-        gluPerspective (45,1.3333,0.2,500)
+        gluPerspective (45, 1.3333, 0.2, 500)
 
         # Initialize ModelView matrix
         glMatrixMode(GL_MODELVIEW)
@@ -170,13 +169,13 @@ class ODEViewer(object):
             else: glColor3f(0.1, 0.1, 0.1)
 
             # transform (rotate, translate) body accordingly
-            (x,y,z) = item['position']
+            (x, y, z) = item['position']
             R = item['rotation']
             
             rot = [R[0], R[3], R[6], 0.0,
                    R[1], R[4], R[7], 0.0,
                    R[2], R[5], R[8], 0.0,
-                      x,    y,    z, 1.0]
+                      x, y, z, 1.0]
                       
             glMultMatrixd(rot)
             
@@ -193,51 +192,51 @@ class ODEViewer(object):
             elif item['type'] == 'GeomCCylinder':
                 quad = gluNewQuadric()
                 # draw cylinder and two spheres, one at each end
-                glTranslate(0.0, 0.0, -item['length']/2)
+                glTranslate(0.0, 0.0, -item['length'] / 2)
                 gluCylinder(quad, item['radius'], item['radius'], item['length'], 32, 32)
                 glutSolidSphere(item['radius'], 20, 20)
                 glTranslate(0.0, 0.0, item['length'])
                 glutSolidSphere(item['radius'], 20, 20)
 
             elif item['type'] == 'GeomCylinder':
-                    glTranslate(0.0, 0.0, -item['length']/2)
-                    quad = gluNewQuadric()
-                    gluDisk(quad, 0, item['radius'], 32, 1)
-                    quad = gluNewQuadric()
-                    gluCylinder(quad, item['radius'], item['radius'], item['length'], 32, 32)
-                    glTranslate(0.0, 0.0, item['length'])
-                    quad = gluNewQuadric()
-                    gluDisk(quad, 0, item['radius'], 32, 1)                
+                glTranslate(0.0, 0.0, -item['length'] / 2)
+                quad = gluNewQuadric()
+                gluDisk(quad, 0, item['radius'], 32, 1)
+                quad = gluNewQuadric()
+                gluCylinder(quad, item['radius'], item['radius'], item['length'], 32, 32)
+                glTranslate(0.0, 0.0, item['length'])
+                quad = gluNewQuadric()
+                gluDisk(quad, 0, item['radius'], 32, 1)                
             else:
                 # TODO: add other geoms here
                 pass
 
         elif item['type'] == 'GeomPlane':
-                # set color of plane (currently green)
-                if self.isFloorGreen:
-                    glColor3f(0.2, 0.6, 0.3)
-                else:
-                    glColor3f(0.2, 0.3, 0.8)
+            # set color of plane (currently green)
+            if self.isFloorGreen:
+                glColor3f(0.2, 0.6, 0.3)
+            else:
+                glColor3f(0.2, 0.3, 0.8)
 
-                # for planes, we need a Quadric object
-                quad = gluNewQuadric()
-                gluQuadricTexture(quad, GL_TRUE)
+            # for planes, we need a Quadric object
+            quad = gluNewQuadric()
+            gluQuadricTexture(quad, GL_TRUE)
 
-                p = item['normal']      # the normal vector to the plane
-                d = item['distance']    # the distance to the origin
-                q = (0.0, 0.0, 1.0)     # the normal vector of default gluDisks (z=0 plane)
+            p = item['normal']      # the normal vector to the plane
+            d = item['distance']    # the distance to the origin
+            q = (0.0, 0.0, 1.0)     # the normal vector of default gluDisks (z=0 plane)
 
-                # calculate the cross product to get the rotation axis
-                c = crossproduct(p,q)
-                # calculate the angle between default normal q and plane normal p
-                theta = acos(dotproduct(p,q) / (norm(p)*norm(q))) / pi * 180
+            # calculate the cross product to get the rotation axis
+            c = crossproduct(p, q)
+            # calculate the angle between default normal q and plane normal p
+            theta = acos(dotproduct(p, q) / (norm(p) * norm(q))) / pi * 180
 
-                # rotate the plane
-                glPushMatrix()
-                glTranslate(d*p[0], d*p[1], d*p[2])
-                glRotate(-theta, c[0], c[1], c[2])
-                gluDisk(quad, 0, 20, 20, 1)
-                glPopMatrix()
+            # rotate the plane
+            glPushMatrix()
+            glTranslate(d * p[0], d * p[1], d * p[2])
+            glRotate(-theta, c[0], c[1], c[2])
+            gluDisk(quad, 0, 20, 20, 1)
+            glPopMatrix()
 
         glPopMatrix()
     
@@ -253,7 +252,7 @@ class ODEViewer(object):
         textures = glGenTextures(3)
         glBindTexture(GL_TEXTURE_2D, textures[0])       # 2d texture (x and y size)
 
-        glPixelStorei(GL_UNPACK_ALIGNMENT,1)
+        glPixelStorei(GL_UNPACK_ALIGNMENT, 1)
         glTexImage2D(GL_TEXTURE_2D, 0, 3, ix, iy, 0, GL_RGBA, GL_BYTE, image)
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP)
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP)
@@ -265,14 +264,14 @@ class ODEViewer(object):
 
         # Create Linear Filtered Texture 
         glBindTexture(GL_TEXTURE_2D, textures[1])
-        glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR)
-        glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR)
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR)
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR)
         glTexImage2D(GL_TEXTURE_2D, 0, 3, ix, iy, 0, GL_RGBA, GL_UNSIGNED_BYTE, image)
 
         # Create MipMapped Texture
         glBindTexture(GL_TEXTURE_2D, textures[2])
-        glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR)
-        glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR_MIPMAP_NEAREST)
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR)
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST)
         gluBuild2DMipmaps(GL_TEXTURE_2D, 3, ix, iy, GL_RGBA, GL_UNSIGNED_BYTE, image)
         return textures 
 
@@ -301,7 +300,7 @@ class ODEViewer(object):
 
     def _keyfunc (self, c, x, y):
         """ keyboard call-back function. """
-        if c=='s':
+        if c == 's':
             self.setCaptureScreen(not self.getCaptureScreen())
             print "Screen Capture: " + (self.getCaptureScreen() and "on" or "off")
         if c in ['x', 'q']:
@@ -312,8 +311,8 @@ class ODEViewer(object):
     def _motionfunc(self, x, z):
         """Control the zoom factor"""
         if not self.mouseView: return
-        zn = 2.75*float(z)/self.height + 0.25   # [0.25,3]
-        self.viewDistance = 3.0 * zn*zn
+        zn = 2.75 * float(z) / self.height + 0.25   # [0.25,3]
+        self.viewDistance = 3.0 * zn * zn
         self._passivemotionfunc(x, z)
     
     def _passivemotionfunc(self, x, z):
@@ -323,17 +322,17 @@ class ODEViewer(object):
          such that approaching the perimeter dows not cause a huge change in the
          viewing direction. The limit for l is thus cos(arcsin(0.1))."""
         if not self.mouseView: return
-        x1 = 3*float(x)/self.width  - 1.5
-        z1 = -3*float(z)/self.height + 1.5
-        lsq  = x1*x1 + z1*z1
+        x1 = 3 * float(x) / self.width - 1.5
+        z1 = -3 * float(z) / self.height + 1.5
+        lsq = x1 * x1 + z1 * z1
         l = sqrt(lsq)
         if l > 0.994987:
             # for mouse outside window, project onto the unit circle
-            x1 = x1/l
-            z1 = z1/l
+            x1 = x1 / l
+            z1 = z1 / l
             y1 = 0
         else:
-            y1 = max(0.0,sqrt(1.0 - x1*x1-z1*z1) - 0.1)
+            y1 = max(0.0, sqrt(1.0 - x1 * x1 - z1 * z1) - 0.1)
         self.lasty = y1
         self.lastx = x1
         self.lastz = z1
@@ -346,30 +345,30 @@ class ODEViewer(object):
         are already in the directory."""
 
         if self.counter == self.frameT:
-            self.counter=1
+            self.counter = 1
             dir = os.path.join(path_prefix, 'screenshots')
             if not os.path.exists(dir):
                 os.makedirs(dir)
  
             num_present = len(os.listdir(dir))
             num_digits = len(str(num_present))
-            index = '0' * (5-num_digits) + str(num_present) 
+            index = '0' * (5 - num_digits) + str(num_present) 
 
-            path = os.path.join(dir, 'shot' + index +'.'+format.lower())
+            path = os.path.join(dir, 'shot' + index + '.' + format.lower())
             glPixelStorei(GL_PACK_ALIGNMENT, 1)
             data = glReadPixels(0, 0, self.width, self.height, GL_RGB, GL_UNSIGNED_BYTE)
             image = Image.fromstring("RGB", (self.width, self.height), data)
-            image = image.transpose( Image.FLIP_TOP_BOTTOM)
+            image = image.transpose(Image.FLIP_TOP_BOTTOM)
             image.save(path, format)
-            print 'Image saved to %s'% (os.path.basename(path))
+            print 'Image saved to %s' % (os.path.basename(path))
         else:
-            self.counter+=1
+            self.counter += 1
         
         self.isCapturing = False
 
 
 if __name__ == '__main__':
-    s=sys.argv[1:]
+    s = sys.argv[1:]
     odeview = ODEViewer(*s)
     odeview.start()
     

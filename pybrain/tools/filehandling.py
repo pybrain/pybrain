@@ -1,7 +1,8 @@
+__author__ = 'Tom Schaul, tom@idsia.ch'
+
+
 import os
 import pickle
-    
-__author__ = 'Tom Schaul, tom@idsia.ch'
 
 
 def getAllFilesIn(dir, tag='', extension='.pickle'):

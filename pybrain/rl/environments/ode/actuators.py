@@ -91,7 +91,7 @@ class JointActuator(Actuator):
                 for _ in range(num):
                     torques.append(action[0])
                     action = action[1:]
-                for _ in range(3-num):
+                for _ in range(3 - num):
                     torques.append(0)
                 (t1, t2, t3) = torques
                 j.addTorques(t1, t2, t3)
@@ -181,10 +181,10 @@ class CopyJointActuator(JointActuator):
                 torques = []
                 for _ in range(num):
                     torques.append(action[0])
-                for _ in range(3-num):
+                for _ in range(3 - num):
                     torques.append(0)
                 (t1, t2, t3) = torques
-                j.addTorques(t1*10, t2*10, t3*10)
+                j.addTorques(t1 * 10, t2 * 10, t3 * 10)
             elif type(j) == ode.HingeJoint:
                 # hinge joints have only one axis to add torque to
                 j.addTorque(action[0])
@@ -197,3 +197,4 @@ class CopyJointActuator(JointActuator):
                 # therefore, you can (must) set a torque but it is not applied
                 # to the joint.
                 pass
+

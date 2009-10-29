@@ -11,8 +11,8 @@ class CCRLEnvironment(ODEEnvironment):
     def __init__(self, xodeFile="ccrlGlas.xode", renderer=True, realtime=False, ip="127.0.0.1", port="21590", buf='16384'):
         ODEEnvironment.__init__(self, renderer, realtime, ip, port, buf)
         # load model file
-        self.pert=asarray([1.0,0.0,0.0])
-        self.loadXODE(imp.find_module('pybrain')[1]+"/rl/environments/ode/models/"+xodeFile)
+        self.pert = asarray([1.0, 0.0, 0.0])
+        self.loadXODE(imp.find_module('pybrain')[1] + "/rl/environments/ode/models/" + xodeFile)
 
         # standard sensors and actuators    
         self.addSensor(sensors.JointSensor())
@@ -20,19 +20,19 @@ class CCRLEnvironment(ODEEnvironment):
         self.addActuator(actuators.JointActuator())
             
         #set act- and obsLength, the min/max angles and the relative max touques of the joints  
-        self.actLen=self.getActionLength()
-        self.obsLen=len(self.getSensors())
+        self.actLen = self.getActionLength()
+        self.obsLen = len(self.getSensors())
         #ArmLeft, ArmRight, Hip, PevelLeft, PevelRight, TibiaLeft, TibiaRight, KneeLeft, KneeRight, FootLeft, FootRight
-        self.tourqueList=array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 0.8, 0.8, 0.8, 0.5, 0.5, 0.1],)
+        self.tourqueList = array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 0.8, 0.8, 0.8, 0.5, 0.5, 0.1],)
         #self.tourqueList=array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],)
-        self.cHighList=array([0.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 0.0, 1.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.9],)
-        self.cLowList=array([-1.0, -1.0, -1.0, -1.5, -1.0, -1.0, -1.0, -0.7, -1.0, 0.0, -1.0, -1.5, -1.0, -1.0, -1.0, 0.0],)
+        self.cHighList = array([0.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 0.0, 1.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.9],)
+        self.cLowList = array([-1.0, -1.0, -1.0, -1.5, -1.0, -1.0, -1.0, -0.7, -1.0, 0.0, -1.0, -1.5, -1.0, -1.0, -1.0, 0.0],)
         self.stepsPerAction = 1
 
     def step(self):
         # Detect collisions and create contact joints
-        self.tableSum=0
-        self.glasSum=0
+        self.tableSum = 0
+        self.glasSum = 0
         ODEEnvironment.step(self)
 
     def _near_callback(self, args, geom1, geom2):
@@ -57,15 +57,15 @@ class CCRLEnvironment(ODEEnvironment):
         tmpStr = geom2.name[:-2]
         handStr = geom1.name[:-1]
         if geom1.name == 'plate' and tmpStr != 'objectP': 
-            self.tableSum+=len(contacts)
+            self.tableSum += len(contacts)
         if tmpStr == 'objectP' and handStr == 'pressLeft': 
-            if len(contacts) > 0: self.glasSum+=1
-        tmpStr=geom1.name[:-2]
+            if len(contacts) > 0: self.glasSum += 1
+        tmpStr = geom1.name[:-2]
         handStr = geom2.name[:-1]
         if geom2.name == 'plate' and tmpStr != 'objectP': 
-            self.tableSum+=len(contacts)
+            self.tableSum += len(contacts)
         if tmpStr == 'objectP' and handStr == 'pressLeft': 
-            if len(contacts) > 0: self.glasSum+=1
+            if len(contacts) > 0: self.glasSum += 1
         
         # Create contact joints
         world, contactgroup = args
@@ -112,15 +112,15 @@ class CCRLEnvironment(ODEEnvironment):
         self.body_geom = [] 
         self._parseBodies(self.root)
 
-        for (body,_) in self.body_geom:
+        for (body, _) in self.body_geom:
             if hasattr(body, 'name'):  
-                tmpStr=body.name[:-2]              
+                tmpStr = body.name[:-2]              
                 if tmpStr == "objectP": 
-                    body.setPosition(body.getPosition()+self.pert)
+                    body.setPosition(body.getPosition() + self.pert)
             
         if self.verbosity > 0:
             print "-------[body/mass list]-----"
-            for (body,_) in self.body_geom:
+            for (body, _) in self.body_geom:
                 try:
                     print body.name, body.getMass()
                 except AttributeError:
@@ -131,10 +131,11 @@ class CCRLEnvironment(ODEEnvironment):
 
     def reset(self):
         ODEEnvironment.reset(self)
-        self.pert=asarray([1.0,0.0,0.0])
+        self.pert = asarray([1.0, 0.0, 0.0])
 
 if __name__ == '__main__' :
     w = CCRLEnvironment() 
     while True:
         w.step()
-        if w.stepCounter==1000: w.reset() 
+        if w.stepCounter == 1000: w.reset() 
+

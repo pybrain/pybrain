@@ -2,7 +2,7 @@ __author__ = 'Michael Isik'
 
 
 from numpy.random import permutation
-from numpy import array,array_split, apply_along_axis, concatenate, ones, dot, delete, append, zeros, argmax
+from numpy import array, array_split, apply_along_axis, concatenate, ones, dot, delete, append, zeros, argmax
 import copy
 from pybrain.datasets.importance import ImportanceDataSet
 from pybrain.datasets.sequential import SequentialDataSet
@@ -28,7 +28,7 @@ class Validator(object):
         output = array(output)
         target = array(target)
         assert len(output) == len(target)
-        n_correct = sum( output == target )
+        n_correct = sum(output == target)
         return float(n_correct) / float(len(output))
 
     @classmethod
@@ -37,10 +37,10 @@ class Validator(object):
             @param output: array of output values
             @param target: array of target values
         """
-        return sum( (output-target)**2 )
+        return sum((output - target) ** 2)
 
     @classmethod
-    def MSE(cls, output, target, importance = None):
+    def MSE(cls, output, target, importance=None):
         """ Returns the mean squared error. The multidimensional arrays will get
             flattened in order to compare them.
             @param output: array of output values
@@ -60,16 +60,16 @@ class Validator(object):
             importance = importance.flatten()
 
         # flatten structures
-        output     = output.flatten()
-        target     = target.flatten()
+        output = output.flatten()
+        target = target.flatten()
 
         if importance is None:
             importance = ones(len(output))
 
 
         # calculate mse
-        squared_error = (output-target)**2
-        mse = dot(squared_error,importance)/sum(importance)
+        squared_error = (output - target) ** 2
+        mse = dot(squared_error, importance) / sum(importance)
 
 
         return mse
@@ -91,7 +91,7 @@ class ClassificationHelper(object):
                          Each vector will be converted to the index of the
                          component with the maximum value.
         """
-        return apply_along_axis( argmax, 1, data )
+        return apply_along_axis(argmax, 1, data)
 
 
 
@@ -109,10 +109,10 @@ class SequenceHelper(object):
             inside dataset.
             @param dataset: Must implement pybrain's SequentialDataSet
         """
-        sequence_ends = delete(dataset.getField('sequence_index')-1,0)
-        sequence_ends = append(sequence_ends, dataset.getLength()-1)
+        sequence_ends = delete(dataset.getField('sequence_index') - 1, 0)
+        sequence_ends = append(sequence_ends, dataset.getLength() - 1)
 #        print sequence_ends; exit()
-        sequence_ends=array(sequence_ends)
+        sequence_ends = array(sequence_ends)
         return sequence_ends
 
     @classmethod
@@ -157,7 +157,7 @@ class ModuleValidator(object):
         return ModuleValidator.validate(
             Validator.classificationPerformance,
             module,
-            dataset )
+            dataset)
 
     @classmethod
     def MSE(cls, module, dataset):
@@ -169,7 +169,7 @@ class ModuleValidator(object):
         return ModuleValidator.validate(
             Validator.MSE,
             module,
-            dataset )
+            dataset)
 
 
     @classmethod
@@ -190,9 +190,9 @@ class ModuleValidator(object):
 
         if isinstance(dataset, ImportanceDataSet):
             importance = dataset.getField('importance')
-            return valfunc( output, target, importance )
+            return valfunc(output, target, importance)
         else:
-            return valfunc( output, target )
+            return valfunc(output, target)
 
 
     @classmethod
@@ -218,11 +218,11 @@ class ModuleValidator(object):
             any type of dataset.
             @param dataset: Any Dataset object containing an 'input' field.
         """
-        if isinstance(dataset,SequentialDataSet) or isinstance(dataset,ImportanceDataSet):
-            return cls._calculateModuleOutputSequential(module,dataset)
+        if isinstance(dataset, SequentialDataSet) or isinstance(dataset, ImportanceDataSet):
+            return cls._calculateModuleOutputSequential(module, dataset)
         else:
             module.reset()
-            input  = dataset.getField('input')
+            input = dataset.getField('input')
             output = array([module.activate(inp) for inp in input])
             return output
 
@@ -258,7 +258,7 @@ class CrossValidator(object):
         self._max_epochs = None
         self.setArgs(**kwargs)
 
-    def setArgs(self,**kwargs):
+    def setArgs(self, **kwargs):
         """ Set the specified member variables.
         @param max_epochs: maximum number of epochs the trainer should train the module for.
         @param verbosity: set verbosity level
@@ -269,21 +269,21 @@ class CrossValidator(object):
             elif key in ("max_epochs"):
                 self._max_epochs = value
 
-    def validate( self ):
+    def validate(self):
         """ The main method of this class. It runs the crossvalidation process
             and returns the validation result (e.g. performance).
         """
         dataset = self._dataset
         trainer = self._trainer
         n_folds = self._n_folds
-        l       = dataset.getLength()
-        inp     = dataset.getField("input")
-        tar     = dataset.getField("target")
-        indim   = dataset.indim
-        outdim  = dataset.outdim
+        l = dataset.getLength()
+        inp = dataset.getField("input")
+        tar = dataset.getField("target")
+        indim = dataset.indim
+        outdim = dataset.outdim
         assert l > n_folds
 
-        perms = array_split( permutation(l), n_folds )
+        perms = array_split(permutation(l), n_folds)
 
         perf = 0.
         for i in range(n_folds):
@@ -292,7 +292,7 @@ class CrossValidator(object):
             train_perms_idxs.pop(i)
             temp_list = []
             for train_perms_idx in train_perms_idxs:
-                temp_list.append( perms[ train_perms_idx ] )
+                temp_list.append(perms[ train_perms_idx ])
             train_idxs = concatenate(temp_list)
 
             # determine test indices
@@ -300,9 +300,9 @@ class CrossValidator(object):
 
             # train
             #print "training iteration", i
-            train_ds = SupervisedDataSet(indim,outdim)
-            train_ds.setField( "input"  , inp[train_idxs] )
-            train_ds.setField( "target" , tar[train_idxs] )
+            train_ds = SupervisedDataSet(indim, outdim)
+            train_ds.setField("input"  , inp[train_idxs])
+            train_ds.setField("target" , tar[train_idxs])
             trainer = copy.deepcopy(self._trainer)
             trainer.setData(train_ds)
             if not self._max_epochs:
@@ -312,11 +312,11 @@ class CrossValidator(object):
 
             # test
             #print "testing iteration", i
-            test_ds = SupervisedDataSet(indim,outdim)
-            test_ds.setField( "input"  , inp[test_idxs] )
-            test_ds.setField( "target" , tar[test_idxs] )
+            test_ds = SupervisedDataSet(indim, outdim)
+            test_ds.setField("input"  , inp[test_idxs])
+            test_ds.setField("target" , tar[test_idxs])
 #            perf += self.getPerformance( trainer.module, dataset )
-            perf += self._calculatePerformance( trainer.module, dataset )
+            perf += self._calculatePerformance(trainer.module, dataset)
 
         perf /= n_folds
         return perf
@@ -348,12 +348,12 @@ def testOnSequenceData(module, dataset):
     determined by first summing the probabilities for each individual sample over 
     the sequence, and then finding its maximum."""
     target = dataset.getField("target")
-    output = ModuleValidator.calculateModuleOutput(module,dataset)
+    output = ModuleValidator.calculateModuleOutput(module, dataset)
 
     # determine last indices of the sequences inside dataset
     ends = SequenceHelper.getSequenceEnds(dataset)
     ##format = "%d"*len(ends)
-    summed_output  = zeros(dataset.outdim)
+    summed_output = zeros(dataset.outdim)
     # class_output and class_target will store class labels instead of
     # one-of-many values
     class_output = []
@@ -365,8 +365,8 @@ def testOnSequenceData(module, dataset):
         # if we reached the end of the sequence
         if j in ends:
             # convert summed_output and target to class labels
-            class_output.append( argmax(summed_output) )
-            class_target.append( argmax(target[j]) )
+            class_output.append(argmax(summed_output))
+            class_target.append(argmax(target[j]))
 
             # reset the summed_output to zeros
             summed_output = zeros(dataset.outdim)

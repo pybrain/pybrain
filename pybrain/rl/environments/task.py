@@ -49,11 +49,11 @@ class Task(object):
             The function scales the parameters to be between -1 and 1. e.g. [(-pi, pi), (0, 1), (-0.001, 0.001)] """
         assert(len(self.sensor_limits) == len(sensors))
         result = []
-        for l,s in zip(self.sensor_limits, sensors):
+        for l, s in zip(self.sensor_limits, sensors):
             if not l:
                 result.append(s)
             else:
-                result.append((s-l[0]) / (l[1]-l[0]) * 2 - 1.0)
+                result.append((s - l[0]) / (l[1] - l[0]) * 2 - 1.0)
         if self.clipping:
             clip(result, -1, 1)
         return asarray(result)  
@@ -63,11 +63,11 @@ class Task(object):
             The function scales the parameters from -1 and 1 to the given interval (min, max) for each actor. """
         assert(len(self.actor_limits) == len(actors))
         result = []
-        for l,a in zip(self.actor_limits, actors):
+        for l, a in zip(self.actor_limits, actors):
             if not l:
                 result.append(a)
             else:
-                r = (a+1.0) / 2 * (l[1]-l[0]) + l[0]
+                r = (a + 1.0) / 2 * (l[1] - l[0]) + l[0]
                 if self.clipping:
                     r = clip(r, l[0], l[1])
                 result.append(r)

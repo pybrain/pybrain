@@ -28,7 +28,7 @@ class CartPoleEnvironment(GraphicalEnvironment):
     
     randomInitialization = True
     
-    def __init__(self, polelength = None):
+    def __init__(self, polelength=None):
         GraphicalEnvironment.__init__(self)
         if polelength != None:
             self.l = polelength
@@ -84,9 +84,9 @@ class CartPoleEnvironment(GraphicalEnvironment):
         mp = self.mp
         mc = self.mc
         l = self.l
-        u_ = (self.g*sin_theta*(mc+mp) - (F + mp*l*theta**2*sin_theta) * cos_theta) / (4/3*l*(mc+mp) - mp*l*cos_theta**2)
+        u_ = (self.g * sin_theta * (mc + mp) - (F + mp * l * theta ** 2 * sin_theta) * cos_theta) / (4 / 3 * l * (mc + mp) - mp * l * cos_theta ** 2)
         v = s_
-        v_ = (F - mp*l * (u_*cos_theta - (s_**2 * sin_theta))) / (mc+mp)     
+        v_ = (F - mp * l * (u_ * cos_theta - (s_ ** 2 * sin_theta))) / (mc + mp)     
         return (u, u_, v, v_)   
     
     def getPoleAngles(self):
@@ -104,23 +104,23 @@ class CartPoleLinEnvironment(CartPoleEnvironment):
     Peters J, Vijayakumar S, Schaal S (2003) Reinforcement learning for humanoid robotics.
     Polelength is fixed, the order of sensors has been changed to the above."""
 
-    tau = 1./60.   # sec
+    tau = 1. / 60.   # sec
 
     def __init__(self, **kwargs):
-        CartPoleEnvironment.__init__(self,**kwargs)
+        CartPoleEnvironment.__init__(self, **kwargs)
         nu = 13.2 #  sec^-2
         tau = self.tau
         
         # linearized movement equations
         self.A = matrix(eye(4))
-        self.A[0,1] = tau
-        self.A[2,3] = tau
-        self.A[1,0] = nu*tau
-        self.b = matrix([0.0, nu*tau/9.80665, 0.0, tau])
+        self.A[0, 1] = tau
+        self.A[2, 3] = tau
+        self.A[1, 0] = nu * tau
+        self.b = matrix([0.0, nu * tau / 9.80665, 0.0, tau])
         
         
     def step(self):
-        self.sensors = random.normal(loc=self.sensors*self.A + self.action*self.b, scale=0.001).flatten()
+        self.sensors = random.normal(loc=self.sensors * self.A + self.action * self.b, scale=0.001).flatten()
         if self.hasRenderer():
             self.getRenderer().updateData(self.sensors)
             if self.delay: 
@@ -129,7 +129,7 @@ class CartPoleLinEnvironment(CartPoleEnvironment):
     def reset(self):
         """ re-initializes the environment, setting the cart back in a random position.
         """
-        self.sensors = random.normal(scale=0.1,size=4)
+        self.sensors = random.normal(scale=0.1, size=4)
 
     def getSensors(self):
         return self.sensors.flatten()

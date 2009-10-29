@@ -17,7 +17,7 @@ class ENAC(PolicyGradientLearner):
         
         # initialize variables
         R = ones((self.dataset.getNumSequences(), 1), float)
-        X = ones((self.dataset.getNumSequences(), self.loglh.getDimension('loglh')+1), float)
+        X = ones((self.dataset.getNumSequences(), self.loglh.getDimension('loglh') + 1), float)
 
         # collect sufficient statistics
         print self.dataset.getNumSequences()
@@ -28,7 +28,7 @@ class ENAC(PolicyGradientLearner):
                 # last sequence until end of dataset
                 loglh = self.loglh['loglh'][seqidx[n]:, :]
             else:
-                loglh = self.loglh['loglh'][seqidx[n]:seqidx[n+1], :]
+                loglh = self.loglh['loglh'][seqidx[n]:seqidx[n + 1], :]
             
             X[n, :-1] = sum(loglh, 0)
             R[n, 0] = sum(reward, 0)

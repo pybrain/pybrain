@@ -134,7 +134,7 @@ class FlexCubeRenderer(object):
                     glRotatef(90, 1, 0, 0)
                     glTranslate(self.worldRadius / 40.0 * float(lk) - self.worldRadius / 2.0, -40.0, -15.0)
                     quad = gluNewQuadric()
-                    gluCylinder(quad, 1, 1, 30, 4, 1);
+                    gluCylinder(quad, 1, 1, 30, 4, 1)
                     glPopMatrix()
                 else:
                     glColor3f(0.75, 0.75, 0.75)

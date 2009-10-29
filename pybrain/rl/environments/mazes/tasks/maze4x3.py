@@ -25,13 +25,13 @@ class FourByThreeMaze(MazeTask):
     
     stochAction = 0.1
         
-    initPos = [(1,1),(1,2),(1,3),(2,1),(3,1),(3,2),(2,3),(3,3),(1,4)]
-    topology = array([[1]*6,
+    initPos = [(1, 1), (1, 2), (1, 3), (2, 1), (3, 1), (3, 2), (2, 3), (3, 3), (1, 4)]
+    topology = array([[1] * 6,
                       [1, 0, 0, 0, 0, 1],
                       [1, 0, 1, 0, 0, 1],
                       [1, 0, 0, 0, 0, 1],
-                      [1]*6,])
-    goal = (3,4)
+                      [1] * 6, ])
+    goal = (3, 4)
         
     def reset(self):
         MazeTask.reset(self)
@@ -42,7 +42,7 @@ class FourByThreeMaze(MazeTask):
         for a in range(self.actions): 
             if action - a % 4 != 2: 
                 poss.append(a)        
-        if random() < self.stochAction*len(poss):
+        if random() < self.stochAction * len(poss):
             MazeTask.performAction(self, choice(poss))
         else:
             MazeTask.performAction(self, action)

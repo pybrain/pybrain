@@ -4,6 +4,7 @@ from OpenGL.GL import * #@UnusedWildImport
 from OpenGL.GLU import * #@UnusedWildImport
 import math
 
+
 class Objects3D:
     def normale(self, vect, centerOfGrav):
         vect = self.dumpVect(vect, 1.0 / 4.0)

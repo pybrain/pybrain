@@ -65,8 +65,8 @@ class SimpleRenderer(Renderer):
         self.line.set_clip_box(axes.bbox) 
         
         # set axes limits
-        axes.set_xlim(min(xvalues)-0.5, max(xvalues)+0.5)
-        axes.set_ylim(min(yvalues)-0.5, max(yvalues)+0.5)
+        axes.set_xlim(min(xvalues) - 0.5, max(xvalues) + 0.5)
+        axes.set_ylim(min(yvalues) - 0.5, max(yvalues) + 0.5)
         
     def _render(self): 
         while not self.stopRequest:
@@ -79,3 +79,4 @@ class SimpleRenderer(Renderer):
 
             time.sleep(0.05)
         self.stopRequest = False
+

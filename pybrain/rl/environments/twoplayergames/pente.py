@@ -15,7 +15,7 @@ class PenteGame(GomokuGame):
     def reset(self):
         GomokuGame.reset(self)
         self.pairsTaken = {self.BLACK: 0, self.WHITE: 0}    
-        center = (self.size[0]/2, self.size[1]/2)
+        center = (self.size[0] / 2, self.size[1] / 2)
         self._setStone(-self.startcolor, center)
         self.movesDone += 1         
         
@@ -24,18 +24,18 @@ class PenteGame(GomokuGame):
         res = GomokuGame.getKilling(self, c)
         for p in self.getLegals(c):
             k = self._killsWhich(c, p)
-            if self.pairsTaken[c] + len(k)/2 >= 5:
+            if self.pairsTaken[c] + len(k) / 2 >= 5:
                 res.append(p) 
         return res    
 
     def _killsWhich(self, c, pos):
         """ placing a stone of color c at pos would kill which enemy stones? """
         res = []
-        for dir in [(0,1), (1,0), (1,1), (1,-1)]:
+        for dir in [(0, 1), (1, 0), (1, 1), (1, -1)]:
             for d in [-1, 1]:
                 killcands = []
-                for i in [1,2,3]:
-                    next = (pos[0]+dir[0]*i*d, pos[1]+dir[1]*i*d)
+                for i in [1, 2, 3]:
+                    next = (pos[0] + dir[0] * i * d, pos[1] + dir[1] * i * d)
                     if (next[0] < 0 or next[0] >= self.size[0]
                         or next[1] < 0 or next[1] >= self.size[1]):
                         break
@@ -59,29 +59,29 @@ class PenteGame(GomokuGame):
             return True        
         else:           
             tokill = self._killsWhich(c, pos)
-            if self.pairsTaken[c] +len(tokill)/2 >= 5:
+            if self.pairsTaken[c] + len(tokill) / 2 >= 5:
                 self.winner = c
                 self.b[pos] = 'x' 
                 return True 
             
             self._setStone(c, pos, tokill)     
             if self.movesDone == (self.size[0] * self.size[1] 
-                                  +2*(self.pairsTaken[self.BLACK]+self.pairsTaken[self.WHITE])):
+                                  + 2 * (self.pairsTaken[self.BLACK] + self.pairsTaken[self.WHITE])):
                 # DRAW
                 self.winner = self.DRAW
             return True
         
-    def _setStone(self, c, pos, tokill = None):
+    def _setStone(self, c, pos, tokill=None):
         """ set stone, and potentially kill stones. """
         if tokill == None:
             tokill = self._killsWhich(c, pos)
         GomokuGame._setStone(self, c, pos)
         for p in tokill:
             self.b[p] = self.EMPTY
-        self.pairsTaken[c] += len(tokill)/2
+        self.pairsTaken[c] += len(tokill) / 2
 
     def __str__(self):
         s = GomokuGame.__str__(self)
-        s += 'Black captured:'+str(self.pairsTaken[self.BLACK])+', white captured:'+str(self.pairsTaken[self.WHITE])+'.'
+        s += 'Black captured:' + str(self.pairsTaken[self.BLACK]) + ', white captured:' + str(self.pairsTaken[self.WHITE]) + '.'
         return s
     

@@ -16,7 +16,7 @@ class SimpleraceEnvironment(Environment):
     indim = 2
     outdim = 7
     
-    def __init__(self, host = "127.0.0.1", port = 6524):
+    def __init__(self, host="127.0.0.1", port=6524):
         self.theSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.theSocket.connect((host, port))
         self.step = 0
@@ -63,7 +63,7 @@ class SimpleraceEnvironment(Environment):
         while len (data) < 2:    
             data = self.theSocket.recv(1000)
         #print "received", data
-        inputs=string.split(str(data), " ")
+        inputs = string.split(str(data), " ")
         if (inputs[0][:5] == "reset"):
             print "Should we reset the scores here?"
             self.reset ()
@@ -107,4 +107,4 @@ class SimpleraceEnvironment(Environment):
         self.waitOne = False  
     
     def euclideanDistance(self, firstPoint, secondPoint):
-        return sqrt ((firstPoint[0] - secondPoint[0])**2 + (firstPoint[1] - secondPoint[1])**2)
+        return sqrt ((firstPoint[0] - secondPoint[0]) ** 2 + (firstPoint[1] - secondPoint[1]) ** 2)

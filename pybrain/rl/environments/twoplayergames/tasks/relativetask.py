@@ -50,8 +50,8 @@ class RelativeCaptureTask(CaptureGameTask):
     def __call__(self, p1, p2):
         self.temp = self.minTemperature
         if self.useNetworks:
-            p1 = ModuleDecidingPlayer(p1, self.task.env, temperature = self.temp)
-            p2 = ModuleDecidingPlayer(p2, self.task.env, temperature = self.temp)
+            p1 = ModuleDecidingPlayer(p1, self.task.env, temperature=self.temp)
+            p2 = ModuleDecidingPlayer(p2, self.task.env, temperature=self.temp)
         else:
             assert isinstance(p1, CapturePlayer)
             assert isinstance(p2, CapturePlayer)
@@ -65,13 +65,13 @@ class RelativeCaptureTask(CaptureGameTask):
         # the games with increasing temperatures and lower coefficients
         coeffSum = 0.
         score = 0.
-        np = int(self.cases * (1-self.presetGamesProportion))
+        np = int(self.cases * (1 - self.presetGamesProportion))
         for i in range(self.maxGames):
-            coeff = 1/(10*self.temp+1)
+            coeff = 1 / (10 * self.temp + 1)
             preset = None
             if self.cases > 1:
                 if i % self.cases >= np:
-                    preset = self.sPos[(i-np) % self.cases]
+                    preset = self.sPos[(i - np) % self.cases]
                 elif i < self.cases:
                     # greedy, no need to repeat, just increase the coefficient
                     if i == 0:
@@ -107,7 +107,7 @@ class RelativeCaptureTask(CaptureGameTask):
             return True
         elif hasattr(self.opponent, 'randomPartMoves'):
             # an approximate conversion of temperature into random proportion:
-            randPart = self.temp/(self.temp+1)
+            randPart = self.temp / (self.temp + 1)
             self.opponent.randomPartMoves = randPart
             self.player.randomPartMoves = randPart
             return True
@@ -119,12 +119,12 @@ class RelativeCaptureTask(CaptureGameTask):
         res = []
         if self.size < 3:
             return res
-        for x in range(1, (self.size+1)/2):
-            for y in range(x, (self.size+1)/2):
-                res.append((x,y))
+        for x in range(1, (self.size + 1) / 2):
+            for y in range(x, (self.size + 1) / 2):
+                res.append((x, y))
         return res
             
-    def _oneGame(self, preset = None):
+    def _oneGame(self, preset=None):
         """ a single black stone can be set as the first move. """
         self.env.reset()
         if preset != None:
@@ -137,24 +137,24 @@ class RelativeCaptureTask(CaptureGameTask):
         win = self.env.winner == self.player.color
         if self.verbose:
             print 'Preset:', preset, 'T:', self.temp, 'Win:', win, 'after', moves, 'moves.'
-        res = 1 - self.numMovesCoeff * (moves -self.minmoves)/(self.maxmoves-self.minmoves)
+        res = 1 - self.numMovesCoeff * (moves - self.minmoves) / (self.maxmoves - self.minmoves)
         if win:
             return res
         else:
-            return -res
+            return - res
         
     
 if __name__ == '__main__':
     assert RelativeCaptureTask(5)._fixedStartingPos() == [(1, 1), (1, 2), (2, 2)]
     assert RelativeCaptureTask(8)._fixedStartingPos() == [(1, 1), (1, 2), (1, 3), (2, 2), (2, 3), (3, 3)]
     
-    net1 = CaptureGameNetwork(hsize = 1)
-    net2 = CaptureGameNetwork(hsize = 1)
+    net1 = CaptureGameNetwork(hsize=1)
+    net2 = CaptureGameNetwork(hsize=1)
     #print net1.params
     #print net2.params
     
-    r = RelativeCaptureTask(5, maxGames = 40, useNetworks = True, 
-                            presetGamesProportion = 0.5)
+    r = RelativeCaptureTask(5, maxGames=40, useNetworks=True,
+                            presetGamesProportion=0.5)
     
     print r(net1, net2)
     print r(net2, net1)
@@ -163,3 +163,4 @@ if __name__ == '__main__':
     print r(net2, net1)
     
     
+

@@ -29,7 +29,7 @@ class Trainer(Named):
         self.setData(dataset)
         self.trainEpochs(*args, **kwargs)
         
-    def trainEpochs(self, epochs = 1, *args, **kwargs):
+    def trainEpochs(self, epochs=1, *args, **kwargs):
         """Train on the current dataset for the given number of `epochs`. 
         
         Additional arguments are passed on to the train method."""

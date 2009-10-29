@@ -15,23 +15,23 @@ class EvolinoNetwork(Module):
     def __init__(self, indim, outdim, hiddim=6):
         Module.__init__(self, indim, outdim)
 
-        self._network   = Network()
-        self._in_layer  = LinearLayer(indim+outdim)
+        self._network = Network()
+        self._in_layer = LinearLayer(indim + outdim)
         self._hid_layer = LSTMLayer(hiddim)
         self._out_layer = LinearLayer(outdim)
-        self._bias      = BiasUnit()
+        self._bias = BiasUnit()
 
-        self._network.addInputModule( self._in_layer )
+        self._network.addInputModule(self._in_layer)
         self._network.addModule(self._hid_layer)
         self._network.addModule(self._bias)
         self._network.addOutputModule(self._out_layer)
 
 
-        self._hid_to_out_connection = FullConnection( self._hid_layer , self._out_layer )
-        self._in_to_hid_connection  = FullConnection( self._in_layer  , self._hid_layer )
-        self._network.addConnection( self._hid_to_out_connection )
-        self._network.addConnection( self._in_to_hid_connection  )
-        self._network.addConnection( FullConnection( self._bias, self._hid_layer ) )
+        self._hid_to_out_connection = FullConnection(self._hid_layer , self._out_layer)
+        self._in_to_hid_connection = FullConnection(self._in_layer  , self._hid_layer)
+        self._network.addConnection(self._hid_to_out_connection)
+        self._network.addConnection(self._in_to_hid_connection)
+        self._network.addConnection(FullConnection(self._bias, self._hid_layer))
 
         self._network.sortModules()
 
@@ -43,17 +43,17 @@ class EvolinoNetwork(Module):
 
 
     def _washout(self, input, target, first_idx=None, last_idx=None):
-        assert self.indim  == len(input[0])
+        assert self.indim == len(input[0])
         assert self.outdim == len(target[0])
-        assert len(input)  == len(target)
+        assert len(input) == len(target)
 
         if first_idx is None: first_idx = 0
-        if last_idx  is None: last_idx = len(target)-1
+        if last_idx  is None: last_idx = len(target) - 1
         raw_outputs = []
-        for i in xrange(first_idx, last_idx+1):
+        for i in xrange(first_idx, last_idx + 1):
             backprojection = self._getLastOutput()
             backprojection *= self.backprojectionFactor
-            full_inp = self._createFullInput( input[i], backprojection )
+            full_inp = self._createFullInput(input[i], backprojection)
             self._activateNetwork(full_inp)
             raw_out = self._getRawOutput()
 #            print "RAWOUT: ", full_inp, " --> ", raw_out, self._getLastOutput()
@@ -85,9 +85,9 @@ class EvolinoNetwork(Module):
         return out
 
 
-    def calculateOutput(self, dataset, washout_calculation_ratio=(1,2)):
-        washout_calculation_ratio=array(washout_calculation_ratio,float)
-        ratio = washout_calculation_ratio/sum(washout_calculation_ratio)
+    def calculateOutput(self, dataset, washout_calculation_ratio=(1, 2)):
+        washout_calculation_ratio = array(washout_calculation_ratio, float)
+        ratio = washout_calculation_ratio / sum(washout_calculation_ratio)
 
         # iterate through all sequences
         collected_input = None
@@ -96,13 +96,13 @@ class EvolinoNetwork(Module):
         for i in range(dataset.getNumSequences()):
 
             seq = dataset.getSequence(i)
-            input  = seq[0]
+            input = seq[0]
             target = seq[1]
 
-            washout_steps = int( len(input) * ratio[0] )
+            washout_steps = int(len(input) * ratio[0])
 
-            washout_input      = input  [               : washout_steps ]
-            washout_target     = target [               : washout_steps ]
+            washout_input = input  [               : washout_steps ]
+            washout_target = target [               : washout_steps ]
             calculation_target = target [ washout_steps :               ]
 
 
@@ -115,7 +115,7 @@ class EvolinoNetwork(Module):
 
             # collect calculation data
             outputs = []
-            inputs  = []
+            inputs = []
 #            for i in xrange(washout_steps, len(input)):
             for inp in input[washout_steps:]:
                 out = self.activate(inp)
@@ -126,25 +126,25 @@ class EvolinoNetwork(Module):
 
             # collect output and targets
             if collected_input is not None:
-                collected_input = append( collected_input, inputs, axis=0 )
+                collected_input = append(collected_input, inputs, axis=0)
             else:
                 collected_input = array(inputs)
 #            print collected_input; exit()
 
             if collected_output is not None:
-                collected_output = append( collected_output, outputs, axis=0 )
+                collected_output = append(collected_output, outputs, axis=0)
             else:
                 collected_output = array(outputs)
 
             if collected_target is not None:
-                collected_target = append( collected_target, calculation_target, axis=0 )
+                collected_target = append(collected_target, calculation_target, axis=0)
             else:
                 collected_target = calculation_target
 
         return collected_input, collected_output, collected_target
 
     def _createFullInput(self, input, output):
-        if self.indim>0:
+        if self.indim > 0:
             return append(input, output)
         else:
             return array(output)
@@ -155,10 +155,10 @@ class EvolinoNetwork(Module):
         if self.time == 0:
             return zeros(self.outdim)
         else:
-            return self._out_layer.outputbuffer[self.time-1]
+            return self._out_layer.outputbuffer[self.time - 1]
 
     def _setLastOutput(self, output):
-        self._out_layer.outputbuffer[self.time-1][:] = output
+        self._out_layer.outputbuffer[self.time - 1][:] = output
 
 
     # ======================================================== Genome related ===
@@ -167,7 +167,7 @@ class EvolinoNetwork(Module):
     def _validateGenomeLayer(self, layer):
         """ Validates the type and state of a layer
         """
-        assert isinstance(layer,LSTMLayer)
+        assert isinstance(layer, LSTMLayer)
         assert not layer.peepholes
 
 
@@ -207,7 +207,7 @@ class EvolinoNetwork(Module):
                     c.params[ cell_idx + 2 * dim ],
                     c.params[ cell_idx + 3 * dim ] ]
 
-            layer_weights.append( cell_weights )
+            layer_weights.append(cell_weights)
         return layer_weights
 
 
@@ -250,7 +250,7 @@ class EvolinoNetwork(Module):
         """
         c = self._hid_to_out_connection
         p = c.getParameters()
-        return reshape( p, (c.outdim, c.indim) )
+        return reshape(p, (c.outdim, c.indim))
 
 
 
@@ -261,7 +261,7 @@ class EvolinoNetwork(Module):
             the weight matrix W of the full connection between this layer
             and the output layer.
         """
-        return copy(self._hid_layer.outputbuffer[self.time-1])
+        return copy(self._hid_layer.outputbuffer[self.time - 1])
 
 
 
@@ -275,9 +275,9 @@ class EvolinoNetwork(Module):
     def _getInputConnectionsOfLayer(self, layer):
         """ Returns a list of all input connections for the layer. """
         connections = []
-        for c in sum( self._network.connections.values(), [] ):
+        for c in sum(self._network.connections.values(), []):
             if c.outmod is layer:
-                if not isinstance( c, FullConnection ):
+                if not isinstance(c, FullConnection):
                     raise NotImplementedError("At the time there is only support for FullConnection")
                 connections.append(c)
         return connections
@@ -297,7 +297,7 @@ class EvolinoNetwork(Module):
 
 
 from numpy import reshape
-from copy  import copy,deepcopy
+from copy  import copy, deepcopy
 
 
 class NetworkWrapper(object):
@@ -332,8 +332,8 @@ class NetworkWrapper(object):
         """ @param network: The network to be wrapped
         """
         self.network = network
-        self._output_connection  = None
-        self._last_hidden_layer  = None
+        self._output_connection = None
+        self._last_hidden_layer = None
         self._first_hidden_layer = None
         self._establishRecurrence()
 
@@ -345,10 +345,10 @@ class NetworkWrapper(object):
         """ Adds a recurrent full connection from the output layer to the first
             hidden layer.
         """
-        network   = self.network
-        outlayer  = self.getOutputLayer()
+        network = self.network
+        outlayer = self.getOutputLayer()
         hid1layer = self.getFirstHiddenLayer()
-        network.addRecurrentConnection( FullConnection( outlayer, hid1layer ) )
+        network.addRecurrentConnection(FullConnection(outlayer, hid1layer))
 
 
     # ======================================================== Genome related ===
@@ -357,7 +357,7 @@ class NetworkWrapper(object):
     def _validateGenomeLayer(self, layer):
         """ Validates the type and state of a layer
         """
-        assert isinstance(layer,LSTMLayer)
+        assert isinstance(layer, LSTMLayer)
         assert not layer.peepholes
 
 
@@ -365,7 +365,7 @@ class NetworkWrapper(object):
         """ Returns the Genome of the network.
             See class description for more details.
         """
-        weights=[]
+        weights = []
         for layer in self.getHiddenLayers():
             if isinstance(layer, LSTMLayer):
 #                 if layer is not self._recurrence_layer:
@@ -404,7 +404,7 @@ class NetworkWrapper(object):
                     c.getParameters()[ cell_idx + 2 * dim ],
                     c.getParameters()[ cell_idx + 3 * dim ] ]
 
-            layer_weights.append( cell_weights )
+            layer_weights.append(cell_weights)
         return layer_weights
 
 
@@ -446,7 +446,7 @@ class NetworkWrapper(object):
         """
         c = self.getOutputConnection()
         p = c.getParameters()
-        return reshape( p, (c.outdim, c.indim) )
+        return reshape(p, (c.outdim, c.indim))
 
 
     def injectBackproject(self, injection):
@@ -456,7 +456,7 @@ class NetworkWrapper(object):
             @param injection: vector of length self.network.outdim
         """
         outlayer = self.getOutputLayer()
-        outlayer.outputbuffer[self.network.time-1][:] = injection
+        outlayer.outputbuffer[self.network.time - 1][:] = injection
 
 
     def _getRawOutput(self):
@@ -465,7 +465,7 @@ class NetworkWrapper(object):
             the weight matrix W of the full connection between this layer
             and the output layer.
         """
-        return copy(self.getLastHiddenLayer().outputbuffer[self.network.time-1])
+        return copy(self.getLastHiddenLayer().outputbuffer[self.network.time - 1])
 
 
     # ====================================================== Topology Helper ===
@@ -473,7 +473,7 @@ class NetworkWrapper(object):
 
     def getOutputLayer(self):
         """ Returns the output layer """
-        assert len(self.network.outmodules)==1
+        assert len(self.network.outmodules) == 1
         return self.network.outmodules[0]
 
 
@@ -481,7 +481,7 @@ class NetworkWrapper(object):
     def getOutputConnection(self):
         """ Returns the input connection of the output layer. """
         if self._output_connection is None:
-            outlayer  = self.getOutputLayer()
+            outlayer = self.getOutputLayer()
             lastlayer = self.getLastHiddenLayer()
             for c in self.getConnections():
                 if c.outmod is outlayer:
@@ -502,7 +502,7 @@ class NetworkWrapper(object):
 #                    print c.inmod
                     layers.append(c.inmod)
 
-            assert len(layers)==1
+            assert len(layers) == 1
             self._last_hidden_layer = layers[0]
         return self._last_hidden_layer
 
@@ -517,7 +517,7 @@ class NetworkWrapper(object):
                 if c.inmod is inlayer:
                     layers.append(c.outmod)
 
-            assert len(layers)==1
+            assert len(layers) == 1
             self._first_hidden_layer = layers[0]
         return self._first_hidden_layer
 
@@ -525,19 +525,19 @@ class NetworkWrapper(object):
 
     def getConnections(self):
         """ Returns a list of all connections. """
-        return sum( self.network.connections.values(), [] )
+        return sum(self.network.connections.values(), [])
 
     def getInputLayer(self):
         """ Returns the input layer. """
-        assert len(self.network.inmodules)==1
+        assert len(self.network.inmodules) == 1
         return self.network.inmodules[0]
 
     def _getInputConnectionsOfLayer(self, layer):
         """ Returns a list of all input connections for the layer. """
         connections = []
-        for c in sum( self.network.connections.values(), [] ):
+        for c in sum(self.network.connections.values(), []):
             if c.outmod is layer:
-                if not isinstance( c, FullConnection ):
+                if not isinstance(c, FullConnection):
                     raise NotImplementedError("At the time there is only support for FullConnection")
                 connections.append(c)
         return connections

@@ -50,8 +50,8 @@ class FiniteDifferences(ContinuousOptimizer):
         for i in range(self.batchSize):
             deltas = self.perturbation()
             x = self.current + deltas
-            D[i,:] = deltas
-            R[i,:] = self._oneEvaluation(x)        
+            D[i, :] = deltas
+            R[i, :] = self._oneEvaluation(x)        
         beta = dot(pinv(D), R)        
         gradient = ravel(beta)
         

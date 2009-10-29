@@ -53,11 +53,11 @@ class NeuronDecomposableNetwork(object):
             if isinstance(x, FullConnection):
                 for w in range(x.paramdim):
                     inbuf, outbuf = x.whichBuffers(w)
-                    self.paramInfo[index+w] = ((x.inmod, x.inmod.whichNeuron(outputIndex = inbuf)),
-                                               (x.outmod, x.outmod.whichNeuron(inputIndex = outbuf)))
+                    self.paramInfo[index + w] = ((x.inmod, x.inmod.whichNeuron(outputIndex=inbuf)),
+                                               (x.outmod, x.outmod.whichNeuron(inputIndex=outbuf)))
             elif isinstance(x, NeuronLayer):
                 for n in range(x.paramdim):
-                    self.paramInfo[index+n] = ((x,n),(x,n))
+                    self.paramInfo[index + n] = ((x, n), (x, n))
             else:
                 raise
             index += x.paramdim
@@ -91,7 +91,7 @@ class NeuronDecomposableNetwork(object):
         if isinstance(n, RecurrentNetwork):
             res = RecurrentDecomposableNetwork()
             for c in n.recurrentConns:
-                    res.addRecurrentConnection(c)
+                res.addRecurrentConnection(c)
         else:
             res = FeedForwardDecomposableNetwork()
         for m in n.inmodules:

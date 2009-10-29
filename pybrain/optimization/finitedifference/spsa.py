@@ -20,7 +20,7 @@ class SimpleSPSA(FiniteDifferences):
 
     def perturbation(self):
         # generates a uniform difference vector with the given epsilon
-        deltas = (random.randint(0,2,self.numParameters)*2-1)*self.epsilon
+        deltas = (random.randint(0, 2, self.numParameters) * 2 - 1) * self.epsilon
         # reduce epsilon by factor gamma
         # as another simplification we let the exploration just decay with gamma. 
         # Is similar to the decreasing exploration in SPSA but simpler.        
@@ -35,22 +35,23 @@ class SimpleSPSA(FiniteDifferences):
         reward1 = self._oneEvaluation(self.current + deltas)        
         reward2 = self._oneEvaluation(self.current - deltas)
         
-        self.mreward=(reward1+reward2)/2.                
+        self.mreward = (reward1 + reward2) / 2.                
         if self.baseline is None: 
             # first learning step
-            self.baseline=self.mreward*0.99
-            fakt=0.      
+            self.baseline = self.mreward * 0.99
+            fakt = 0.      
         else: 
             #calc the gradients
-            if reward1!=reward2:
+            if reward1 != reward2:
                 #gradient estimate alla SPSA but with likelihood gradient and normalization (see also "update parameters")
-                fakt=(reward1-reward2)/(2.0*self.bestEvaluation-reward1-reward2) 
+                fakt = (reward1 - reward2) / (2.0 * self.bestEvaluation - reward1 - reward2) 
             else: 
-                fakt=0.0
-        self.baseline=0.9*self.baseline+0.1*self.mreward #update baseline
+                fakt = 0.0
+        self.baseline = 0.9 * self.baseline + 0.1 * self.mreward #update baseline
             
         # update parameters
         # as a simplification we use alpha = alpha * epsilon**2 for decaying the stepsize instead of the usual use method from SPSA
         # resulting in the same update rule like for PGPE
-        self.current = self.gd(fakt*self.epsilon*self.epsilon/deltas)
+        self.current = self.gd(fakt * self.epsilon * self.epsilon / deltas)
         
+

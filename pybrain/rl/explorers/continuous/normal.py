@@ -16,13 +16,13 @@ class NormalExplorer(Explorer, ParameterContainer):
         to the expln() function (see pybrain.tools.functions).
     """
     
-    def __init__(self, dim, sigma = 0.):
-            Explorer.__init__(self, dim, dim)
-            self.dim = dim
-            
-            # initialize parameters to sigma
-            ParameterContainer.__init__(self, dim, stdParams = 0)
-            self.sigma = [sigma]*dim
+    def __init__(self, dim, sigma=0.):
+        Explorer.__init__(self, dim, dim)
+        self.dim = dim
+        
+        # initialize parameters to sigma
+        ParameterContainer.__init__(self, dim, stdParams=0)
+        self.sigma = [sigma] * dim
 
     def _setSigma(self, sigma):
         """ Wrapper method to set the sigmas (the parameters of the module) to a
@@ -42,7 +42,7 @@ class NormalExplorer(Explorer, ParameterContainer):
 
     def _backwardImplementation(self, outerr, inerr, outbuf, inbuf):
         expln_sigma = expln(self.sigma)
-        self._derivs += ((outbuf - inbuf)**2 - expln_sigma**2) / expln_sigma * explnPrime(self.sigma)
+        self._derivs += ((outbuf - inbuf) ** 2 - expln_sigma ** 2) / expln_sigma * explnPrime(self.sigma)
         inerr[:] = (outbuf - inbuf)
         
         # auto-alpha 

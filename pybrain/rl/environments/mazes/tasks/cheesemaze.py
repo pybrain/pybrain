@@ -17,12 +17,12 @@ class CheeseMaze(MazeTask):
     observations = 7
     discount = 0.95
     
-    topology = array([[1]*7,
+    topology = array([[1] * 7,
                       [1, 0, 1, 0, 1, 0, 1],
                       [1, 0, 1, 0, 1, 0, 1],
                       [1, 0, 0, 0, 0, 0, 1],
-                      [1]*7])
-    goal = (1,3)
+                      [1] * 7])
+    goal = (1, 3)
         
     def getObservation(self):
         """ observations are encoded in a 1-n encoding of possible wall combinations. """

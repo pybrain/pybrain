@@ -23,3 +23,4 @@ def runModuleTestSuite(module):
         pass
 
     TextTestRunner().run(suite)
+

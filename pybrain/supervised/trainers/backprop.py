@@ -1,4 +1,3 @@
-# $Id$
 __author__ = 'Daan Wierstra and Tom Schaul'
 
 from scipy import dot, argmax
@@ -14,8 +13,8 @@ class BackpropTrainer(Trainer):
     supervised dataset (potentially sequential) by backpropagating the errors
     (through time)."""
         
-    def __init__(self, module, dataset=None, learningrate=0.01, lrdecay=1.0, 
-                 momentum = 0., verbose=False, batchlearning=False, 
+    def __init__(self, module, dataset=None, learningrate=0.01, lrdecay=1.0,
+                 momentum=0., verbose=False, batchlearning=False,
                  weightdecay=0.):
         """Create a BackpropTrainer to train the specified `module` on the 
         specified `dataset`.
@@ -68,12 +67,12 @@ class BackpropTrainer(Trainer):
                 self.module.resetDerivatives()
 
         if self.verbose:
-            print "Total error:", errors/ponderation
+            print "Total error:", errors / ponderation
         if self.batchlearning:
             self.module._setParameters(self.descent(self.module.derivs))
         self.epoch += 1
         self.totalepochs += 1
-        return errors/ponderation
+        return errors / ponderation
         
     
     def _calcDerivs(self, seq):
@@ -91,11 +90,11 @@ class BackpropTrainer(Trainer):
             outerr = target - self.module.outputbuffer[offset]
             if len(sample) > 2:
                 importance = sample[2]
-                error += 0.5 * dot(importance, outerr**2)
+                error += 0.5 * dot(importance, outerr ** 2)
                 ponderation += sum(importance)
-                self.module.backActivate(outerr*importance)                
+                self.module.backActivate(outerr * importance)                
             else:
-                error += 0.5 * sum(outerr**2)
+                error += 0.5 * sum(outerr ** 2)
                 ponderation += len(target)
                 # FIXME: the next line keeps arac from producing NaNs. I don't
                 # know why that is, but somehow the __str__ method of the 
@@ -120,9 +119,9 @@ class BackpropTrainer(Trainer):
                 storedoldval = self.module.params[p]
                 self.module.params[p] += e
                 righterror, dummy = self._calcDerivs(seq)
-                self.module.params[p] -= 2*e
+                self.module.params[p] -= 2 * e
                 lefterror, dummy = self._calcDerivs(seq)
-                approxderiv = (righterror-lefterror)/(2*e)
+                approxderiv = (righterror - lefterror) / (2 * e)
                 self.module.params[p] = storedoldval
                 numericalDerivs.append(approxderiv)
             r = zip(analyticalDerivs, numericalDerivs)
@@ -149,18 +148,18 @@ class BackpropTrainer(Trainer):
             e, i = dataset._evaluateSequence(self.module.activate, seq, verbose)
             importances.append(i)
             errors.append(e)
-            ponderatedErrors.append(e/i)
+            ponderatedErrors.append(e / i)
         if verbose:
             print 'All errors:', ponderatedErrors
         assert sum(importances) > 0
-        avgErr = sum(errors)/sum(importances)
+        avgErr = sum(errors) / sum(importances)
         if verbose:
             print 'Average error:', avgErr
-            print ('Max error:', max(ponderatedErrors), 'Median error:', 
-                   sorted(ponderatedErrors)[len(errors)/2])
+            print ('Max error:', max(ponderatedErrors), 'Median error:',
+                   sorted(ponderatedErrors)[len(errors) / 2])
         return avgErr
                 
-    def testOnClassData(self, dataset=None, verbose=False, 
+    def testOnClassData(self, dataset=None, verbose=False,
                         return_targets=False):
         """Return winner-takes-all classification output on a given dataset. 
         
@@ -207,9 +206,9 @@ class BackpropTrainer(Trainer):
         # validation.
         trainingData, validationData = (
             dataset.splitWithProportion(1 - validationProportion))
-        if not (len(trainingData) >0 and len(validationData)):
-            raise ValueError("Provided dataset too small to be split into training "+
-                             "and validation sets with proportion "+str(validationProportion))
+        if not (len(trainingData) > 0 and len(validationData)):
+            raise ValueError("Provided dataset too small to be split into training " + 
+                             "and validation sets with proportion " + str(validationProportion))
         self.ds = trainingData
         bestweights = self.module.params.copy()
         bestverr = self.testOnData(validationData)
@@ -228,10 +227,10 @@ class BackpropTrainer(Trainer):
                 break
             epochs += 1
             
-            if len(validationErrors) >= continueEpochs*2:
+            if len(validationErrors) >= continueEpochs * 2:
                 # have the validation errors started going up again?
                 # compare the average of the last few to the previous few
-                old = validationErrors[-continueEpochs*2:-continueEpochs]
+                old = validationErrors[-continueEpochs * 2:-continueEpochs]
                 new = validationErrors[-continueEpochs:]
                 if min(new) > max(old):
                     self.module.params[:] = bestweights

@@ -20,9 +20,9 @@ class EvolinoIndividual(Individual):
         """ Returns the genome created by concatenating the chromosomes supplied
             by the sub-individuals.
         """
-        genome=[]
+        genome = []
         for sub_individual in self._sub_individuals:
-            genome.append( deepcopy(sub_individual.getGenome()) )
+            genome.append(deepcopy(sub_individual.getGenome()))
         return genome
 
     def getSubIndividuals(self):
@@ -57,7 +57,7 @@ class EvolinoSubIndividual(Individual):
 
     def __copy__(self):
         """ Returns a complete copy of the individual. """
-        return EvolinoSubIndividual( deepcopy(self._genome) )
+        return EvolinoSubIndividual(deepcopy(self._genome))
 
 
 

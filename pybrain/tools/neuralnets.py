@@ -31,26 +31,26 @@ class NNtools(object):
         @param epoinc: number of epochs to train for, before checking convergence (default: 5)
         """
         self.DS = DS
-        self.hidden=10 
-        self.maxepochs=1000
-        self.Graph=None
-        self.TDS=None
-        self.VDS=None
+        self.hidden = 10 
+        self.maxepochs = 1000
+        self.Graph = None
+        self.TDS = None
+        self.VDS = None
         self.epoinc = 5  
-        setAllArgs( self, kwargs)
+        setAllArgs(self, kwargs)
         self.trainCurve = None
         
         
-    def initGraphics(self, ymax=10, xmax=-1):
+    def initGraphics(self, ymax=10, xmax= -1):
         """ initialize the interactive graphics output window, and return a handle to the plot """
-        if xmax<0:
+        if xmax < 0:
             xmax = self.maxepochs
-        figure(figsize=[12,8])
+        figure(figsize=[12, 8])
         ion()
         draw()
         #self.Graph = MultilinePlotter(autoscale=1.2 ) #xlim=[0, self.maxepochs], ylim=[0, ymax])
         self.Graph = MultilinePlotter(xlim=[0, xmax], ylim=[0, ymax])
-        self.Graph.setLineStyle([0,1],linewidth=2)
+        self.Graph.setLineStyle([0, 1], linewidth=2)
         return self.Graph
     
 
@@ -59,22 +59,22 @@ class NNtools(object):
         setAllArgs(self, kwargs)
 
 
-    def saveTrainingCurve(self,learnfname):
+    def saveTrainingCurve(self, learnfname):
         """ save the training curves into a file with the given name (CSV format) """
-        logging.info('Saving training curves into '+learnfname)
+        logging.info('Saving training curves into ' + learnfname)
         if self.trainCurve is None:
             logging.error('No training curve available for saving!')
         learnf = open(learnfname, "wb")
         writer = csv.writer(learnf, dialect='excel')
         nDataSets = len(self.trainCurve)
-        for i in range(1,len(self.trainCurve[0])-1):        
+        for i in range(1, len(self.trainCurve[0]) - 1):        
             writer.writerow([self.trainCurve[k][i] for k in range(nDataSets)])
         learnf.close()
 
     def saveNetwork(self, fname):
         """ save the trained network to a file """
         NetworkWriter.writeToFile(self.Trainer.module, fname) 
-        logging.info("Network saved to: "+fname)
+        logging.info("Network saved to: " + fname)
         
         
 #=======================================================================================================
@@ -89,7 +89,7 @@ class NNregression(NNtools):
             self.hidden = hidden
         logging.info("Constructing FNN with following config:")
         FNN = buildNetwork(self.DS.indim, self.hidden, self.DS.outdim)
-        logging.info(str(FNN)+"\n  Hidden units:\n    "+str(self.hidden))
+        logging.info(str(FNN) + "\n  Hidden units:\n    " + str(self.hidden))
         logging.info("Training FNN with following special arguments:")
         logging.info(str(trnargs))
         self.Trainer = trainer(FNN, dataset=self.DS, **trnargs) 
@@ -102,7 +102,7 @@ class NNregression(NNtools):
         assert isinstance(self.Trainer, Trainer)
         if self.Graph is not None:
             self.Graph.setLabels(x='epoch', y='normalized regression error')
-            self.Graph.setLegend(['training','test'],loc='upper right')
+            self.Graph.setLegend(['training', 'test'], loc='upper right')
         epoch = 0
         inc = self.epoinc
         best_error = Infinity
@@ -112,11 +112,11 @@ class NNregression(NNtools):
         valcurve_y = [0.0]
         converged = False
         convtest = 0
-        if convergence>0:
+        if convergence > 0:
             logging.info("Convergence criterion: %d batches of %d epochs w/o improvement" % (convergence, inc))
-        while epoch<=self.maxepochs and not converged:
+        while epoch <= self.maxepochs and not converged:
             self.Trainer.trainEpochs(inc)
-            epoch+=inc
+            epoch += inc
             learncurve_x.append(epoch)
             # calculate errors on TRAINING data
             err_trn = ModuleValidator.validate(Validator.MSE, self.Trainer.module, self.DS)
@@ -168,11 +168,11 @@ class NNclassifier(NNtools):
             raise TypeError, 'Need a ClassificationDataSet to do classification!'
         NNtools.__init__(self, DS, **kwargs)
         self.nClasses = self.DS.nClasses  # need this because targets may be altered later
-        self.clsnames=None
+        self.clsnames = None
         self.targetsAreOneOfMany = False
 
 
-    def _convertAllDataToOneOfMany(self, values=[0,1]):
+    def _convertAllDataToOneOfMany(self, values=[0, 1]):
         """ converts all datasets associated with self into 1-out-of-many representations,
         e.g. with original classes 0 to 4, the new target for class 1 would be [0,1,0,0,0],
         or accordingly with other upper and lower bounds, as given by the values keyword """
@@ -181,7 +181,7 @@ class NNclassifier(NNtools):
         else:
             # convert all datasets to one-of-many ("winner takes all") representation
             for dsname in ["DS", "TDS", "VDS"]:
-                d = getattr(self,dsname)
+                d = getattr(self, dsname)
                 if d is not None:
                     if d.outdim < d.nClasses:
                         d._convertToOneOfMany(values)
@@ -195,7 +195,7 @@ class NNclassifier(NNtools):
             self.hidden = hidden
         FNN = buildNetwork(self.DS.indim, self.hidden, self.DS.outdim, outclass=SoftmaxLayer)
         logging.info("Constructing classification FNN with following config:")
-        logging.info(str(FNN)+"\n  Hidden units:\n    "+str(self.hidden))
+        logging.info(str(FNN) + "\n  Hidden units:\n    " + str(self.hidden))
         logging.info("Trainer received the following special arguments:")
         logging.info(str(trnargs))
         self.Trainer = trainer(FNN, dataset=self.DS, **trnargs) 
@@ -209,7 +209,7 @@ class NNclassifier(NNtools):
 
         RNN = buildNetwork(self.DS.indim, self.hidden, self.DS.outdim, hiddenclass=LSTMLayer, outclass=SoftmaxLayer)
         logging.info("Constructing classification RNN with following config:")
-        logging.info(str(RNN)+"\n  Hidden units:\n    "+str(self.hidden))
+        logging.info(str(RNN) + "\n  Hidden units:\n    " + str(self.hidden))
         logging.info("Trainer received the following special arguments:")
         logging.info(str(trnargs))
         self.Trainer = trainer(RNN, dataset=self.DS, **trnargs) 
@@ -221,7 +221,7 @@ class NNclassifier(NNtools):
         assert isinstance(self.Trainer, Trainer)
         if self.Graph is not None:
             self.Graph.setLabels(x='epoch', y='% classification error')
-            self.Graph.setLegend(['training','test'],loc='lower right')
+            self.Graph.setLegend(['training', 'test'], loc='lower right')
         epoch = 0
         inc = self.epoinc
         best_error = 100.0
@@ -231,30 +231,30 @@ class NNclassifier(NNtools):
         valcurve_y = [0.0]
         converged = False
         convtest = 0
-        if convergence>0:
+        if convergence > 0:
             logging.info("Convergence criterion: %d batches of %d epochs w/o improvement" % (convergence, inc))
-        while epoch<=self.maxepochs and not converged:
+        while epoch <= self.maxepochs and not converged:
             self.Trainer.trainEpochs(inc)
-            epoch+=inc
+            epoch += inc
             learncurve_x.append(epoch)
             # calculate errors on TRAINING data
             if isinstance(self.DS, SequentialDataSet):
-                r_trn = 100. * (1.0-testOnSequenceData(self.Trainer.module, self.DS))
+                r_trn = 100. * (1.0 - testOnSequenceData(self.Trainer.module, self.DS))
             else:
                 # FIXME: messy - validation does not belong into the Trainer...
                 out, trueclass = self.Trainer.testOnClassData(return_targets=True)
-                r_trn = 100. * (1.0-Validator.classificationPerformance(out, trueclass))
+                r_trn = 100. * (1.0 - Validator.classificationPerformance(out, trueclass))
             learncurve_y.append(r_trn)
             if self.TDS is None:
                 logging.info("epoch: %6d,  err_trn: %5.2f%%" % (epoch, r_trn))
             else:
                 # calculate errors on TEST data
                 if isinstance(self.DS, SequentialDataSet):
-                    r_tst = 100. * (1.0-testOnSequenceData(self.Trainer.module, self.TDS))
+                    r_tst = 100. * (1.0 - testOnSequenceData(self.Trainer.module, self.TDS))
                 else:
                     # FIXME: messy - validation does not belong into the Trainer...
                     out, trueclass = self.Trainer.testOnClassData(return_targets=True, dataset=self.TDS)
-                    r_tst = 100. * (1.0-Validator.classificationPerformance(out, trueclass))
+                    r_tst = 100. * (1.0 - Validator.classificationPerformance(out, trueclass))
                 valcurve_y.append(r_tst)
                 if r_tst < best_error:
                     best_epoch = epoch
@@ -280,11 +280,12 @@ class NNclassifier(NNtools):
             # calculate errors on VALIDATION data
             self.Trainer.module.params[:] = bestweights.copy()
             if isinstance(self.DS, SequentialDataSet):
-                r_val = 100. * (1.0-testOnSequenceData(self.Trainer.module, self.VDS))
+                r_val = 100. * (1.0 - testOnSequenceData(self.Trainer.module, self.VDS))
             else:
                 out, trueclass = self.Trainer.testOnClassData(return_targets=True, dataset=self.VDS)
-                r_val = 100. * (1.0-Validator.classificationPerformance(out, trueclass))
+                r_val = 100. * (1.0 - Validator.classificationPerformance(out, trueclass))
             logging.info("Result on evaluation data: %5.2f%%" % r_val)
             
         self.trainCurve = (learncurve_x, learncurve_y, valcurve_y)
         
+
