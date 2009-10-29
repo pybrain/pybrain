@@ -1,5 +1,5 @@
 ############################################################################
-# PyBrain Tutorial "Reinforcement Learning - CartPole"
+# PyBrain Tutorial "Reinforcement Learning"
 # 
 # Author: Thomas Rueckstiess, ruecksti@in.tum.de
 ############################################################################
