@@ -35,7 +35,7 @@ Quickstart
     quickstart/fast-pybrain
     quickstart/network
     quickstart/dataset
-    quickstart/training
+    quickstart/training    
 
 
 Tutorial
@@ -48,7 +48,8 @@ Tutorial
    tutorial/netmodcon
    tutorial/fnn
    tutorial/optimization
-
+   tutorial/reinforcement-learning
+   tutorial/ode
 
 Advanced
 --------
