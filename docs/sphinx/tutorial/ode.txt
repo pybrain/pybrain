@@ -92,7 +92,7 @@ free to contact the PyBrain mailing list.
 
 .. _createenvironment:
 
-HowTo create your own ODE environment
+Creating your own ODE environment
 -----------------------------------------
 
 This tutorial walks you through the process of setting up a new ODE Environment.
@@ -146,7 +146,7 @@ before getting an update from the controller and sending new sensor values back,
 
 .. _createinstance:
 
-HowTo create your own XODE instance:
+Creating your own XODE instance
 -----------------------------------------
 
 Now we want to specify a instantiation in a XODE file.

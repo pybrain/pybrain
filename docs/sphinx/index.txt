@@ -38,8 +38,8 @@ Quickstart
     quickstart/training    
 
 
-Tutorial
---------
+Tutorials
+----------
 
 .. toctree::
    :maxdepth: 2

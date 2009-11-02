@@ -8,13 +8,13 @@ Writing a neural networking framework in Python imposes certain speed
 restrictions upon it. Python is just not as fast as languages such as C++
 or Fortran.
 
-Due to this, PyBrain has its own spinoff called arac, which is a 
+Due to this, PyBrain has its own spin-off called arac, which is a 
 re-implementation of its neural networking facilities that integrates 
 transparently with it.
 
 Depending on the configuration of your system, speedups of **5-10x faster** can
 be expected. This speedup might be even higher (ranging into the hundreds) if 
-you use sophisticated topolohies such as MDRNNs. If you want some numbers on
+you use sophisticated topologies such as MDRNNs. If you want some numbers on
 your system, there is a comparison script shipped with PyBrain at 
 ``examples/arac/benchmark.py``.
 
@@ -29,7 +29,7 @@ PyBrain to use fast networks.
 You will find detailed installation instructions for arac on the `arac wiki <http://wiki.github.com/bayerj/arac/installation>`_.
 
 This instructions are work in progress. If you run into difficulties, ask on the
-PyBrain mailinglist.
+PyBrain mailing list.
 
 
 Usage
@@ -57,13 +57,13 @@ directly from arac and use them in the same way as PyBrain classes:
     >>> from arac.pybrainbridge import _FeedForwardNetwork, _RecurrentNetwork
 
 The third method is to construct a network as a PyBrain network and call the 
-method ``constructFastNetwork`` afterwards:
+method ``convertToFastNetwork`` afterwards:
 
     >>> n = buildNetwork(2, 3, 1, fast=False)
     >>> n.convertToFastNetwork()
     <_FeedForwardNetwork '_FeedForwardNetwork-18'>
 
-However, be cautios with the last method since changes to the PyBrain network
+However, be cautious with the last method since changes to the PyBrain network
 are not reflected in the arac network.
 
 
