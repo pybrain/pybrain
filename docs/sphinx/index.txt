@@ -55,7 +55,7 @@ Advanced
 --------
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
 
    advanced/fast-pybrain
 
