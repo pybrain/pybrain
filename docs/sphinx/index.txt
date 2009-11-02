@@ -14,8 +14,8 @@ Although the quickstart uses supervised learning with neural networks as an
 example, this does not mean that that's it. PyBrain is not only about supervised
 learning and neural networks.
 
-While the quickstart should be read sequentially, the tutorial's chapters can be
-read mostly independent of each other.
+While the quickstart should be read sequentially, the tutorial chapters can 
+mostly be read independently of each other.
 
 In case this does not suffice, we also have an API reference, the
 :ref:`modindex`. Most of the packages and modules of PyBrain are auto-documented
@@ -24,6 +24,20 @@ there.
 If at any point the documentation does not suffice, you can always get help at
 the pybrain Google Group at http://groups.google.com/group/pybrain.
 
+Installation
+------------
+
+Quick answer:
+::
+
+	$ git clone git://github.com/pybrain/pybrain.git
+	$ python setup.py install
+
+Long answer: 
+We keep more detailed installation instructions (including dependencies) 
+up-to-date in a wiki at http://wiki.github.com/pybrain/pybrain/installation.
+  
+
 
 Quickstart
 ----------
@@ -31,8 +45,6 @@ Quickstart
 .. toctree::
     :maxdepth: 1
 
-    quickstart/installation
-    quickstart/fast-pybrain
     quickstart/network
     quickstart/dataset
     quickstart/training    
