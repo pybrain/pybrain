@@ -33,6 +33,7 @@ from pybrain.structure.modules.tanhlayer import TanhLayer
 from pybrain.tools.shortcuts import buildNetwork
 from pybrain.rl.agents import OptimizationAgent
 from pybrain.optimization import PGPE
+from pybrain.rl.agents import OptimizationAgent
 from pybrain.rl.experiments import EpisodicExperiment
 from cPickle import load, dump
 
