@@ -13,12 +13,12 @@ class Rbm(object):
     """Class that holds a network and offers some shortcuts."""
 
     @property
-    def weights(self):
+    def params(self):
         return self.con.params
         pass
         
     @property
-    def biasWeights(self):
+    def biasParams(self):
         return self.biascon.params
         
     @property 
@@ -39,7 +39,7 @@ class Rbm(object):
         self.con = self.net.connections[self.visible][0]
     
     @classmethod
-    def fromDims(cls, visibledim, hiddendim, weights=None, biasweights=None):
+    def fromDims(cls, visibledim, hiddendim, params=None, biasParams=None):
         """Return a restricted Boltzmann machine of the given dimensions with the
         given distributions."""
         net = FeedForwardNetwork()
@@ -48,10 +48,10 @@ class Rbm(object):
         hidden = SigmoidLayer(hiddendim, 'hidden')
         con1 = FullConnection(visible, hidden)
         con2 = FullConnection(bias, hidden)
-        if weights is not None:
-            con1.params[:] = weights
-        if biasweights is not None:
-            con2.params[:] = biasweights
+        if params is not None:
+            con1.params[:] = params
+        if biasParams is not None:
+            con2.params[:] = biasParams
 
         net.addInputModule(visible)
         net.addModule(bias)
@@ -76,7 +76,7 @@ class Rbm(object):
         """Return the inverse rbm."""
         # TODO: check if shape is correct
         return self.__class__.fromDims(self.hiddenDim, self.visibleDim,
-                                       weights=self.weights)
+                                       params=self.params)
         
     def activate(self, inpt):
         return self.net.activate(inpt)

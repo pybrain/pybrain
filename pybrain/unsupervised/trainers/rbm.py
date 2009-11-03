@@ -59,9 +59,9 @@ class RbmGibbsTrainer(Trainer):
             for t in xrange(cfg.maxIter):
                 #print "*** Iteration %2d **************************************" % t
 
-                weights = self.rbm.weights
-                weights = weights.reshape((self.rbm.visibleDim, self.rbm.hiddenDim))
-                biasWeights = self.rbm.biasWeights
+                params = self.rbm.params
+                params = params.reshape((self.rbm.visibleDim, self.rbm.hiddenDim))
+                biasParams = self.rbm.biasParams
 
                 mm = cfg.iniMm if t < cfg.mmSwitchIter else cfg.finMm
 
@@ -77,7 +77,7 @@ class RbmGibbsTrainer(Trainer):
                 #print ""
 
                 olduw = uw = olduw * mm + \
-                	cfg.rWeights * (w - cfg.weightCost * weights)
+                	cfg.rWeights * (w - cfg.weightCost * params)
                 olduhb = uhb = olduhb * mm + cfg.rHidBias * hb
                 olduvb = uvb = olduvb * mm + cfg.rVisBias * vb
 
@@ -91,14 +91,14 @@ class RbmGibbsTrainer(Trainer):
                 #print ""
 
                 # update the parameters of the original rbm
-                weights += uw
-                biasWeights += uhb
+                params += uw
+                biasParams += uhb
 
                 # Create a new inverted rbm with correct parameters
-                invBiasWeights = self.invRbm.biasWeights
-                invBiasWeights += uvb
+                invBiasParams = self.invRbm.biasParams
+                invBiasParams += uvb
                 self.invRbm = self.rbm.invert()
-                self.invRbm.biasWeights[:] = invBiasWeights
+                self.invRbm.biasParams[:] = invBiasParams
 
                 #print "Updated "
                 #print "Weight: ",
