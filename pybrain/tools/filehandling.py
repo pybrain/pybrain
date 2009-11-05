@@ -1,6 +1,5 @@
 __author__ = 'Tom Schaul, tom@idsia.ch'
 
-
 import os
 import pickle
 
