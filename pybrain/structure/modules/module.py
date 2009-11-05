@@ -101,6 +101,7 @@ class Module(Named):
         
     def activate(self, inpt):
         """Do one transformation of an input and return the result."""
+        assert len(self.inputbuffer[self.offset]) == len(inpt), str((len(self.inputbuffer[self.offset]), len(inpt))) 
         self.inputbuffer[self.offset] = inpt
         self.forward()
         return self.outputbuffer[self.offset].copy()

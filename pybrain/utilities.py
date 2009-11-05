@@ -97,7 +97,7 @@ def iterCombinations(tup):
     
 def setAllArgs(obj, argdict):
     """ set all those internal variables which have the same name than an entry in the 
-    given object's dictionnary. 
+    given object's dictionary. 
     This function can be useful for quick initializations. """
     
     xmlstore = isinstance(obj, XMLBuildable)
@@ -285,7 +285,7 @@ def threaded(callback=lambda * args, **kwargs: None, daemonic=False):
     
     
 def garbagecollect(func):
-    """Decorate a function to invoke the garbage collecter after each execution.
+    """Decorate a function to invoke the garbage collector after each execution.
     """
     def inner(*args, **kwargs):
         result = func(*args, **kwargs)
