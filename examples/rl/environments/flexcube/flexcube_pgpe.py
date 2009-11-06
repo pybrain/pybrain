@@ -62,11 +62,12 @@ for runs in range(numbExp):
     # create controller network
     net = buildNetwork(len(task.getObservation()), hiddenUnits, env.actLen, outclass=TanhLayer)    
     # create agent with controller and learner
-    agent = LearningAgent(net, PGPE())
-    # learning options
-    agent.learner.gd.alpha = 0.2 #step size of \mu adaption
-    agent.learner.gdSig.alpha = 0.085 #step size of \sigma adaption
-    agent.learner.gd.momentum = 0.0
+    agent = LearningAgent(net, PGPE(learningRate=0.085,
+                                    sigmaLearningRate=0.2,
+                                    momentum=0.0,
+                                    epsilon=2.0,
+                                    #rprop = True,
+                                    ))
     
     #Loading weights
     if loadNet:

@@ -28,14 +28,12 @@ for runs in range(numbExp):
     # create controller network (flat network)
     net = buildNetwork(1, 1, bias=False)
     # create agent with controller and learner
-    agent = LearningAgent(net, PGPE())
-    # learning options
-    agent.learner.gd.alpha = 0.03
-    agent.learner.gdSig.alpha = 0.1
-    agent.learner.gd.momentum = 0.9
-    agent.learner.epsilon = 2.0
-    agent.learner.initSigmas()
-    # agent.learner.rprop = True
+    agent = LearningAgent(net, PGPE(learningRate=0.03,
+                                    sigmaLearningRate=0.1,
+                                    momentum=0.9,
+                                    epsilon=2.0,
+                                    #rprop = True,
+                                    ))
     experiment = EpisodicExperiment(task, agent)
     batch=2 #with PGPE this must be a even number (2 for all deterministic settings)
     prnts=1 

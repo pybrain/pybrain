@@ -30,13 +30,15 @@ task = GrowTask(env)
 # create controller network (flat network)
 net = buildNetwork(32, 10, 12)
 # create agent with controller and learner
-agent = LearningAgent(net, PGPE())
-# learning options
-agent.learner.gd.alpha = 0.05
-agent.learner.gdSig.alpha = 0.1
-agent.learner.gd.momentum = 0.0
-agent.learner.epsilon = 2.0
-agent.learner.initSigmas()
+agent = LearningAgent(net, PGPE(learningRate=0.05,
+                                sigmaLearningRate=0.1,
+                                momentum=0.0,
+                                epsilon=2.0,
+                                #rprop = True,
+                                ))
+# TODO: this method does not work with the new framework anymore, is it
+# correct just to leave it out?
+# agent.learner.initSigmas()
 
 sr = []
 

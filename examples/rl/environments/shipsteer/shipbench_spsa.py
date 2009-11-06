@@ -39,11 +39,11 @@ for runs in range(numbExp):
     # create controller network
     net = buildNetwork(task.outdim, task.indim, outclass=TanhLayer)
     # create agent with controller and learner
-    agent = LearningAgent(net, SimpleSPSA(task, net))
-    # learning options
-    agent.learner.gd.alpha = 0.5 #step size of parameter adaption
-    agent.learner.gamma=0.9993 #exploration decay factor
-    agent.learner.gd.momentum = 0.0
+    agent = LearningAgent(net, SimpleSPSA(task, net,
+                                          learningrate=0.5,
+                                          gamma=0.9993,
+                                          momentum=0.0,
+                                          ))
     batch=2 #number of samples per gradient estimate (Symetric sampling needs odd number of samples per estimate!)
     #create experiment
     experiment = EpisodicExperiment(task, agent)
