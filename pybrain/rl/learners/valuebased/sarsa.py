@@ -4,6 +4,13 @@ from pybrain.rl.learners.valuebased.valuebased import ValueBasedLearner
 
 
 class SARSA(ValueBasedLearner):
+    """ State-Action-Reward-State-Action (SARSA) algorithm. 
+     
+    In batchMode, the algorithm goes through all the samples in the
+    history and performs an update on each of them. if batchMode is
+    False, only the last data sample is considered. The user himself
+    has to make sure to keep the dataset consistent with the agent's 
+    history."""
     
     offPolicy = False
     batchMode = True
@@ -18,15 +25,6 @@ class SARSA(ValueBasedLearner):
         self.lastaction = None
 
     def learn(self):
-        """ learn on the current dataset, for a single step.
-        
-            in batchMode, the algorithm goes through all the samples in the
-            history and performs an update on each of them. if batchMode is
-            False, only the last data sample is considered. The user himself
-            has to make sure to keep the dataset consistent with the agent's 
-            history.
-        """
-        
         if self.batchMode:
             samples = self.dataset
         else:

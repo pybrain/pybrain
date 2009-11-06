@@ -7,7 +7,7 @@ class ContinuousExperiment(Experiment):
     """ The extension of Experiment to handle continuous tasks. """
     
     def doInteractionsAndLearn(self, number = 1):
-        """ executes a number of steps while learning continuously.
+        """ Execute a number of steps while learning continuously.
             no reset is performed, such that consecutive calls to 
             this function can be made.
         """ 

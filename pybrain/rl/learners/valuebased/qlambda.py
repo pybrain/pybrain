@@ -4,6 +4,7 @@ from pybrain.rl.learners.valuebased.valuebased import ValueBasedLearner
 
 
 class QLambda(ValueBasedLearner):
+    """ Q-lambda is a variation of Q-learning that uses an eligibility trace. """
     
     offPolicy = True
     batchMode = False
@@ -20,8 +21,6 @@ class QLambda(ValueBasedLearner):
         
     
     def learn(self):
-        """ learn on the current dataset with an eligibility trace. """
-        
         states = self.dataset['state']
         actions = self.dataset['action']
         rewards = self.dataset['reward']

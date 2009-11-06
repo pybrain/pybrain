@@ -1,0 +1,24 @@
+:mod:`agents` -- RL Components: Agents
+================================================
+
+.. automodule:: pybrain.rl.agents.agent
+
+.. autoclass:: Agent
+   :members:
+
+.. automodule:: pybrain.rl.agents.logging
+
+.. autoclass:: LoggingAgent
+   :members: 
+   :show-inheritance:
+
+.. automodule:: pybrain.rl.agents
+
+.. autoclass:: LearningAgent
+   :members: 
+   :show-inheritance:
+   
+.. autoclass:: OptimizationAgent
+   :members: 
+   :show-inheritance:
+   

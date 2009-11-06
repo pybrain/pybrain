@@ -46,11 +46,11 @@ class StateDependentExplorer(Explorer, ParameterContainer):
     sigma = property(_getSigma, _setSigma)
 
     def newEpisode(self):
-        """ randomizes the matrix values for exploration during one episode. """
+        """ Randomize the matrix values for exploration during one episode. """
         self.explmatrix = random.normal(0., expln(self.sigma), self.explmatrix.shape)
         
     def activate(self, state, action):
-        """ the super class commonly ignores the state and simply passes the
+        """ The super class commonly ignores the state and simply passes the
             action through the module. implement _forwardImplementation()
             in subclasses.
         """

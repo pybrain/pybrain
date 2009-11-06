@@ -5,36 +5,40 @@ from pybrain.rl.explorers.discrete.egreedy import EpsilonGreedyExplorer
 
 
 class ValueBasedLearner(OntogeneticLearner, ExploringLearner, DataSetLearner):
+    """ An RL algorithm based on estimating a value-function."""
     
+    #: Does the algorithm work on-policy or off-policy?        
     offPolicy = False
+    
+    #: Does the algorithm run in batch mode or online?
     batchMode = True
 
     _module = None
     _explorer = None
 
     def __init__(self):
-        """ create a default explorer for discrete learning tasks. """
+        """ Create a default explorer for discrete learning tasks. """
         self.explorer = EpsilonGreedyExplorer()
 
     def _setModule(self, module):
-        """ set module and tell explorer about the module. """
+        """ Set module and tell explorer about the module. """
         self.explorer.module = module
         self._module = module
 
     def _getModule(self):
-        """ return the module. """
+        """ Return the internal module. """
         return self._module
         
     module = property(_getModule, _setModule)
 
     def _setExplorer(self, explorer):
-        """ set explorer and tell it the module, if already available. """
+        """ Set explorer and tell it the module, if already available. """
         self._explorer = explorer
         if self.module:
             self._explorer.module = self.module
 
     def _getExplorer(self):
-        """ return the explorer. """
+        """ Return the internal explorer. """
         return self._explorer
         
     explorer = property(_getExplorer, _setExplorer)

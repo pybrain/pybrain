@@ -1,0 +1,15 @@
+:mod:`experiments` -- RL Components: Experiments
+================================================
+
+.. automodule:: pybrain.rl.experiments
+
+.. autoclass:: Experiment
+   :members:
+
+.. autoclass:: EpisodicExperiment
+   :members:
+   :show-inheritance:
+
+.. autoclass:: ContinuousExperiment
+   :members:
+   :show-inheritance:

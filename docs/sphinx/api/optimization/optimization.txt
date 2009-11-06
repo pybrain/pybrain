@@ -15,6 +15,7 @@ The two base classes
     
 .. autoclass:: ContinuousOptimizer
    :members: __init__
+   :show-inheritance:
    
 
 General Black-box optimizers

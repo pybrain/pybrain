@@ -1,0 +1,86 @@
+:mod:`learners` -- RL Components: Learners
+================================================
+
+Abstract classes
+-----------------
+
+.. automodule:: pybrain.rl.learners.learner
+
+.. autoclass:: Learner
+   :members:
+
+.. autoclass:: EpisodicLearner
+   :show-inheritance:
+
+.. autoclass:: DataSetLearner
+   :show-inheritance:
+
+.. autoclass:: ExploringLearner
+   :show-inheritance:
+
+.. autoclass:: OntogeneticLearner
+   :show-inheritance:
+
+.. automodule:: pybrain.rl.learners.directsearch.directsearch
+
+.. autoclass:: DirectSearchLearner
+   :show-inheritance:
+
+.. autoclass:: PhylogeneticLearner
+   :show-inheritance:
+
+
+Value-based Learners
+------------------------
+
+.. automodule:: pybrain.rl.learners.valuebased.valuebased
+
+.. autoclass:: ValueBasedLearner
+   :members:
+   :show-inheritance:
+   
+.. automodule:: pybrain.rl.learners.valuebased
+
+.. autoclass:: Q
+   :members:
+   :show-inheritance:
+   
+.. autoclass:: QLambda
+   :members:
+   :show-inheritance: 
+
+.. autoclass:: SARSA
+   :members:
+   :show-inheritance: 
+
+.. autoclass:: NFQ
+   :members:
+   :show-inheritance: 
+   
+
+Direct-search Learners
+------------------------
+
+.. automodule:: pybrain.rl.learners.directsearch.policygradient
+
+.. autoclass:: PolicyGradientLearner
+   :members:
+   :show-inheritance: 
+
+.. automodule:: pybrain.rl.learners.directsearch.reinforce
+
+.. autoclass:: Reinforce
+   :members:
+   :show-inheritance: 
+
+.. automodule:: pybrain.rl.learners.directsearch.enac
+
+.. autoclass:: ENAC
+   :members:
+   :show-inheritance: 
+   
+   
+.. note:: 
+	..
+	Black-box optimization algorithms can also be seen as direct-search RL algorithms, but are not included here.   
+   

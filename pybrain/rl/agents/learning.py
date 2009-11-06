@@ -28,12 +28,12 @@ class LearningAgent(LoggingAgent):
         
         
     def _getLearning(self):
-        """ returns whether the agent currently learns from experience or not. """
+        """ Return whether the agent currently learns from experience or not. """
         return self.__learning
         
     
     def _setLearning(self, flag):
-        """ set whether or not the agent should learn from its experience """
+        """ Set whether or not the agent should learn from its experience """
         if self.learner is not None:
             self.__learning = flag
         else:
@@ -43,8 +43,8 @@ class LearningAgent(LoggingAgent):
                 
     
     def getAction(self):
-        """ activates the module with the last observation, adds the exploration from
-            the explorer object and stores the result as last action. """
+        """ Activate the module with the last observation, adda the exploration from
+            the explorer object and store the result as last action. """
         LoggingAgent.getAction(self)
         
         self.lastaction = self.module.activate(self.lastobs)
@@ -56,7 +56,7 @@ class LearningAgent(LoggingAgent):
                     
 
     def newEpisode(self):
-        """ indicates the beginning of a new episode in the training cycle. """
+        """ Indicate the beginning of a new episode in the training cycle. """
         if self.logging:
             self.history.newSequence()
         
@@ -65,7 +65,7 @@ class LearningAgent(LoggingAgent):
             self.learner.newEpisode() 
     
     def reset(self):
-        """ clears the history of the agent and resets the module and learner. """
+        """ Clear the history of the agent and resets the module and learner. """
         LoggingAgent.reset(self)
         self.module.reset()
         if self.learning:
@@ -73,7 +73,7 @@ class LearningAgent(LoggingAgent):
     
     
     def learn(self, episodes=1):
-        """ calls the learner's learn function, which has access to both module and history. """
+        """ Call the learner's learn method, which has access to both module and history. """
         if self.learning:
             self.learner.learnEpisodes(episodes)
     

@@ -20,7 +20,7 @@ class BoltzmannExplorer(DiscreteExplorer):
         self._state = None
     
     def activate(self, state, action):
-        """ the super class ignores the state and simply passes the
+        """ The super class ignores the state and simply passes the
             action through the module. implement _forwardImplementation()
             in subclasses.
         """

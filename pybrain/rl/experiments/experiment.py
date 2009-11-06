@@ -19,8 +19,8 @@ class Experiment(object):
         return self.stepid
 
     def _oneInteraction(self):
-        """ gives the observation to the agent, takes its resulting action and returns
-            it to the task. then gives the reward to the agent again and returns it.
+        """ Give the observation to the agent, takes its resulting action and returns
+            it to the task. Then gives the reward to the agent again and returns it.
         """
         self.stepid += 1
         self.agent.integrateObservation(self.task.getObservation())

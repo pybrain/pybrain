@@ -4,7 +4,7 @@ from pybrain.rl.explorers.explorer import Explorer
 # from pybrain.rl.learners.valuebased.interface import ActionValueInterface
 
 class DiscreteExplorer(Explorer):
-    """ discrete explorers choose one of the available actions from the
+    """ Discrete explorers choose one of the available actions from the
         set of actions. In order to know which actions are available and
         which action to choose, discrete explorers need access to the 
         module (which has to of class ActionValueTable).
@@ -16,7 +16,7 @@ class DiscreteExplorer(Explorer):
         Explorer.__init__(self, 1, 1)
     
     def _setModule(self, module):
-        """ tell the explorer the module (has to be ActionValueTable). """
+        """ Tells the explorer the module (which has to be ActionValueTable). """
         # removed: cause for circular import
         # assert isinstance(module, ActionValueInterface)
         self._module = module

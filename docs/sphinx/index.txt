@@ -80,6 +80,7 @@ API
    :glob:
 
    api/structure/*
+   api/rl/*
    api/optimization/*
    api/datasets/*
    api/supervised/*

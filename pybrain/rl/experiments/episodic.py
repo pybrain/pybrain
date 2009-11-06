@@ -19,14 +19,15 @@ class EpisodicExperiment(Experiment):
         else:
             Experiment.__init__(self, task, agent)
             
-    def doInteractions(self, number = 1):
+    def _oneInteraction(self):
+        """ Do an interaction between the Task and the Agent. """
         if self.doOptimization:
             raise Exception('When using a black-box learning algorithm, only full episodes can be done.')
         else:
-            Experiment.doInteractions(self, number)        
+            Experiment._oneInteraction(self)        
         
     def doEpisodes(self, number = 1):
-        """ returns the rewards of each step as a list """
+        """ Do one episode, and return the rewards of each step as a list. """
         if self.doOptimization:
             self.optimizer.maxEvaluations += number
             self.optimizer.learn()

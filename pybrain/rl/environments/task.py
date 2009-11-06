@@ -20,7 +20,7 @@ class Task(object):
         self.clipping = True
         
     def setScaling(self, sensor_limits, actor_limits):
-        """ expects scaling lists of 2-tuples - e.g. [(-3.14, 3.14), (0, 1), (-0.001, 0.001)] - 
+        """ Expects scaling lists of 2-tuples - e.g. [(-3.14, 3.14), (0, 1), (-0.001, 0.001)] - 
             one tuple per parameter, giving min and max for that parameter. The functions 
             normalize and denormalize scale the parameters between -1 and 1 and vice versa. 
             To disable this feature, use 'None'. """
@@ -28,25 +28,24 @@ class Task(object):
         self.actor_limits = actor_limits
         
     def performAction(self, action):
-        """ a filtered mapping towards performAction of the underlying environment. """                
+        """ A filtered mapping towards performAction of the underlying environment. """                
         if self.actor_limits:
             action = self.denormalize(action)
         self.env.performAction(action)
         
     def getObservation(self):
-        """ a filtered mapping to getSample of the underlying environment. """
+        """ A filtered mapping to getSample of the underlying environment. """
         sensors = self.env.getSensors()       
         if self.sensor_limits:
             sensors = self.normalize(sensors)
         return sensors
     
     def getReward(self):
-        """ compute and return the current reward (i.e. corresponding to the last action performed) """
+        """ Compute and return the current reward (i.e. corresponding to the last action performed) """
         return abstractMethod()
 
     def normalize(self, sensors):
-        """ limits is a list of 2-tuples, one tuple per parameter, giving min and max for that parameter.
-            The function scales the parameters to be between -1 and 1. e.g. [(-pi, pi), (0, 1), (-0.001, 0.001)] """
+        """ The function scales the parameters to be between -1 and 1. e.g. [(-pi, pi), (0, 1), (-0.001, 0.001)] """
         assert(len(self.sensor_limits) == len(sensors))
         result = []
         for l, s in zip(self.sensor_limits, sensors):
@@ -59,8 +58,7 @@ class Task(object):
         return asarray(result)  
 
     def denormalize(self, actors):
-        """ limits is a list of 2-tuples, one tuple per parameter, giving min and max for that parameter.
-            The function scales the parameters from -1 and 1 to the given interval (min, max) for each actor. """
+        """ The function scales the parameters from -1 and 1 to the given interval (min, max) for each actor. """
         assert(len(self.actor_limits) == len(actors))
         result = []
         for l, a in zip(self.actor_limits, actors):
