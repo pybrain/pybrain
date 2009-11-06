@@ -1,6 +1,6 @@
 from __future__ import division
 
-"""This module provides functionallity for locality sensitive hashing in high
+"""This module provides functionality for locality sensitive hashing in high
 dimensional euclidean spaces.
 
 It is based on the work of Andoni and Indyk, 'Near-Optimal Hashing Algorithms

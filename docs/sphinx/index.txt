@@ -61,8 +61,7 @@ Tutorials
    tutorial/fnn
    tutorial/optimization
    tutorial/reinforcement-learning
-   tutorial/ode
-
+   
 Advanced
 --------
 
@@ -70,6 +69,7 @@ Advanced
    :maxdepth: 2
 
    advanced/fast-pybrain
+   advanced/ode
 
 
 API
