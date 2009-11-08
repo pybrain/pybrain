@@ -70,6 +70,7 @@ Advanced
 
    advanced/fast-pybrain
    advanced/ode
+   advanced/developer-guide
 
 
 API
