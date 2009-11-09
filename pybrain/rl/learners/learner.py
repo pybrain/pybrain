@@ -65,9 +65,3 @@ class DataSetLearner(EpisodicLearner):
         self.dataset = dataset
         self.learnEpisodes(*args, **kwargs)    
 
-
-class OntogeneticLearner(Learner):
-    """ The class of classical RL algorithms. 
-    They make use of observations, actions and rewards. """    
-    
-

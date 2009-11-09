@@ -4,7 +4,7 @@ from pybrain.rl.learners.learner import ExploringLearner, DataSetLearner, Ontoge
 from pybrain.rl.explorers.discrete.egreedy import EpsilonGreedyExplorer
 
 
-class ValueBasedLearner(OntogeneticLearner, ExploringLearner, DataSetLearner):
+class ValueBasedLearner(ExploringLearner, DataSetLearner, EpisodicLearner):
     """ An RL algorithm based on estimating a value-function."""
     
     #: Does the algorithm work on-policy or off-policy?        

@@ -13,9 +13,3 @@ class DirectSearchLearner(Learner):
     """ The class of learners that (in contrast to value-based learners) 
     searches directly in policy space.
     """
-    
-            
-class PhylogeneticLearner(EpisodicLearner, DirectSearchLearner):
-    """ The opposite of an ontogenetic algorithm. 
-    It makes use exclusively of the cumulative reward (=fitness) at the end of the episode.
-    """
