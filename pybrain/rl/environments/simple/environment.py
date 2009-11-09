@@ -26,12 +26,12 @@ class SimpleEnvironment(Environment):
         self.action = action
         
     def update(self): 
-        self.state = [s + 0.1*a for s, a in zip(self.state, self.action)]
+        self.state = [s + 0.1 * a for s, a in zip(self.state, self.action)]
         if self.noise:
             self.state += random.normal(0, self.noise, self.dim)
     
     def f(self, x):
-        return [v**2 for v in x] 
+        return [v ** 2 for v in x] 
 
     def reset(self):
         self.state = random.uniform(2, 2, self.dim)

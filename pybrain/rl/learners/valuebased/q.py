@@ -18,12 +18,12 @@ class Q(ValueBasedLearner):
         self.lastaction = None
     
     def learn(self):
-        """ learn on the current dataset, either for many timesteps and
+        """ Learn on the current dataset, either for many timesteps and
             even episodes (batchMode = True) or for a single timestep 
             (batchMode = False). Batch mode is possible, because Q-Learning 
             is an off-policy method.
 
-            in batchMode, the algorithm goes through all the samples in the
+            In batchMode, the algorithm goes through all the samples in the
             history and performs an update on each of them. if batchMode is
             False, only the last data sample is considered. The user himself
             has to make sure to keep the dataset consistent with the agent's 
@@ -53,3 +53,4 @@ class Q(ValueBasedLearner):
                 # move state to oldstate
                 self.laststate = state
                 self.lastaction = action
+

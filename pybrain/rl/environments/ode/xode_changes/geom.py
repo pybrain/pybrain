@@ -261,7 +261,7 @@ class Geom(node.TreeNode):
             elif (name == 'v'):
                 vertices.append(self._parser.parseVector(attrs))
             elif (name == 't'):
-                tri = int(attrs['ia'])-1, int(attrs['ib'])-1, int(attrs['ic'])-1
+                tri = int(attrs['ia']) - 1, int(attrs['ib']) - 1, int(attrs['ic']) - 1
                 triangles.append(tri)
             else:
                 raise errors.ChildError('trimesh', name)
@@ -274,3 +274,4 @@ class Geom(node.TreeNode):
                 self._parser.pop()
 
         self._parser.push(startElement=start, endElement=end)
+

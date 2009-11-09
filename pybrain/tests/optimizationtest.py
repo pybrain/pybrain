@@ -37,7 +37,7 @@ from pybrain.structure.modules.module import Module
 # ----------------------
 
 # simple function
-sf = lambda x: -sum((x+1)**2)
+sf = lambda x:-sum((x + 1) ** 2)
 # FunctionEnvironment class
 fe = SphereFunction
 # initialized FE
@@ -55,7 +55,7 @@ evoEval = lambda e: e.x
 # ----------------------
 xlist1 = [2.]
 xlist2 = [0.2, 10]
-xlist100 = list(range(12,112))
+xlist100 = list(range(12, 112))
 
 xa1 = array(xlist1)
 xa2 = array(xlist2)
@@ -75,8 +75,9 @@ nnet = buildNetwork(task.outdim, 2, task.indim)
 class SimpleEvo(Evolvable):
     def __init__(self, x): self.x = x    
     def mutate(self):      self.x += random() - 0.3    
-    def copy(self):        return evo(self.x)
-    def randomize(self):   self.x = 10*random() - 2   
+    def copy(self):        return SimpleEvo(self.x)
+    def randomize(self):   self.x = 10 * random() - 2   
+    def __repr__(self):     return '--%.3f--' % self.x   
     
 evo1 = SimpleEvo(-3.) 
 
@@ -104,7 +105,7 @@ def testInterface(algo):
     algo(sf, xa100)
     
     # for these, either an initial point or a dimension parameter is required
-    algo(sf, numParameters = 2)
+    algo(sf, numParameters=2)
     
     try:
         algo(sf)
@@ -149,18 +150,18 @@ def testMinMax(algo):
     xa1[0] = 2
     evalx = sf(xa1)    
     
-    amax = algo(sf, xa1, minimize = False)
-    assert amax.minimize is False or amax.mustMinimize, 'Max: Attribute not set correctly.'+str(amax.minimize)+str(amax.mustMinimize)
+    amax = algo(sf, xa1, minimize=False)
+    assert amax.minimize is False or amax.mustMinimize, 'Max: Attribute not set correctly.' + str(amax.minimize) + str(amax.mustMinimize)
     x, xv = amax.learn(1)
-    assert sf(x) == xv, 'Evaluation does not fit: '+str((sf(x), xv))
-    assert xv >= evalx, 'Evaluation did not increase: '+str(xv)+' (init: '+str(evalx)+')'
+    assert sf(x) == xv, 'Evaluation does not fit: ' + str((sf(x), xv))
+    assert xv >= evalx, 'Evaluation did not increase: ' + str(xv) + ' (init: ' + str(evalx) + ')'
     
     xa1[0] = 2
-    amin = algo(sf, xa1, minimize = True)
-    assert amin.minimize is True or amin.mustMaximize, 'Min: Attribute not set correctly.'+str(amin.minimize)+str(amin.mustMaximize)
+    amin = algo(sf, xa1, minimize=True)
+    assert amin.minimize is True or amin.mustMaximize, 'Min: Attribute not set correctly.' + str(amin.minimize) + str(amin.mustMaximize)
     x, xv = amin.learn(1)
-    assert sf(x) == xv, 'Evaluation does not fit: '+str((sf(x), xv))
-    assert xv <= evalx, 'Evaluation did not decrease: '+str(xv)+' (init: '+str(evalx)+')'
+    assert sf(x) == xv, 'Evaluation does not fit: ' + str((sf(x), xv))
+    assert xv <= evalx, 'Evaluation did not decrease: ' + str(xv) + ' (init: ' + str(evalx) + ')'
     assert ((amin.minimize is not amax.minimize) 
             or not (amin.wasOpposed is amax.wasOpposed)), 'Inconsistent flags.' 
         
@@ -174,16 +175,6 @@ def testOnModuleAndTask(algo):
     assert isinstance(l._bestFound()[0], Module), 'Did not return a module.'
     return True
 
-
-
-class evo(Evolvable):
-    def __init__(self, x): self.x = x    
-    def mutate(self):      self.x += random() - 0.3    
-    def copy(self):        return evo(self.x)
-    def randomize(self):   self.x = 10*random() - 2
-    
-evoEval = lambda e: e.x
-evo1 = evo(-3.) 
 
 def testOnEvolvable(algo):
     if issubclass(algo, bbo.ContinuousOptimizer):
@@ -203,11 +194,11 @@ def testOnEvolvable(algo):
 # the main test procedure
 # ------------------------
 
-def testAll(tests, allalgos, tolerant = True):
+def testAll(tests, allalgos, tolerant=True):
     countgood = 0
     for i, algo in enumerate(sorted(allalgos)):
-        print "%d, %s:" % (i+1, algo.__name__)
-        print ' '*int(log10(i+1)+2),
+        print "%d, %s:" % (i + 1, algo.__name__)
+        print ' ' * int(log10(i + 1) + 2),
         good = True
         messages = []
         for t in tests:
@@ -231,19 +222,23 @@ def testAll(tests, allalgos, tolerant = True):
             print '--- NOT OK.'
             for m in messages:
                 if m is not None:
-                    print ' '*int(log10(i+1)+2), '->', m
+                    print ' ' * int(log10(i + 1) + 2), '->', m
     print 
     print 'Summary:', countgood, '/', len(allalgos), 'passed all tests.'
 
 
 
-if __name__ == '__main__':    
+if __name__ == '__main__':
     from pybrain.optimization import *  #@UnusedWildImport
+    l = HillClimber(evoEval, evo1, maxEvaluations=50)
+    print l.learn()
+    
+if False:    
     
     allalgos = filter(lambda c: (isclass(c) 
                                  and issubclass(c, bbo.BlackBoxOptimizer)
                                  and not issubclass(c, mobj.MultiObjectiveGA) 
-                                 ), 
+                                 ),
                       globals().values())
     
     print 'Optimization algorithms to be tested:', len(allalgos)
@@ -251,11 +246,12 @@ if __name__ == '__main__':
     print 'Note: this collection of tests may take quite some time.'
     print 
     
-    tests = [testInterface, 
+    tests = [testInterface,
              testContinuousInterface,
              testOnModuleAndTask,
              testOnEvolvable,
              testMinMax,
              ]
     
-    testAll(tests, allalgos, tolerant = True)
+    testAll(tests, allalgos, tolerant=True)
+

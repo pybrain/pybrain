@@ -29,15 +29,15 @@ class LoggingAgent(Agent):
 
         
     def integrateObservation(self, obs):
-        """ 1. stores the observation received in a temporary variable until action is called and
-            reward is given. """
+        """Step 1: store the observation received in a temporary variable until action is called and
+        reward is given. """
         self.lastobs = obs
         self.lastaction = None
         self.lastreward = None
         
     
     def getAction(self):
-        """ 2. stores the action in a temporary variable until reward is given. """
+        """Step 2: store the action in a temporary variable until reward is given. """
         assert self.lastobs != None 
         assert self.lastaction == None
         assert self.lastreward == None
@@ -46,7 +46,7 @@ class LoggingAgent(Agent):
    
     
     def giveReward(self, r):
-        """ 3. stores observation, action and reward in the history dataset. """
+        """Step 3: store observation, action and reward in the history dataset. """
         # step 3: assume that state and action have been set
         assert self.lastobs != None
         assert self.lastaction != None
@@ -60,13 +60,13 @@ class LoggingAgent(Agent):
         
             
     def newEpisode(self):
-        """ inidicates the beginning of a new episode in the training cycle. """
+        """ Indicate the beginning of a new episode in the training cycle. """
         if self.logging:
             self.history.newSequence()  
 
     
     def reset(self):
-        """ clears the history of the agent. """
+        """ Clear the history of the agent. """
         self.lastobs = None
         self.lastaction = None
         self.lastreward = None

@@ -4,7 +4,7 @@ from scipy import array
 
 from pomdp import POMDPTask
 from pybrain.rl.environments.mazes import Maze
-from pybrain.rl.environments import Task
+from pybrain.rl.environments.task import Task
 
 
 class MazeTask(POMDPTask):
@@ -28,8 +28,8 @@ class MazeTask(POMDPTask):
     
     def __init__(self, **args):
         self.setArgs(**args)
-        Task.__init__(self, self.mazeclass(self.topology, self.goal, initPos = self.initPos, 
-                                           stochObs = self.stochObs, stochAction = self.stochAction))
+        Task.__init__(self, self.mazeclass(self.topology, self.goal, initPos=self.initPos,
+                                           stochObs=self.stochObs, stochAction=self.stochAction))
         self.minReward = min(self.bangPenalty, self.defaultPenalty)
         self.reset()
         
@@ -55,8 +55,9 @@ class TrivialMaze(MazeTask):
     #####
     """
     discount = 0.8
-    initPos = [(1,1)]
-    topology = array([[1]*5,
+    initPos = [(1, 1)]
+    topology = array([[1] * 5,
                       [1, 0, 0, 0, 1],
-                      [1]*5,])
-    goal = (1,3)
+                      [1] * 5, ])
+    goal = (1, 3)
+

@@ -29,7 +29,7 @@ class ActionValueTable(Table, ActionValueInterface):
 
     def __init__(self, numStates, numActions, name=None):
         Module.__init__(self, 1, 1, name)
-        ParameterContainer.__init__(self, numStates*numActions)
+        ParameterContainer.__init__(self, numStates * numActions)
         self.numRows = numStates
         self.numColumns = numActions
 
@@ -38,20 +38,20 @@ class ActionValueTable(Table, ActionValueInterface):
         return self.numColumns
 
     def _forwardImplementation(self, inbuf, outbuf):
-        """ takes a vector of length 1 (the state coordinate) and returns
+        """ Take a vector of length 1 (the state coordinate) and return
             the action with the maximum value over all actions for this state.
         """
         outbuf[0] = self.getMaxAction(inbuf[0])
 
     def getMaxAction(self, state):
-        """ returns the action with the maximal value for the given state. """
-        return argmax(self.params.reshape(self.numRows, self.numColumns)[state,:].flatten())
+        """ Return the action with the maximal value for the given state. """
+        return argmax(self.params.reshape(self.numRows, self.numColumns)[state, :].flatten())
 
     def getActionValues(self, state):
         return self.params.reshape(self.numRows, self.numColumns)[state, :].flatten()
 
     def initialize(self, value=0.0):
-        """ initializes the whole table with the given value. """
+        """ Initialize the whole table with the given value. """
         self._params[:] = value       
 
 
@@ -62,16 +62,17 @@ class ActionValueNetwork(Module, ActionValueInterface):
         self.numActions = numActions
     
     def _forwardImplementation(self, inbuf, outbuf):
-        """ takes a vector of length 1 (the state coordinate) and returns
+        """ takes a vector of length 1 (the state coordinate) and return
             the action with the maximum value over all actions for this state.
         """
         outbuf[0] = self.getMaxAction(asarray(inbuf))
 
     def getMaxAction(self, state):
-        """ returns the action with the maximal value for the given state. """
+        """ Return the action with the maximal value for the given state. """
         return argmax(self.getActionValues(state))
 
     def getActionValues(self, state):
-        """ runs forward activation for each of the actions and returns all values. """
+        """ Run forward activation for each of the actions and returns all values. """
         values = array([self.network.activate(r_[state, one_to_n(i, self.numActions)]) for i in range(self.numActions)])
         return values
+

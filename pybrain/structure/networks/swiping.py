@@ -21,7 +21,7 @@ class SwipingNetwork(FeedForwardNetwork):
     # dimensions of the swiping grid
     dims = None
         
-    def __init__(self, inmesh = None, hiddenmesh = None, outmesh = None, predefined = None, **args):
+    def __init__(self, inmesh=None, hiddenmesh=None, outmesh=None, predefined=None, **args):
         if predefined != None:
             self.predefined = predefined
         else:
@@ -30,11 +30,11 @@ class SwipingNetwork(FeedForwardNetwork):
         
         # determine the dimensions 
         if inmesh != None:
-            self.setArgs(dims = inmesh.dims)            
+            self.setArgs(dims=inmesh.dims)            
         elif self.dims == None:
             raise Exception('No dimensions specified, or derivable')
             
-        self.swipes = 2**len(self.dims)
+        self.swipes = 2 ** len(self.dims)
                 
         if inmesh != None:
             self._buildSwipingStructure(inmesh, hiddenmesh, outmesh)
@@ -67,9 +67,9 @@ class SwipingNetwork(FeedForwardNetwork):
         
         # create the motherconnections if they are not provided
         if 'inconn' not in self.predefined:
-            self.predefined['inconn'] = MotherConnection(inmesh.componentOutdim*hiddenmesh.componentIndim, name = 'inconn')
+            self.predefined['inconn'] = MotherConnection(inmesh.componentOutdim * hiddenmesh.componentIndim, name='inconn')
         if 'outconn' not in self.predefined:
-            self.predefined['outconn'] = MotherConnection(outmesh.componentIndim*hiddenmesh.componentOutdim, name = 'outconn')
+            self.predefined['outconn'] = MotherConnection(outmesh.componentIndim * hiddenmesh.componentOutdim, name='outconn')
         if 'hconns' not in self.predefined:
             self.predefined['hconns'] = {}
             for s in range(len(self.dims)):
@@ -77,20 +77,20 @@ class SwipingNetwork(FeedForwardNetwork):
                     if s > 0 and self.symmetricdimensions:
                         self.predefined['hconns'][s] = self.predefined['hconns'][0]
                     else:
-                        self.predefined['hconns'][s] = MotherConnection(hiddenmesh.componentIndim*
-                                                        hiddenmesh.componentOutdim, name = 'hconn'+str(s))
+                        self.predefined['hconns'][s] = MotherConnection(hiddenmesh.componentIndim * 
+                                                        hiddenmesh.componentOutdim, name='hconn' + str(s))
                 else:
                     for dir in ['-', '+']:
                         if s > 0 and self.symmetricdimensions:
-                            self.predefined['hconns'][(s, dir)] = self.predefined['hconns'][(0,dir)]
+                            self.predefined['hconns'][(s, dir)] = self.predefined['hconns'][(0, dir)]
                         else:
-                            self.predefined['hconns'][(s, dir)] = MotherConnection(hiddenmesh.componentIndim*
-                                                        hiddenmesh.componentOutdim, name = 'hconn'+str(s)+dir)
+                            self.predefined['hconns'][(s, dir)] = MotherConnection(hiddenmesh.componentIndim * 
+                                                        hiddenmesh.componentOutdim, name='hconn' + str(s) + dir)
         
         # establish the connections        
         for unit in self._iterateOverUnits():
             for swipe in range(self.swipes):
-                hunit = tuple(list(unit)+[swipe])
+                hunit = tuple(list(unit) + [swipe])
                 self.addConnection(SharedFullConnection(self.predefined['inconn'], inmesh[unit], hiddenmesh[hunit]))
                 self.addConnection(SharedFullConnection(self.predefined['outconn'], hiddenmesh[hunit], outmesh[unit]))
                 # one swiping connection along every dimension
@@ -99,7 +99,7 @@ class SwipingNetwork(FeedForwardNetwork):
                     # swipe directions are towards higher coordinates on dim D if the swipe%(2**D) = 0
                     # and towards lower coordinates otherwise.
                     previousunit = list(hunit)
-                    if (swipe/2**dim) % 2 == 0:
+                    if (swipe / 2 ** dim) % 2 == 0:
                         previousunit[dim] -= 1
                         dir = '+'
                     else:
@@ -119,15 +119,15 @@ class SwipingNetwork(FeedForwardNetwork):
         """ iterate over the coordinates defines by the ranges of self.dims. """
         return iterCombinations(self.dims)
     
-    def _printPredefined(self, dic = None, indent = 0):
+    def _printPredefined(self, dic=None, indent=0):
         """ print the weights of the Motherconnections in the self.predefined dictionary (recursively)"""
         if dic == None:
             dic = self.predefined
         for k, val in sorted(dic.items()):
-            print ' '*indent, k,
+            print ' ' * indent, k,
             if isinstance(val, dict):
                 print ':'
-                self._printPredefined(val, indent+2)
+                self._printPredefined(val, indent + 2)
             elif isinstance(val, MotherConnection):
                 print val.params
             else:

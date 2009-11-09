@@ -27,8 +27,8 @@ class FastCartPoleTask(EpisodicTask):
     extraRandoms = 0
     
     __single = None
-    def __init__(self, numPoles = 1, markov = True, verbose = False, 
-                 extraObservations = False, extraRandoms = 0, maxSteps = 100000):
+    def __init__(self, numPoles=1, markov=True, verbose=False,
+                 extraObservations=False, extraRandoms=0, maxSteps=100000):
         """ @extraObservations: if this flag is true, the observations include the cartesian coordinates 
         of the pole(s).
         """
@@ -50,15 +50,15 @@ class FastCartPoleTask(EpisodicTask):
             s += 'markovian'
         else:
             s += 'non-markovian'
-        s+= ', with '
+        s += ', with '
         if self.numPoles == 1:
             s += 'a single pole'
         else:
-            s += str(self.numPoles)+' poles'
+            s += str(self.numPoles) + ' poles'
         if self.extraObservations:
             s += ' and additional observations (cartesian coordinates of tip of pole(s))'
         if self.extraRandoms > 0:
-            s += ' and '+str(self.extraRandoms)+' additional random observations'
+            s += ' and ' + str(self.extraRandoms) + ' additional random observations'
         return s
 
     def reset(self):
@@ -69,16 +69,16 @@ class FastCartPoleTask(EpisodicTask):
 
     @property
     def outdim(self):
-        res = 1+self.numPoles
+        res = 1 + self.numPoles
         if self.markov:
             res *= 2
         if self.extraObservations:
-            res += 2*self.numPoles
+            res += 2 * self.numPoles
         res += self.extraRandoms
         return res
 
     def getReward(self):
-        r = 1.+impl.getR()
+        r = 1. + impl.getR()
         if self.verbose:
             print ' +r', r,
         return r
@@ -99,15 +99,15 @@ class FastCartPoleTask(EpisodicTask):
                 angle1 = obs[1]
             else:
                 angle1 = obs[0]
-            obs[-1+self.extraRandoms] = 0.1*cos(angle1)+cartpos
-            obs[-2+self.extraRandoms] = 0.1*sin(angle1)+cartpos    
+            obs[-1 + self.extraRandoms] = 0.1 * cos(angle1) + cartpos
+            obs[-2 + self.extraRandoms] = 0.1 * sin(angle1) + cartpos    
             if self.numPoles == 2:
                 if self.markov:
                     angle2 = obs[3]
                 else:
                     angle2 = obs[1]
-                obs[-3+self.extraRandoms] = 0.05*cos(angle2)+cartpos
-                obs[-4+self.extraRandoms] = 0.05*sin(angle2)+cartpos
+                obs[-3 + self.extraRandoms] = 0.05 * cos(angle2) + cartpos
+                obs[-4 + self.extraRandoms] = 0.05 * sin(angle2) + cartpos
         
         if self.extraRandoms > 0:
             obs[-self.extraRandoms:] = randn(self.extraRandoms)

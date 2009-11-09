@@ -23,7 +23,7 @@ def rankedFitness(R):
     
 
 def normalizedFitness(R):
-    return array((R - mean(R))/sqrt(var(R))).flatten()
+    return array((R - mean(R)) / sqrt(var(R))).flatten()
 
 
 class RankingFunction(Named):
@@ -33,7 +33,7 @@ class RankingFunction(Named):
         self.setArgs(**args)
         n = self.__class__.__name__
         for k, val in args.items():
-            n += '-'+str(k)+'='+str(val)
+            n += '-' + str(k) + '=' + str(val)
         self.name = n
 
     def __call__(self, R):
@@ -52,10 +52,10 @@ class TournamentSelection(RankingFunction):
         res = zeros(len(R))
         for i in range(len(R)):
             l = [i]
-            for dummy in range(self.tournamentSize-1):
+            for dummy in range(self.tournamentSize - 1):
                 randindex = i
                 while randindex == i:
-                    randindex = randint(0, len(R)-1)
+                    randindex = randint(0, len(R) - 1)
                 l.append(randindex)
             fits = map(lambda x: R[x], l)
             res[argmax(fits)] += 1
@@ -73,11 +73,11 @@ class SmoothGiniRanking(RankingFunction):
     def __call__(self, R):
         def smoothup(x):
             """ produces a mapping from [0,1] to [0,1], with a specific gini coefficient. """
-            return power(x, 2/self.gini-1)
+            return power(x, 2 / self.gini - 1)
         ranks = rankedFitness(R)
         res = zeros(len(R))
         for i in range(len(ranks)):
-            res[i] = ranks[i]*self.linearComponent + smoothup(ranks[i]/float(len(R)-1)) * (1-self.linearComponent)
+            res[i] = ranks[i] * self.linearComponent + smoothup(ranks[i] / float(len(R) - 1)) * (1 - self.linearComponent)
         res /= max(res)
         return res
 
@@ -89,7 +89,7 @@ class ExponentialRanking(RankingFunction):
 
     def __call__(self, R):
         ranks = rankedFitness(R)
-        ranks = ranks / (len(R)-1.0)
+        ranks = ranks / (len(R) - 1.0)
         return exp(ranks * self.temperature)
         
     
@@ -101,7 +101,7 @@ class TopSelection(RankingFunction):
     def __call__(self, R):
         res = zeros(len(R))
         ranks = rankedFitness(R)
-        cutoff = len(R) * (1.-self.topFraction)
+        cutoff = len(R) * (1. - self.topFraction)
         for i in range(len(R)):
             if ranks[i] >= cutoff:
                 res[i] = 1.0
@@ -119,7 +119,7 @@ class TopLinearRanking(TopSelection):
     def __call__(self, R):
         res = zeros(len(R))
         ranks = rankedFitness(R)
-        cutoff = len(R) * (1.-self.topFraction)
+        cutoff = len(R) * (1. - self.topFraction)
         for i in range(len(R)):
             if ranks[i] >= cutoff:
                 res[i] = ranks[i] - cutoff
@@ -129,8 +129,8 @@ class TopLinearRanking(TopSelection):
         return res
     
     def getPossibleParameters(self, numberOfSamples):
-        x = 1./float(numberOfSamples)
-        return arange(x*2, 1+x, x)
+        x = 1. / float(numberOfSamples)
+        return arange(x * 2, 1 + x, x)
 
     def setParameter(self, p):
         self.topFraction = p
@@ -144,12 +144,12 @@ class BilinearRanking(RankingFunction):
     def __call__(self, R):
         ranks = rankedFitness(R)
         res = zeros(len(R))
-        transitionpoint = 4*len(ranks)/5
+        transitionpoint = 4 * len(ranks) / 5
         for i in range(len(ranks)):
             if ranks[i] < transitionpoint:
                 res[i] = ranks[i]
             else:
-                res[i] = ranks[i]+(ranks[i]-transitionpoint)*self.bilinearFactor
+                res[i] = ranks[i] + (ranks[i] - transitionpoint) * self.bilinearFactor
         res /= max(res)
         return res
 

@@ -16,6 +16,7 @@ class MultiplicationLayer(NeuronLayer):
 
     def __init__(self, dim, name=None):
         Module.__init__(self, 2 * dim, dim, name)
+        self.setArgs(dim=dim, name=self.name)
     
     def _forwardImplementation(self, inbuf, outbuf):
         outbuf += inbuf[:self.outdim] * inbuf[self.outdim:]
@@ -35,6 +36,7 @@ class GateLayer(NeuronLayer):
     
     def __init__(self, dim, name=None):
         Module.__init__(self, 2 * dim, dim, name)
+        self.setArgs(dim=dim, name=self.name)
     
     def _forwardImplementation(self, inbuf, outbuf):
         outbuf += sigmoid(inbuf[:self.outdim]) * inbuf[self.outdim:]
@@ -57,6 +59,7 @@ class DoubleGateLayer(NeuronLayer):
     
     def __init__(self, dim, name=None):
         Module.__init__(self, 2 * dim, 2 * dim, name)
+        self.setArgs(dim=dim, name=self.name)
     
     def _forwardImplementation(self, inbuf, outbuf):
         dim = self.indim / 2
@@ -81,6 +84,7 @@ class SwitchLayer(NeuronLayer):
 
     def __init__(self, dim, name=None):
         Module.__init__(self, dim, dim * 2, name)
+        self.setArgs(dim=dim, name=self.name)
     
     def _forwardImplementation(self, inbuf, outbuf):
         outbuf[:self.indim] += sigmoid(inbuf)

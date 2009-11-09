@@ -37,10 +37,10 @@ class Maze(Environment, Named):
     initPos = None
     
     # directions
-    N = (1,0)
-    S = (-1,0)
-    E = (0,1)
-    W = (0,-1)
+    N = (1, 0)
+    S = (-1, 0)
+    E = (0, 1)
+    W = (0, -1)
     
     allActions = [N, E, S, W]        
     
@@ -68,7 +68,7 @@ class Maze(Environment, Named):
         for i, row in enumerate(self.mazeTable):
             for j, p in enumerate(row):
                 if p == False:
-                    res.append((i,j))
+                    res.append((i, j))
         return res
         
     def _moveInDir(self, pos, dir):
@@ -101,9 +101,9 @@ class Maze(Environment, Named):
         s = ''
         for r, row in reversed(list(enumerate(self.mazeTable))):
             for c, p in enumerate(row):
-                if (r,c) == self.goal:
+                if (r, c) == self.goal:
                     s += '*'
-                elif (r,c) == self.perseus:
+                elif (r, c) == self.perseus:
                     s += '@'
                 elif p == True:
                     s += '#'
@@ -112,3 +112,4 @@ class Maze(Environment, Named):
             s += '\n'
         return s
     
+

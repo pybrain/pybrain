@@ -12,8 +12,8 @@ import pylab
 from pybrain.rl.environments.mazes import Maze, MDPMazeTask
 from pybrain.rl.learners.valuebased import ActionValueTable
 from pybrain.rl.agents import LearningAgent
-from pybrain.rl.learners import Q, QLambda, SARSA
-from pybrain.rl.explorers import BoltzmannExplorer
+from pybrain.rl.learners import Q, QLambda, SARSA #@UnusedImport
+from pybrain.rl.explorers import BoltzmannExplorer #@UnusedImport
 from pybrain.rl.experiments import Experiment
 from pybrain.rl.environments import Task
 
@@ -62,4 +62,5 @@ for i in range(1000):
 
     # and draw the table
     pylab.pcolor(table.params.reshape(81,4).max(1).reshape(9,9))
+    # pylab.pcolor(table.values.max(1).reshape(9, 9))
     pylab.draw()

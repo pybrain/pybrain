@@ -11,7 +11,7 @@ class DiscreteStateDependentExplorer(DiscreteExplorer):
         estimator (table or network) and keeps the changes fixed for one
         full episode (if episodic) or slowly changes it over time.
         
-        DEBUG: currently only implemented for episodes
+        TODO: currently only implemented for episodes
     """
     
     def __init__(self, epsilon = 0.2, decay = 0.9998):
@@ -19,7 +19,7 @@ class DiscreteStateDependentExplorer(DiscreteExplorer):
         self.state = None
     
     def _setModule(self, module):
-        """ tell the explorer the module. """
+        """ Tell the explorer the module. """
         self._module = module
         # copy the original module for exploration 
         self.explorerModule = deepcopy(module)
@@ -31,7 +31,7 @@ class DiscreteStateDependentExplorer(DiscreteExplorer):
     
 
     def activate(self, state, action):
-        """ saves the current state for state-dependent exploration. """
+        """ Save the current state for state-dependent exploration. """
         self.state = state
         return DiscreteExplorer.activate(self, state, action)
          
@@ -42,7 +42,7 @@ class DiscreteStateDependentExplorer(DiscreteExplorer):
         outbuf[:] = self.explorerModule.activate(self.state)
     
     def newEpisode(self):
-        """ informs the explorer about the start of a new episode. """
+        """ Inform the explorer about the start of a new episode. """
         self.explorerModule = deepcopy(self.module)
 
         if isinstance(self.explorerModule, ActionValueNetwork):
@@ -53,3 +53,4 @@ class DiscreteStateDependentExplorer(DiscreteExplorer):
         elif isinstance(self.explorerModule, ActionValueTable):
             self.explorerModule.mutationStd = 0.01
             self.explorerModule.mutate()
+            

@@ -35,10 +35,10 @@ def buildNetwork(*layers, **options):
     If the `fast` flag is set, faster arac networks will be used instead of the 
     pybrain implementations."""
     # options
-    opt = {'bias': True, 
+    opt = {'bias': True,
            'hiddenclass': SigmoidLayer,
-           'outclass': LinearLayer, 
-           'outputbias': True, 
+           'outclass': LinearLayer,
+           'outputbias': True,
            'peepholes': False,
            'recurrent': False,
            'fast': False,
@@ -54,11 +54,11 @@ def buildNetwork(*layers, **options):
     # Bind the right class to the Network name
     network_map = {
         (False, False): FeedForwardNetwork,
-        (True, False): RecurrentNetwork,        
+        (True, False): RecurrentNetwork,
     }
     try:
         network_map[(False, True)] = _FeedForwardNetwork
-        network_map[(True, True)] =  _RecurrentNetwork
+        network_map[(True, True)] = _RecurrentNetwork
     except NameError:
         if opt['fast']:
             raise NetworkError("No fast networks available.")
@@ -74,7 +74,7 @@ def buildNetwork(*layers, **options):
     n.addOutputModule(opt['outclass'](layers[-1], name='out'))
     if opt['bias']:
         # add bias module and connection to out module, if desired
-        n.addModule(BiasUnit(name = 'bias'))
+        n.addModule(BiasUnit(name='bias'))
         if opt['outputbias']:
             n.addConnection(FullConnection(n['bias'], n['out']))
     # arbitrary number of hidden layers of type 'hiddenclass'
@@ -85,8 +85,8 @@ def buildNetwork(*layers, **options):
             # also connect all the layers with the bias
             n.addConnection(FullConnection(n['bias'], n[layername]))
     # connections between hidden layers
-    for i in range(len(layers)-3):
-        n.addConnection(FullConnection(n['hidden%i' % i], n['hidden%i' % (i+1)]))
+    for i in range(len(layers) - 3):
+        n.addConnection(FullConnection(n['hidden%i' % i], n['hidden%i' % (i + 1)]))
     # other connections
     if len(layers) == 2:
         # flat network, connection from in to out
@@ -94,11 +94,11 @@ def buildNetwork(*layers, **options):
     else:
         # network with hidden layer(s), connections from in to first hidden and last hidden to out
         n.addConnection(FullConnection(n['in'], n['hidden0']))
-        n.addConnection(FullConnection(n['hidden%i' % (len(layers)-3)], n['out']))
+        n.addConnection(FullConnection(n['hidden%i' % (len(layers) - 3)], n['out']))
     
     # recurrent connections
     if issubclass(opt['hiddenclass'], LSTMLayer):
-        if len(layers)>3:
+        if len(layers) > 3:
             errorexit("LSTM networks with > 1 hidden layers are not supported!")
         n.addRecurrentConnection(FullConnection(n['hidden0'], n['hidden0']))
 
@@ -159,3 +159,4 @@ def _buildNetwork(*layers, **options):
     net.sortModules()
     return net
     
+

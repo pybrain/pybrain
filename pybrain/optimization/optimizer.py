@@ -24,20 +24,29 @@ class BlackBoxOptimizer(DirectSearchLearner):
     or subclasses of Evolvable (that define its methods).
     """    
     
-    # Minimize cost or maximize fitness? By default, all functions are maximized
+    #: Minimize cost or maximize fitness? By default, all functions are maximized.
     minimize = None
+    
     # some algorithms are designed for minimization only, those can put this flag:
     mustMinimize = False
     mustMaximize = False
 
-    # Is there a known value of sufficient fitness?
+    #: Is there a known value of sufficient fitness?
     desiredEvaluation = None    
 
-    # dimension of the search space, if applicable
+    #: Stopping criterion based on number of evaluations.    
+    maxEvaluations = 1e6 
+        
+    #: Stopping criterion based on number of learning steps. 
+    maxLearningSteps = None    
+    
+    
+    #: dimension of the search space, if applicable
     numParameters = None
     
-    # Bookkeeping settings
+    #: Store all evaluations (in the ._allEvaluations list)?
     storeAllEvaluations = False
+    #: Store all evaluated instances (in the ._allEvaluated list)?
     storeAllEvaluated = False
     
     # an optimizer can take different forms of evaluables, and depending on its
@@ -46,21 +55,20 @@ class BlackBoxOptimizer(DirectSearchLearner):
     wasWrapped = False
     wasUnwrapped = False
     wasOpposed = False
-    
-    # stopping criteria
-    maxEvaluations = 1e6
-    maxLearningSteps = None    
-    
-    # providing information during the learning
+        
     listener = None
+    
+    #: provide console output during learning
     verbose = False
     
     # some algorithms have a predetermined (minimal) number of 
     # evaluations they will perform during each learningStep:
     batchSize = 1
     
+    
     def __init__(self, evaluator = None, initEvaluable = None, **kwargs):
-        """ The evaluator is any callable object (e.g. a lambda function). """
+        """ The evaluator is any callable object (e.g. a lambda function). 
+        Algorithm parameters can be set here if provided as keyword arguments. """
         # set all algorithm-specific parameters in one go:
         setAllArgs(self, kwargs)
         # bookkeeping
@@ -78,6 +86,9 @@ class BlackBoxOptimizer(DirectSearchLearner):
             self.__evaluator = None
         
     def setEvaluator(self, evaluator, initEvaluable = None):
+        """ If not provided upon construction, the objective function can be given through this method.
+        If necessary, also provide an initial evaluable."""
+        
         # default settings, if provided by the evaluator:
         if isinstance(evaluator, FitnessEvaluator):
             if self.desiredEvaluation is None:

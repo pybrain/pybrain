@@ -25,15 +25,15 @@ class GPOMDP(PolicyGradientLearner):
         for seq in range(self.ds.getNumSequences()):
             _, _, rewards, loglhs = self.ds.getSequence(seq)
             for t in range(len(rewards)):
-                baselines[t,:] += mean(sum(loglhs[:t+1, :], 0)**2 * rewards[t,:], 0) / mean(sum(loglhs[:t+1, :], 0)**2, 0) 
-                seqcount[t,:] += 1
+                baselines[t, :] += mean(sum(loglhs[:t + 1, :], 0) ** 2 * rewards[t, :], 0) / mean(sum(loglhs[:t + 1, :], 0) ** 2, 0) 
+                seqcount[t, :] += 1
         
         baselines = baselines / seqcount
         # print baselines
         for seq in range(self.ds.getNumSequences()):
             _, _, rewards, loglhs = self.ds.getSequence(seq)
             for t in range(len(rewards)):
-                g[seq,:] += sum(loglhs[:t+1, :], 0) * (rewards[t,:] - baselines[t])
+                g[seq, :] += sum(loglhs[:t + 1, :], 0) * (rewards[t, :] - baselines[t])
 
         gradient = mean(g, 0)
         return gradient    

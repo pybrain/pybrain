@@ -9,7 +9,7 @@ class Filter(object):
     """
     def __init__(self):
         pass
-    def apply(self,population):
+    def apply(self, population):
         """ Applies an operation on a population. """
         raise NotImplementedError()
 
@@ -40,9 +40,9 @@ class SimpleGenomeManipulation(Filter):
         assert isiter(genome)
         if manfunc is None:  manfunc = self._manipulateValue
 
-        for i,v in enumerate(genome):
+        for i, v in enumerate(genome):
             if isiter(v):
-                self._manipulateGenome(v,manfunc)
+                self._manipulateGenome(v, manfunc)
             else:
                 genome[i] = manfunc(v)
 
@@ -65,7 +65,7 @@ class SimpleMutation(SimpleGenomeManipulation):
         SimpleGenomeManipulation.__init__(self)
         self.mutationVariate = GaussianVariate()
         self.mutationVariate.alpha = 0.1
-        self.verbosity=0
+        self.verbosity = 0
 
 
     def apply(self, population):
@@ -106,7 +106,7 @@ class Randomization(SimpleGenomeManipulation):
         self._maxval = maxval
 
     def apply(self, population):
-        self._uniform_variate = UniformVariate(self._minval,self._maxval)
+        self._uniform_variate = UniformVariate(self._minval, self._maxval)
         for individual in population.getIndividuals():
             self._manipulateGenome(individual.getGenome())
 

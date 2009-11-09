@@ -50,7 +50,7 @@ from pybrain.tests import runModuleTestSuite
 
 
 def buildRecurrentNetwork():
-    N = buildNetwork(1,1,1, recurrent = True, bias = False, hiddenclass = LinearLayer, outputbias = False) 
+    N = buildNetwork(1, 1, 1, recurrent=True, bias=False, hiddenclass=LinearLayer, outputbias=False) 
     h = N['hidden0']
     N.addRecurrentConnection(FullConnection(h, h))
     N.sortModules()

@@ -19,15 +19,15 @@ class EvolinoTrainer(Trainer):
         the network must follow. Basically, it should be a simple lstm network.
         For more details on these restrictions read NetworkWrapper's documentaion.
     """
-    initialWeightRange   = property(lambda self: self._initialWeightRange)
-    subPopulationSize    = property(lambda self: self._subPopulationSize)
-    nCombinations        = property(lambda self: self._nCombinations)
-    nParents             = property(lambda self: self._nParents)
-    initialWeightRange   = property(lambda self: self._initialWeightRange)
-    mutationAlpha        = property(lambda self: self._mutationAlpha)
-    mutationVariate      = property(lambda self: self._mutationVariate)
-    wtRatio              = property(lambda self: self._wtRatio)
-    weightInitializer    = property(lambda self: self._weightInitializer)
+    initialWeightRange = property(lambda self: self._initialWeightRange)
+    subPopulationSize = property(lambda self: self._subPopulationSize)
+    nCombinations = property(lambda self: self._nCombinations)
+    nParents = property(lambda self: self._nParents)
+    initialWeightRange = property(lambda self: self._initialWeightRange)
+    mutationAlpha = property(lambda self: self._mutationAlpha)
+    mutationVariate = property(lambda self: self._mutationVariate)
+    wtRatio = property(lambda self: self._wtRatio)
+    weightInitializer = property(lambda self: self._weightInitializer)
 #    burstMutation        = property(lambda self: self._burstMutation)
     backprojectionFactor = property(lambda self: self._backprojectionFactor)
 
@@ -60,48 +60,48 @@ class EvolinoTrainer(Trainer):
         ap = KWArgsProcessor(self, kwargs)
 
         # misc
-        ap.add( 'verbosity', default=0 )
+        ap.add('verbosity', default=0)
 
         # population
-        ap.add( 'subPopulationSize',  private=True, default=8 )
-        ap.add( 'nCombinations',      private=True, default=4 )
-        ap.add( 'nParents',           private=True, default=None )
-        ap.add( 'initialWeightRange', private=True, default=( -0.1, 0.1 ) )
-        ap.add( 'weightInitializer',  private=True, default=Randomization(self._initialWeightRange[0],self._initialWeightRange[1]) )
+        ap.add('subPopulationSize', private=True, default=8)
+        ap.add('nCombinations', private=True, default=4)
+        ap.add('nParents', private=True, default=None)
+        ap.add('initialWeightRange', private=True, default=(-0.1, 0.1))
+        ap.add('weightInitializer', private=True, default=Randomization(self._initialWeightRange[0], self._initialWeightRange[1]))
 
         # mutation
-        ap.add( 'mutationAlpha',      private=True, default=0.01 )
-        ap.add( 'mutationVariate',    private=True, default=CauchyVariate(0, self._mutationAlpha) )
+        ap.add('mutationAlpha', private=True, default=0.01)
+        ap.add('mutationVariate', private=True, default=CauchyVariate(0, self._mutationAlpha))
 
         # evaluation
-        ap.add( 'wtRatio',            private=True, default=(1,3) )
+        ap.add('wtRatio', private=True, default=(1, 3))
 
         # burst mutation
-        ap.add( 'nBurstMutationEpochs', default=Infinity )
+        ap.add('nBurstMutationEpochs', default=Infinity)
 
         # network
-        ap.add( 'backprojectionFactor', private=True, default=float(evolino_network.backprojectionFactor) )
+        ap.add('backprojectionFactor', private=True, default=float(evolino_network.backprojectionFactor))
         evolino_network.backprojectionFactor = self._backprojectionFactor
 
         # aggregated objects
-        ap.add( 'selection',     default=EvolinoSelection() )
-        ap.add( 'reproduction',  default=EvolinoReproduction( mutationVariate=self.mutationVariate) )
-        ap.add( 'burstMutation', default=EvolinoBurstMutation() )
-        ap.add( 'evaluation',    default=EvolinoEvaluation(evolino_network, self.ds, **kwargs) )
+        ap.add('selection', default=EvolinoSelection())
+        ap.add('reproduction', default=EvolinoReproduction(mutationVariate=self.mutationVariate))
+        ap.add('burstMutation', default=EvolinoBurstMutation())
+        ap.add('evaluation', default=EvolinoEvaluation(evolino_network, self.ds, **kwargs))
 
         self.selection.nParents = self.nParents
 
         self._population = EvolinoPopulation(
-            EvolinoSubIndividual( evolino_network.getGenome() ),
+            EvolinoSubIndividual(evolino_network.getGenome()),
             self._subPopulationSize,
             self._nCombinations,
             self._weightInitializer
             )
 
         filters = []
-        filters.append( self.evaluation   )
-        filters.append( self.selection    )
-        filters.append( self.reproduction )
+        filters.append(self.evaluation)
+        filters.append(self.selection)
+        filters.append(self.reproduction)
 
         self._filters = filters
 
@@ -112,7 +112,7 @@ class EvolinoTrainer(Trainer):
     def setDataset(self, dataset):
         self.evaluation.dataset = dataset
 
-    def trainOnDataset(self,*args,**kwargs):
+    def trainOnDataset(self, *args, **kwargs):
         """ Not implemented """
         raise NotImplementedError()
 
@@ -127,10 +127,10 @@ class EvolinoTrainer(Trainer):
 
 
         for filter in self._filters:
-            filter.apply( self._population )
+            filter.apply(self._population)
 
         if self._max_fitness < self.evaluation.max_fitness:
-            if self.verbosity: print "GAINED FITNESS: ", self._max_fitness, " -->" ,self.evaluation.max_fitness, "\n"
+            if self.verbosity: print "GAINED FITNESS: ", self._max_fitness, " -->" , self.evaluation.max_fitness, "\n"
             self._max_fitness = self.evaluation.max_fitness
             self._max_fitness_epoch = self.totalepochs
         else:

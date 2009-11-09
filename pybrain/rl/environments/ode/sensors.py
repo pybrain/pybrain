@@ -143,7 +143,7 @@ class DistToPointSensor(Sensor):
         the current distance of the body to this point. if no point is given,
         the distance to the origin is returned. '''
 
-    def __init__(self, bodyName, name='DistToPointSensor', point=(0,0,0)):
+    def __init__(self, bodyName, name='DistToPointSensor', point=(0, 0, 0)):
         Sensor.__init__(self, name, 0)
         # initialize one return value
         self.setNumValues(1)

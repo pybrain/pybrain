@@ -8,7 +8,7 @@
    
 .. note::
 
-   This documentation comprises just a subjective excerpt of available methods. See the source code for additional functionality.
+   This documentation comprises just a subjective excerpt of available methods. See the source code for additional functionality. 
 
 .. autoclass:: RPropMinusTrainer
    :members: __init__

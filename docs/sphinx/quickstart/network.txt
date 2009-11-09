@@ -3,7 +3,7 @@
 Building a Network
 ==================
 
-To go on with the quickstart, just fire up Python and we will make everything in
+To go through the quickstart interactively, just fire up Python and we will make everything in
 the interpreter::
 
    $ python

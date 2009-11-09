@@ -51,10 +51,10 @@ class SVMUnit(object):
         These are stored in a dictionary for multi-class SVM. If `prob`, class
         probabilities are produced. This works only if probability option was
         set for SVM training."""            
-        if values=="class" or values==False:
+        if values == "class" or values == False:
             # predict the output class right away
             self.output = self.model.predict(self.input)
-        elif values=='raw' or values==True:
+        elif values == 'raw' or values == True:
             # return a dict of decision values for each one-on-one class 
             # combination (i,j)
             self.output = self.model.predict_values(self.input)
@@ -70,7 +70,7 @@ class SVMUnit(object):
         out = []
         inp = dataset['input']
         for i in range(inp.shape[0]):
-            self.input = inp[i,:]
+            self.input = inp[i, :]
             # carry out forward pass to get decision values for each class combo
             self.forwardPass(values=values)
             out.append(self.output) 
@@ -80,3 +80,4 @@ class SVMUnit(object):
         """ return number of classes the current model uses """
         return self.model.get_nr_class()
     
+

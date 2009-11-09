@@ -1,5 +1,3 @@
-# TODO, move to task.py ?
-
 __author__ = 'Tom Schaul, tom@idsia.ch'
 
 from scipy import power
@@ -21,13 +19,13 @@ class EpisodicTask(Task, FitnessEvaluator):
     # tracking the number of samples
     samples = 0
     
-    # the discount factor 
+    #: Discount factor 
     discount = None
     
     batchSize = 1
     
     def reset(self):
-        """ reinitialize the environment """
+        """ Re-initialize the environment """
         # Note: if a task needs to be reset at the start, the subclass constructor 
         # should take care of that.
         self.env.reset()
@@ -35,16 +33,17 @@ class EpisodicTask(Task, FitnessEvaluator):
         self.samples = 0        
         
     def isFinished(self): 
-        """ is the current episode over? """
+        """ Is the current episode over? """
         abstractMethod()
         
     def performAction(self, action):
+        """ Execute one action. """
         Task.performAction(self, action)
         self.addReward()
         self.samples += 1
     
     def addReward(self):
-        """ a filtered mapping towards performAction of the underlying environment. """                
+        """ A filtered mapping towards performAction of the underlying environment. """                
         # by default, the cumulative reward is just the sum over the episode    
         if self.discount:
             self.cumreward += power(self.discount, self.samples) * self.getReward()
@@ -52,7 +51,7 @@ class EpisodicTask(Task, FitnessEvaluator):
             self.cumreward += self.getReward()
     
     def getTotalReward(self):
-        """ the accumulated reward since the start of the episode """
+        """ Return the accumulated reward since the start of the episode """
         return self.cumreward
         
     def f(self, x):

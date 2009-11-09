@@ -25,7 +25,7 @@ class FEM(DistributionBasedOptimizer):
     
     adaptiveShaping = False
     
-    shapingFunction = TopLinearRanking(topFraction = 0.5)
+    shapingFunction = TopLinearRanking(topFraction=0.5)
     
     minimumCenterWeight = 0.01
     
@@ -53,7 +53,7 @@ class FEM(DistributionBasedOptimizer):
         assert self.numberOfCenters == 1, 'Mixtures of Gaussians not supported yet.'
         
         xdim = self.numParameters
-        self.alphas = ones(self.numberOfCenters)/float(self.numberOfCenters)
+        self.alphas = ones(self.numberOfCenters) / float(self.numberOfCenters)
         self.mus = []
         self.sigmas = []
 
@@ -68,7 +68,7 @@ class FEM(DistributionBasedOptimizer):
                 self.initCovariances = eye(xdim)
             
         for _ in range(self.numberOfCenters):
-            self.mus.append(rand(xdim) * (self.rangemaxs-self.rangemins) + self.rangemins)
+            self.mus.append(rand(xdim) * (self.rangemaxs - self.rangemins) + self.rangemins)
             self.sigmas.append(dot(eye(xdim), self.initCovariances))
         
         self.samples = range(self.windowSize)        
@@ -153,17 +153,17 @@ class FEM(DistributionBasedOptimizer):
             self.mus[c] *= 1. - self.muMultiplier * updateSize[c]
             self.mus[c] += self.muMultiplier * updateSize[c] * lastSample
             # don't update with the ones that were produced with a mean shift
-            if ((self.useAnticipatedMeanShift and len(self.allsamples)%self.windowSize == 1) 
+            if ((self.useAnticipatedMeanShift and len(self.allsamples) % self.windowSize == 1) 
                 or (not self.useAnticipatedMeanShift and self.numberOfCenters > 1)):
                 self.meanShifts[c] *= 1. - self.forgetFactor
                 self.meanShifts[c] += self.mus[c] - oldmu
                 
-            if self.doMadnessUpdate and len(self.allsamples) > 2*self.windowSize:
+            if self.doMadnessUpdate and len(self.allsamples) > 2 * self.windowSize:
                 self.mus[c] = zeros(self.numParameters)
                 updateSum = 0.
                 for i in range(self.windowSize):
-                    self.mus[c] += self.allsamples[-i-1] * self.allUpdateSizes[-i-1][c]
-                    updateSum += self.allUpdateSizes[-i-1][c]
+                    self.mus[c] += self.allsamples[-i - 1] * self.allUpdateSizes[-i - 1][c]
+                    updateSum += self.allUpdateSizes[-i - 1][c]
                 self.mus[c] /= updateSum
         
         if self.elitism:
@@ -172,7 +172,7 @@ class FEM(DistributionBasedOptimizer):
         
     def _updateSigmas(self, updateSize, lastSample):
         for c in range(self.numberOfCenters):
-            self.sigmas[c] *= (1.-updateSize[c])
+            self.sigmas[c] *= (1. - updateSize[c])
             dif = self.mus[c] - lastSample
             if self.diagonalOnly:
                 self.sigmas[c] += updateSize[c] * multiply(dif, dif)
@@ -192,8 +192,8 @@ class FEM(DistributionBasedOptimizer):
                     print 'Split!'
                 bestCenter = argmax(self.alphas)
                 totalWeight = self.alphas[c] + self.alphas[bestCenter] 
-                self.alphas[c] = totalWeight/2
-                self.alphas[bestCenter] = totalWeight/2
+                self.alphas[c] = totalWeight / 2
+                self.alphas[bestCenter] = totalWeight / 2
                 self.mus[c] = self.mus[bestCenter].copy()
                 self.sigmas[c] = 4.0 * self.sigmas[bestCenter].copy()
                 self.sigmas[bestCenter] *= 0.25
@@ -211,9 +211,9 @@ class FEM(DistributionBasedOptimizer):
             self.shapingFunction.setParameter(p)
             transformedFitnesses = self.shapingFunction(self.fitnesses)
             #transformedFitnesses /= sum(transformedFitnesses)
-            sumValue = sum([x*log(y) for x,y in zip(pdfs, transformedFitnesses) if y > 0])
-            normalization = sum([x*y for x,y in zip(pdfs, transformedFitnesses) if y > 0])
-            matchValues.append(sumValue/normalization)
+            sumValue = sum([x * log(y) for x, y in zip(pdfs, transformedFitnesses) if y > 0])
+            normalization = sum([x * y for x, y in zip(pdfs, transformedFitnesses) if y > 0])
+            matchValues.append(sumValue / normalization)
             
         
         self.shapingFunction.setParameter(possible[argmax(matchValues)])
@@ -253,9 +253,9 @@ class FEM(DistributionBasedOptimizer):
         self.allsigmas.append(deepcopy(self.sigmas))
         self.allmus.append(deepcopy(self.mus))
         
-        if self.oneFifthRule and len(self.allsamples) % 10 == 0  and len(self.allsamples) > 2*self.windowSize:
+        if self.oneFifthRule and len(self.allsamples) % 10 == 0  and len(self.allsamples) > 2 * self.windowSize:
             lastBatch = self.allfitnesses[-self.windowSize:]
-            secondLast = self.allfitnesses[-2*self.windowSize:-self.windowSize]
+            secondLast = self.allfitnesses[-2 * self.windowSize:-self.windowSize]
             sortedLast = sort(lastBatch)
             sortedSecond = sort(secondLast)
             index = int(self.windowSize * 0.8)

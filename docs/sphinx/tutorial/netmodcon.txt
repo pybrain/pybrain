@@ -40,7 +40,7 @@ We can actually add multiple input and output modules. The net has to know
 which of its modules are input and output modules, in order to forward propagate
 input and to back propagate errors.
  	
-IT still needs to be explicitly determined how they should be connected. For 
+It still needs to be explicitly determined how they should be connected. For 
 this we use the most common connection type, which produces a full connectivity
 between layers, by connecting each neuron of one layer with each neuron of the
 other. This is implemented by the :class:`FullConnection` class::
@@ -110,7 +110,7 @@ Naming your Networks structure
 ------------------------------
 
 In some settings it makes sense to give the parts of a network explicit 
-identifiers. The structural components are derivde from the :class:`Named` 
+identifiers. The structural components are derive from the :class:`Named` 
 class, which means that they have an attribute `.name` by which you can 
 identify it by. If no name is given, a new name will be generated automatically.
 

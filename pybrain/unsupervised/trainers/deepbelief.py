@@ -12,7 +12,7 @@ from pybrain.structure import BiasUnit, FeedForwardNetwork, FullConnection
 from pybrain.structure.networks.rbm import Rbm
 from pybrain.structure.modules.neuronlayer import NeuronLayer
 from pybrain.supervised.trainers import Trainer
-from pybrain.unsupervised.trainers.rbm import (RbmBernoulliTrainer, 
+from pybrain.unsupervised.trainers.rbm import (RbmBernoulliTrainer,
                                                RbmGaussTrainer)
 
 
@@ -33,7 +33,7 @@ class DeepBeliefTrainer(Trainer):
         'gauss': RbmGaussTrainer,
     }
     
-    def __init__(self, net, dataset, epochs=50, 
+    def __init__(self, net, dataset, epochs=50,
                  cfg=None, distribution='bernoulli'):
         if isinstance(dataset, SupervisedDataSet):
             self.datasetfield = 'input'
@@ -67,7 +67,7 @@ class DeepBeliefTrainer(Trainer):
         biascons.sort(key=lambda c: layers.index(c.outmod))
         modules = zip(layers, layers[1:], layercons, biascons)
         for visible, hidden, layercon, biascon in modules:
-            rbm = Rbm.fromModules(visible, hidden, bias, 
+            rbm = Rbm.fromModules(visible, hidden, bias,
                                   layercon, biascon)
             yield rbm
         

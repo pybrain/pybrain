@@ -1,0 +1,16 @@
+:mod:`actionvalues` -- RL Components: ActionValues
+================================================
+
+.. automodule:: pybrain.rl.learners.valuebased.interface
+
+.. autoclass:: ActionValueInterface
+   :members:
+
+.. autoclass:: ActionValueTable
+   :members:
+   :show-inheritance:
+   
+.. autoclass:: ActionValueNetwork
+   :members:
+   :show-inheritance:
+   

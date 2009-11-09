@@ -8,7 +8,7 @@ We will use a simple 3-dimensional network:
     >>> size = 3
     >>> hsize = 1
     
-It is possible to define some weights before cosntruction:
+It is possible to define some weights before construction:
    
     >>> predefined = {'outconn': MotherConnection(1)}
     >>> predefined['outconn']._setParameters([0.5])
@@ -73,7 +73,7 @@ from pybrain import ModuleMesh, LinearLayer, TanhLayer
     
     
 def nearlyEqual(lst1, lst2, tolerance=0.001):
-    """Tell wether the itemwise differences of the two lists is never bigger 
+    """Tell whether the itemwise differences of the two lists is never bigger 
     than tolerance."""
     return all(abs(i - j) <= tolerance for i, j in zip(lst1, lst2))
     

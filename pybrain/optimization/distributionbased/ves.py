@@ -26,7 +26,7 @@ class VanillaGradientEvolutionStrategies(DistributionBasedOptimizer):
         
     elitism = False    
     
-    shapingFunction = TopLinearRanking(topFraction = 0.5)
+    shapingFunction = TopLinearRanking(topFraction=0.5)
 
     # initialization parameters
     rangemins = None
@@ -44,7 +44,7 @@ class VanillaGradientEvolutionStrategies(DistributionBasedOptimizer):
     def _additionalInit(self):
         xdim = self.numParameters
         assert not self.diagonalOnly, 'Diagonal-only not yet supported'
-        self.numDistrParams = xdim + xdim * (xdim+1) / 2
+        self.numDistrParams = xdim + xdim * (xdim + 1) / 2
                 
         if self.momentum != None:
             self.momentumVector = zeros(self.numDistrParams)
@@ -61,7 +61,7 @@ class VanillaGradientEvolutionStrategies(DistributionBasedOptimizer):
             else:
                 self.initCovariances = eye(xdim)
 
-        self.x = rand(xdim) * (self.rangemaxs-self.rangemins) + self.rangemins
+        self.x = rand(xdim) * (self.rangemaxs - self.rangemins) + self.rangemins
         self.sigma = dot(eye(xdim), self.initCovariances)
         self.factorSigma = cholesky(self.sigma)
         
@@ -78,12 +78,12 @@ class VanillaGradientEvolutionStrategies(DistributionBasedOptimizer):
         # for baseline computation
         self.phiSquareWindow = zeros((self.batchSize, self.numDistrParams))
         
-    def _produceNewSample(self, z = None, p = None):
+    def _produceNewSample(self, z=None, p=None):
         if z == None:
             p = randn(self.numParameters)
             z = dot(self.factorSigma.T, p) + self.x
         if p == None:
-            p = dot(inv(self.factorSigma).T, (z-self.x))            
+            p = dot(inv(self.factorSigma).T, (z - self.x))            
         self.allPs.append(p)
         self.allSamples.append(z)
         fit = self._oneEvaluation(z)
@@ -106,18 +106,18 @@ class VanillaGradientEvolutionStrategies(DistributionBasedOptimizer):
             # but as only their relative values matter, we ignore it.
             
             # stochastically reuse old samples, according to the change in distribution
-            for s in range(olds-self.batchSize, olds):
-                oldPdf = exp(-0.5*dot(self.allPs[s],self.allPs[s])) / oldDetFactorSigma
+            for s in range(olds - self.batchSize, olds):
+                oldPdf = exp(-0.5 * dot(self.allPs[s], self.allPs[s])) / oldDetFactorSigma
                 sample = self.allSamples[s]
-                newPs = dot(invA.T, (sample-self.x))
-                newPdf = exp(-0.5*dot(newPs,newPs)) / newDetFactorSigma
+                newPs = dot(invA.T, (sample - self.x))
+                newPdf = exp(-0.5 * dot(newPs, newPs)) / newDetFactorSigma
                 r = rand()
-                if r < (1-self.forcedRefresh) * newPdf / oldPdf:
+                if r < (1 - self.forcedRefresh) * newPdf / oldPdf:
                     self.allSamples.append(sample)
                     self.allFitnesses.append(self.allFitnesses[s])
                     self.allPs.append(newPs)
                 # never use only old samples
-                if (olds+self.batchSize) - len(self.allSamples) < self.batchSize * self.forcedRefresh:
+                if (olds + self.batchSize) - len(self.allSamples) < self.batchSize * self.forcedRefresh:
                     break
             self.allGenerated.append(self.batchSize - (len(self.allSamples) - olds) + self.allGenerated[-1])
 
@@ -129,11 +129,11 @@ class VanillaGradientEvolutionStrategies(DistributionBasedOptimizer):
                     self._produceNewSample()
                 else:
                     p = randn(self.numParameters)
-                    newPdf = exp(-0.5*dot(p,p)) / newDetFactorSigma
+                    newPdf = exp(-0.5 * dot(p, p)) / newDetFactorSigma
                     sample = dot(self.factorSigma.T, p) + self.x
-                    oldPs = dot(oldInvA.T, (sample-self.allCenters[-2]))
-                    oldPdf = exp(-0.5*dot(oldPs,oldPs)) / oldDetFactorSigma
-                    if r < 1 - oldPdf/newPdf:
+                    oldPs = dot(oldInvA.T, (sample - self.allCenters[-2]))
+                    oldPdf = exp(-0.5 * dot(oldPs, oldPs)) / oldDetFactorSigma
+                    if r < 1 - oldPdf / newPdf:
                         self._produceNewSample(sample, p)
                 
     def _learnStep(self):
@@ -170,7 +170,7 @@ class VanillaGradientEvolutionStrategies(DistributionBasedOptimizer):
             self.maxLearningSteps = self.numLearningSteps
         
         if self.verbose:
-            print 'Evals:', self.numEvaluations, 
+            print 'Evals:', self.numEvaluations,
             
         self.allCenters.append(self.x.copy())
         self.allFactorSigmas.append(self.factorSigma.copy())
@@ -219,10 +219,10 @@ class VanillaGradientEvolutionStrategies(DistributionBasedOptimizer):
         return dot(invSigma, (samplesArray - tmpX).T).T
         
     def _logDerivFactorSigma(self, sample, x, invSigma, factorSigma):
-        logDerivSigma = 0.5 * dot(dot(invSigma, outer(sample-x, sample-x)), invSigma) - 0.5 * invSigma
+        logDerivSigma = 0.5 * dot(dot(invSigma, outer(sample - x, sample - x)), invSigma) - 0.5 * invSigma
         if self.vanillaScale:
             logDerivSigma = multiply(outer(diag(abs(self.factorSigma)), diag(abs(self.factorSigma))), logDerivSigma)
-        return triu2flat(dot(factorSigma, (logDerivSigma+logDerivSigma.T)))
+        return triu2flat(dot(factorSigma, (logDerivSigma + logDerivSigma.T)))
         
     def _logDerivsFactorSigma(self, samples, x, invSigma, factorSigma):
         return [self._logDerivFactorSigma(sample, x, invSigma, factorSigma) for sample in samples]
@@ -252,7 +252,7 @@ class VanillaGradientEvolutionStrategies(DistributionBasedOptimizer):
         index = len(self.allSamples) % self.batchSize
         self.phiSquareWindow[index] = multiply(phi, phi)
         baseline = self._calcBaseline(shapedfitnesses)
-        gradient = multiply((ones(self.numDistrParams)*shapedfitnesses[-1] - baseline), phi)
+        gradient = multiply((ones(self.numDistrParams) * shapedfitnesses[-1] - baseline), phi)
         return gradient
     
     def _calcBaseline(self, shapedfitnesses):
@@ -272,3 +272,4 @@ class VanillaGradientEvolutionStrategies(DistributionBasedOptimizer):
         self.x = self.bestEvaluable
         self.allFactorSigmas[-1][:] = self.factorSigma
         self.sigma = dot(self.factorSigma.T, self.factorSigma)
+

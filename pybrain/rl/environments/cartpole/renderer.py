@@ -43,7 +43,7 @@ class CartPoleRenderer(Renderer):
         fig = figure(1)
         # draw cart
         axes = fig.add_subplot(111, aspect='equal')
-        self.box = Rectangle(xy=(self.pos-self.cartwidth/2.0, -self.cartheight), width=self.cartwidth, height=self.cartheight)
+        self.box = Rectangle(xy=(self.pos - self.cartwidth / 2.0, -self.cartheight), width=self.cartwidth, height=self.cartheight)
         axes.add_artist(self.box)
         self.box.set_clip_box(axes.bbox)
         
@@ -63,7 +63,7 @@ class CartPoleRenderer(Renderer):
             else:
                 self.box.set_facecolor('blue')
 
-            self.box.set_x(self.pos - self.cartwidth/2.0)
+            self.box.set_x(self.pos - self.cartwidth / 2.0)
             self.pole.set_xdata([self.pos, self.pos + self.polelength * sin(self.angle)])
             self.pole.set_ydata([0, self.polelength * cos(self.angle)])
             draw()

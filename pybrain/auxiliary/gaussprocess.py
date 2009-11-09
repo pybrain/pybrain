@@ -42,7 +42,7 @@ class GaussianProcess:
     def _kernel(self, a, b):
         """ kernel function, here RBF kernel """
         (l, sigma_f, _sigma_n) = self.hyper
-        r = sigma_f**2*exp(-1.0/(2*l**2)*norm(a-b, 2)**2)
+        r = sigma_f ** 2 * exp(-1.0 / (2 * l ** 2) * norm(a - b, 2) ** 2)
         # if a == b:
         #   r += sigma_n**2
         return r
@@ -56,13 +56,13 @@ class GaussianProcess:
             assert len(start) == len(stop) == len(step)
             dimstr = ["start[%i]:stop[%i]:step[%i], " % (i, i, i) for i in range(len(start))]
             dimstr = ''.join(dimstr)
-        return eval('c_[map(ravel, mgrid['+dimstr+'])]').T
+        return eval('c_[map(ravel, mgrid[' + dimstr + '])]').T
         
     def _buildCov(self, a, b):
         K = zeros((len(a), len(b)), float)
         for i in range(len(a)):
             for j in range(len(b)):
-                K[i,j] = self._kernel(a[i,:], b[j,:])
+                K[i, j] = self._kernel(a[i, :], b[j, :])
         return K
     
     def reset(self):
@@ -79,7 +79,7 @@ class GaussianProcess:
          
         self.trainx = dataset.getField('input')
         self.trainy = ravel(dataset.getField('target'))
-        self.noise = array([0.001]*len(self.trainx))
+        self.noise = array([0.001] * len(self.trainx))
         # print self.trainx, self.trainy
         self.calculated = False
         
@@ -90,7 +90,7 @@ class GaussianProcess:
         
         self.trainx = r_[self.trainx, dataset.getField('input')]
         self.trainy = r_[self.trainy, ravel(dataset.getField('target'))]
-        self.noise = array([0.001]*len(self.trainx))
+        self.noise = array([0.001] * len(self.trainx))
         self.calculated = False
         
     def addSample(self, train, target):
@@ -116,17 +116,17 @@ class GaussianProcess:
         test_test = self._buildCov(self.testx, self.testx)
 
         # calculate predictive mean and covariance
-        K = train_train + self.noise*eye(len(self.trainx))
+        K = train_train + self.noise * eye(len(self.trainx))
         
         if self.autonoise:
             # calculate average neighboring distance for auto-noise
             avgdist = 0
             sort_trainx = sort(self.trainx)
-            for i,d in enumerate(sort_trainx):
+            for i, d in enumerate(sort_trainx):
                 if i == 0:
                     continue
-                avgdist += d - sort_trainx[i-1]
-            avgdist /= len(sort_trainx)-1
+                avgdist += d - sort_trainx[i - 1]
+            avgdist /= len(sort_trainx) - 1
             # sort(self.trainx)
         
             # add auto-noise from neighbouring samples (not standard gp)  
@@ -136,9 +136,9 @@ class GaussianProcess:
                         continue
                 
                     d = norm(self.trainy[i] - self.trainy[j]) / (exp(norm(self.trainx[i] - self.trainx[j])))
-                    K[i,i] += d
+                    K[i, i] += d
 
-        self.pred_mean = self.mean + dot(test_train, solve(K, self.trainy-self.mean, sym_pos=0))
+        self.pred_mean = self.mean + dot(test_train, solve(K, self.trainy - self.mean, sym_pos=0))
         self.pred_cov = test_test - dot(test_train, dot(inv(K), train_test))
         self.calculated = True
     
@@ -168,7 +168,7 @@ class GaussianProcess:
             plot(self.testx, self.pred_mean, 'b', linewidth=1)
             # plot variance (as "polygon" going from left to right for upper half and back for lower half)
             fillx = r_[ravel(self.testx), ravel(self.testx[::-1])]
-            filly = r_[self.pred_mean+2*diag(self.pred_cov), self.pred_mean[::-1]-2*diag(self.pred_cov)[::-1]]
+            filly = r_[self.pred_mean + 2 * diag(self.pred_cov), self.pred_mean[::-1] - 2 * diag(self.pred_cov)[::-1]]
             fill(fillx, filly, facecolor='gray', edgecolor='white', alpha=0.3)
             title('1D Gaussian Process with mean and variance')
             
@@ -180,19 +180,19 @@ class GaussianProcess:
             ax = a3.Axes3D(fig) #@UndefinedVariable
             
             # plot training set
-            ax.plot3D(ravel(self.trainx[:,0]), ravel(self.trainx[:,1]), ravel(self.trainy), 'ro')
+            ax.plot3D(ravel(self.trainx[:, 0]), ravel(self.trainx[:, 1]), ravel(self.trainy), 'ro')
             
             # plot mean
-            (x, y, z) = map(lambda m: m.reshape(sqrt(len(m)), sqrt(len(m))), (self.testx[:,0], self.testx[:,1], self.pred_mean))
+            (x, y, z) = map(lambda m: m.reshape(sqrt(len(m)), sqrt(len(m))), (self.testx[:, 0], self.testx[:, 1], self.pred_mean))
             ax.plot_wireframe(x, y, z, colors='gray')
             return ax
         
-        elif self.indim ==2 and force2D:
+        elif self.indim == 2 and force2D:
             # plot mean on pcolor map
             gray()
             # (x, y, z) = map(lambda m: m.reshape(sqrt(len(m)), sqrt(len(m))), (self.testx[:,0], self.testx[:,1], self.pred_mean))
             m = floor(sqrt(len(self.pred_mean)))
-            pcolor(self.pred_mean.reshape(m, m)[::-1,:])  
+            pcolor(self.pred_mean.reshape(m, m)[::-1, :])  
             
         else: print "plotting only supported for indim=1 or indim=2."
     
@@ -203,12 +203,12 @@ if __name__ == '__main__':
     
     # --- example on how to use the GP in 1 dimension
     ds = SupervisedDataSet(1, 1)
-    gp = GaussianProcess(indim=1, start=-3, stop=3, step=0.05)    
+    gp = GaussianProcess(indim=1, start= -3, stop=3, step=0.05)    
     figure()
     
     x = mgrid[-3:3:0.2]
-    y = 0.1*x**2 + x + 1
-    z = sin(x) + 0.5*cos(y)
+    y = 0.1 * x ** 2 + x + 1
+    z = sin(x) + 0.5 * cos(y)
     
     ds.addSample(-2.5, -1)
     ds.addSample(-1.0, 3)
@@ -228,15 +228,15 @@ if __name__ == '__main__':
             
     # --- example on how to use the GP in 2 dimensions
     
-    ds = SupervisedDataSet(2,1)
+    ds = SupervisedDataSet(2, 1)
     gp = GaussianProcess(indim=2, start=0, stop=5, step=0.2)    
     figure()
     
-    x,y = mgrid[0:5:4j, 0:5:4j]
-    z = cos(x)*sin(y)
+    x, y = mgrid[0:5:4j, 0:5:4j]
+    z = cos(x) * sin(y)
     (x, y, z) = map(ravel, [x, y, z])
     
-    for i,j,k in zip(x, y, z):
+    for i, j, k in zip(x, y, z):
         ds.addSample([i, j], [k])
     
     gp.trainOnDataset(ds)

@@ -13,13 +13,13 @@ class ClientCapturePlayer(CapturePlayer):
     
     verbose = False
     
-    def __init__(self, game, color = CaptureGame.BLACK, player = 'AtariGreedy', **args):
+    def __init__(self, game, color=CaptureGame.BLACK, player='AtariGreedy', **args):
         '''player: AtariGreedy, AtariMinMax, AtariAlphaBeta possible'''
         CapturePlayer.__init__(self, game, color, **args)
         # build connection
         host = "127.0.0.1"
         port = 6524
-        self.player=player
+        self.player = player
         try:
             self.theSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             self.theSocket.connect((host, port))
@@ -29,13 +29,13 @@ class ClientCapturePlayer(CapturePlayer):
             print 'Failed to connect'
 
         #define player
-        self.theSocket.send(player+'-'+str(color)+'\n')
+        self.theSocket.send(player + '-' + str(color) + '\n')
         if self.verbose:
-            print 'Sending:', player+'-'+str(color)
+            print 'Sending:', player + '-' + str(color)
         accept = ""
         while len (accept) < 2:
             accept = self.theSocket.recv(1000)
-        assert accept=='OK'            
+        assert accept == 'OK'            
         
 
     def getAction(self):
@@ -57,7 +57,7 @@ class ClientCapturePlayer(CapturePlayer):
         # get the suggested move from the java player:
         if self.verbose:
             print 'Sending:', js
-        self.theSocket.send(js+'\n') 
+        self.theSocket.send(js + '\n') 
         jr = ""
         if self.verbose:
             print 'Waiting for server',

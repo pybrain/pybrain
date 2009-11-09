@@ -11,13 +11,13 @@ plotsymbols = ['-', ':', '-.']
 psymbol = '-'
 
     
-def plotFitnessProgession(fitdict, batchsize = 1, semilog = True, 
-                          targetcutoff = 1e-10, minimize = True, 
-                          title = None, verbose = True,
-                          varyplotsymbols = False,
-                          averageOverEvaluations = True,
-                          onlysuccessful = False,
-                          resolution = 1000):
+def plotFitnessProgession(fitdict, batchsize=1, semilog=True,
+                          targetcutoff=1e-10, minimize=True,
+                          title=None, verbose=True,
+                          varyplotsymbols=False,
+                          averageOverEvaluations=True,
+                          onlysuccessful=False,
+                          resolution=1000):
     """ Plot multiple fitness curves on a single figure, with the following customizations:
     
         @param fitdict: a dictionary mapping a name to a list of fitness-arrays 
@@ -47,9 +47,9 @@ def plotFitnessProgession(fitdict, batchsize = 1, semilog = True,
         if targetcutoff == None:
             res[:len(l)] += l
         elif minimize:
-            res[:len(l)] += l.clip(min = targetcutoff, max = 1e100)            
+            res[:len(l)] += l.clip(min=targetcutoff, max=1e100)            
         else:
-            res[:len(l)] += l.clip(max = targetcutoff, min = -1e100)            
+            res[:len(l)] += l.clip(max=targetcutoff, min= -1e100)            
         return res
     
     def relevantPart(l):
@@ -57,9 +57,9 @@ def plotFitnessProgession(fitdict, batchsize = 1, semilog = True,
         if targetcutoff != None:
             for i, val in enumerate(l):
                 if minimize and val <= targetcutoff:
-                    return l[:i+1]
+                    return l[:i + 1]
                 elif not minimize and val >= targetcutoff:
-                    return l[:i+1]
+                    return l[:i + 1]
         return l
             
         
@@ -90,16 +90,16 @@ def plotFitnessProgession(fitdict, batchsize = 1, semilog = True,
         if averageOverEvaluations:            
             worstPerf = max(map(max, flist))     
             if semilog:
-                yPlot = list(reversed(power(10,((array(range(resolution+1))/float(resolution))*
-                                             (log10(worstPerf)-log10(targetcutoff))+log10(targetcutoff)))))            
+                yPlot = list(reversed(power(10, ((array(range(resolution + 1)) / float(resolution)) * 
+                                             (log10(worstPerf) - log10(targetcutoff)) + log10(targetcutoff)))))            
             else:        
-                yPlot = list(reversed((array(range(resolution+1))/float(resolution))*
-                                             (worstPerf-targetcutoff)+targetcutoff))            
+                yPlot = list(reversed((array(range(resolution + 1)) / float(resolution)) * 
+                                             (worstPerf - targetcutoff) + targetcutoff))            
             xPlot = avgFoundAfter(yPlot, flist, batchsize)
         
         else:
             longestRun = max(map(len, flist))
-            xPlot = array(range(longestRun))*batchsize        
+            xPlot = array(range(longestRun)) * batchsize        
             summed = zeros(longestRun)
             for l in flist:
                 summed += paddedClipped(l, longestRun)
@@ -109,11 +109,11 @@ def plotFitnessProgession(fitdict, batchsize = 1, semilog = True,
             semilogy()
         
         if varyplotsymbols:
-            psymbol = plotsymbols[i%len(plotsymbols)]
+            psymbol = plotsymbols[i % len(plotsymbols)]
         else:
             psymbol = '-'
         
-        plot(xPlot, yPlot, psymbol, label = name)
+        plot(xPlot, yPlot, psymbol, label=name)
         
     ylabel('-fitness')
     xlabel('number of evaluations')

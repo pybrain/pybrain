@@ -7,25 +7,25 @@ from shipsteer import ShipSteeringEnvironment
 class GoNorthwardTask(EpisodicTask):
 
     """ The task of balancing some pole(s) on a cart """
-    def __init__(self, env = None, maxsteps = 1000):
+    def __init__(self, env=None, maxsteps=1000):
         """
         @param env: (optional) an instance of a ShipSteeringEnvironment (or a subclass thereof)
         @param maxsteps: maximal number of steps (default: 1000) 
         """
         if env == None:
-            env = ShipSteeringEnvironment(render = False)
+            env = ShipSteeringEnvironment(render=False)
         EpisodicTask.__init__(self, env) 
         self.N = maxsteps
         self.t = 0
         
         # scale sensors
         #                          [h,              hdot,           v] 
-        self.sensor_limits = [(-180.0,+180.0),(-180.0,+180.0), (-10.0,+40.0)]
+        self.sensor_limits = [(-180.0, +180.0), (-180.0, +180.0), (-10.0, +40.0)]
         
         # actions:              thrust,       rudder       
-        self.actor_limits = [(-1.0,+2.0), (-90.0,+90.0)]
+        self.actor_limits = [(-1.0, +2.0), (-90.0, +90.0)]
         # scale reward over episode, such that max. return = 100
-        self.rewardscale = 100./maxsteps/self.sensor_limits[2][1]
+        self.rewardscale = 100. / maxsteps / self.sensor_limits[2][1]
         
     def reset(self):
         EpisodicTask.reset(self)
@@ -42,7 +42,7 @@ class GoNorthwardTask(EpisodicTask):
         return False
         
     def getReward(self):
-        if abs(self.env.getHeading())<5.: 
+        if abs(self.env.getHeading()) < 5.: 
             return self.env.getSpeed() * self.rewardscale
         else:        
             return 0

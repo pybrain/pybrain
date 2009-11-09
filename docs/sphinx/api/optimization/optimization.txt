@@ -1,0 +1,49 @@
+:mod:`optimization` -- Black-box Optimization Algorithms
+========================================================
+
+The two base classes
+--------------------
+
+.. automodule:: pybrain.optimization.optimizer
+
+.. autoclass:: BlackBoxOptimizer
+   :members: __init__, setEvaluator, learn, 
+   		minimize, 
+   		maxEvaluations, maxLearningSteps, desiredEvaluation,
+   		verbose, storeAllEvaluations, storeAllEvaluated,
+   		numParameters    
+    
+.. autoclass:: ContinuousOptimizer
+   :members: __init__
+   :show-inheritance:
+   
+
+General Black-box optimizers
+----------------------------
+
+.. automodule:: pybrain.optimization.randomsearch
+
+.. autoclass:: RandomSearch
+   :members: 
+
+.. automodule:: pybrain.optimization.hillclimber
+
+.. autoclass:: HillClimber
+   :members: 
+
+.. autoclass:: StochasticHillClimber
+   :members: temperature
+   
+
+Continuous optimizers
+---------------------
+
+.. automodule:: pybrain.optimization.neldermead
+
+.. autoclass:: NelderMead
+   :members: 
+
+.. automodule:: pybrain.optimization.distributionbased.cmaes
+
+.. autoclass:: CMAES
+   :members: 

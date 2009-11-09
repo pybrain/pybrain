@@ -34,17 +34,17 @@ class EvolinoNetwork(Module):
 
         self._in_to_hid_connection = FullConnection(self._in_layer,
                                                     self._hid_layer)
-        self._bias_to_hid_connection = FullConnection(self._bias, 
+        self._bias_to_hid_connection = FullConnection(self._bias,
                                                       self._hid_layer)
-        self._hid_to_out_connection = FullConnection(self._hid_layer, 
+        self._hid_to_out_connection = FullConnection(self._hid_layer,
                                                      self._out_layer)
         self._network.addConnection(self._in_to_hid_connection)
         self._network.addConnection(self._bias_to_hid_connection)
         self._network.addConnection(self._hid_to_out_connection)
 
-        self._recurrent_connection = FullConnection(self._hid_layer, 
+        self._recurrent_connection = FullConnection(self._hid_layer,
                                                     self._hid_layer)
-        self._network.addRecurrentConnection(self._recurrent_connection )
+        self._network.addRecurrentConnection(self._recurrent_connection)
 
         self._network.sortModules()
         self._network.reset()
@@ -101,7 +101,7 @@ class EvolinoNetwork(Module):
         Use .reset() and .washout() before."""
         generated_sequence = [] #empty(length)
         for _ in xrange(length):
-            backprojection  = self._getLastOutput()
+            backprojection = self._getLastOutput()
             backprojection *= self.backprojectionFactor
             out = self._activateNetwork(backprojection)
             generated_sequence.append(out)
@@ -125,7 +125,7 @@ class EvolinoNetwork(Module):
 
     def _validateGenomeLayer(self, layer):
         """Validate the type and state of a layer."""
-        assert isinstance(layer,LSTMLayer)
+        assert isinstance(layer, LSTMLayer)
         assert not layer.peepholes
 
     def getGenome(self):
@@ -154,10 +154,10 @@ class EvolinoNetwork(Module):
                 for c in connections:
                     # iterate sources of connection
                     for i in range(c.indim):
-                        idx = i + cell_idx*c.indim + t*layer.outdim*c.indim
+                        idx = i + cell_idx * c.indim + t * layer.outdim * c.indim
                         cell_weights.append(c.params[idx])
 
-            layer_weights.append( cell_weights )
+            layer_weights.append(cell_weights)
 
         return layer_weights
 
@@ -177,7 +177,7 @@ class EvolinoNetwork(Module):
                 for c in connections:
                     # iterate sources of connection
                     for i in range(c.indim):
-                        idx = i + cell_idx*c.indim + t*layer.outdim*c.indim
+                        idx = i + cell_idx * c.indim + t * layer.outdim * c.indim
                         c.params[idx] = cell_weights.pop(0)
 
     #
@@ -193,7 +193,7 @@ class EvolinoNetwork(Module):
         """Return the weight matrix of the linear output layer."""
         c = self._hid_to_out_connection
         p = c.params
-        return reshape( p, (c.outdim, c.indim) )
+        return reshape(p, (c.outdim, c.indim))
 
     def _getRawOutput(self):
         """Return the current output of the RNN. This is needed for linear

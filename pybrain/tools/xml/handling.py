@@ -78,7 +78,8 @@ class XMLHandling:
     def findNode(self, name, index = 0, root = None):
         """ return the toplevel node with the provided name (if there are more, choose the 
         index corresponding one). """
-        if root == None: root = self.root
+        if root == None: 
+            root = self.root
         for n in root.childNodes:
             if n.nodeName == name:
                 if index == 0:
@@ -88,7 +89,8 @@ class XMLHandling:
         
     def findNamedNode(self, name, nameattr, root = None):
         """ return the toplevel node with the provided name, and the fitting 'name' attribute. """
-        if root == None: root = self.root
+        if root == None: 
+            root = self.root
         for n in root.childNodes:
             if n.nodeName == name:
                 if 'name' in n.attributes:

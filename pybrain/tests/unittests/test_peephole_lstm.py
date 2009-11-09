@@ -58,9 +58,9 @@ from pybrain.tests.helpers import epsilonCheck
 
 def buildMinimalLSTMNetwork():
     N = RecurrentNetwork('simpleLstmNet')  
-    i = LinearLayer(4, name = 'i')
-    h = LSTMLayer(1, peepholes = True, name = 'lstm')
-    o = LinearLayer(1, name = 'o')
+    i = LinearLayer(4, name='i')
+    h = LSTMLayer(1, peepholes=True, name='lstm')
+    o = LinearLayer(1, name='o')
     N.addInputModule(i)
     N.addModule(h)
     N.addOutputModule(o)
@@ -74,9 +74,10 @@ def predictOutcome(net, input, output):
     if epsilonCheck(res - output):
         return True
     else:
-        print 'expected:', round(output,7), '- got:', round(res,7)
+        print 'expected:', round(output, 7), '- got:', round(res, 7)
         return False
 
 
 if __name__ == "__main__":
     runModuleTestSuite(__import__('__main__'))
+

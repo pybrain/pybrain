@@ -7,7 +7,7 @@ class CompetitiveCoevolution(Coevolution):
     """ Coevolution with 2 independent populations, and competitive fitness sharing. """
     
     def __str__(self):
-        return 'Competitive'+Coevolution.__str__(self)
+        return 'Competitive' + Coevolution.__str__(self)
     
     def _initPopulation(self, seeds):
         """ one half for each population """
@@ -15,8 +15,8 @@ class CompetitiveCoevolution(Coevolution):
             for s in seeds:
                 s.parent = None
         if len(seeds) > 1:
-            s1 = seeds[:len(seeds)/2]
-            s2 = seeds[len(seeds)/2:]
+            s1 = seeds[:len(seeds) / 2]
+            s2 = seeds[len(seeds) / 2:]
         else:
             # not enough seeds: randomize 
             s1 = seeds
@@ -30,7 +30,7 @@ class CompetitiveCoevolution(Coevolution):
         """ determine the competitive shared fitness for the population of hosts, w.r. to
         the population of parasites. """
         if len(parasites) == 0:
-            return [0]*len(hosts)
+            return [0] * len(hosts)
         
         # determine beat-sum for parasites (nb of games lost)
         beatsums = {}
@@ -48,7 +48,7 @@ class CompetitiveCoevolution(Coevolution):
             for p in parasites:
                 if self._beats(h, p) > 0:
                     assert beatsums[p] > 0
-                    hsum += 1./beatsums[p]
+                    hsum += 1. / beatsums[p]
                 elif self._beats(h, p) == 0:
                     unplayed += 1
             # take into account the number of parasites played, to avoid
@@ -77,7 +77,7 @@ class CompetitiveCoevolution(Coevolution):
         fit = self._competitiveSharedFitness(self.pop, self.parasitePop)
         if hoFtournSize > 0:
             fitHof = self._competitiveSharedFitness(self.pop, self.hallOfFame)
-            fit = map(lambda (f1, f2): tournSize*f1+hoFtournSize*f2, zip(fit, fitHof))
+            fit = map(lambda (f1, f2): tournSize * f1 + hoFtournSize * f2, zip(fit, fitHof))
         return fit
     
     def _oneGeneration(self):
@@ -95,10 +95,10 @@ class CompetitiveCoevolution(Coevolution):
 if __name__ == '__main__':
     from pybrain.utilities import fListToString
     # TODO: convert to unittest
-    C = CompetitiveCoevolution(None, [1,2,3,4,5,6,7,8], populationSize = 4)
-    def b(x,y):
-        C.allResults[(x,y)] = [1,1,1,[]]
-        C.allResults[(y,x)] = [-1,1,-1,[]]
+    C = CompetitiveCoevolution(None, [1, 2, 3, 4, 5, 6, 7, 8], populationSize=4)
+    def b(x, y):
+        C.allResults[(x, y)] = [1, 1, 1, []]
+        C.allResults[(y, x)] = [-1, 1, -1, []]
         if x not in C.allOpponents:
             C.allOpponents[x] = []
         if y not in C.allOpponents:
@@ -106,20 +106,20 @@ if __name__ == '__main__':
         C.allOpponents[x].append(y)
         C.allOpponents[y].append(x)
         
-    b(1,6)
-    b(1,7)
-    b(8,1)
-    b(5,2)
-    b(6,2)
-    b(8,2)
-    b(3,5)
-    b(3,6)
-    b(3,7)
-    b(4,5)
-    b(4,7)
-    b(8,4)
+    b(1, 6)
+    b(1, 7)
+    b(8, 1)
+    b(5, 2)
+    b(6, 2)
+    b(8, 2)
+    b(3, 5)
+    b(3, 6)
+    b(3, 7)
+    b(4, 5)
+    b(4, 7)
+    b(8, 4)
     print C.pop
     print C.parasitePop
     print '          ', fListToString(C._competitiveSharedFitness(C.pop, C.parasitePop), 2)
-    print 'should be:', fListToString([0.83,  0.00,  1.33,  0.83],2)
+    print 'should be:', fListToString([0.83, 0.00, 1.33, 0.83], 2)
     

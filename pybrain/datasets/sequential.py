@@ -39,13 +39,13 @@ class SequentialDataSet(SupervisedDataSet):
         """Return a sequence of one single field given by `field` and indexed by
         `index`."""
         seq = ravel(self.getField('sequence_index'))
-        if len(seq) == index+1:
+        if len(seq) == index + 1:
             # user wants to access the last sequence, return until end of data
             return self.getField(field)[ravel(self.getField('sequence_index'))[index]:]            
-        if len(seq) < index+1:
+        if len(seq) < index + 1:
             # sequence index beyond number of sequences. raise exception
             raise IndexError('sequence does not exist.')
-        return self.getField(field)[ravel(self.getField('sequence_index'))[index]:ravel(self.getField('sequence_index'))[index+1]]
+        return self.getField(field)[ravel(self.getField('sequence_index'))[index]:ravel(self.getField('sequence_index'))[index + 1]]
 
     def getSequence(self, index):
         """Returns the sequence given by `index`. 
@@ -67,14 +67,14 @@ class SequentialDataSet(SupervisedDataSet):
         
         Mostly used like .endOfData() with while loops."""
         seq = ravel(self.getField('sequence_index'))
-        if len(seq) == index+1:
+        if len(seq) == index + 1:
             # user wants to access the last sequence, return until end of data
             return self.endOfData()
-        if len(seq) < index+1:
+        if len(seq) < index + 1:
             # sequence index beyond number of sequences. raise exception
             raise IndexError('sequence does not exist.')  
         else:
-            return self.index >= seq[index+1]
+            return self.index >= seq[index + 1]
     
     def gotoSequence(self, index):
         """Move the internal marker to the beginning of sequence `index`."""
@@ -98,13 +98,13 @@ class SequentialDataSet(SupervisedDataSet):
         to the last sequence, the sequence is considered to go until the end
         of the dataset."""
         seq = ravel(self.getField('sequence_index'))
-        if len(seq) == index+1:
+        if len(seq) == index + 1:
             # user wants to access the last sequence, return until end of data
             return int(self.getLength() - seq[index])
-        if len(seq) < index+1:
+        if len(seq) < index + 1:
             # sequence index beyond number of sequences. raise exception
             raise IndexError('sequence does not exist.')  
-        return int(seq[index+1] - seq[index])
+        return int(seq[index + 1] - seq[index])
     
     def removeSequence(self, index):
         """Remove the `index`'th sequence from the dataset and places the
@@ -114,14 +114,14 @@ class SequentialDataSet(SupervisedDataSet):
             raise IndexError('sequence does not exist.')
         sequences = ravel(self.getField('sequence_index'))
         seqstart = sequences[index]
-        if index == self.getNumSequences()-1:
+        if index == self.getNumSequences() - 1:
             # last sequence is going to be removed
             lastSeqDeleted = True
             seqend = self.getLength()
         else:
             lastSeqDeleted = False 
             # sequence to remove is not last one (sequence_index exists)
-            seqend = sequences[index+1]
+            seqend = sequences[index + 1]
         
         # cut out data from all fields
         for label in self.link:
@@ -131,18 +131,18 @@ class SequentialDataSet(SupervisedDataSet):
             self.endmarker[label] -= seqend - seqstart
         
         # update sequence indices
-        for i,val in enumerate(sequences):
+        for i, val in enumerate(sequences):
             if val > seqstart:
-                self.data['sequence_index'][i,:] -= seqend - seqstart
+                self.data['sequence_index'][i, :] -= seqend - seqstart
         
         # remove sequence index of deleted sequence and reduce its endmarker
-        self.data['sequence_index'] = r_[self.data['sequence_index'][:index,:], self.data['sequence_index'][index+1:,:]]
+        self.data['sequence_index'] = r_[self.data['sequence_index'][:index, :], self.data['sequence_index'][index + 1:, :]]
         self.endmarker['sequence_index'] -= 1
 
         if lastSeqDeleted:
             # last sequence was removed
             # move sequence marker to last remaining sequence
-            self.currentSeq = index-1
+            self.currentSeq = index - 1
             # move sample marker to end of dataset
             self.index = self.getLength()
             # if there was only 1 sequence left, re-initialize sequence index
@@ -171,7 +171,7 @@ class SequentialDataSet(SupervisedDataSet):
         """Return an iterator over sequence lists."""
         return iter(map(list, iter(self)))
     
-    def evaluateModuleMSE(self, module, averageOver = 1, **args):
+    def evaluateModuleMSE(self, module, averageOver=1, **args):
         """Evaluate the predictions of a module on a sequential dataset
         and return the MSE (potentially average over a number of epochs)."""
         res = 0.
@@ -184,16 +184,16 @@ class SequentialDataSet(SupervisedDataSet):
                 totalError += e
                 ponderation += p  
             assert ponderation > 0          
-            res += totalError/ponderation    
-        return res/averageOver
+            res += totalError / ponderation    
+        return res / averageOver
    
-    def splitWithProportion(self, proportion = 0.5):
+    def splitWithProportion(self, proportion=0.5):
         """Produce two new datasets, each containing a part of the sequences. 
         
         The first dataset will have a fraction given by `proportion` of the 
         dataset."""
         l = self.getNumSequences()
-        leftIndices = sample(range(l), int(l*proportion))
+        leftIndices = sample(range(l), int(l * proportion))
         leftDs = self.copy()
         leftDs.clear()
         rightDs = leftDs.copy()
@@ -209,3 +209,4 @@ class SequentialDataSet(SupervisedDataSet):
                     rightDs.addSample(*sp)
             index += 1
         return leftDs, rightDs
+

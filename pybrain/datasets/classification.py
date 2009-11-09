@@ -16,7 +16,7 @@ class ClassificationDataSet(SupervisedDataSet):
         an iterable of strings as `class_labels`."""
         # FIXME: hard to keep nClasses synchronized if appendLinked() etc. is used.
         SupervisedDataSet.__init__(self, inp, target)
-        self.addField('class',1)
+        self.addField('class', 1)
         self.nClasses = nb_classes
         if len(self) > 0:
             # calculate class histogram, if we already have data
@@ -27,7 +27,7 @@ class ClassificationDataSet(SupervisedDataSet):
         else:
             self.class_labels = class_labels
         # copy classes (may be changed into other representation)
-        self.setField('class', self.getField('target') )
+        self.setField('class', self.getField('target'))
 
 
     @classmethod
@@ -36,8 +36,8 @@ class ClassificationDataSet(SupervisedDataSet):
         called 'data' which is an array of nSamples * nFeatures + 1 and 
         contains the class in the first column."""
         from mlabwrap import mlab #@UnresolvedImport
-        d=mlab.load(fname)
-        return cls(d.data[:,0], d.data[:,1:])
+        d = mlab.load(fname)
+        return cls(d.data[:, 0], d.data[:, 1:])
     
     @classmethod
     def load_libsvm(cls, f):
@@ -47,7 +47,7 @@ class ClassificationDataSet(SupervisedDataSet):
         # find max. number of features 
         for line in f:
             n = int(line.split()[-1].split(':')[0])            
-            if n>nFeat:
+            if n > nFeat:
                 nFeat = n                
         f.seek(0)
         labels = []
@@ -64,13 +64,13 @@ class ClassificationDataSet(SupervisedDataSet):
             nextidx = 1
             for r in line[1:]:
                 # construct list of features, taking care of sparsity
-                (idx,val) = r.split(':')
+                (idx, val) = r.split(':')
                 idx = int(idx)
-                for _ in range(nextidx,idx):
+                for _ in range(nextidx, idx):
                     feat.append(0.0)
                 feat.append(float(val))
-                nextidx = idx+1
-            for _ in range(nextidx,nFeat+1):
+                nextidx = idx + 1
+            for _ in range(nextidx, nFeat + 1):
                 feat.append(0.0)
             features.append(feat[:])    # [:] causes copy
             labels.append([label])
@@ -99,33 +99,33 @@ class ClassificationDataSet(SupervisedDataSet):
         """Ensure that the class field is properly defined and nClasses is set.
         """
         if len(self['class']) < len(self['target']):
-            if self.outdim>1:
+            if self.outdim > 1:
                 raise IndexError, 'Classes and 1-of-k representation out of sync!'
             else:
-                self.setField('class', self.getField('target').astype(int) )
+                self.setField('class', self.getField('target').astype(int))
                 
         if self.nClasses <= 0:
-            flat_labels = list( ravel(self['class']) )
-            classes       = list(set( flat_labels ))
+            flat_labels = list(ravel(self['class']))
+            classes = list(set(flat_labels))
             self.nClasses = len(classes)
 
     def calculateStatistics(self):
         """Return a class histogram."""
         self.assignClasses()
         self.classHist = {}
-        flat_labels = list( ravel(self['class']) )
+        flat_labels = list(ravel(self['class']))
         for class_ in range(self.nClasses):
             self.classHist[class_] = flat_labels.count(class_)
         return self.classHist
 
-    def getClass(self,idx):
+    def getClass(self, idx):
         """Return the label of given class."""
         try:
             return self.class_labels[idx]
         except IndexError:
             print "error: classes not defined yet!" 
 
-    def _convertToOneOfMany(self, bounds=(0,1)):
+    def _convertToOneOfMany(self, bounds=(0, 1)):
         """Converts the target classes to a 1-of-k representation, retaining the
         old targets as a field `class`.
         
@@ -134,13 +134,13 @@ class ClassificationDataSet(SupervisedDataSet):
         if self.outdim != 1:
             # we already have the correct representation (hopefully...)
             return
-        if self.nClasses <=0:
+        if self.nClasses <= 0:
             self.calculateStatistics()
         oldtarg = self.getField('target')
-        newtarg = zeros([len(self), self.nClasses],dtype='Int32') + bounds[0]
+        newtarg = zeros([len(self), self.nClasses], dtype='Int32') + bounds[0]
         for i in range(len(self)):
-            newtarg[i,int(oldtarg[i])] = bounds[1]
-        self.setField('target',newtarg)
+            newtarg[i, int(oldtarg[i])] = bounds[1]
+        self.setField('target', newtarg)
         self.setField('class', oldtarg)
         # probably better not to link field, otherwise there may be confusion 
         # if getLinked() is called?
@@ -168,27 +168,27 @@ class ClassificationDataSet(SupervisedDataSet):
         rightDs = leftDs.copy()
         # check which fields to split
         splitThis = []
-        for f in ['input','target','class','importance','aux']:
+        for f in ['input', 'target', 'class', 'importance', 'aux']:
             if self.hasField(f):
                 splitThis.append(f)
         # need to synchronize input, target, and class fields
         for field in splitThis:
-            leftDs.setField(field, self[field][leftIndices,:])
+            leftDs.setField(field, self[field][leftIndices, :])
             leftDs.endmarker[field] = len(leftIndices)
-            rightDs.setField(field, self[field][rightIndices,:])
+            rightDs.setField(field, self[field][rightIndices, :])
             rightDs.endmarker[field] = len(rightIndices)
         leftDs.assignClasses()
         rightDs.assignClasses()
         return leftDs, rightDs
     
-    def castToRegression(self,values):
+    def castToRegression(self, values):
         """Converts data set into a SupervisedDataSet for regression. Classes
         are used as indices into the value array given."""
         regDs = SupervisedDataSet(self.indim, 1)
         fields = self.getFieldNames()
         fields.remove('target')
         for f in fields:
-                regDs.setField(f, self[f])
+            regDs.setField(f, self[f])
         regDs.setField('target', values[self['class'].astype(int)])
         return regDs
     
@@ -207,14 +207,14 @@ class SequenceClassificationDataSet(SequentialDataSet, ClassificationDataSet):
         # FIXME: hard to keep nClasses synchronized if appendLinked() etc. is used.
         SequentialDataSet.__init__(self, inp, target)
         # we want integer class numbers as targets
-        self.convertField('target',int)
+        self.convertField('target', int)
         if len(self) > 0:
             # calculate class histogram, if we already have data
             self.calculateStatistics()
         self.nClasses = nb_classes
         self.class_labels = range(self.nClasses) if class_labels is None else class_labels
         # copy classes (targets may be changed into other representation)
-        self.setField('class', self.getField('target') )
+        self.setField('class', self.getField('target'))
 
     def __add__(self, other):
         """ NOT IMPLEMENTED """
@@ -233,7 +233,7 @@ class SequenceClassificationDataSet(SequentialDataSet, ClassificationDataSet):
         It is assumed that the last target for each class is the class of the 
         sequence. Also mind that the data will be sorted by class in the 
         resulting data sets."""
-        lastidx = ravel(self['sequence_index'][1:]-1).astype(int)
+        lastidx = ravel(self['sequence_index'][1:] - 1).astype(int)
         classes = ravel(self['class'][lastidx])
         trnDs = self.copy()
         trnDs.clear()
@@ -244,16 +244,16 @@ class SequenceClassificationDataSet(SequentialDataSet, ClassificationDataSet):
             idx, = where(classes == c)
             nCls = len(idx)
             perm = permutation(nCls).tolist()
-            nTst, nVal = (int(testfrac*nCls), int(evalfrac*nCls))
-            for count, ds in zip([nTst,nVal,nCls-nTst-nVal], [tstDs,valDs,trnDs]):
+            nTst, nVal = (int(testfrac * nCls), int(evalfrac * nCls))
+            for count, ds in zip([nTst, nVal, nCls - nTst - nVal], [tstDs, valDs, trnDs]):
                 for _ in range(count):
                     feat = self.getSequence(idx[perm.pop()])[0]
                     ds.newSequence()
                     for s in feat:
                         ds.addSample(s, [c])
                 ds.assignClasses()
-            assert perm==[]
-        if len(valDs)>0:
+            assert perm == []
+        if len(valDs) > 0:
             return trnDs, tstDs, valDs
         else:
             return trnDs, tstDs
@@ -261,21 +261,21 @@ class SequenceClassificationDataSet(SequentialDataSet, ClassificationDataSet):
     def getSequenceClass(self, index=None):
         """Return a flat array (or single scalar) comprising one class per 
         sequence as given by last pattern in each sequence."""
-        lastSeq = self.getNumSequences()-1
+        lastSeq = self.getNumSequences() - 1
         if index is None:
-            classidx = r_[self['sequence_index'].astype(int)[1:,0]-1, len(self)-1]
-            return self['class'][classidx,0]
+            classidx = r_[self['sequence_index'].astype(int)[1:, 0] - 1, len(self) - 1]
+            return self['class'][classidx, 0]
         else:
             if index < lastSeq:
-                return self['class'][self['sequence_index'].astype(int)[index+1,0]-1,0]
+                return self['class'][self['sequence_index'].astype(int)[index + 1, 0] - 1, 0]
             elif index == lastSeq:
-                return self['class'][len(self)-1,0]
+                return self['class'][len(self) - 1, 0]
             raise IndexError, "Sequence index out of range!"
 
     def removeSequence(self, index):
         """Remove sequence (including class field) from the dataset."""
         self.assignClasses()
-        self.linkFields(['input','target','class'])
+        self.linkFields(['input', 'target', 'class'])
         SequentialDataSet.removeSequence(self, index)
         self.unlinkFields(['class'])
 
@@ -284,7 +284,7 @@ class SequenceClassificationDataSet(SequentialDataSet, ClassificationDataSet):
         used with Alex Graves nnl_ndim program in 
         task="sequence classification" mode."""
         # make sure classes are defined properly
-        assert len(self['class'])==len(self['target'])
+        assert len(self['class']) == len(self['target'])
         if self.nClasses > 10:
             raise 
         from pycdf import CDF, NC
@@ -295,7 +295,7 @@ class SequenceClassificationDataSet(SequentialDataSet, ClassificationDataSet):
         
         # Create the file. Raise the automode flag, so that
         # we do not need to worry about setting the define/data mode.
-        d = CDF(filename, NC.WRITE|NC.CREATE|NC.TRUNC)
+        d = CDF(filename, NC.WRITE | NC.CREATE | NC.TRUNC)
         d.automode()
         
         # Create 2 global attributes, one holding a string,
@@ -313,46 +313,47 @@ class SequenceClassificationDataSet(SequentialDataSet, ClassificationDataSet):
             dims[name] = d.def_dim(name, sz)
     
         # Create a netCDF record variables
-        inputs        = d.def_var('inputs', NC.FLOAT, (dims['numTimesteps'],dims['inputPattSize']))
-        targetStrings = d.def_var('targetStrings', NC.CHAR, (dims['numSeqs'],dims['maxLabelLength']))
-        seqLengths    = d.def_var('seqLengths', NC.INT, (dims['numSeqs']))       
-        labels        = d.def_var('labels', NC.CHAR, (dims['numLabels'],dims['maxLabelLength']))
+        inputs = d.def_var('inputs', NC.FLOAT, (dims['numTimesteps'], dims['inputPattSize']))
+        targetStrings = d.def_var('targetStrings', NC.CHAR, (dims['numSeqs'], dims['maxLabelLength']))
+        seqLengths = d.def_var('seqLengths', NC.INT, (dims['numSeqs']))       
+        labels = d.def_var('labels', NC.CHAR, (dims['numLabels'], dims['maxLabelLength']))
         
         # Switch to data mode (automatic)
 
         # assign float and integer arrays directly 
-        inputs.put( self['input'].astype(single) )
+        inputs.put(self['input'].astype(single))
         # strings must be written as scalars (sucks!)
         for i in range(dimsize['numSeqs']):
             targetStrings.put_1(i, str(self.getSequenceClass(i)))
         for i in range(self.nClasses):
-            labels.put_1(i,str(i))
+            labels.put_1(i, str(i))
         # need colon syntax for assigning list
         seqLengths[:] = [self.getSequenceLength(i) for i in range(self.getNumSequences())]
         
         # Close file
-        print "wrote netCDF file "+filename
+        print "wrote netCDF file " + filename
         d.close()                     
     
 
 if __name__ == "__main__":
-    dataset = ClassificationDataSet(2,1, class_labels=['Urd','Verdandi','Skuld'])
-    dataset.appendLinked( [ 0.1, 0.5 ]   , [0] )
-    dataset.appendLinked( [ 1.2, 1.2 ]   , [1] )
-    dataset.appendLinked( [ 1.4, 1.6 ]   , [1] )
-    dataset.appendLinked( [ 1.6, 1.8 ]   , [1] )
-    dataset.appendLinked( [ 0.10, 0.80 ] , [2] )
-    dataset.appendLinked( [ 0.20, 0.90 ] , [2] )
+    dataset = ClassificationDataSet(2, 1, class_labels=['Urd', 'Verdandi', 'Skuld'])
+    dataset.appendLinked([ 0.1, 0.5 ]   , [0])
+    dataset.appendLinked([ 1.2, 1.2 ]   , [1])
+    dataset.appendLinked([ 1.4, 1.6 ]   , [1])
+    dataset.appendLinked([ 1.6, 1.8 ]   , [1])
+    dataset.appendLinked([ 0.10, 0.80 ] , [2])
+    dataset.appendLinked([ 0.20, 0.90 ] , [2])
 
     dataset.calculateStatistics()
     print "class histogram:", dataset.classHist
     print "# of classes:", dataset.nClasses
     print "class 1 is: ", dataset.getClass(1)
     print "targets: ", dataset.getField('target')
-    dataset._convertToOneOfMany(bounds=[0,1])
+    dataset._convertToOneOfMany(bounds=[0, 1])
     print "converted targets: "
     print dataset.getField('target')
     dataset._convertToClassNb()
     print "reconverted to original:", dataset.getField('target')
 
     
+

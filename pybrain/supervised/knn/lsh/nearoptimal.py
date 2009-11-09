@@ -1,9 +1,6 @@
-#! /usr/bin/env python
-# -*- coding: utf-8 -*-
-
 from __future__ import division
 
-"""This module provides functionallity for locality sensitive hashing in high
+"""This module provides functionality for locality sensitive hashing in high
 dimensional euclidean spaces.
 
 It is based on the work of Andoni and Indyk, 'Near-Optimal Hashing Algorithms
@@ -11,7 +8,6 @@ for Approximate Nearest Neighbor in High Dimensions'."""
 
 
 __author__ = 'Justin Bayer, bayer.justin@googlemail.com'
-__version__ = '$Id$'
 
 
 import logging
@@ -38,7 +34,7 @@ class MultiDimHash(object):
         
     def _setRadius(self, value):
         self._radius = abs(value)
-        self.radiusSquared = value**2
+        self.radiusSquared = value ** 2
         
     radius = property(_getRadius, _setRadius)
     
@@ -52,7 +48,7 @@ class MultiDimHash(object):
         its correct bucket with a probability of prob.
         
         """
-        message = ("Creating Hash with %i dimensions, sidelength %.2f and " +
+        message = ("Creating Hash with %i dimensions, sidelength %.2f and " + 
                   "cNN-probability %.2f") % (dim, omega, prob)
         logging.debug(message)
         
@@ -74,7 +70,7 @@ class MultiDimHash(object):
         d = self.dim
         prob = self.prob
         
-        N = ((omega * w) / (w / sqrt(d)))**d
+        N = ((omega * w) / (w / sqrt(d))) ** d
         result = int(ceil(log((1 - prob) / N, 1 - 1 / N)))
         logging.debug("Number of grids: %i" % result)
         return result
@@ -145,9 +141,9 @@ class MultiDimHash(object):
         
         variables = 'point', 'balls', 'nBalls', 'dim', 'radiusSquared',
         result = weave.inline(
-            code, 
-            variables, 
-            type_converters=weave.converters.blitz, 
+            code,
+            variables,
+            type_converters=weave.converters.blitz,
             compiler='gcc')
             
         return result if result != -1 else None
@@ -184,6 +180,6 @@ class MultiDimHash(object):
         
         def sortKey((point_, satellite_)):
             distance = point - point_
-            return -dot(distance.T, distance)
+            return - dot(distance.T, distance)
         
         return nlargest(k, candidates, key=sortKey)

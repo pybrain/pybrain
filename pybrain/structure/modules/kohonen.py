@@ -17,7 +17,7 @@ class KohonenMap(Module):
     
     def __init__(self, dim, nNeurons, name=None, outputFullMap=False):
         if outputFullMap: 
-            outdim = nNeurons**2
+            outdim = nNeurons ** 2
         else: 
             outdim = 2
         Module.__init__(self, dim, outdim, name)
@@ -38,8 +38,8 @@ class KohonenMap(Module):
         # distance matrix
         distx, disty = mgrid[0:self.nNeurons, 0:self.nNeurons]
         self.distmatrix = zeros((self.nNeurons, self.nNeurons, 2))
-        self.distmatrix[:,:,0] = distx
-        self.distmatrix[:,:,1] = disty
+        self.distmatrix[:, :, 0] = distx
+        self.distmatrix[:, :, 1] = disty
         
     
     def _forwardImplementation(self, inbuf, outbuf):
@@ -47,7 +47,7 @@ class KohonenMap(Module):
             the neuron's coordinates to outbuf. """
         # calculate the winner neuron with lowest error (square difference)
         self.difference = self.neurons - tile(inbuf, (self.nNeurons, self.nNeurons, 1))
-        error = sum(self.difference**2, 2)
+        error = sum(self.difference ** 2, 2)
         self.winner = array(minimum_position(error))
         if not self.outputFullMap:
             outbuf[:] = self.winner
@@ -60,18 +60,18 @@ class KohonenMap(Module):
         # calculate neighbourhood and limit to edge of matrix
         n = floor(self.neighbours)
         self.neighbours *= self.neighbourdecay  
-        tl = (self.winner-n)
-        br = (self.winner+n+1) 
-        tl[tl<0] = 0
-        br[br>self.nNeurons+1] = self.nNeurons+1
+        tl = (self.winner - n)
+        br = (self.winner + n + 1) 
+        tl[tl < 0] = 0
+        br[br > self.nNeurons + 1] = self.nNeurons + 1
 
         # calculate distance matrix
         tempm = 1 - sum(abs(self.distmatrix - self.winner.reshape(1, 1, 2)), 2) / self.nNeurons
-        tempm[tempm<0] = 0
+        tempm[tempm < 0] = 0
         distm = zeros((self.nNeurons, self.nNeurons, self.nInput)) 
         for i in range(self.nInput):
-            distm[:,:,i] = tempm
-            distm[:,:,i] = tempm  
+            distm[:, :, i] = tempm
+            distm[:, :, i] = tempm  
 
         self.neurons[tl[0]:br[0], tl[1]:br[1]] -= self.learningrate * self.difference[tl[0]:br[0], tl[1]:br[1]] * distm[tl[0]:br[0], tl[1]:br[1]] 
         

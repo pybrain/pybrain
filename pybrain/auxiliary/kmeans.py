@@ -22,23 +22,24 @@ def kinit(X, k):
 
     'choose the 1st seed randomly, and store D(x)^2 in D[]'
     centers = [X[random.randint(n)]]
-    D = [norm(x-centers[0])**2 for x in X]
+    D = [norm(x - centers[0]) ** 2 for x in X]
 
-    for _ in range(k-1):
+    for _ in range(k - 1):
         bestDsum = bestIdx = -1
 
         for i in range(n):
             'Dsum = sum_{x in X} min(D(x)^2,||x-xi||^2)'
-            Dsum = reduce(lambda x,y:x+y,
-                          (min(D[j], norm(X[j]-X[i])**2) for j in xrange(n)))
+            Dsum = reduce(lambda x, y:x + y,
+                          (min(D[j], norm(X[j] - X[i]) ** 2) for j in xrange(n)))
 
             if bestDsum < 0 or Dsum < bestDsum:
-                bestDsum, bestIdx  = Dsum, i
+                bestDsum, bestIdx = Dsum, i
 
         centers.append (X[bestIdx])
-        D = [min(D[i], norm(X[i]-X[bestIdx])**2) for i in xrange(n)]
+        D = [min(D[i], norm(X[i] - X[bestIdx]) ** 2) for i in xrange(n)]
 
     return array (centers)
 
 def kmeanspp(Y, k):
     return kmeans2(Y, kinit(Y, k), minit='points')
+

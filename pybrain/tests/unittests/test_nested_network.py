@@ -32,15 +32,15 @@ from pybrain.tests import runModuleTestSuite
 def buildNestedNetwork():
     """ build a nested network. """
     N = FeedForwardNetwork('outer')
-    a = LinearLayer(1, name = 'a')
-    b = LinearLayer(2, name = 'b')
+    a = LinearLayer(1, name='a')
+    b = LinearLayer(2, name='b')
     c = buildNetwork(2, 3, 1)
     c.name = 'inner'
     N.addInputModule(a)
     N.addModule(c)
     N.addOutputModule(b)
-    N.addConnection(FullConnection(a,b))
-    N.addConnection(FullConnection(b,c))
+    N.addConnection(FullConnection(a, b))
+    N.addConnection(FullConnection(b, c))
     N.sortModules()
     return N
         

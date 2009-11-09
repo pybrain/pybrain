@@ -37,8 +37,8 @@ class ODEEnvironment(GraphicalEnvironment):
             self.updateDone = True
             self.updateLock = threading.Lock()
             self.server = UDPServer(ip, port, buf)
-        self.render=renderer
-        self.realtime=realtime
+        self.render = renderer
+        self.realtime = realtime
         
         # initialize attributes
         self.resetAttributes()
@@ -75,17 +75,17 @@ class ODEEnvironment(GraphicalEnvironment):
         self.loadXODE(self._currentXODEfile, reload=True) 
         self.stepCounter = 0
 
-    def setGravity(self,g):
+    def setGravity(self, g):
         """set the world's gravity constant in negative y-direction"""
-        self.world.setGravity( (0,-g,0) ) 
+        self.world.setGravity((0, -g, 0)) 
 
         
     def _setWorldParameters(self):
         """ sets parameters for ODE world object: gravity, error correction (ERP, default=0.2),
         constraint force mixing (CFM, default=1e-5).  """
-        self.world.setGravity( (0,-9.81,0) )
+        self.world.setGravity((0, -9.81, 0))
         # self.world.setERP(0.2)
-        # self.world.setCFM(1E-9)
+        # self.world.setCFM(1e-9)
 
     def _create_box(self, space, density, lx, ly, lz):
         """Create a box body and its corresponding geom."""
@@ -100,7 +100,7 @@ class ODEEnvironment(GraphicalEnvironment):
         geom.setBody(body)
         geom.name = None
 
-        return (body,geom)
+        return (body, geom)
 
     def _create_sphere(self, space, density, radius):
         """Create a sphere body and its corresponding geom."""
@@ -116,17 +116,17 @@ class ODEEnvironment(GraphicalEnvironment):
         geom.setBody(body)
         geom.name = None
 
-        return (body,geom)
+        return (body, geom)
 
     def drop_object(self):
         """Drops a random object (box, sphere) into the scene."""
         # choose between boxes and spheres
         if random.uniform() > 0.5:
-            (body,geom) = self._create_sphere(self.space, 10, 0.4)
+            (body, geom) = self._create_sphere(self.space, 10, 0.4)
         else:
-            (body,geom) = self._create_box(self.space, 10, 0.5,0.5,0.5)
+            (body, geom) = self._create_box(self.space, 10, 0.5, 0.5, 0.5)
         # randomize position slightly
-        body.setPosition( (random.normal(-6.5, 0.5), 6.0, random.normal(-6.5, 0.5)) )
+        body.setPosition((random.normal(-6.5, 0.5), 6.0, random.normal(-6.5, 0.5)))
         # body.setPosition( (0.0, 3.0, 0.0) )
         # randomize orientation slightly
         #theta = random.uniform(0,2*pi)
@@ -134,7 +134,7 @@ class ODEEnvironment(GraphicalEnvironment):
         #st = sin (theta)
         # rotate body and append to (body,geom) tuple list
         # body.setRotation([ct, 0., -st, 0., 1., 0., st, 0., ct])
-        self.body_geom.append((body,geom))
+        self.body_geom.append((body, geom))
     
     # -- sensor and actuator functions
     def addSensor(self, sensor):
@@ -165,7 +165,7 @@ class ODEEnvironment(GraphicalEnvironment):
             self.getRenderer().setCenterObj(self.root.namedChild(name).getODEObject())
         except KeyError:
             # name not found, unset centerObj
-            print "Warning: Cannot center on "+name
+            print "Warning: Cannot center on " + name
             self.centerObj = None
 
     def loadXODE(self, filename, reload=False):
@@ -211,7 +211,7 @@ class ODEEnvironment(GraphicalEnvironment):
     
     def loadConfig(self, filename, reload=False):
         # parameters are given in (our own brand of) config-file syntax
-        self.config = ConfigGrabber(filename, sectionId="<!--odeenvironment parameters", delim=("<",">"))
+        self.config = ConfigGrabber(filename, sectionId="<!--odeenvironment parameters", delim=("<", ">"))
 
         # <passpairs>
         self.passpairs = []
@@ -236,7 +236,7 @@ class ODEEnvironment(GraphicalEnvironment):
                 # find first object with that name
                 obj = self.root.namedChild(jointName).getODEObject()
             except IndexError:
-                print "ERROR: Could not affix object '"+jointName+"' to environment!"
+                print "ERROR: Could not affix object '" + jointName + "' to environment!"
                 sys.exit(1)
             if isinstance(obj, ode.Joint):
                 # if it is a joint, use this joint to fix to environment
@@ -302,7 +302,7 @@ class ODEEnvironment(GraphicalEnvironment):
             try:
                 node.getFirstAncestor(ode.Body)
             except xode.node.AncestorNotFoundError:
-                body = None;
+                body = None
                 geom = node.getODEObject()
                 geom.name = node.getName()
                 self.body_geom.append((body, geom))
@@ -381,7 +381,7 @@ class ODEEnvironment(GraphicalEnvironment):
         pointer = 0
         for a in self.actuators:
             val = a.getNumValues()
-            a._update(action[pointer:pointer+val])
+            a._update(action[pointer:pointer + val])
             pointer += val
         
         for _ in range(self.stepsPerAction):
@@ -462,13 +462,13 @@ class ODEEnvironment(GraphicalEnvironment):
                     # capped cylinder
                     item['type'] = 'GeomCCylinder'
                     item['radius'] = geom.getParams()[0]
-                    item['length'] = geom.getParams()[1] - 2*item['radius']
+                    item['length'] = geom.getParams()[1] - 2 * item['radius']
 
                 elif type(geom) == ode.GeomCylinder:
-                        # solid cylinder
-                        item['type'] = 'GeomCylinder'
-                        item['radius'] = geom.getParams()[0]
-                        item['length'] = geom.getParams()[1]         
+                    # solid cylinder
+                    item['type'] = 'GeomCylinder'
+                    item['radius'] = geom.getParams()[0]
+                    item['length'] = geom.getParams()[1]         
                 else:
                     # TODO: add other geoms here
                     pass
@@ -490,7 +490,7 @@ class ODEEnvironment(GraphicalEnvironment):
             self.server.send(message)
         time.sleep(0.02)
         self.updateLock.release()
-        self.updateDone=True
+        self.updateDone = True
             
     def step(self):
         """ Here the ode physics is calculated by one step. """
@@ -567,7 +567,7 @@ if __name__ == '__main__' :
     # initialize world and renderer and attach renderer to world
     w = ODEEnvironment() 
     # load model file
-    w.loadXODE("models/"+modelName+".xode")             # load XML file that describes the world
+    w.loadXODE("models/" + modelName + ".xode")             # load XML file that describes the world
     
     w.addSensor(sensors.JointSensor())
     w.addActuator(actuators.JointActuator())
@@ -575,3 +575,4 @@ if __name__ == '__main__' :
     # start simulating the world
     while True:
         w.step()     
+

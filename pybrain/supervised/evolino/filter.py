@@ -31,9 +31,9 @@ class EvolinoEvaluation(Filter):
         Filter.__init__(self)
         ap = KWArgsProcessor(self, kwargs)
 
-        ap.add( 'verbosity', default=0 )
-        ap.add( 'evalfunc',  default=lambda output, target: -Validator.MSE(output, target) )
-        ap.add( 'wtRatio',   default=array([1,2], float) )
+        ap.add('verbosity', default=0)
+        ap.add('evalfunc', default=lambda output, target:-Validator.MSE(output, target))
+        ap.add('wtRatio', default=array([1, 2], float))
 
         self.network = evolino_network
         self.dataset = dataset
@@ -50,17 +50,17 @@ class EvolinoEvaluation(Filter):
 
         # === extract sequences from dataset ===
         numSequences = dataset.getNumSequences()
-        washout_sequences  = []
+        washout_sequences = []
         training_sequences = []
         for i in xrange(numSequences):
             sequence = dataset.getSequence(i)[1]
-            training_start   = int( wtRatio * len(sequence) )
-            washout_sequences.append(  sequence[                  : training_start   ] )
-            training_sequences.append( sequence[ training_start   :                  ] )
+            training_start = int(wtRatio * len(sequence))
+            washout_sequences.append(sequence[                  : training_start   ])
+            training_sequences.append(sequence[ training_start   :                  ])
 
 
         # === collect raw output (denoted by phi) ===
-        phis    = []
+        phis = []
         for i in range(numSequences):
             net.reset()
             net.washout(washout_sequences[i])
@@ -69,10 +69,10 @@ class EvolinoEvaluation(Filter):
 
 
         # === calculate and set weights of linear output layer ===
-        PHI     = concatenate(phis).T
+        PHI = concatenate(phis).T
         PHI_INV = pinv2(PHI)
-        TARGET  = concatenate(training_sequences).T
-        W       = dot(TARGET, PHI_INV)
+        TARGET = concatenate(training_sequences).T
+        W = dot(TARGET, PHI_INV)
         net.setOutputWeightMatrix(W)
 
 
@@ -109,7 +109,7 @@ class EvolinoEvaluation(Filter):
         for individual in population.getIndividuals():
 
             # load the individual's genome into the weights of the net
-            net.setGenome( individual.getGenome() )
+            net.setGenome(individual.getGenome())
             fitness = self._evaluateNet(net, dataset, self.wtRatio)
             if self.verbosity > 1:
                 print "Calculated fitness for individual", id(individual), " is ", fitness
@@ -119,11 +119,11 @@ class EvolinoEvaluation(Filter):
 
             if best_fitness < fitness:
                 best_fitness = fitness
-                best_genome  = deepcopy(individual.getGenome())
-                best_W       = deepcopy(net.getOutputWeightMatrix())
+                best_genome = deepcopy(individual.getGenome())
+                best_W = deepcopy(net.getOutputWeightMatrix())
 
         net.reset()
-        net.setGenome( best_genome )
+        net.setGenome(best_genome)
         net.setOutputWeightMatrix(best_W)
 
 
@@ -194,7 +194,7 @@ class EvolinoBurstMutation(Filter):
         """
         sps = population.getSubPopulations()
         for sp in sps:
-            n_toremove = sp.getIndividualsN()-1
+            n_toremove = sp.getIndividualsN() - 1
             sp.removeWorstIndividuals(n_toremove)
             reproduction = EvolinoSubReproduction(**self._kwargs)
             reproduction.apply(sp)
@@ -218,14 +218,14 @@ class EvolinoSubSelection(Filter):
 
         n = population.getIndividualsN()
         if self.nParents is None:
-            nKeep = n/4
+            nKeep = n / 4
         else:
             nKeep = self.nParents
 
         assert nKeep >= 0
         assert nKeep <= n
 
-        population.removeWorstIndividuals(n-nKeep)
+        population.removeWorstIndividuals(n - nKeep)
 
 
 
@@ -242,9 +242,9 @@ class EvolinoSubReproduction(Filter):
         Filter.__init__(self)
 
         ap = KWArgsProcessor(self, kwargs)
-        ap.add( 'verbosity',       default=0 )
-        ap.add( 'mutationVariate', default=None )
-        ap.add( 'mutation',        default=EvolinoSubMutation() )
+        ap.add('verbosity', default=0)
+        ap.add('mutationVariate', default=None)
+        ap.add('mutation', default=EvolinoSubMutation())
 
         if self.mutationVariate is not None:
             self.mutation.mutationVariate = self.mutationVariate
@@ -257,17 +257,17 @@ class EvolinoSubReproduction(Filter):
             Then clones the fittest individuals (=parents), mutates these clones
             and adds them to the population.
         """
-        max_n     = population.getMaxNIndividuals()
-        n         = population.getIndividualsN()
+        max_n = population.getMaxNIndividuals()
+        n = population.getIndividualsN()
         freespace = max_n - n
 
         best = population.getBestIndividualsSorted(freespace)
-        children=set()
+        children = set()
         while True:
-            if len(children)>=freespace: break
+            if len(children) >= freespace: break
             for parent in best:
-                children.add( parent.copy() )
-                if len(children)>=freespace: break
+                children.add(parent.copy())
+                if len(children) >= freespace: break
 
         dummy_population = SimplePopulation()
         dummy_population.addIndividuals(children)
@@ -288,7 +288,7 @@ class EvolinoSubMutation(SimpleMutation):
         SimpleMutation.__init__(self)
 
         ap = KWArgsProcessor(self, kwargs)
-        ap.add( 'mutationVariate', default=CauchyVariate() )
+        ap.add('mutationVariate', default=CauchyVariate())
         self.mutationVariate.alpha = 0.001
 
 

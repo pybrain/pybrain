@@ -8,8 +8,8 @@ class MinimizeTask(EpisodicTask):
         EpisodicTask.__init__(self, environment) 
         self.N = 15
         self.t = 0
-        self.state = [0.0]*environment.dim
-        self.action = [0.0]*environment.dim
+        self.state = [0.0] * environment.dim
+        self.action = [0.0] * environment.dim
 
     def reset(self):
         EpisodicTask.reset(self)
@@ -34,6 +34,6 @@ class MinimizeTask(EpisodicTask):
     def getReward(self):
         # sleep(0.01)
         # print self.state, self.action
-        reward = self.env.f([s + 0.1*a for s, a in zip(self.state, self.action)])
-        return -sum(reward)
+        reward = self.env.f([s + 0.1 * a for s, a in zip(self.state, self.action)])
+        return - sum(reward)
         

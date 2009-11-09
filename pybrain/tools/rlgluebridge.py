@@ -1,6 +1,4 @@
 from __future__ import division
-#! /usr/bin/env python2.5
-# -*- coding: utf-8 -*-
 
 """This module provides functionality to use pybrain with rlglue and to use it
 for the rlcompetition.
@@ -216,7 +214,7 @@ class RLCExperiment(object):
         self.rlglue_pid = get_pid(rlg_pidstr)
         self.dynenv_pid = get_pid(de_pidstr)
         
-        logging.info("Environment started (%i, %i. %i)" %
+        logging.info("Environment started (%i, %i. %i)" % 
                      (self.process.pid, self.rlglue_pid, self.dynenv_pid))
         
         # We need to consume the processes standard output and error output,
@@ -312,7 +310,7 @@ class RlCompBenchmark(object):
     def saveStats(self, name, dataset):
         """Save the given dataset to a"""
         filename = os.path.join(self.benchmarkDir, name)
-        dataset.saveToFile(filename, arraysonly=True )
+        dataset.saveToFile(filename, arraysonly=True)
         logging.info("Saved statistics to %s" % filename)
     
 
@@ -382,3 +380,4 @@ class BenchmarkingAgent(object):
             agent = super(BenchmarkingAgent, self).__getattribute__('agent')
             setattr(agent, key, value)
         
+

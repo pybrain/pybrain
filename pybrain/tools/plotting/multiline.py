@@ -16,17 +16,17 @@ class MultilinePlotter:
   """
     
     # some nice color definitions for graphs (from colorbrewer.org)
-    graphColor = [(0.894117647, 0.101960784, 0.109803922),\
-        (0.215686275, 0.494117647, 0.721568627),\
-        (0.301960784, 0.68627451, 0.290196078),\
-        (0.596078431, 0.305882353, 0.639215686),\
-        (1, 0.498039216, 0),\
-        (1, 1, 0.2),\
-        (0.650980392, 0.337254902, 0.156862745),\
-        (0.968627451, 0.505882353, 0.749019608),\
+    graphColor = [(0.894117647, 0.101960784, 0.109803922), \
+        (0.215686275, 0.494117647, 0.721568627), \
+        (0.301960784, 0.68627451, 0.290196078), \
+        (0.596078431, 0.305882353, 0.639215686), \
+        (1, 0.498039216, 0), \
+        (1, 1, 0.2), \
+        (0.650980392, 0.337254902, 0.156862745), \
+        (0.968627451, 0.505882353, 0.749019608), \
         (0.6, 0.6, 0.6)]
     
-    def __init__(self, maxLines = 1, autoscale = 0.0, **kwargs):
+    def __init__(self, maxLines=1, autoscale=0.0, **kwargs):
         """
     @param maxLines: Number of Plots to draw and so max ID.
     @param autoscale: If set to a factor > 1, axes are automatically expanded whenever out-range data points are added
@@ -40,7 +40,7 @@ class MultilinePlotter:
         self.Axes = axes(**kwargs)
         self.nbLines = 0
         self.defaultLineStyle = {}
-        self._checkMaxId(maxLines-1)
+        self._checkMaxId(maxLines - 1)
         self.replot = True           # is the plot still current?
         self.currentID = None
         self.offset = 0              # external references to IDs are modified by this
@@ -60,14 +60,14 @@ class MultilinePlotter:
         """ Appends additional lines as necessary
     @param id: Lines up to this id are added automatically """
         if id >= self.nbLines:
-            for i in range(self.nbLines, id+1):
+            for i in range(self.nbLines, id + 1):
                 # create a new line with corresponding x/y data, and attach it to the plot
-                l = Line2D([],[], color=self.graphColor[i % 9], **self.defaultLineStyle)
+                l = Line2D([], [], color=self.graphColor[i % 9], **self.defaultLineStyle)
                 self.Lines.append(l)
                 self.Axes.add_line(l)
                 self.indexList.append([])
                 self.dataList.append([])
-            self.nbLines=id+1
+            self.nbLines = id + 1
 
 
     def addData(self, id0, x, y):
@@ -76,7 +76,7 @@ class MultilinePlotter:
     @param x: The x-component of the data point(s)
     @param y: The y-component of the data point(s)"""
         id = id0 + self.offset
-        if not (isinstance(x,list) | isinstance(x,tuple)):
+        if not (isinstance(x, list) | isinstance(x, tuple)):
             self._checkMaxId(id)
             self.indexList[id].append(x)  
             self.dataList[id].append(y)
@@ -86,7 +86,7 @@ class MultilinePlotter:
                 self.addData(id0, xi, y[i])
         self.replot = True
 
-    def setData(self,id0, x, y):
+    def setData(self, id0, x, y):
         """ Data series id0 is replaced by the given lists
     @param id0: The plot ID (counted from 0) the data point(s) belong to.
     @param x: The x-component of the data points
@@ -100,24 +100,24 @@ class MultilinePlotter:
     def saveData(self, filename):
         """ Writes the data series for all points to a file 
     @param filename: The name of the output file """
-        file = open(filename,"w")
+        file = open(filename, "w")
         for i in range(self.nbLines):
-            datLen=len(self.indexList[i])
+            datLen = len(self.indexList[i])
             for j in range(datLen):
-                file.write(repr(self.indexList[i][j])+"\n")
-                file.write(repr(self.dataList[i][j])+"\n")
+                file.write(repr(self.indexList[i][j]) + "\n")
+                file.write(repr(self.dataList[i][j]) + "\n")
         file.close()
 
  
-    def setLabels(self, x= '', y= '', title = ''):
+    def setLabels(self, x='', y='', title=''):
         """ set axis labels and title """
         self.Axes.set_xlabel(x)
         self.Axes.set_ylabel(y)
         self.Axes.set_title(title)
         
-    def setLegend(self, *args,**kwargs):
+    def setLegend(self, *args, **kwargs):
         """ hand parameters to the legend """
-        self.Axes.legend(*args,**kwargs)
+        self.Axes.legend(*args, **kwargs)
     
     def setLineStyle(self, id=None, **kwargs):
         """ hand parameters to the specified line(s), and set them as default for new lines 
@@ -125,15 +125,15 @@ class MultilinePlotter:
         if id is None: 
             id = self.currentID
             
-        if isinstance(id,list) | isinstance(id,tuple):
+        if isinstance(id, list) | isinstance(id, tuple):
             # apply to specified list of lines
-            self._checkMaxId(max(id)+self.offset)
+            self._checkMaxId(max(id) + self.offset)
             for i in id:
-                self.Lines[i+self.offset].set(**kwargs)
+                self.Lines[i + self.offset].set(**kwargs)
         elif id >= 0:
             # apply to selected line
-            self._checkMaxId(id+self.offset)
-            self.Lines[id+self.offset].set(**kwargs)
+            self._checkMaxId(id + self.offset)
+            self.Lines[id + self.offset].set(**kwargs)
         else:
             # apply to all lines
             for l in self.Lines:
@@ -156,24 +156,24 @@ class MultilinePlotter:
             if self.autoscale > 1.0:
                 if self.indexList[i][0] < xr[0]:
                     xr[0] = self.indexList[i][0]
-                ymn =  min(self.dataList[i])
+                ymn = min(self.dataList[i])
                 if ymn < yr[0]:
                     yr[0] = ymn
                 while self.indexList[i][-1] > xr[1]:
-                    xr[1] = (xr[1]-xr[0])*self.autoscale + xr[0]
+                    xr[1] = (xr[1] - xr[0]) * self.autoscale + xr[0]
                 ymx = max(self.dataList[i])
                 while ymx > yr[1]:
-                    yr[1] = (yr[1]-yr[0])*self.autoscale + yr[0]
+                    yr[1] = (yr[1] - yr[0]) * self.autoscale + yr[0]
         if self.autoscale > 1.0:
-            self.Axes.set_xlim( tuple(xr) )
-            self.Axes.set_ylim( tuple(yr) )
+            self.Axes.set_xlim(tuple(xr))
+            self.Axes.set_ylim(tuple(yr))
             #self.Axes.draw()
         #pylab.show()
         draw_if_interactive()
         self.replot = False
 
 
-    def show(self, xLabel = '', yLabel = '', title = '', popup = False, imgfile = None):
+    def show(self, xLabel='', yLabel='', title='', popup=False, imgfile=None):
         """ Plots the data internally and saves an image of it to the plotting directory. 
     @param title: The title of the plot.
     @param xLable: The label for the x-axis
@@ -186,7 +186,7 @@ class MultilinePlotter:
         ylabel(yLabel)
         title(title)
         if imgfile == None:
-            imgfile = imp.find_module('pybrain')[1]+"/tools/plotting/plot.png"
+            imgfile = imp.find_module('pybrain')[1] + "/tools/plotting/plot.png"
         savefig(imgfile)
         if popup:
             ioff()
@@ -195,9 +195,10 @@ class MultilinePlotter:
 
 """Small example to demonstrate how the plot class can be used"""
 if __name__ == "__main__":
-    pbplot=MultilinePlotter(7)
+    pbplot = MultilinePlotter(7)
     for i in range(400000):
-        if i/100000 == i/100000.0:
+        if i / 100000 == i / 100000.0:
             for j in range(7):
-                pbplot.addData(j, i, math.sqrt(float(i*(j+1))))
+                pbplot.addData(j, i, math.sqrt(float(i * (j + 1))))
     pbplot.show("WorldInteractions", "Fitness", "Example Plot", True)
+

@@ -26,21 +26,21 @@ def buildCyclicNetwork(recurrent):
     @param recurrent: make one of the connections recurrent """
     Network = RecurrentNetwork if recurrent else FeedForwardNetwork
     N = Network('cyc')
-    a = LinearLayer(1, name = 'a')
-    b = LinearLayer(2, name = 'b')
-    c = LinearLayer(3, name = 'c')
-    d = LinearLayer(4, name = 'd')
+    a = LinearLayer(1, name='a')
+    b = LinearLayer(2, name='b')
+    c = LinearLayer(3, name='c')
+    d = LinearLayer(4, name='d')
     N.addInputModule(a)
     N.addModule(b)
     N.addModule(d)
     N.addOutputModule(c)
-    N.addConnection(FullConnection(a,b))
-    N.addConnection(FullConnection(b,c))
-    N.addConnection(FullConnection(c,d))
+    N.addConnection(FullConnection(a, b))
+    N.addConnection(FullConnection(b, c))
+    N.addConnection(FullConnection(c, d))
     if recurrent:
-        N.addRecurrentConnection(FullConnection(d,a))
+        N.addRecurrentConnection(FullConnection(d, a))
     else:
-        N.addConnection(FullConnection(d,a))
+        N.addConnection(FullConnection(d, a))
     N.sortModules()
     return N
 
