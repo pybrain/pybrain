@@ -30,5 +30,5 @@ class EpsilonGreedyExplorer(DiscreteExplorer):
             outbuf[:] = inbuf
             
         self.epsilon *= self.decay
-        print self.epsilon
+
         
