@@ -1,6 +1,6 @@
 __author__ = 'Thomas Rueckstiess, ruecksti@in.tum.de'
 
-from pybrain.rl.learners.learner import ExploringLearner, DataSetLearner, OntogeneticLearner
+from pybrain.rl.learners.learner import ExploringLearner, DataSetLearner, EpisodicLearner
 from pybrain.rl.explorers.discrete.egreedy import EpsilonGreedyExplorer
 
 
