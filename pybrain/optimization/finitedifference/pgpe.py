@@ -50,9 +50,14 @@ class PGPE(FiniteDifferences):
                 #gradient estimate alla SPSA but with likelihood gradient and normalization
                 fakt = (reward1 - reward2) / (2. * self.bestEvaluation - reward1 - reward2) 
             else: 
-                fakt = 0.
+                fakt=0.
             #normalized sigma gradient with moving average baseline
-            fakt2 = (self.mreward - self.baseline) / (self.bestEvaluation - self.baseline)             
+            norm = (self.bestEvaluation-self.baseline)
+            if norm != 0.0:
+                fakt2=(self.mreward-self.baseline)/(self.bestEvaluation-self.baseline)             
+            else:
+                fakt2 = 0.0
+
         #update baseline        
         self.baseline = 0.9 * self.baseline + 0.1 * self.mreward             
         # update parameters and sigmas
