@@ -18,7 +18,7 @@ from pybrain.structure.modules.tanhlayer import TanhLayer
 from pybrain.tools.shortcuts import buildNetwork
 from pybrain.rl.environments.shipsteer import ShipSteeringEnvironment
 from pybrain.rl.environments.shipsteer import GoNorthwardTask
-from pybrain.rl.agents import LearningAgent
+from pybrain.rl.agents import OptimizationAgent
 from pybrain.optimization import PGPE 
 from pybrain.rl.experiments import EpisodicExperiment
 from pybrain.tools.plotting import MultilinePlotter
@@ -55,10 +55,12 @@ for runs in range(numbExp):
     task = GoNorthwardTask(env,maxsteps = 500)
     # create controller network
     net = buildNetwork(task.outdim, task.indim, outclass=TanhLayer)
-    # create agent with controller and learner
-    agent = LearningAgent(net, PGPE(learningRate = 0.3,
+    # create agent with controller and learner (and its options)
+    agent = OptimizationAgent(net, PGPE(learningRate = 0.3,
                                     sigmaLearningRate = 0.15,
                                     momentum = 0.0,
+                                    epsilon = 2.0,
+                                    #rprop = True,
                                     ))
     batch=2 #number of samples per gradient estimate (was: 2; more here due to stochastic setting)
     #create experiment
@@ -72,16 +74,16 @@ for runs in range(numbExp):
     for updates in range(epis):
         for i in range(prnts):
             experiment.doEpisodes(batch) #execute #batch episodes
-            agent.learn() #learn from the gather experience
-            agent.reset() #reset agent and environment
+            #agent.learn() #learn from the gather experience
+            #agent.reset() #reset agent and environment
         #print out related data
         stp = (updates+1)*batch*prnts
-        print "Step: ", runs, "/", stp, "Best: ", agent.learner.best, "Base: ", agent.learner.baseline, "Reward: ", agent.learner.reward   
+        print "Step: ", runs, "/", stp, "Best: ", agent.learner.bestEvaluation, "Base: ", agent.learner.baseline, "Reward: ", agent.learner.mreward   
         wf.write(repr(stp)+"\n") 
-        wf.write(repr(agent.learner.baseline[0])+"\n") 
+        wf.write(repr(agent.learner.baseline)+"\n") 
         if useGraphics:
             pl.addData(0,float(stp),agent.learner.baseline)
-            pl.addData(1,float(stp),agent.learner.best)
+            pl.addData(1,float(stp),agent.learner.bestEvaluation)
             pl.update()
 
         #if updates/100 == float(updates)/100.0:

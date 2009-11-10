@@ -10,7 +10,7 @@ from scipy import random
 
 from pybrain.tools.shortcuts import buildNetwork
 from pybrain.rl.environments.cartpole import CartPoleEnvironment, BalanceTask
-from pybrain.rl.agents import LearningAgent
+from pybrain.rl.agents import OptimizationAgent
 from pybrain.optimization import PGPE
 from pybrain.rl.experiments import EpisodicExperiment
 
@@ -22,7 +22,7 @@ for runs in range(numbExp):
     # create controller network
     net = buildNetwork(4, 1, bias=False)
     # create agent with controller and learner (and its options)
-    agent = LearningAgent(net, PGPE(learningRate = 0.5,
+    agent = OptimizationAgent(net, PGPE(learningRate = 0.2,
                                     sigmaLearningRate = 0.1,
                                     momentum = 0.0,
                                     epsilon = 2.0,

@@ -13,7 +13,7 @@
 
 from pybrain.tools.shortcuts import buildNetwork
 from pybrain.rl.environments.simple import SimpleEnvironment, MinimizeTask
-from pybrain.rl.agents import LearningAgent
+from pybrain.rl.agents import OptimizationAgent
 from pybrain.optimization import PGPE
 from pybrain.rl.experiments import EpisodicExperiment
 from scipy import random
@@ -27,13 +27,14 @@ for runs in range(numbExp):
     task = MinimizeTask(env)
     # create controller network (flat network)
     net = buildNetwork(1, 1, bias=False)
-    # create agent with controller and learner
-    agent = LearningAgent(net, PGPE(learningRate=0.03,
-                                    sigmaLearningRate=0.1,
-                                    momentum=0.9,
-                                    epsilon=2.0,
+    # create agent with controller and learner (and its options)
+    agent = OptimizationAgent(net, PGPE(learningRate = 0.3,
+                                    sigmaLearningRate = 0.15,
+                                    momentum = 0.0,
+                                    epsilon = 2.0,
                                     #rprop = True,
                                     ))
+
     experiment = EpisodicExperiment(task, agent)
     batch=2 #with PGPE this must be a even number (2 for all deterministic settings)
     prnts=1 
@@ -45,10 +46,10 @@ for runs in range(numbExp):
     for updates in range(epis):
         for i in range(prnts):
             experiment.doEpisodes(batch)
-            agent.learn()
-            agent.reset()
+            #agent.learn()
+            #agent.reset()
         print "Parameters:", agent.learner.original, "Sigmas:", agent.learner.sigList 
-        print "Episode:", runs, "/", (updates+1)*prnts*batch, "Best:", agent.learner.best, "Base:", agent.learner.baseline, "Reward:", agent.learner.reward
+        print "Episode:", runs, "/", (updates+1)*prnts*batch, "Best:", agent.learner.bestEvaluation, "Base:", agent.learner.baseline, "Reward:", agent.learner.mreward
         print ""    
         rl.append(float(agent.learner.baseline))
         pr.append(float(agent.learner.original[0]))

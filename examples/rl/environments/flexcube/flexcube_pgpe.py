@@ -30,7 +30,7 @@
 from pybrain.structure.modules.tanhlayer import TanhLayer
 from pybrain.tools.shortcuts import buildNetwork
 from pybrain.rl.environments.flexcube import FlexCubeEnvironment, WalkTask
-from pybrain.rl.agents import LearningAgent
+from pybrain.rl.agents import OptimizationAgent
 from pybrain.optimization import PGPE 
 from pybrain.rl.experiments import EpisodicExperiment
 from cPickle import load, dump
@@ -61,11 +61,11 @@ for runs in range(numbExp):
     task = WalkTask(env)
     # create controller network
     net = buildNetwork(len(task.getObservation()), hiddenUnits, env.actLen, outclass=TanhLayer)    
-    # create agent with controller and learner
-    agent = LearningAgent(net, PGPE(learningRate=0.085,
-                                    sigmaLearningRate=0.2,
-                                    momentum=0.0,
-                                    epsilon=2.0,
+    # create agent with controller and learner (and its options)
+    agent = OptimizationAgent(net, PGPE(learningRate = 0.2,
+                                    sigmaLearningRate = 0.1,
+                                    momentum = 0.0,
+                                    epsilon = 2.0,
                                     #rprop = True,
                                     ))
     
@@ -86,12 +86,11 @@ for runs in range(numbExp):
     for updates in range(epis):
         for i in range(prnts):
             experiment.doEpisodes(batch) #execute batch episodes
-            agent.learn() #learn from the gather experience
-            agent.reset() #reset agent and environment
+            #agent.learn() #learn from the gather experience
+            #agent.reset() #reset agent and environment
         #print out related data
-        print "Step: ", runs, "/", (updates + 1) * batch * prnts, "Best: ", agent.learner.best,
-        print "Base: ", agent.learner.baseline, "Reward: ", agent.learner.reward 
+        print "Step: ", runs, "/", (updates + 1) * batch * prnts, "Best: ", agent.learner.bestEvaluation,
+        print "Base: ", agent.learner.baseline, "Reward: ", agent.learner.mreward 
         #Saving weights
         if saveNet:
             if updates / 100 == float(updates) / 100.0: saveWeights(saveName, agent.learner.original)  
-
