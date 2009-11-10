@@ -31,11 +31,12 @@ class JohnnieTask(EpisodicTask):
         #Filtered mapping towards performAction of the underlying environment   
         #The standard Johnnie task uses a PID controller to controll directly angles instead of forces
         #This makes most tasks much simpler to learn             
-        isJoints = self.env.getSensorByName('JointSensor') #The joint angles
-        isSpeeds = self.env.getSensorByName('JointVelocitySensor') #The joint angular velocitys
-        act = (action + 1.0) / 2.0 * (self.env.cHighList - self.env.cLowList) + self.env.cLowList #norm output to action intervall  
-        action = tanh((act - isJoints - isSpeeds) * 16.0) * self.maxPower * self.env.tourqueList #simple PID
-        self.env.performAction(action)
+        isJoints=self.env.getSensorByName('JointSensor') #The joint angles
+        isSpeeds=self.env.getSensorByName('JointVelocitySensor') #The joint angular velocitys
+        act=(action+1.0)/2.0*(self.env.cHighList-self.env.cLowList)+self.env.cLowList #norm output to action intervall  
+        action=tanh((act-isJoints-isSpeeds)*16.0)*self.maxPower*self.env.tourqueList #simple PID
+        EpisodicTask.performAction(self, action)
+        #self.env.performAction(action)
 
     def isFinished(self):
         #returns true if episode timesteps has reached episode length and resets the task
