@@ -27,7 +27,7 @@ from pybrain.rl.environments.ode import CCRLEnvironment
 from pybrain.rl.environments.ode.tasks import CCRLGlasVarTask
 from pybrain.structure.modules.tanhlayer import TanhLayer
 from pybrain.tools.shortcuts import buildNetwork
-from pybrain.rl.agents import LearningAgent
+from pybrain.rl.agents import OptimizationAgent
 from pybrain.optimization import PGPE
 from pybrain.rl.experiments import EpisodicExperiment
 from cPickle import load, dump
@@ -58,35 +58,34 @@ for runs in range(numbExp):
     task = CCRLGlasVarTask(env)
     # create controller network
     net = buildNetwork(len(task.getObservation()), hiddenUnits, env.actLen, outclass=TanhLayer)    
-    # create agent with controller and learner
-    agent = LearningAgent(net, PGPE())
-    # learning options
-    agent.learner.gd.alpha = 0.2 #step size of \mu adaption
-    agent.learner.gdSig.alpha = 0.085 #step size of \sigma adaption
-    agent.learner.gd.momentum = 0.0
+    # create agent with controller and learner (and its options)
+    agent = OptimizationAgent(net, PGPE(learningRate = 0.2,
+                                        sigmaLearningRate = 0.1,
+                                        momentum = 0.0,
+                                        epsilon = 2.0,
+                                        #rprop = True,
+                                        ))
     
     #Loading weights
     if loadNet:
-        agent.learner.original=loadWeights("grasp.wgt")
-        agent.learner.gd.init(agent.learner.original)
-        agent.learner.epsilon=0.2
+        agent.learner.current = loadWeights("stand.wgt")
+        agent.learner.gd.init(agent.learner.current)
+        agent.learner.epsilon = 0.2
         agent.learner.initSigmas()
 
-    batch=2 #number of samples per gradient estimate
+    batch = 2 #number of samples per gradient estimate
     #create experiment
     experiment = EpisodicExperiment(task, agent)
-    prnts=1 #frequency of console output
-    epis=5000000/batch/prnts
+    prnts = 1 #frequency of console output
+    epis = 5000000 / batch / prnts
     
     #actual roll outs
     for updates in range(epis):
         for i in range(prnts):
             experiment.doEpisodes(batch) #execute batch episodes
-            agent.learn() #learn from the gather experience
-            agent.reset() #reset agent and environment
         #print out related data
-        print "Step: ", runs, "/", (updates+1)*batch*prnts, "Best: ", agent.learner.best, 
-        print "Base: ", agent.learner.baseline, "Reward: ", agent.learner.reward 
+        print "Step: ", runs, "/", (updates + 1) * batch * prnts, "Best: ", agent.learner.bestEvaluation,
+        print "Base: ", agent.learner.baseline, "Reward: ", agent.learner.mreward 
         #Saving weights
         if saveNet:
-            if updates/100 == float(updates)/100.0: saveWeights(saveName, agent.learner.original)  
+            if updates / 100 == float(updates) / 100.0: saveWeights(saveName, agent.learner.current)  

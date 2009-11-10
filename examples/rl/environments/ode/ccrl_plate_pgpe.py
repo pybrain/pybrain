@@ -58,17 +58,18 @@ for runs in range(numbExp):
     task = CCRLPlateTask(env)
     # create controller network
     net = buildNetwork(len(task.getObservation()), hiddenUnits, env.actLen, outclass=TanhLayer)    
-    # create agent with controller and learner
-    agent = LearningAgent(net, PGPE())
-    # learning options
-    agent.learner.gd.alpha = 0.2 #step size of \mu adaption
-    agent.learner.gdSig.alpha = 0.085 #step size of \sigma adaption
-    agent.learner.gd.momentum = 0.0
+    # create agent with controller and learner (and its options)
+    agent = OptimizationAgent(net, PGPE(learningRate = 0.2,
+                                        sigmaLearningRate = 0.1,
+                                        momentum = 0.0,
+                                        epsilon = 2.0,
+                                        #rprop = True,
+                                        ))
     
     #Loading weights
     if loadNet:
-        agent.learner.original = loadWeights("plate.wgt")
-        agent.learner.gd.init(agent.learner.original)
+        agent.learner.current = loadWeights("stand.wgt")
+        agent.learner.gd.init(agent.learner.current)
         agent.learner.epsilon = 0.2
         agent.learner.initSigmas()
 
@@ -82,12 +83,9 @@ for runs in range(numbExp):
     for updates in range(epis):
         for i in range(prnts):
             experiment.doEpisodes(batch) #execute batch episodes
-            agent.learn() #learn from the gather experience
-            agent.reset() #reset agent and environment
         #print out related data
-        print "Step: ", runs, "/", (updates + 1) * batch * prnts, "Best: ", agent.learner.best,
-        print "Base: ", agent.learner.baseline, "Reward: ", agent.learner.reward 
+        print "Step: ", runs, "/", (updates + 1) * batch * prnts, "Best: ", agent.learner.bestEvaluation,
+        print "Base: ", agent.learner.baseline, "Reward: ", agent.learner.mreward 
         #Saving weights
         if saveNet:
-            if updates / 100 == float(updates) / 100.0: saveWeights(saveName, agent.learner.original)  
-
+            if updates / 100 == float(updates) / 100.0: saveWeights(saveName, agent.learner.current)  
