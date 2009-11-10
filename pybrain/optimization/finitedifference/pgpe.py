@@ -57,7 +57,6 @@ class PGPE(FiniteDifferences):
                 fakt2=(self.mreward-self.baseline)/(self.bestEvaluation-self.baseline)             
             else:
                 fakt2 = 0.0
-
         #update baseline        
         self.baseline = 0.9 * self.baseline + 0.1 * self.mreward             
         # update parameters and sigmas
