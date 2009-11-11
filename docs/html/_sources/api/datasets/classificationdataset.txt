@@ -1,0 +1,14 @@
+.. _classificationdataset:
+
+:mod:`classification` -- Datasets for Supervised Classification Training
+========================================================================
+
+.. automodule:: pybrain.datasets.classification
+
+.. autoclass:: ClassificationDataSet
+   :members: __init__, calculateStatistics, getClass, splitByClass, castToRegression, _convertToOneOfMany, _convertToClassNb
+   :show-inheritance:
+
+.. autoclass:: SequenceClassificationDataSet
+   :members: __init__
+   :show-inheritance:

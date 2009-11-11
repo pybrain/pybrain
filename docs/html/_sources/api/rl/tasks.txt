@@ -1,0 +1,13 @@
+:mod:`tasks` -- RL Components: Tasks
+================================================
+
+.. automodule:: pybrain.rl.environments.task
+
+.. autoclass:: Task
+   :members:
+
+.. automodule:: pybrain.rl.environments.episodic
+
+.. autoclass:: EpisodicTask
+   :members: 
+   :show-inheritance:

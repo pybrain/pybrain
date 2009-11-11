@@ -1,0 +1,188 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>classification – Datasets for Supervised Classification Training &mdash; PyBrain v0.3 documentation</title>
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.3',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="PyBrain v0.3 documentation" href="../../index.html" />
+    <link rel="next" title="importance – Datasets for Weighted Supervised Training" href="importancedatasets.html" />
+    <link rel="prev" title="optimization – Black-box Optimization Algorithms" href="../optimization/optimization.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="importancedatasets.html" title="importance – Datasets for Weighted Supervised Training"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="../optimization/optimization.html" title="optimization – Black-box Optimization Algorithms"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">PyBrain v0.3 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-pybrain.datasets.classification">
+<span id="classificationdataset"></span><h1><tt class="xref docutils literal"><span class="pre">classification</span></tt> &#8211; Datasets for Supervised Classification Training<a class="headerlink" href="#module-pybrain.datasets.classification" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="pybrain.datasets.classification.ClassificationDataSet">
+<em class="property">class </em><tt class="descclassname">pybrain.datasets.classification.</tt><tt class="descname">ClassificationDataSet</tt><big>(</big><em>inp</em>, <em>target=1</em>, <em>nb_classes=0</em>, <em>class_labels=None</em><big>)</big><a class="headerlink" href="#pybrain.datasets.classification.ClassificationDataSet" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a title="pybrain.datasets.supervised.SupervisedDataSet" class="reference external" href="superviseddataset.html#pybrain.datasets.supervised.SupervisedDataSet"><tt class="xref docutils literal"><span class="pre">pybrain.datasets.supervised.SupervisedDataSet</span></tt></a></p>
+<p>Specialized data set for classification data. Classes are to be numbered from 0 to nb_classes-1.</p>
+<dl class="method">
+<dt id="pybrain.datasets.classification.ClassificationDataSet.__init__">
+<tt class="descname">__init__</tt><big>(</big><em>inp</em>, <em>target=1</em>, <em>nb_classes=0</em>, <em>class_labels=None</em><big>)</big><a class="headerlink" href="#pybrain.datasets.classification.ClassificationDataSet.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize an empty dataset.</p>
+<p><cite>inp</cite> is used to specify the dimensionality of the input. While the 
+number of targets is given by implicitly by the training samples, it can
+also be set explicity by <cite>nb_classes</cite>. To give the classes names, supply
+an iterable of strings as <cite>class_labels</cite>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pybrain.datasets.classification.ClassificationDataSet.calculateStatistics">
+<tt class="descname">calculateStatistics</tt><big>(</big><big>)</big><a class="headerlink" href="#pybrain.datasets.classification.ClassificationDataSet.calculateStatistics" title="Permalink to this definition">¶</a></dt>
+<dd>Return a class histogram.</dd></dl>
+
+<dl class="method">
+<dt id="pybrain.datasets.classification.ClassificationDataSet.getClass">
+<tt class="descname">getClass</tt><big>(</big><em>idx</em><big>)</big><a class="headerlink" href="#pybrain.datasets.classification.ClassificationDataSet.getClass" title="Permalink to this definition">¶</a></dt>
+<dd>Return the label of given class.</dd></dl>
+
+<dl class="method">
+<dt id="pybrain.datasets.classification.ClassificationDataSet.splitByClass">
+<tt class="descname">splitByClass</tt><big>(</big><em>cls_select</em><big>)</big><a class="headerlink" href="#pybrain.datasets.classification.ClassificationDataSet.splitByClass" title="Permalink to this definition">¶</a></dt>
+<dd>Produce two new datasets, the first one comprising only the class 
+selected (0..nClasses-1), the second one containing the remaining 
+samples.</dd></dl>
+
+<dl class="method">
+<dt id="pybrain.datasets.classification.ClassificationDataSet.castToRegression">
+<tt class="descname">castToRegression</tt><big>(</big><em>values</em><big>)</big><a class="headerlink" href="#pybrain.datasets.classification.ClassificationDataSet.castToRegression" title="Permalink to this definition">¶</a></dt>
+<dd>Converts data set into a SupervisedDataSet for regression. Classes
+are used as indices into the value array given.</dd></dl>
+
+<dl class="method">
+<dt id="pybrain.datasets.classification.ClassificationDataSet._convertToOneOfMany">
+<tt class="descname">_convertToOneOfMany</tt><big>(</big><em>bounds=(0</em>, <em>1)</em><big>)</big><a class="headerlink" href="#pybrain.datasets.classification.ClassificationDataSet._convertToOneOfMany" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts the target classes to a 1-of-k representation, retaining the
+old targets as a field <cite>class</cite>.</p>
+<p>To supply specific bounds, set the <cite>bounds</cite> parameter, which consists of
+target values for non-membership and membership.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pybrain.datasets.classification.ClassificationDataSet._convertToClassNb">
+<tt class="descname">_convertToClassNb</tt><big>(</big><big>)</big><a class="headerlink" href="#pybrain.datasets.classification.ClassificationDataSet._convertToClassNb" title="Permalink to this definition">¶</a></dt>
+<dd>The reverse of _convertToOneOfMany. Target field is overwritten.</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pybrain.datasets.classification.SequenceClassificationDataSet">
+<em class="property">class </em><tt class="descclassname">pybrain.datasets.classification.</tt><tt class="descname">SequenceClassificationDataSet</tt><big>(</big><em>inp</em>, <em>target</em>, <em>nb_classes=0</em>, <em>class_labels=None</em><big>)</big><a class="headerlink" href="#pybrain.datasets.classification.SequenceClassificationDataSet" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a title="pybrain.datasets.sequential.SequentialDataSet" class="reference external" href="sequentialdataset.html#pybrain.datasets.sequential.SequentialDataSet"><tt class="xref docutils literal"><span class="pre">pybrain.datasets.sequential.SequentialDataSet</span></tt></a>, <a title="pybrain.datasets.classification.ClassificationDataSet" class="reference internal" href="#pybrain.datasets.classification.ClassificationDataSet"><tt class="xref docutils literal"><span class="pre">pybrain.datasets.classification.ClassificationDataSet</span></tt></a></p>
+<p>Defines a dataset for sequence classification. Each sample in the 
+sequence still needs its own target value.</p>
+<dl class="method">
+<dt id="pybrain.datasets.classification.SequenceClassificationDataSet.__init__">
+<tt class="descname">__init__</tt><big>(</big><em>inp</em>, <em>target</em>, <em>nb_classes=0</em>, <em>class_labels=None</em><big>)</big><a class="headerlink" href="#pybrain.datasets.classification.SequenceClassificationDataSet.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize an empty dataset.</p>
+<p><cite>inp</cite> is used to specify the dimensionality of the input. While the 
+number of targets is given by implicitly by the training samples, it can
+also be set explicity by <cite>nb_classes</cite>. To give the classes names, supply
+an iterable of strings as <cite>class_labels</cite>.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/pybrain_logo.gif" alt="Logo"/>
+            </a></p>
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="../optimization/optimization.html"
+                                  title="previous chapter"><tt class="docutils literal"><span class="pre">optimization</span></tt> &#8211; Black-box Optimization Algorithms</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="importancedatasets.html"
+                                  title="next chapter"><tt class="docutils literal"><span class="pre">importance</span></tt> &#8211; Datasets for Weighted Supervised Training</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../../_sources/api/datasets/classificationdataset.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="importancedatasets.html" title="importance – Datasets for Weighted Supervised Training"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="../optimization/optimization.html" title="optimization – Black-box Optimization Algorithms"
+             >previous</a> |</li>
+        <li><a href="../../index.html">PyBrain v0.3 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; Copyright 2009, CogBotLab &amp; Idsia.
+      Last updated on Nov 11, 2009.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.3.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,282 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Using Datasets &mdash; PyBrain v0.3 documentation</title>
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.3',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="PyBrain v0.3 documentation" href="../index.html" />
+    <link rel="next" title="Black-box Optimization" href="optimization.html" />
+    <link rel="prev" title="Classification with Feed-Forward Neural Networks" href="fnn.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="optimization.html" title="Black-box Optimization"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="fnn.html" title="Classification with Feed-Forward Neural Networks"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">PyBrain v0.3 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="using-datasets">
+<h1>Using Datasets<a class="headerlink" href="#using-datasets" title="Permalink to this headline">¶</a></h1>
+<p>Datasets are useful for allowing comfortable access to training, test and
+validation data. Instead of having to mangle with arrays, PyBrain gives you a
+more sophisticated datastructure that allows easier work with your data.</p>
+<p>For the different tasks that arise in machine learning, there is a special
+dataset type, possibly with a few sub-types. The different types share some
+common functionality, which we&#8217;ll discuss first.</p>
+<p>A dataset can be seen as a collection of named 2d-arrays, called <cite>fields</cite>
+in this context. For instance, if DS implements <tt class="xref docutils literal"><span class="pre">DataSet</span></tt>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">inp</span> <span class="o">=</span> <span class="n">DS</span><span class="p">[</span><span class="s">&#39;input&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>returns the input field. The last dimension of this field corresponds to
+the input dimension, such that</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">inp</span><span class="p">[</span><span class="mf">0</span><span class="p">,:]</span>
+</pre></div>
+</div>
+<p>would yield the first input vector. In most cases there is also a field named
+&#8216;target&#8217;, which follows the same rules.
+However, didn&#8217;t we say we will spare you the array mangling? Well, in most cases you
+will want iterate over a dataset like so:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">for</span> <span class="n">inp</span><span class="p">,</span> <span class="n">targ</span> <span class="ow">in</span> <span class="n">DS</span><span class="p">:</span>
+  <span class="o">...</span>
+</pre></div>
+</div>
+<p>Note that whether you get one, two, or more sample rows as a return depends on the number
+of <cite>linked fields</cite> in the DataSet: These are fields containing the same number of
+samples and assumed to be used together, like the above &#8216;input&#8217; and &#8216;target&#8217; fields. You
+can always check the DS.link property to see which fields are linked.</p>
+<p>Similarly, DataSets can be created by adding samples one-by-one &#8211; the cleaner but slower
+method &#8211; or by assembling them from arrays.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">for</span> <span class="n">inp</span><span class="p">,</span> <span class="n">targ</span> <span class="ow">in</span> <span class="n">samples</span><span class="p">:</span>
+    <span class="n">DS</span><span class="o">.</span><span class="n">appendLinked</span><span class="p">(</span><span class="n">inp</span><span class="p">,</span> <span class="n">targ</span><span class="p">)</span>
+<span class="c"># or alternatively, with  ia  and  ta  being arrays:</span>
+<span class="k">assert</span><span class="p">(</span><span class="n">ia</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mf">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">ta</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mf">0</span><span class="p">])</span>
+<span class="n">DS</span><span class="o">.</span><span class="n">setField</span><span class="p">(</span><span class="s">&#39;input&#39;</span><span class="p">,</span> <span class="n">ia</span><span class="p">)</span>
+<span class="n">DS</span><span class="o">.</span><span class="n">setField</span><span class="p">(</span><span class="s">&#39;target&#39;</span><span class="p">,</span> <span class="n">ta</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>In the latter case DS cannot check the linked array dimensions for you, otherwise it would not be
+possible to build a dataset from scratch.</p>
+<p>You may add your own linked or unlinked data to the dataset. However, note that many training algorithms
+iterate over the linked fields and may fail if their number has changed:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">DS</span><span class="o">.</span><span class="n">addField</span><span class="p">(</span><span class="s">&#39;myfield&#39;</span><span class="p">)</span>
+<span class="n">DS</span><span class="o">.</span><span class="n">setField</span><span class="p">(</span><span class="s">&#39;myfield&#39;</span><span class="p">,</span> <span class="n">myarray</span><span class="p">)</span>
+<span class="n">DS</span><span class="o">.</span><span class="n">linkFields</span><span class="p">(</span><span class="s">&#39;input&#39;</span><span class="p">,</span><span class="s">&#39;target&#39;</span><span class="p">,</span><span class="s">&#39;myfield&#39;</span><span class="p">)</span> <span class="c"># must provide complete list here</span>
+</pre></div>
+</div>
+<p>A useful utility method for quick generation of randomly picked training and testing data is also provided:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">DS</span><span class="p">)</span>
+<span class="go">100</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">TrainDS</span><span class="p">,</span> <span class="n">TestDS</span> <span class="o">=</span> <span class="n">DS</span><span class="o">.</span><span class="n">splitWithProportion</span><span class="p">(</span><span class="mf">0.8</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">TrainDS</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">TestDS</span><span class="p">)</span>
+<span class="go">(80, 20)</span>
+</pre></div>
+</div>
+<div class="section" id="superviseddataset">
+<h2><a class="reference external" href="../api/datasets/superviseddataset.html#superviseddataset"><em>supervised &#8211; Dataset for Supervised Regression Training</em></a><a class="headerlink" href="#superviseddataset" title="Permalink to this headline">¶</a></h2>
+<p>As the name says, this simplest form of a dataset is meant to be used with
+supervised learning tasks. It is comprised of the fields &#8216;input&#8217; and &#8216;target&#8217;, the pattern
+size of which must be set upon creation:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">from</span> <span class="nn">pybrain.datasets</span> <span class="k">import</span> <span class="n">SupervisedDataSet</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">DS</span> <span class="o">=</span> <span class="n">SupervisedDataSet</span><span class="p">(</span> <span class="mf">3</span><span class="p">,</span> <span class="mf">2</span> <span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">DS</span><span class="o">.</span><span class="n">appendLinked</span><span class="p">(</span> <span class="p">[</span><span class="mf">1</span><span class="p">,</span><span class="mf">2</span><span class="p">,</span><span class="mf">3</span><span class="p">],</span> <span class="p">[</span><span class="mf">4</span><span class="p">,</span><span class="mf">5</span><span class="p">]</span> <span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">DS</span><span class="p">)</span>
+<span class="go">1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">DS</span><span class="p">[</span><span class="s">&#39;input&#39;</span><span class="p">]</span>
+<span class="go">array([[ 1.,  2.,  3.]])</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="sequentialdataset">
+<h2><a class="reference external" href="../api/datasets/sequentialdataset.html#sequentialdataset"><em>sequential &#8211; Dataset for Supervised Sequences Regression Training</em></a><a class="headerlink" href="#sequentialdataset" title="Permalink to this headline">¶</a></h2>
+<p>This dataset introduces the concept of <tt class="docutils literal"><span class="pre">sequences</span></tt>. With this we are moving further away from the array
+mangling towards something more practical for sequence learning tasks. Essentially, its patterns are subdivided into
+sequences of variable length, that can be accessed via the methods</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">getNumSequences</span><span class="p">()</span>
+<span class="n">getSequence</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+<span class="n">getSequenceLength</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Creating a <tt class="xref docutils literal"><span class="pre">Sequentialdataset</span></tt> is no different from its parent, since it still contains only &#8216;input&#8217; and &#8216;target&#8217; fields.
+<tt class="xref docutils literal"><span class="pre">Sequentialdataset</span></tt> inherits from <tt class="xref docutils literal"><span class="pre">SupervisedDataSet</span></tt>, which can be seen as a special
+case with a sequence length of 1 for all sequences.</p>
+<p>To fill the dataset with content, it is advisable to call <tt class="xref docutils literal"><span class="pre">newSequence()</span></tt> at the start of each sequence to be
+stored, and then add patterns by using <tt class="xref docutils literal"><span class="pre">appendLinked()</span></tt> as above. This way, the class handles indexing and such
+transparently. One can theoretically construct a <tt class="xref docutils literal"><span class="pre">Sequentialdataset</span></tt> directly from arrays, but messing with
+the index field is not recommended.</p>
+<p>A typical way of iterating over a sequence dataset <tt class="docutils literal"><span class="pre">DS</span></tt> would be something like:</p>
+<div class="highlight-python"><pre>for i in range(DS.getNumSequences):
+    for input, target in DS.getSequenceIterator(i):
+       # do stuff</pre>
+</div>
+</div>
+<div class="section" id="classificationdataset">
+<h2><a class="reference external" href="../api/datasets/classificationdataset.html#classificationdataset"><em>classification &#8211; Datasets for Supervised Classification Training</em></a><a class="headerlink" href="#classificationdataset" title="Permalink to this headline">¶</a></h2>
+<p>The purpose of this dataset is to facilitate dealing with classification problems, whereas the above are more
+geared towards regression. Its &#8216;target&#8217; field is defined as integer, and it contains an extra field called &#8216;class&#8217;
+which is basically an automated backup of the targets, for reasons that we be apparent shortly. For the most part,
+you don&#8217;t have to bother with it. Initialization requires something like:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">DS</span> <span class="o">=</span> <span class="n">ClassificationDataSet</span><span class="p">(</span><span class="n">inputdim</span><span class="p">,</span> <span class="n">nb_classes</span><span class="o">=</span><span class="mf">2</span><span class="p">,</span> <span class="n">class_labels</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;Fish&#39;</span><span class="p">,</span><span class="s">&#39;Chips&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>The labels are optional, and mainly used for documentation. Target dimension is supposed to be 1. The targets
+are class labels starting from zero. If for some reason you don&#8217;t know beforehand how many you have, or you
+fiddled around with the <tt class="xref docutils literal"><span class="pre">setField()</span></tt> method, it is possible to regenerate the class information using
+<tt class="xref docutils literal"><span class="pre">assignClasses()</span></tt>, or <tt class="xref docutils literal"><span class="pre">calculateStatistics()</span></tt>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">DS</span> <span class="o">=</span> <span class="n">ClassificationDataSet</span><span class="p">(</span><span class="mf">2</span><span class="p">,</span> <span class="n">class_labels</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;Urd&#39;</span><span class="p">,</span> <span class="s">&#39;Verdandi&#39;</span><span class="p">,</span> <span class="s">&#39;Skuld&#39;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">DS</span><span class="o">.</span><span class="n">appendLinked</span><span class="p">([</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.5</span> <span class="p">]</span>   <span class="p">,</span> <span class="p">[</span><span class="mf">0</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">DS</span><span class="o">.</span><span class="n">appendLinked</span><span class="p">([</span> <span class="mf">1.2</span><span class="p">,</span> <span class="mf">1.2</span> <span class="p">]</span>   <span class="p">,</span> <span class="p">[</span><span class="mf">1</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">DS</span><span class="o">.</span><span class="n">appendLinked</span><span class="p">([</span> <span class="mf">1.4</span><span class="p">,</span> <span class="mf">1.6</span> <span class="p">]</span>   <span class="p">,</span> <span class="p">[</span><span class="mf">1</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">DS</span><span class="o">.</span><span class="n">appendLinked</span><span class="p">([</span> <span class="mf">1.6</span><span class="p">,</span> <span class="mf">1.8</span> <span class="p">]</span>   <span class="p">,</span> <span class="p">[</span><span class="mf">1</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">DS</span><span class="o">.</span><span class="n">appendLinked</span><span class="p">([</span> <span class="mf">0.10</span><span class="p">,</span> <span class="mf">0.80</span> <span class="p">]</span> <span class="p">,</span> <span class="p">[</span><span class="mf">2</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">DS</span><span class="o">.</span><span class="n">appendLinked</span><span class="p">([</span> <span class="mf">0.20</span><span class="p">,</span> <span class="mf">0.90</span> <span class="p">]</span> <span class="p">,</span> <span class="p">[</span><span class="mf">2</span><span class="p">])</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">DS</span><span class="o">.</span><span class="n">calculateStatistics</span><span class="p">()</span>
+<span class="go">{0: 1, 1: 3, 2: 2}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">DS</span><span class="o">.</span><span class="n">classHist</span>
+<span class="go">{0: 1, 1: 3, 2: 2}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">DS</span><span class="o">.</span><span class="n">nClasses</span>
+<span class="go">3</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">DS</span><span class="o">.</span><span class="n">getClass</span><span class="p">(</span><span class="mf">1</span><span class="p">)</span>
+<span class="go">Verdandi</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">DS</span><span class="o">.</span><span class="n">getField</span><span class="p">(</span><span class="s">&#39;target&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span>
+<span class="go">[[0 1 1 1 2 2]]</span>
+</pre></div>
+</div>
+<p>When doing classification, many algorithms work better if classes are encoded into one output unit per class,
+that takes on a certain value if the class is present. As an advanced feature, <tt class="xref docutils literal"><span class="pre">ClassificationDataSet</span></tt>
+does this conversion automatically:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">DS</span><span class="o">.</span><span class="n">_convertToOneOfMany</span><span class="p">(</span><span class="n">bounds</span><span class="o">=</span><span class="p">[</span><span class="mf">0</span><span class="p">,</span> <span class="mf">1</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">DS</span><span class="o">.</span><span class="n">getField</span><span class="p">(</span><span class="s">&#39;target&#39;</span><span class="p">)</span>
+<span class="go">[[1 0 0]</span>
+<span class="go"> [0 1 0]</span>
+<span class="go"> [0 1 0]</span>
+<span class="go"> [0 1 0]</span>
+<span class="go"> [0 0 1]</span>
+<span class="go"> [0 0 1]]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">DS</span><span class="o">.</span><span class="n">getField</span><span class="p">(</span><span class="s">&#39;class&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span>
+<span class="go">[[0 1 1 1 2 2]]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">DS</span><span class="o">.</span><span class="n">_convertToClassNb</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">DS</span><span class="o">.</span><span class="n">getField</span><span class="p">(</span><span class="s">&#39;target&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span>
+<span class="go">[[0 1 1 1 2 2]]</span>
+</pre></div>
+</div>
+<p>In case you want to do sequence classification, there is also a <tt class="xref docutils literal"><span class="pre">SequenceClassificationDataSet</span></tt>, which combines
+the features of this class and the <tt class="xref docutils literal"><span class="pre">Sequentialdataset</span></tt>.</p>
+</div>
+<div class="section" id="importancedataset">
+<h2><a class="reference external" href="../api/datasets/importancedatasets.html#importancedataset"><em>importance &#8211; Datasets for Weighted Supervised Training</em></a><a class="headerlink" href="#importancedataset" title="Permalink to this headline">¶</a></h2>
+<p>This is another extension of <tt class="xref docutils literal"><span class="pre">Sequentialdataset</span></tt> that allows assigning different weights to patterns. Essentially,
+it works like its parent, except comprising another linked field named &#8216;importance&#8217;, which should contain a value between
+0.0 and 1.0 for each pattern. A <tt class="xref docutils literal"><span class="pre">Sequentialdataset</span></tt> is a special case with all weights equal to 1.0.</p>
+<p>We have packed this functionality into a different class because it is rarely used and drains some computational resources.
+So far, there is no corresponding non-sequential dataset class.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/pybrain_logo.gif" alt="Logo"/>
+            </a></p>
+            <h3><a href="../index.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="">Using Datasets</a><ul>
+<li><a class="reference external" href="#superviseddataset"><tt class="docutils literal"><span class="pre">superviseddataset</span></tt></a></li>
+<li><a class="reference external" href="#sequentialdataset"><tt class="docutils literal"><span class="pre">sequentialdataset</span></tt></a></li>
+<li><a class="reference external" href="#classificationdataset"><tt class="docutils literal"><span class="pre">classificationdataset</span></tt></a></li>
+<li><a class="reference external" href="#importancedataset"><tt class="docutils literal"><span class="pre">importancedataset</span></tt></a></li>
+</ul>
+</li>
+</ul>
+
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="fnn.html"
+                                  title="previous chapter">Classification with Feed-Forward Neural Networks</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="optimization.html"
+                                  title="next chapter">Black-box Optimization</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../_sources/tutorial/datasets.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="optimization.html" title="Black-box Optimization"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="fnn.html" title="Classification with Feed-Forward Neural Networks"
+             >previous</a> |</li>
+        <li><a href="../index.html">PyBrain v0.3 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; Copyright 2009, CogBotLab &amp; Idsia.
+      Last updated on Nov 11, 2009.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.3.
+    </div>
+  </body>
+</html>

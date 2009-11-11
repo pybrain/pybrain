@@ -1,0 +1,208 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Building a Network &mdash; PyBrain v0.3 documentation</title>
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.3',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="PyBrain v0.3 documentation" href="../index.html" />
+    <link rel="next" title="Building a DataSet" href="dataset.html" />
+    <link rel="prev" title="Welcome to PyBrain’s documentation!" href="../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="dataset.html" title="Building a DataSet"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="../index.html" title="Welcome to PyBrain’s documentation!"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">PyBrain v0.3 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="building-a-network">
+<h1>Building a Network<a class="headerlink" href="#building-a-network" title="Permalink to this headline">¶</a></h1>
+<p>To go through the quickstart interactively, just fire up Python and we will make everything in
+the interpreter:</p>
+<div class="highlight-python"><pre>$ python
+Python 2.5.2 (r252:60911, Sep 17 2008, 11:21:23)
+[GCC 4.0.1 (Apple Inc. build 5465)] on darwin
+Type "help", "copyright", "credits" or "license" for more information.
+&gt;&gt;&gt;</pre>
+</div>
+<p>In PyBrain, networks are composed of Modules which are connected with
+Connections. You can think of a network as a directed acyclic graph, where the
+nodes are Modules and the edges are Connections. This makes PyBrain very
+flexible but it is also not necessary in all cases.</p>
+<div class="section" id="the-buildnetwork-shortcut">
+<h2>The buildNetwork Shortcut<a class="headerlink" href="#the-buildnetwork-shortcut" title="Permalink to this headline">¶</a></h2>
+<p>Thus, there is a simple way to create networks, which is the <tt class="docutils literal"><span class="pre">buildNetwork</span></tt>
+shortcut:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">from</span> <span class="nn">pybrain.tools.shortcuts</span> <span class="k">import</span> <span class="n">buildNetwork</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">net</span> <span class="o">=</span> <span class="n">buildNetwork</span><span class="p">(</span><span class="mf">2</span><span class="p">,</span> <span class="mf">3</span><span class="p">,</span> <span class="mf">1</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This call returns a network that has two inputs, three hidden and a single
+output neuron. In PyBrain, these layers are <tt class="xref docutils literal"><span class="pre">Module</span></tt> objects and they are
+already connected with <tt class="xref docutils literal"><span class="pre">FullConnection</span></tt> objects.</p>
+</div>
+<div class="section" id="activating-a-network">
+<h2>Activating a Network<a class="headerlink" href="#activating-a-network" title="Permalink to this headline">¶</a></h2>
+<p>The net is already initialized with random values - we can already calculate its
+output:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">net</span><span class="o">.</span><span class="n">activate</span><span class="p">([</span><span class="mf">2</span><span class="p">,</span> <span class="mf">1</span><span class="p">])</span>
+<span class="go">array([-0.98646726])</span>
+</pre></div>
+</div>
+<p>For this we use the <tt class="docutils literal"><span class="pre">.activate()</span></tt> method, which expects a list, tuple or an
+array as input.</p>
+</div>
+<div class="section" id="examining-the-structure">
+<h2>Examining the structure<a class="headerlink" href="#examining-the-structure" title="Permalink to this headline">¶</a></h2>
+<p>How can we examine the structure of our network somewhat closer? In PyBrain,
+every part of a network has a name by which you can access it. When building
+networks with the <tt class="docutils literal"><span class="pre">buildNetwork</span></tt> shortcut, the parts are named automatically:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">net</span><span class="p">[</span><span class="s">&#39;in&#39;</span><span class="p">]</span>
+<span class="go">&lt;LinearLayer &#39;in&#39;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">net</span><span class="p">[</span><span class="s">&#39;hidden0&#39;</span><span class="p">]</span>
+<span class="go">&lt;SigmoidLayer &#39;hidden0&#39;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">net</span><span class="p">[</span><span class="s">&#39;out&#39;</span><span class="p">]</span>
+<span class="go">&lt;LinearLayer &#39;out&#39;&gt;</span>
+</pre></div>
+</div>
+<p>The hidden layers have numbers at the end in order to distinguish between those.</p>
+</div>
+<div class="section" id="more-sophisticated-networks">
+<h2>More sophisticated Networks<a class="headerlink" href="#more-sophisticated-networks" title="Permalink to this headline">¶</a></h2>
+<p>Of course, we want more flexibility when building up networks. For instance, the
+hidden layer is constructed with the sigmoid squashing function per default:
+but in a lot of cases, this is not what we want. We can also supply different
+types of layers:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">from</span> <span class="nn">pybrain.structure</span> <span class="k">import</span> <span class="n">TanhLayer</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">net</span> <span class="o">=</span> <span class="n">buildNetwork</span><span class="p">(</span><span class="mf">2</span><span class="p">,</span> <span class="mf">3</span><span class="p">,</span> <span class="mf">1</span><span class="p">,</span> <span class="n">hiddenclass</span><span class="o">=</span><span class="n">TanhLayer</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">net</span><span class="p">[</span><span class="s">&#39;hidden0&#39;</span><span class="p">]</span>
+<span class="go">&lt;TanhLayer &#39;hidden0&#39;&gt;</span>
+</pre></div>
+</div>
+<p>There is more we can do. For example, we can also set a different class for
+the output layer:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">from</span> <span class="nn">pybrain.structure</span> <span class="k">import</span> <span class="n">SoftmaxLayer</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">net</span> <span class="o">=</span> <span class="n">buildNetwork</span><span class="p">(</span><span class="mf">2</span><span class="p">,</span> <span class="mf">3</span><span class="p">,</span> <span class="mf">2</span><span class="p">,</span> <span class="n">hiddenclass</span><span class="o">=</span><span class="n">TanhLayer</span><span class="p">,</span> <span class="n">outclass</span><span class="o">=</span><span class="n">SoftmaxLayer</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">net</span><span class="o">.</span><span class="n">activate</span><span class="p">((</span><span class="mf">2</span><span class="p">,</span> <span class="mf">3</span><span class="p">))</span>
+<span class="go">array([ 0.6656323,  0.3343677])</span>
+</pre></div>
+</div>
+<p>We can also tell the network to use a bias:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">net</span> <span class="o">=</span> <span class="n">buildNetwork</span><span class="p">(</span><span class="mf">2</span><span class="p">,</span> <span class="mf">3</span><span class="p">,</span> <span class="mf">1</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">net</span><span class="p">[</span><span class="s">&#39;bias&#39;</span><span class="p">]</span>
+<span class="go">&lt;BiasUnit &#39;bias&#39;&gt;</span>
+</pre></div>
+</div>
+<p>This approach has of course some restrictions: for example, we can only
+construct a feedforward topology. But it is possible to create very
+sophisticated architectures with PyBrain, and it is also one of the library&#8217;s
+strength to do so.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/pybrain_logo.gif" alt="Logo"/>
+            </a></p>
+            <h3><a href="../index.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="">Building a Network</a><ul>
+<li><a class="reference external" href="#the-buildnetwork-shortcut">The buildNetwork Shortcut</a></li>
+<li><a class="reference external" href="#activating-a-network">Activating a Network</a></li>
+<li><a class="reference external" href="#examining-the-structure">Examining the structure</a></li>
+<li><a class="reference external" href="#more-sophisticated-networks">More sophisticated Networks</a></li>
+</ul>
+</li>
+</ul>
+
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="../index.html"
+                                  title="previous chapter">Welcome to PyBrain&#8217;s documentation!</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="dataset.html"
+                                  title="next chapter">Building a DataSet</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../_sources/quickstart/network.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="dataset.html" title="Building a DataSet"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="../index.html" title="Welcome to PyBrain’s documentation!"
+             >previous</a> |</li>
+        <li><a href="../index.html">PyBrain v0.3 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; Copyright 2009, CogBotLab &amp; Idsia.
+      Last updated on Nov 11, 2009.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.3.
+    </div>
+  </body>
+</html>

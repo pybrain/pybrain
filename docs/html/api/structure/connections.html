@@ -1,0 +1,153 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>connections – Structural Components: Connections &mdash; PyBrain v0.3 documentation</title>
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.3',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="PyBrain v0.3 documentation" href="../../index.html" />
+    <link rel="next" title="evolvable – Container Component: Evolvable" href="evolvables.html" />
+    <link rel="prev" title="Using ODE Environments" href="../../advanced/ode.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="evolvables.html" title="evolvable – Container Component: Evolvable"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="../../advanced/ode.html" title="Using ODE Environments"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">PyBrain v0.3 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-pybrain.structure.connections">
+<h1><tt class="xref docutils literal"><span class="pre">connections</span></tt> &#8211; Structural Components: Connections<a class="headerlink" href="#module-pybrain.structure.connections" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="pybrain.structure.connections.FullConnection">
+<em class="property">class </em><tt class="descclassname">pybrain.structure.connections.</tt><tt class="descname">FullConnection</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#pybrain.structure.connections.FullConnection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Connection which fully connects every element from the first module&#8217;s 
+output buffer to the second module&#8217;s input buffer in a matrix multiplicative
+manner.</p>
+<dl class="method">
+<dt id="pybrain.structure.connections.FullConnection.whichBuffers">
+<tt class="descname">whichBuffers</tt><big>(</big><em>paramIndex</em><big>)</big><a class="headerlink" href="#pybrain.structure.connections.FullConnection.whichBuffers" title="Permalink to this definition">¶</a></dt>
+<dd>Return the index of the input module&#8217;s output buffer and
+the output module&#8217;s input buffer for the given weight.</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pybrain.structure.connections.IdentityConnection">
+<em class="property">class </em><tt class="descclassname">pybrain.structure.connections.</tt><tt class="descname">IdentityConnection</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#pybrain.structure.connections.IdentityConnection" title="Permalink to this definition">¶</a></dt>
+<dd>Connection which connects the i&#8217;th element from the first module&#8217;s output
+buffer to the i&#8217;th element of the second module&#8217;s input buffer.</dd></dl>
+
+<dl class="class">
+<dt id="pybrain.structure.connections.SharedConnection">
+<em class="property">class </em><tt class="descclassname">pybrain.structure.connections.</tt><tt class="descname">SharedConnection</tt><big>(</big><em>mother</em>, <em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#pybrain.structure.connections.SharedConnection" title="Permalink to this definition">¶</a></dt>
+<dd>A shared connection can link different couples of modules, with a single
+set of parameters.</dd></dl>
+
+<dl class="class">
+<dt id="pybrain.structure.connections.SharedFullConnection">
+<em class="property">class </em><tt class="descclassname">pybrain.structure.connections.</tt><tt class="descname">SharedFullConnection</tt><big>(</big><em>mother</em>, <em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#pybrain.structure.connections.SharedFullConnection" title="Permalink to this definition">¶</a></dt>
+<dd>Shared version of FullConnection.</dd></dl>
+
+<dl class="class">
+<dt id="pybrain.structure.connections.MotherConnection">
+<em class="property">class </em><tt class="descclassname">pybrain.structure.connections.</tt><tt class="descname">MotherConnection</tt><big>(</big><em>nbparams</em>, <em>**args</em><big>)</big><a class="headerlink" href="#pybrain.structure.connections.MotherConnection" title="Permalink to this definition">¶</a></dt>
+<dd>The container for the shared parameters of connections (just a container
+with a constructor, actually).</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/pybrain_logo.gif" alt="Logo"/>
+            </a></p>
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="../../advanced/ode.html"
+                                  title="previous chapter">Using ODE Environments</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="evolvables.html"
+                                  title="next chapter"><tt class="docutils literal"><span class="pre">evolvable</span></tt> &#8211; Container Component: Evolvable</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../../_sources/api/structure/connections.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="evolvables.html" title="evolvable – Container Component: Evolvable"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="../../advanced/ode.html" title="Using ODE Environments"
+             >previous</a> |</li>
+        <li><a href="../../index.html">PyBrain v0.3 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; Copyright 2009, CogBotLab &amp; Idsia.
+      Last updated on Nov 11, 2009.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.3.
+    </div>
+  </body>
+</html>

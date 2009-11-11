@@ -1,0 +1,193 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>supervised – Dataset for Supervised Regression Training &mdash; PyBrain v0.3 documentation</title>
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.3',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="PyBrain v0.3 documentation" href="../../index.html" />
+    <link rel="next" title="svmunit – LIBSVM Support Vector Machine Unit" href="../supervised/svm.html" />
+    <link rel="prev" title="sequential – Dataset for Supervised Sequences Regression Training" href="sequentialdataset.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="../supervised/svm.html" title="svmunit – LIBSVM Support Vector Machine Unit"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="sequentialdataset.html" title="sequential – Dataset for Supervised Sequences Regression Training"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">PyBrain v0.3 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-pybrain.datasets.supervised">
+<span id="superviseddataset"></span><h1><tt class="xref docutils literal"><span class="pre">supervised</span></tt> &#8211; Dataset for Supervised Regression Training<a class="headerlink" href="#module-pybrain.datasets.supervised" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="pybrain.datasets.supervised.SupervisedDataSet">
+<em class="property">class </em><tt class="descclassname">pybrain.datasets.supervised.</tt><tt class="descname">SupervisedDataSet</tt><big>(</big><em>inp</em>, <em>target</em><big>)</big><a class="headerlink" href="#pybrain.datasets.supervised.SupervisedDataSet" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref docutils literal"><span class="pre">pybrain.datasets.dataset.DataSet</span></tt></p>
+<p>SupervisedDataSets have two fields, one for input and one for the target.</p>
+<dl class="method">
+<dt id="pybrain.datasets.supervised.SupervisedDataSet.__init__">
+<tt class="descname">__init__</tt><big>(</big><em>inp</em>, <em>target</em><big>)</big><a class="headerlink" href="#pybrain.datasets.supervised.SupervisedDataSet.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize an empty supervised dataset.</p>
+<p>Pass <cite>inp</cite> and <cite>target</cite> to specify the dimensions of the input and 
+target vectors.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pybrain.datasets.supervised.SupervisedDataSet.__len__">
+<tt class="descname">__len__</tt><big>(</big><big>)</big><a class="headerlink" href="#pybrain.datasets.supervised.SupervisedDataSet.__len__" title="Permalink to this definition">¶</a></dt>
+<dd>Return the length of the linked data fields. If no linked fields exist, 
+return the length of the longest field.</dd></dl>
+
+<dl class="method">
+<dt id="pybrain.datasets.supervised.SupervisedDataSet.addSample">
+<tt class="descname">addSample</tt><big>(</big><em>inp</em>, <em>target</em><big>)</big><a class="headerlink" href="#pybrain.datasets.supervised.SupervisedDataSet.addSample" title="Permalink to this definition">¶</a></dt>
+<dd>Add a new sample consisting of <cite>input</cite> and <cite>target</cite>.</dd></dl>
+
+<dl class="method">
+<dt id="pybrain.datasets.supervised.SupervisedDataSet.batches">
+<tt class="descname">batches</tt><big>(</big><em>label</em>, <em>n</em>, <em>permutation=None</em><big>)</big><a class="headerlink" href="#pybrain.datasets.supervised.SupervisedDataSet.batches" title="Permalink to this definition">¶</a></dt>
+<dd><p>Yield batches of the size of n from the dataset.</p>
+<p>A single batch is an array of with dim columns and n rows. The last 
+batch is possibly smaller.</p>
+<p>If permutation is given, batches are yielded in the corresponding 
+order.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pybrain.datasets.supervised.SupervisedDataSet.clear">
+<tt class="descname">clear</tt><big>(</big><em>unlinked=False</em><big>)</big><a class="headerlink" href="#pybrain.datasets.supervised.SupervisedDataSet.clear" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clear the dataset.</p>
+<p>If linked fields exist, only the linked fields will be deleted unless
+<cite>unlinked</cite> is set to True. If no fields are linked, all data will be 
+deleted.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pybrain.datasets.supervised.SupervisedDataSet.copy">
+<tt class="descname">copy</tt><big>(</big><big>)</big><a class="headerlink" href="#pybrain.datasets.supervised.SupervisedDataSet.copy" title="Permalink to this definition">¶</a></dt>
+<dd>Return a deep copy.</dd></dl>
+
+<dl class="classmethod">
+<dt id="pybrain.datasets.supervised.SupervisedDataSet.loadFromFile">
+<em class="property">classmethod </em><tt class="descname">loadFromFile</tt><big>(</big><em>filename</em>, <em>format=None</em><big>)</big><a class="headerlink" href="#pybrain.datasets.supervised.SupervisedDataSet.loadFromFile" title="Permalink to this definition">¶</a></dt>
+<dd>Return an instance of the class that is saved in the file with the
+given filename in the specified format.</dd></dl>
+
+<dl class="method">
+<dt id="pybrain.datasets.supervised.SupervisedDataSet.randomBatches">
+<tt class="descname">randomBatches</tt><big>(</big><em>label</em>, <em>n</em><big>)</big><a class="headerlink" href="#pybrain.datasets.supervised.SupervisedDataSet.randomBatches" title="Permalink to this definition">¶</a></dt>
+<dd>Like .batches(), but the order is random.</dd></dl>
+
+<dl class="classmethod">
+<dt id="pybrain.datasets.supervised.SupervisedDataSet.reconstruct">
+<em class="property">classmethod </em><tt class="descname">reconstruct</tt><big>(</big><em>filename</em><big>)</big><a class="headerlink" href="#pybrain.datasets.supervised.SupervisedDataSet.reconstruct" title="Permalink to this definition">¶</a></dt>
+<dd>Read an incomplete data set (option arraysonly) into the given one.</dd></dl>
+
+<dl class="method">
+<dt id="pybrain.datasets.supervised.SupervisedDataSet.saveToFile">
+<tt class="descname">saveToFile</tt><big>(</big><em>filename</em>, <em>format=None</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#pybrain.datasets.supervised.SupervisedDataSet.saveToFile" title="Permalink to this definition">¶</a></dt>
+<dd>Save the object to file given by filename.</dd></dl>
+
+<dl class="method">
+<dt id="pybrain.datasets.supervised.SupervisedDataSet.splitWithProportion">
+<tt class="descname">splitWithProportion</tt><big>(</big><em>proportion=0.5</em><big>)</big><a class="headerlink" href="#pybrain.datasets.supervised.SupervisedDataSet.splitWithProportion" title="Permalink to this definition">¶</a></dt>
+<dd>Produce two new datasets, the first one containing the fraction given
+by <cite>proportion</cite> of the samples.</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/pybrain_logo.gif" alt="Logo"/>
+            </a></p>
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="sequentialdataset.html"
+                                  title="previous chapter"><tt class="docutils literal docutils literal docutils literal"><span class="pre">sequential</span></tt> &#8211; Dataset for Supervised Sequences Regression Training</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="../supervised/svm.html"
+                                  title="next chapter"><tt class="docutils literal"><span class="pre">svmunit</span></tt> &#8211; LIBSVM Support Vector Machine Unit</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../../_sources/api/datasets/superviseddataset.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../supervised/svm.html" title="svmunit – LIBSVM Support Vector Machine Unit"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="sequentialdataset.html" title="sequential – Dataset for Supervised Sequences Regression Training"
+             >previous</a> |</li>
+        <li><a href="../../index.html">PyBrain v0.3 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; Copyright 2009, CogBotLab &amp; Idsia.
+      Last updated on Nov 11, 2009.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.3.
+    </div>
+  </body>
+</html>

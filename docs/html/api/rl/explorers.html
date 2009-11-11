@@ -1,0 +1,263 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>explorers – RL Components: Explorers &mdash; PyBrain v0.3 documentation</title>
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.3',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="PyBrain v0.3 documentation" href="../../index.html" />
+    <link rel="next" title="learners – RL Components: Learners" href="learners.html" />
+    <link rel="prev" title="experiments – RL Components: Experiments" href="experiments.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="learners.html" title="learners – RL Components: Learners"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="experiments.html" title="experiments – RL Components: Experiments"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">PyBrain v0.3 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-pybrain.rl.explorers.explorer">
+<h1><tt class="xref docutils literal"><span class="pre">explorers</span></tt> &#8211; RL Components: Explorers<a class="headerlink" href="#module-pybrain.rl.explorers.explorer" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="pybrain.rl.explorers.explorer.Explorer">
+<em class="property">class </em><tt class="descclassname">pybrain.rl.explorers.explorer.</tt><tt class="descname">Explorer</tt><big>(</big><em>indim</em>, <em>outdim</em>, <em>name=None</em>, <em>**args</em><big>)</big><a class="headerlink" href="#pybrain.rl.explorers.explorer.Explorer" title="Permalink to this definition">¶</a></dt>
+<dd><p>An Explorer object is used in Agents, receives the current state
+and action (from the controller Module) and returns an explorative
+action that is executed instead the given action.</p>
+<dl class="method">
+<dt id="pybrain.rl.explorers.explorer.Explorer.activate">
+<tt class="descname">activate</tt><big>(</big><em>state</em>, <em>action</em><big>)</big><a class="headerlink" href="#pybrain.rl.explorers.explorer.Explorer.activate" title="Permalink to this definition">¶</a></dt>
+<dd>The super class commonly ignores the state and simply passes the
+action through the module. implement _forwardImplementation()
+in subclasses.</dd></dl>
+
+<dl class="method">
+<dt id="pybrain.rl.explorers.explorer.Explorer.newEpisode">
+<tt class="descname">newEpisode</tt><big>(</big><big>)</big><a class="headerlink" href="#pybrain.rl.explorers.explorer.Explorer.newEpisode" title="Permalink to this definition">¶</a></dt>
+<dd>Inform the explorer about the start of a new episode.</dd></dl>
+
+</dd></dl>
+
+<div class="section" id="module-pybrain.rl.explorers.continuous.sde">
+<h2>Continuous Explorers<a class="headerlink" href="#module-pybrain.rl.explorers.continuous.sde" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="pybrain.rl.explorers.continuous.NormalExplorer">
+<em class="property">class </em><tt class="descclassname">pybrain.rl.explorers.continuous.</tt><tt class="descname">NormalExplorer</tt><big>(</big><em>dim</em>, <em>sigma=0.0</em><big>)</big><a class="headerlink" href="#pybrain.rl.explorers.continuous.NormalExplorer" title="Permalink to this definition">¶</a></dt>
+<dd>A continuous explorer, that perturbs the resulting action with
+additive, normally distributed random noise. The exploration
+has parameter(s) sigma, which are related to the distribution&#8217;s 
+standard deviation. In order to allow for negative values of sigma, 
+the real std. derivation is a transformation of sigma according
+to the expln() function (see pybrain.tools.functions).</dd></dl>
+
+<dl class="class">
+<dt id="pybrain.rl.explorers.continuous.sde.StateDependentExplorer">
+<em class="property">class </em><tt class="descclassname">pybrain.rl.explorers.continuous.sde.</tt><tt class="descname">StateDependentExplorer</tt><big>(</big><em>statedim</em>, <em>actiondim</em>, <em>sigma=-2.0</em><big>)</big><a class="headerlink" href="#pybrain.rl.explorers.continuous.sde.StateDependentExplorer" title="Permalink to this definition">¶</a></dt>
+<dd><p>A continuous explorer, that perturbs the resulting action with
+additive, normally distributed random noise. The exploration
+has parameter(s) sigma, which are related to the distribution&#8217;s 
+standard deviation. In order to allow for negative values of sigma, 
+the real std. derivation is a transformation of sigma according
+to the expln() function (see pybrain.tools.functions).</p>
+<dl class="method">
+<dt id="pybrain.rl.explorers.continuous.sde.StateDependentExplorer.activate">
+<tt class="descname">activate</tt><big>(</big><em>state</em>, <em>action</em><big>)</big><a class="headerlink" href="#pybrain.rl.explorers.continuous.sde.StateDependentExplorer.activate" title="Permalink to this definition">¶</a></dt>
+<dd>The super class commonly ignores the state and simply passes the
+action through the module. implement _forwardImplementation()
+in subclasses.</dd></dl>
+
+<dl class="method">
+<dt id="pybrain.rl.explorers.continuous.sde.StateDependentExplorer.newEpisode">
+<tt class="descname">newEpisode</tt><big>(</big><big>)</big><a class="headerlink" href="#pybrain.rl.explorers.continuous.sde.StateDependentExplorer.newEpisode" title="Permalink to this definition">¶</a></dt>
+<dd>Randomize the matrix values for exploration during one episode.</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-pybrain.rl.explorers.discrete">
+<h2>Discrete Explorers<a class="headerlink" href="#module-pybrain.rl.explorers.discrete" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="pybrain.rl.explorers.discrete.discrete.DiscreteExplorer">
+<em class="property">class </em><tt class="descclassname">pybrain.rl.explorers.discrete.discrete.</tt><tt class="descname">DiscreteExplorer</tt><a class="headerlink" href="#pybrain.rl.explorers.discrete.discrete.DiscreteExplorer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a title="pybrain.rl.explorers.explorer.Explorer" class="reference internal" href="#pybrain.rl.explorers.explorer.Explorer"><tt class="xref docutils literal"><span class="pre">pybrain.rl.explorers.explorer.Explorer</span></tt></a></p>
+<p>Discrete explorers choose one of the available actions from the
+set of actions. In order to know which actions are available and
+which action to choose, discrete explorers need access to the 
+module (which has to of class ActionValueTable).</p>
+<dl class="method">
+<dt id="pybrain.rl.explorers.discrete.discrete.DiscreteExplorer._setModule">
+<tt class="descname">_setModule</tt><big>(</big><em>module</em><big>)</big><a class="headerlink" href="#pybrain.rl.explorers.discrete.discrete.DiscreteExplorer._setModule" title="Permalink to this definition">¶</a></dt>
+<dd>Tells the explorer the module (which has to be ActionValueTable).</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pybrain.rl.explorers.discrete.EpsilonGreedyExplorer">
+<em class="property">class </em><tt class="descclassname">pybrain.rl.explorers.discrete.</tt><tt class="descname">EpsilonGreedyExplorer</tt><big>(</big><em>epsilon=0.29999999999999999</em>, <em>decay=0.99990000000000001</em><big>)</big><a class="headerlink" href="#pybrain.rl.explorers.discrete.EpsilonGreedyExplorer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a title="pybrain.rl.explorers.discrete.discrete.DiscreteExplorer" class="reference internal" href="#pybrain.rl.explorers.discrete.discrete.DiscreteExplorer"><tt class="xref docutils literal"><span class="pre">pybrain.rl.explorers.discrete.discrete.DiscreteExplorer</span></tt></a></p>
+<p>A discrete explorer, that executes the original policy in most cases, 
+but sometimes returns a random action (uniformly drawn) instead. The
+randomness is controlled by a parameter 0 &lt;= epsilon &lt;= 1. The closer
+epsilon gets to 0, the more greedy (and less explorative) the agent
+behaves.</p>
+<dl class="method">
+<dt id="pybrain.rl.explorers.discrete.EpsilonGreedyExplorer._forwardImplementation">
+<tt class="descname">_forwardImplementation</tt><big>(</big><em>inbuf</em>, <em>outbuf</em><big>)</big><a class="headerlink" href="#pybrain.rl.explorers.discrete.EpsilonGreedyExplorer._forwardImplementation" title="Permalink to this definition">¶</a></dt>
+<dd>Draws a random number between 0 and 1. If the number is less
+than epsilon, a random action is chosen. If it is equal or
+larger than epsilon, the greedy action is returned.</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pybrain.rl.explorers.discrete.BoltzmannExplorer">
+<em class="property">class </em><tt class="descclassname">pybrain.rl.explorers.discrete.</tt><tt class="descname">BoltzmannExplorer</tt><big>(</big><em>tau=2.0</em>, <em>decay=0.99950000000000006</em><big>)</big><a class="headerlink" href="#pybrain.rl.explorers.discrete.BoltzmannExplorer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a title="pybrain.rl.explorers.discrete.discrete.DiscreteExplorer" class="reference internal" href="#pybrain.rl.explorers.discrete.discrete.DiscreteExplorer"><tt class="xref docutils literal"><span class="pre">pybrain.rl.explorers.discrete.discrete.DiscreteExplorer</span></tt></a></p>
+<p>A discrete explorer, that executes the actions with probability 
+that depends on their action values. The boltzmann explorer has 
+a parameter tau (the temperature). for high tau, the actions are 
+nearly equiprobable. for tau close to 0, this action selection
+becomes greedy.</p>
+<dl class="method">
+<dt id="pybrain.rl.explorers.discrete.BoltzmannExplorer.activate">
+<tt class="descname">activate</tt><big>(</big><em>state</em>, <em>action</em><big>)</big><a class="headerlink" href="#pybrain.rl.explorers.discrete.BoltzmannExplorer.activate" title="Permalink to this definition">¶</a></dt>
+<dd>The super class ignores the state and simply passes the
+action through the module. implement _forwardImplementation()
+in subclasses.</dd></dl>
+
+<dl class="method">
+<dt id="pybrain.rl.explorers.discrete.BoltzmannExplorer._forwardImplementation">
+<tt class="descname">_forwardImplementation</tt><big>(</big><em>inbuf</em>, <em>outbuf</em><big>)</big><a class="headerlink" href="#pybrain.rl.explorers.discrete.BoltzmannExplorer._forwardImplementation" title="Permalink to this definition">¶</a></dt>
+<dd>Draws a random number between 0 and 1. If the number is less
+than epsilon, a random action is chosen. If it is equal or
+larger than epsilon, the greedy action is returned.</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pybrain.rl.explorers.discrete.DiscreteStateDependentExplorer">
+<em class="property">class </em><tt class="descclassname">pybrain.rl.explorers.discrete.</tt><tt class="descname">DiscreteStateDependentExplorer</tt><big>(</big><em>epsilon=0.20000000000000001</em>, <em>decay=0.99980000000000002</em><big>)</big><a class="headerlink" href="#pybrain.rl.explorers.discrete.DiscreteStateDependentExplorer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a title="pybrain.rl.explorers.discrete.discrete.DiscreteExplorer" class="reference internal" href="#pybrain.rl.explorers.discrete.discrete.DiscreteExplorer"><tt class="xref docutils literal"><span class="pre">pybrain.rl.explorers.discrete.discrete.DiscreteExplorer</span></tt></a></p>
+<p>A discrete explorer, that directly manipulates the ActionValue
+estimator (table or network) and keeps the changes fixed for one
+full episode (if episodic) or slowly changes it over time.</p>
+<p>TODO: currently only implemented for episodes</p>
+<dl class="method">
+<dt id="pybrain.rl.explorers.discrete.DiscreteStateDependentExplorer.activate">
+<tt class="descname">activate</tt><big>(</big><em>state</em>, <em>action</em><big>)</big><a class="headerlink" href="#pybrain.rl.explorers.discrete.DiscreteStateDependentExplorer.activate" title="Permalink to this definition">¶</a></dt>
+<dd>Save the current state for state-dependent exploration.</dd></dl>
+
+<dl class="method">
+<dt id="pybrain.rl.explorers.discrete.DiscreteStateDependentExplorer._forwardImplementation">
+<tt class="descname">_forwardImplementation</tt><big>(</big><em>inbuf</em>, <em>outbuf</em><big>)</big><a class="headerlink" href="#pybrain.rl.explorers.discrete.DiscreteStateDependentExplorer._forwardImplementation" title="Permalink to this definition">¶</a></dt>
+<dd>Activate the copied module instead of the original and
+feed it with the current state.</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/pybrain_logo.gif" alt="Logo"/>
+            </a></p>
+            <h3><a href="../../index.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href=""><tt class="docutils literal"><span class="pre">explorers</span></tt> &#8211; RL Components: Explorers</a><ul>
+<li><a class="reference external" href="#module-pybrain.rl.explorers.continuous.sde">Continuous Explorers</a></li>
+<li><a class="reference external" href="#module-pybrain.rl.explorers.discrete">Discrete Explorers</a></li>
+</ul>
+</li>
+</ul>
+
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="experiments.html"
+                                  title="previous chapter"><tt class="docutils literal docutils literal docutils literal"><span class="pre">experiments</span></tt> &#8211; RL Components: Experiments</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="learners.html"
+                                  title="next chapter"><tt class="docutils literal"><span class="pre">learners</span></tt> &#8211; RL Components: Learners</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../../_sources/api/rl/explorers.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="learners.html" title="learners – RL Components: Learners"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="experiments.html" title="experiments – RL Components: Experiments"
+             >previous</a> |</li>
+        <li><a href="../../index.html">PyBrain v0.3 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; Copyright 2009, CogBotLab &amp; Idsia.
+      Last updated on Nov 11, 2009.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.3.
+    </div>
+  </body>
+</html>

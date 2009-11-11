@@ -1,0 +1,193 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>utilities – Simple but useful Utility Functions &mdash; PyBrain v0.3 documentation</title>
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.3',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="PyBrain v0.3 documentation" href="../index.html" />
+    <link rel="next" title="nearoptimal – Near Optimal Locality Sensitive Hashing" href="supervised/knn/lsh/nearoptimal.html" />
+    <link rel="prev" title="tools – Some Useful Tools and Macros" href="tools.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="supervised/knn/lsh/nearoptimal.html" title="nearoptimal – Near Optimal Locality Sensitive Hashing"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="tools.html" title="tools – Some Useful Tools and Macros"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">PyBrain v0.3 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-pybrain.utilities">
+<h1><tt class="xref docutils literal"><span class="pre">utilities</span></tt> &#8211; Simple but useful Utility Functions<a class="headerlink" href="#module-pybrain.utilities" title="Permalink to this headline">¶</a></h1>
+<p class="rubric">Tools for binary encodings</p>
+<dl class="function">
+<dt id="pybrain.utilities.one_to_n">
+<tt class="descclassname">pybrain.utilities.</tt><tt class="descname">one_to_n</tt><big>(</big><em>val</em>, <em>maxval</em><big>)</big><a class="headerlink" href="#pybrain.utilities.one_to_n" title="Permalink to this definition">¶</a></dt>
+<dd>Returns a 1-in-n binary encoding of a non-negative integer.</dd></dl>
+
+<dl class="function">
+<dt id="pybrain.utilities.n_to_one">
+<tt class="descclassname">pybrain.utilities.</tt><tt class="descname">n_to_one</tt><big>(</big><em>arr</em><big>)</big><a class="headerlink" href="#pybrain.utilities.n_to_one" title="Permalink to this definition">¶</a></dt>
+<dd>Returns the reverse of a 1-in-n binary encoding.</dd></dl>
+
+<dl class="function">
+<dt id="pybrain.utilities.int2gray">
+<tt class="descclassname">pybrain.utilities.</tt><tt class="descname">int2gray</tt><big>(</big><em>i</em><big>)</big><a class="headerlink" href="#pybrain.utilities.int2gray" title="Permalink to this definition">¶</a></dt>
+<dd>Returns the value of an integer in Gray encoding.</dd></dl>
+
+<dl class="function">
+<dt id="pybrain.utilities.asBinary">
+<tt class="descclassname">pybrain.utilities.</tt><tt class="descname">asBinary</tt><big>(</big><em>i</em><big>)</big><a class="headerlink" href="#pybrain.utilities.asBinary" title="Permalink to this definition">¶</a></dt>
+<dd>Produces a string from an integer&#8217;s binary representation.
+(preceding zeros removed).</dd></dl>
+
+<p class="rubric">Tools for sets</p>
+<dl class="function">
+<dt id="pybrain.utilities.reachable">
+<tt class="descclassname">pybrain.utilities.</tt><tt class="descname">reachable</tt><big>(</big><em>stepFunction</em>, <em>start</em>, <em>destinations</em><big>)</big><a class="headerlink" href="#pybrain.utilities.reachable" title="Permalink to this definition">¶</a></dt>
+<dd>Determines the subset of destinations that can be reached from a set of starting positions,
+while using stepFunction (which produces a list of neighbor states) to navigate. 
+Uses breadth-first search.</dd></dl>
+
+<dl class="function">
+<dt id="pybrain.utilities.crossproduct">
+<tt class="descclassname">pybrain.utilities.</tt><tt class="descname">crossproduct</tt><big>(</big><em>ss</em>, <em>row=None</em>, <em>level=0</em><big>)</big><a class="headerlink" href="#pybrain.utilities.crossproduct" title="Permalink to this definition">¶</a></dt>
+<dd>Returns the cross-product of the sets given in <cite>ss</cite>.</dd></dl>
+
+<p class="rubric">Matrix tools</p>
+<dl class="function">
+<dt id="pybrain.utilities.triu2flat">
+<tt class="descclassname">pybrain.utilities.</tt><tt class="descname">triu2flat</tt><big>(</big><em>m</em><big>)</big><a class="headerlink" href="#pybrain.utilities.triu2flat" title="Permalink to this definition">¶</a></dt>
+<dd>Flattens an upper triangular matrix, returning a vector of the 
+non-zero elements.</dd></dl>
+
+<dl class="function">
+<dt id="pybrain.utilities.flat2triu">
+<tt class="descclassname">pybrain.utilities.</tt><tt class="descname">flat2triu</tt><big>(</big><em>a</em>, <em>dim</em><big>)</big><a class="headerlink" href="#pybrain.utilities.flat2triu" title="Permalink to this definition">¶</a></dt>
+<dd>Produces an upper triangular matrix of dimension dim from the elements of the given vector.</dd></dl>
+
+<dl class="function">
+<dt id="pybrain.utilities.blockList2Matrix">
+<tt class="descclassname">pybrain.utilities.</tt><tt class="descname">blockList2Matrix</tt><big>(</big><em>l</em><big>)</big><a class="headerlink" href="#pybrain.utilities.blockList2Matrix" title="Permalink to this definition">¶</a></dt>
+<dd>Converts a list of matrices into a corresponding big block-diagonal one.</dd></dl>
+
+<dl class="function">
+<dt id="pybrain.utilities.blockCombine">
+<tt class="descclassname">pybrain.utilities.</tt><tt class="descname">blockCombine</tt><big>(</big><em>l</em><big>)</big><a class="headerlink" href="#pybrain.utilities.blockCombine" title="Permalink to this definition">¶</a></dt>
+<dd>Produce a matrix from a list of lists of its components.</dd></dl>
+
+<p class="rubric">Stochastic index choices</p>
+<dl class="function">
+<dt id="pybrain.utilities.drawIndex">
+<tt class="descclassname">pybrain.utilities.</tt><tt class="descname">drawIndex</tt><big>(</big><em>probs</em>, <em>tolerant=False</em><big>)</big><a class="headerlink" href="#pybrain.utilities.drawIndex" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draws an index given an array of probabilities.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Key tolerant:</th><td class="field-body">if set to True, the array is normalized to sum to 1.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pybrain.utilities.drawGibbs">
+<tt class="descclassname">pybrain.utilities.</tt><tt class="descname">drawGibbs</tt><big>(</big><em>vals</em>, <em>temperature=1.0</em><big>)</big><a class="headerlink" href="#pybrain.utilities.drawGibbs" title="Permalink to this definition">¶</a></dt>
+<dd>Return the index of the sample drawn by a softmax (Gibbs).</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/pybrain_logo.gif" alt="Logo"/>
+            </a></p>
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="tools.html"
+                                  title="previous chapter"><tt class="docutils literal docutils literal docutils literal"><span class="pre">tools</span></tt> &#8211; Some Useful Tools and Macros</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="supervised/knn/lsh/nearoptimal.html"
+                                  title="next chapter"><tt class="docutils literal docutils literal"><span class="pre">nearoptimal</span></tt> &#8211; Near Optimal Locality Sensitive Hashing</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../_sources/api/utilities.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="supervised/knn/lsh/nearoptimal.html" title="nearoptimal – Near Optimal Locality Sensitive Hashing"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="tools.html" title="tools – Some Useful Tools and Macros"
+             >previous</a> |</li>
+        <li><a href="../index.html">PyBrain v0.3 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; Copyright 2009, CogBotLab &amp; Idsia.
+      Last updated on Nov 11, 2009.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.3.
+    </div>
+  </body>
+</html>

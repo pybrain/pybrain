@@ -1,0 +1,154 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>experiments – RL Components: Experiments &mdash; PyBrain v0.3 documentation</title>
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.3',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="PyBrain v0.3 documentation" href="../../index.html" />
+    <link rel="next" title="explorers – RL Components: Explorers" href="explorers.html" />
+    <link rel="prev" title="agents – RL Components: Agents" href="agents.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="explorers.html" title="explorers – RL Components: Explorers"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="agents.html" title="agents – RL Components: Agents"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">PyBrain v0.3 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-pybrain.rl.experiments">
+<h1><tt class="xref docutils literal"><span class="pre">experiments</span></tt> &#8211; RL Components: Experiments<a class="headerlink" href="#module-pybrain.rl.experiments" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="pybrain.rl.experiments.Experiment">
+<em class="property">class </em><tt class="descclassname">pybrain.rl.experiments.</tt><tt class="descname">Experiment</tt><big>(</big><em>task</em>, <em>agent</em><big>)</big><a class="headerlink" href="#pybrain.rl.experiments.Experiment" title="Permalink to this definition">¶</a></dt>
+<dd><p>An experiment matches up a task with an agent and handles their interactions.</p>
+<dl class="method">
+<dt id="pybrain.rl.experiments.Experiment.doInteractions">
+<tt class="descname">doInteractions</tt><big>(</big><em>number=1</em><big>)</big><a class="headerlink" href="#pybrain.rl.experiments.Experiment.doInteractions" title="Permalink to this definition">¶</a></dt>
+<dd>The default implementation directly maps the methods of the agent and the task.
+Returns the number of interactions done.</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pybrain.rl.experiments.EpisodicExperiment">
+<em class="property">class </em><tt class="descclassname">pybrain.rl.experiments.</tt><tt class="descname">EpisodicExperiment</tt><big>(</big><em>task</em>, <em>agent</em><big>)</big><a class="headerlink" href="#pybrain.rl.experiments.EpisodicExperiment" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref docutils literal"><span class="pre">pybrain.rl.experiments.experiment.Experiment</span></tt></p>
+<p>The extension of Experiment to handle episodic tasks.</p>
+<dl class="method">
+<dt id="pybrain.rl.experiments.EpisodicExperiment.doEpisodes">
+<tt class="descname">doEpisodes</tt><big>(</big><em>number=1</em><big>)</big><a class="headerlink" href="#pybrain.rl.experiments.EpisodicExperiment.doEpisodes" title="Permalink to this definition">¶</a></dt>
+<dd>Do one episode, and return the rewards of each step as a list.</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pybrain.rl.experiments.ContinuousExperiment">
+<em class="property">class </em><tt class="descclassname">pybrain.rl.experiments.</tt><tt class="descname">ContinuousExperiment</tt><big>(</big><em>task</em>, <em>agent</em><big>)</big><a class="headerlink" href="#pybrain.rl.experiments.ContinuousExperiment" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref docutils literal"><span class="pre">pybrain.rl.experiments.experiment.Experiment</span></tt></p>
+<p>The extension of Experiment to handle continuous tasks.</p>
+<dl class="method">
+<dt id="pybrain.rl.experiments.ContinuousExperiment.doInteractionsAndLearn">
+<tt class="descname">doInteractionsAndLearn</tt><big>(</big><em>number=1</em><big>)</big><a class="headerlink" href="#pybrain.rl.experiments.ContinuousExperiment.doInteractionsAndLearn" title="Permalink to this definition">¶</a></dt>
+<dd>Execute a number of steps while learning continuously.
+no reset is performed, such that consecutive calls to 
+this function can be made.</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/pybrain_logo.gif" alt="Logo"/>
+            </a></p>
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="agents.html"
+                                  title="previous chapter"><tt class="docutils literal docutils literal docutils literal"><span class="pre">agents</span></tt> &#8211; RL Components: Agents</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="explorers.html"
+                                  title="next chapter"><tt class="docutils literal"><span class="pre">explorers</span></tt> &#8211; RL Components: Explorers</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../../_sources/api/rl/experiments.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="explorers.html" title="explorers – RL Components: Explorers"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="agents.html" title="agents – RL Components: Agents"
+             >previous</a> |</li>
+        <li><a href="../../index.html">PyBrain v0.3 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; Copyright 2009, CogBotLab &amp; Idsia.
+      Last updated on Nov 11, 2009.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.3.
+    </div>
+  </body>
+</html>

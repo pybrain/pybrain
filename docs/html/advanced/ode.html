@@ -1,0 +1,402 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Using ODE Environments &mdash; PyBrain v0.3 documentation</title>
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.3',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="PyBrain v0.3 documentation" href="../index.html" />
+    <link rel="next" title="connections – Structural Components: Connections" href="../api/structure/connections.html" />
+    <link rel="prev" title="Fast networks for PyBrain" href="fast-pybrain.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="../api/structure/connections.html" title="connections – Structural Components: Connections"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="fast-pybrain.html" title="Fast networks for PyBrain"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">PyBrain v0.3 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="using-ode-environments">
+<span id="ode"></span><h1>Using ODE Environments<a class="headerlink" href="#using-ode-environments" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="using-an-existing-ode-environment">
+<span id="existingode"></span><h2>Using an existing ODE environment<a class="headerlink" href="#using-an-existing-ode-environment" title="Permalink to this headline">¶</a></h2>
+<p>This tutorial walks you through the process of setting up an existing ODE Environment
+for use as a testbed for RL or optimization algorithms.</p>
+<dl class="docutils">
+<dt>First we need the following additional packages that are not required for PyBrain (in addition to SciPy):</dt>
+<dd><ul class="first last simple">
+<li>matplotlib</li>
+<li>python-tk</li>
+<li>python-pyode</li>
+<li>python-opengl (if you also want to view what is happening, very recommended)</li>
+</ul>
+</dd>
+</dl>
+<p>You also need to exchange the following two <tt class="docutils literal"><span class="pre">.py</span></tt> files with custom versions:</p>
+<div class="highlight-python"><pre>cd pybrain/pybrain/rl/environments/ode/xode_changes/
+sudo cp * /usr/lib/python2.6/dist-packages/xode/ (or there ever your dist-packages are)</pre>
+</div>
+<p>You can test if all your settings are ok by starting following example:</p>
+<div class="highlight-python"><pre>cd ~/pybrain/examples/rl/
+python johnnie_pgpe.py</pre>
+</div>
+<p>... and then view whats happening by using the viewer:</p>
+<div class="highlight-python"><pre>cd ~/pybrain/pybrain/rl/environments/ode
+python viewer.py</pre>
+</div>
+<dl class="docutils">
+<dt>Existing ODE Environments that are tested are:</dt>
+<dd><ul class="first last simple">
+<li>Johnnie (a biped humanoid robot modeled after the real
+robot Johnnie (<a class="reference external" href="http://www.amm.mw.tum.de">http://www.amm.mw.tum.de</a>)</li>
+<li>CCRL (a robot with two 7 DoF Arms and simple grippers, modeled
+after the real robot at the CCRL of TU Munich. (<a class="reference external" href="http://www.lsr.ei.tum.de/">http://www.lsr.ei.tum.de/</a>)</li>
+<li>PencilBalancer (a robot that balances pencils in a 2D way, modeled
+after the real robot from Jörg Conradt. (<a class="reference external" href="http://www.ini.uzh.ch/~conradt/Projects/PencilBalancer/">http://www.ini.uzh.ch/~conradt/Projects/PencilBalancer/</a>)</li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="creating-your-own-learning-task-in-an-existing-ode-environment">
+<span id="existinglearning"></span><h2>Creating your own learning task in an existing ODE environment<a class="headerlink" href="#creating-your-own-learning-task-in-an-existing-ode-environment" title="Permalink to this headline">¶</a></h2>
+<p>This tutorial walks you through the process of setting up a
+new task within an existing ODE Environment.
+It assumes that you have taken the steps described in the section <a class="reference internal" href="#existingode"><em>Using an existing ODE environment</em></a>.</p>
+<p>For all ODE environments there can be found a standard task in
+<tt class="docutils literal"><span class="pre">pybrain/rl/environments/ode/tasks</span></tt></p>
+<p>We take as an example again the Johnnie environment. You will find
+that the first class in the johnnie.py file in the above described location is named
+JohnnieTask and inherits from EpisodicTask.</p>
+<dl class="docutils">
+<dt>The necessary methods that you need to define your own task are described already in that basic class:</dt>
+<dd><ul class="first last simple">
+<li><tt class="docutils literal"><span class="pre">__init__(self,</span> <span class="pre">env)</span></tt> - the constructor</li>
+<li><tt class="docutils literal"><span class="pre">performAction(self,</span> <span class="pre">action)</span></tt> - processes and filters the output from the controller
+and communicates it to the environment.</li>
+<li><tt class="docutils literal"><span class="pre">isFinished(self)</span></tt> - checks if the maximum number of timesteps has been reached
+or if other break condition has been met.</li>
+<li><tt class="docutils literal"><span class="pre">res(self)</span></tt> - resets counters rewards and similar.</li>
+</ul>
+</dd>
+</dl>
+<p>If we take a look at the StandingTask (the next class in the file) we see
+that only little has to be done to create an own task.
+First of all the class must inherit from JohnnieTask.
+Then, the constructor has to be overwritten to declare some variables and
+constants for the specific task. In this case there were some additional
+position sensors added and normalized for reward calculation.
+As normally last step the getReward Method has to be overwritten, because
+the reward definition is normally what defines the task. In this case just
+the vertical head position is returned (with some clipping to prevent the
+robot from jumping to get more reward). That is already enough to create a
+task that is sufficiently defined to make a proper learning method (like
+PGPE in the above mentioned and testable example johnnie_pgpe.py) learn a
+controller that let the robot stand complete upright without falling.</p>
+<p>For some special cases you maybe are forced to rewrite the performAction
+method and the isFinished method, but that special cases are out of scope of this HowTo.
+If you need to make such changes and encounter problems please feel
+free to contact the PyBrain mailing list.</p>
+</div>
+<div class="section" id="creating-your-own-ode-environment">
+<span id="createenvironment"></span><h2>Creating your own ODE environment<a class="headerlink" href="#creating-your-own-ode-environment" title="Permalink to this headline">¶</a></h2>
+<p>This tutorial walks you through the process of setting up a new ODE Environment.
+It assumes that you are already familiar with the sections <a class="reference internal" href="#existingode"><em>Using an existing ODE environment</em></a> and <a class="reference internal" href="#existinglearning"><em>Creating your own learning task in an existing ODE environment</em></a>
+and have taken the necessary steps explained there.</p>
+<p>If you want to your own environment you need the following:</p>
+<blockquote>
+<ul class="simple">
+<li>Environment that inherits from ODEEnvironment</li>
+<li>Agent that inherits from OptimizationAgent</li>
+<li>Tasks that inherit from EpisodicTask</li>
+</ul>
+</blockquote>
+<p>For all ODE environments, an instance can be found  in <tt class="docutils literal"><span class="pre">pybrain/rl/environments/ode/instances/</span></tt></p>
+<p>We take as an example again the Johnnie environment. You will find
+that the first class in the <tt class="docutils literal"><span class="pre">johnnie.py</span></tt> file in the location described above is named
+<tt class="xref docutils literal"><span class="pre">JohnnieEnvironment</span></tt> and inherits from <tt class="xref docutils literal"><span class="pre">ODEEnvironment</span></tt>.</p>
+<p>You will see that were is not much to do on the PyBrain side to generate the environment class.
+First loading the corresponding XODE file is necessary to
+provide PyBrain with the specification of the simulation.
+How to generate the corresponding XODE file will be shown later in this HowTo.
+Then the standard sensors are added like the JointSensors, the corresponding
+JointVelocitySensors and also the actuators for every joint.
+Because this kind of sensors and actuators are needed in every simulation
+they are already added in the environment and assumed to exist by later stages of PyBrain.</p>
+<p>The next part is a bit more involved.
+First, member variables that state the number
+of action dimensions and number of sensors have to be set.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="bp">self</span><span class="o">.</span><span class="n">actLen</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getActionLength</span><span class="p">()</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">obsLen</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">getSensors</span><span class="p">())</span>
+</pre></div>
+</div>
+<p>Next, 3 lists are generated for every action dimension. The first list
+is called <tt class="xref docutils literal"><span class="pre">torqueList</span></tt> and states the fraction of
+the global maximal force that can bee applied to the joints.
+The second list states the maximum angle, the third list states the
+minimum angle for every joint. (<tt class="xref docutils literal"><span class="pre">cHighList</span></tt> and <tt class="xref docutils literal"><span class="pre">cLowList</span></tt>) For example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="bp">self</span><span class="o">.</span><span class="n">tourqueList</span> <span class="o">=</span> <span class="n">array</span><span class="p">([</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span><span class="mf">2.0</span><span class="p">,</span><span class="mf">2.0</span><span class="p">,</span><span class="mf">0.5</span><span class="p">,</span><span class="mf">0.5</span><span class="p">],)</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">cHighList</span> <span class="o">=</span> <span class="n">array</span><span class="p">([</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">,</span><span class="mf">1.5</span><span class="p">,</span><span class="mf">1.5</span><span class="p">,</span><span class="mf">0.25</span><span class="p">,</span><span class="mf">0.25</span><span class="p">],)</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">cLowList</span> <span class="o">=</span> <span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">0.0</span><span class="p">,</span><span class="o">-</span><span class="mf">0.25</span><span class="p">,</span><span class="o">-</span><span class="mf">0.25</span><span class="p">],)</span>
+</pre></div>
+</div>
+<p>The last thing to do is how much simulation steps ODE should make
+before getting an update from the controller and sending new sensor values back, called stepsPerAction.</p>
+</div>
+<div class="section" id="creating-your-own-xode-instance">
+<span id="createinstance"></span><h2>Creating your own XODE instance<a class="headerlink" href="#creating-your-own-xode-instance" title="Permalink to this headline">¶</a></h2>
+<p>Now we want to specify a instantiation in a XODE file.
+If you do not know ODE very well,
+you can use a script that is shipped with PyBrain and can be found in
+<tt class="docutils literal"><span class="pre">pybrain/rl/environments/ode/tools/xodetools.py</span></tt></p>
+<p>The first part of the file is responsible for parsing the simplified XODE
+code to a regular XODE file, that can be ignored.
+For an example, look at the Johnnie definition by searching for <tt class="docutils literal"><span class="pre">class</span> <span class="pre">XODEJohnnie(XODEfile)</span></tt></p>
+<p>The instantiation of what you want to simulate in ODE is defined in this
+tool as a class that inherits from <tt class="xref docutils literal"><span class="pre">XODEfile</span></tt>.
+The class consists only of a constructor. Here all parts of the simulated object are defined.
+The parts are defined in an global coordinate system. For examples the row</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="bp">self</span><span class="o">.</span><span class="n">insertBody</span><span class="p">(</span><span class="s">&#39;arm_left&#39;</span><span class="p">,</span><span class="s">&#39;cappedCylinder&#39;</span><span class="p">,[</span><span class="mf">0.25</span><span class="p">,</span><span class="mf">7.5</span><span class="p">],</span><span class="mf">5</span><span class="p">,</span><span class="n">pos</span><span class="o">=</span><span class="p">[</span><span class="mf">2.06</span><span class="p">,</span><span class="o">-</span><span class="mf">2.89</span><span class="p">,</span><span class="mf">0</span><span class="p">],</span>
+                                <span class="n">euler</span><span class="o">=</span><span class="p">[</span><span class="mf">90</span><span class="p">,</span><span class="mf">0</span><span class="p">,</span><span class="mf">0</span><span class="p">],</span> <span class="n">passSet</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;total&#39;</span><span class="p">],</span> <span class="n">mass</span><span class="o">=</span><span class="mf">2.473</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>creates the left arm (identifier &#8216;arm_left&#8217;) of Johnnie as an cylinder with round
+endings (&#8216;cappedCylinder&#8217;) with a diameter of 0.25 and a length of 7.5 ([0.25,7.5])
+with a density of 5 (that will be overwritten if the optional value mass is given
+at the end of the command), an initial position of <tt class="docutils literal"><span class="pre">pos</span> <span class="pre">=</span> <span class="pre">[2.06,-2.89,0]</span></tt>, turned
+by 90 degrees around the x-Axis (<tt class="docutils literal"><span class="pre">euler</span> <span class="pre">=</span> <span class="pre">[90,0,0]</span></tt>, all capped cylinders are by
+default aligned with the y-Axis) the passSet named &#8216;total&#8217; (will be explained
+soon) and the optional mass of the part.</p>
+<p>&#8220;passSet&#8221; is used to define parts that can penetrate each other.
+That is especially necessary for parts that have a joint together,
+but can also be usable in other cases. All parts that are part of
+the same passSet can penetrate each other. Multiple passSet names can be given delimited by a &#8220;,&#8221;.
+Types that are understood by this tool are:</p>
+<blockquote>
+<ul class="simple">
+<li>cylinder</li>
+<li>cappedCylinder</li>
+<li>box</li>
+</ul>
+</blockquote>
+<p>Next we have to define the joints that connect the parts.
+Types of joints that are understood by this tool are:</p>
+<blockquote>
+<ul class="simple">
+<li>fixed, for a stiff fixed joint.</li>
+<li>hinge, one dimensional joint.</li>
+<li>universal joint, experimental 2D joint.</li>
+</ul>
+</blockquote>
+<p>A joint between two parts is inserted in the model by insertJoint,
+giving the identifier of the first part, then the identifier of the second part.
+Next the type of joint is stated (e.g. &#8216;hinge&#8217;). The axis around the joint will
+rotate is stated like <tt class="docutils literal"><span class="pre">axis={'x':1,'y':0,'z':0}</span></tt> and the anchor point in global
+coordinates is defined by something like <tt class="docutils literal"><span class="pre">anchor=(2.06,0.86,0)</span></tt>.
+Add all parts and joints for your model.</p>
+<p>Finally with <tt class="docutils literal"><span class="pre">centerOn(identifier)</span></tt> the camera position is fixed to that part and
+with <tt class="docutils literal"><span class="pre">insertFloor(y=??)</span></tt> a floor can be added.</p>
+<p>Now go to the end of the file and state:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">name</span> <span class="o">=</span> <span class="n">YourClass</span><span class="p">(</span><span class="s">&#39;../models/name&#39;</span><span class="p">)</span>
+<span class="n">name</span><span class="o">.</span><span class="n">writeXODE</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>and execute the file with</p>
+<div class="highlight-python"><pre>python xodetools.py</pre>
+</div>
+<p>And you have created an instantiation of your model that can be read in in the above environment.</p>
+<p>What is missing is a default task for the new environment. In the previous
+&#8220;HowTo create your own learning task in an existing ODE environment&#8221;
+we saw how such a standard task looks for the Johnnie environment.
+To create our own task we have to create a file with the name of our environment in
+<tt class="docutils literal"><span class="pre">pybrain/rl/environments/ode/tasks/</span></tt></p>
+<p>The new task has to import the following packages:</p>
+<blockquote>
+from pybrain.rl.environments import EpisodicTask
+from pybrain.rl.environments.ode.sensors import *</blockquote>
+<p>And whatever is needed from scipy and similar.</p>
+<p>The new class should inherit from EpisodicTask like in the JohnnieTask.
+Next we create the constructor that takes the environment with
+<tt class="docutils literal"><span class="pre">def</span> <span class="pre">__init__(self,</span> <span class="pre">env)</span></tt>.</p>
+<p>It is important that the constructor of EpisodicTask is called.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">EpisodicTask</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">env</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The following member variables are mandatory:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="bp">self</span><span class="o">.</span><span class="n">maxPower</span> <span class="o">=</span> <span class="mf">100.0</span>   <span class="c">#Overall maximal torque - is multiplied with relative max</span>
+                        <span class="c">#torque for individual joint to get individual max torque</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">reward_history</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">count</span> <span class="o">=</span> <span class="mf">0</span>          <span class="c">#timestep counter</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">epiLen</span> <span class="o">=</span> <span class="mf">500</span>       <span class="c">#time steps for one episode</span>
+</pre></div>
+</div>
+<p>In contrast to the ODEEnvironment standard settings some changes might be needed:</p>
+<blockquote>
+<ul class="simple">
+<li><tt class="xref docutils literal"><span class="pre">self.env.FricMu</span></tt> if you need higher or lower friction for your task,</li>
+<li><tt class="xref docutils literal"><span class="pre">self.env.dt</span></tt> if you need more timely resolution.</li>
+</ul>
+</blockquote>
+<p>Next the sensor and actuator limits must be set, usually between -1 and 1:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># normalize standard sensors to (-1, 1)</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">sensor_limits</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="c">#Angle sensors</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">actLen</span><span class="p">):</span>
+    <span class="c"># Joint velocity sensors</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">sensor_limits</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">cLowList</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">cHighList</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">actLen</span><span class="p">):</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">sensor_limits</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="o">-</span><span class="mf">20</span><span class="p">,</span> <span class="mf">20</span><span class="p">))</span>
+<span class="c">#Normalize all actor dimensions to (-1, 1)</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">actor_limits</span> <span class="o">=</span> <span class="p">[(</span><span class="o">-</span><span class="mf">1</span><span class="p">,</span> <span class="mf">1</span><span class="p">)]</span><span class="o">*</span><span class="n">env</span><span class="o">.</span><span class="n">actLen</span>
+</pre></div>
+</div>
+<p>The next method that is needed is the performAction method, the standard setting looks like that:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">performAction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">action</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Filtered mapping towards performAction of the underlying environment &quot;&quot;&quot;</span>
+    <span class="n">EpisodicTask</span><span class="o">.</span><span class="n">performAction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">action</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>If you want to control the wanted angels instead of the forces you may include this simple PD mechanism:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="c">#The joint angles</span>
+<span class="n">isJoints</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">getSensorByName</span><span class="p">(</span><span class="s">&#39;JointSensor&#39;</span><span class="p">)</span>
+<span class="c">#The joint angular velocities</span>
+<span class="n">isSpeeds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">getSensorByName</span><span class="p">(</span><span class="s">&#39;JointVelocitySensor&#39;</span><span class="p">)</span>
+<span class="c">#norm output to action interval</span>
+<span class="n">act</span> <span class="o">=</span> <span class="p">(</span><span class="n">action</span><span class="o">+</span><span class="mf">1.0</span><span class="p">)</span><span class="o">/</span><span class="mf">2.0</span><span class="o">*</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">cHighList</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">cLowList</span><span class="p">)</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">cLowList</span>
+<span class="c">#simple PID</span>
+<span class="n">action</span> <span class="o">=</span> <span class="n">tanh</span><span class="p">((</span><span class="n">act</span> <span class="o">-</span> <span class="n">isJoints</span> <span class="o">-</span> <span class="n">isSpeeds</span><span class="p">)</span> <span class="o">*</span> <span class="mf">16.0</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">maxPower</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">tourqueList</span>
+</pre></div>
+</div>
+<p>Now we have to define the <tt class="xref docutils literal"><span class="pre">isFinished()</span></tt> method:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">isFinished</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; returns true if episode timesteps has reached episode length and resets the task &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">count</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">epiLen</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">res</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">True</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">count</span> <span class="o">+=</span> <span class="mf">1</span>
+        <span class="k">return</span> <span class="bp">False</span>
+</pre></div>
+</div>
+<p>You are certainly free to include other breaking conditions.</p>
+<p>Finally we define a <tt class="xref docutils literal"><span class="pre">reset()</span></tt> method:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">res</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; sets counter and history back, increases incremental counter &quot;&quot;&quot;</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">count</span> <span class="o">=</span> <span class="mf">0</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">reward_history</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">getTotalReward</span><span class="p">())</span>
+</pre></div>
+</div>
+<p>We don&#8217;t need a <tt class="xref docutils literal"><span class="pre">getReward()</span></tt> function here, because the method from <tt class="xref docutils literal"><span class="pre">EpisodicTask</span></tt>
+that returns always 0.0 is taken over. This is the default task that is used to create specific tasks.
+Please take a look at <a class="reference internal" href="#existinglearning"><em>Creating your own learning task in an existing ODE environment</em></a> for how to create a task that gives actual reward.</p>
+<p>If you have done all steps right you now have a new ODE environment with a
+corresponding task that you can test by creating an experiment.
+Or you can try to copy an existing example like the <tt class="docutils literal"><span class="pre">johnnie_pgpe.py</span></tt> and
+replace the environment and the task definition with your new environment and task.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/pybrain_logo.gif" alt="Logo"/>
+            </a></p>
+            <h3><a href="../index.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="">Using ODE Environments</a><ul>
+<li><a class="reference external" href="#using-an-existing-ode-environment">Using an existing ODE environment</a></li>
+<li><a class="reference external" href="#creating-your-own-learning-task-in-an-existing-ode-environment">Creating your own learning task in an existing ODE environment</a></li>
+<li><a class="reference external" href="#creating-your-own-ode-environment">Creating your own ODE environment</a></li>
+<li><a class="reference external" href="#creating-your-own-xode-instance">Creating your own XODE instance</a></li>
+</ul>
+</li>
+</ul>
+
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="fast-pybrain.html"
+                                  title="previous chapter">Fast networks for PyBrain</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="../api/structure/connections.html"
+                                  title="next chapter"><tt class="docutils literal"><span class="pre">connections</span></tt> &#8211; Structural Components: Connections</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../_sources/advanced/ode.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../api/structure/connections.html" title="connections – Structural Components: Connections"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="fast-pybrain.html" title="Fast networks for PyBrain"
+             >previous</a> |</li>
+        <li><a href="../index.html">PyBrain v0.3 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; Copyright 2009, CogBotLab &amp; Idsia.
+      Last updated on Nov 11, 2009.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.3.
+    </div>
+  </body>
+</html>

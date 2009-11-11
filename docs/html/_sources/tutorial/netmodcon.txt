@@ -1,0 +1,189 @@
+.. _netmodcon:
+
+Building Networks with Modules and Connections
+==============================================
+
+This chapter will guide you to use PyBrain's most basic  structural elements: 
+the :class:`FeedForwardNetwork` and :class:`RecurrentNetwork` classes and with
+them the :class:`Module` class and the :class:`Connection` class. We
+have already seen how to create networks with the ``buildNetwork`` shortcut - but
+since this technique is limited in some ways, we will now explore how to create
+networks from the ground up.
+
+Feed Forward Networks
+---------------------
+
+We will start with a simple example, building a multi layer perceptron. 
+
+First we make a new :class:`FeedForwardNetwork` object::
+
+   >>> from pybrain.structure import FeedForwardNetwork
+   >>> n = FeedForwardNetwork()
+   
+Next, we're constructing the input, hidden and output layers::
+
+   >>> from pybrain.structure import LinearLayer, SigmoidLayer
+   >>> inLayer = LinearLayer(2)
+   >>> hiddenLayer = SigmoidLayer(3)
+   >>> outLayer = LinearLayer(1)
+ 	
+There are a couple of different classes of layers. For a complete list check out
+the :mod:`modules` package.
+
+In order to use them, we have to add them to the network::
+
+   >>> n.addInputModule(inLayer)
+   >>> n.addModule(hiddenLayer)
+   >>> n.addOutputModule(outLayer)
+ 	
+We can actually add multiple input and output modules. The net has to know
+which of its modules are input and output modules, in order to forward propagate
+input and to back propagate errors.
+ 	
+It still needs to be explicitly determined how they should be connected. For 
+this we use the most common connection type, which produces a full connectivity
+between layers, by connecting each neuron of one layer with each neuron of the
+other. This is implemented by the :class:`FullConnection` class::
+
+   >>> from pybrain.structure import FullConnection
+   >>> in_to_hidden = FullConnection(inLayer, hiddenLayer)
+   >>> hidden_to_out = FullConnection(hiddenLayer, outLayer)
+
+As with modules, we have to explicitly add them to the network::   
+
+   >>> n.addConnection(in_to_hidden)
+   >>> n.addConnection(hidden_to_out)
+ 	
+All the elements are in place now, so we can do the final step that makes our 
+MLP usable,	which is to call the ``.sortModules()`` method::
+
+   >>> n.sortModules()
+   
+This call does some internal initialization which is necessary before the net
+can finally be used: for example, the modules are sorted topologically.
+	
+	
+Examining a Network
+-------------------
+	
+We can actually print networks and examine their structure::
+
+   >>> print n
+   FeedForwardNetwork-6
+   Modules:
+    [<LinearLayer 'LinearLayer-3'>, <SigmoidLayer 'SigmoidLayer-7'>, <LinearLayer 'LinearLayer-8'>]
+   Connections:
+    [<FullConnection 'FullConnection-4': 'LinearLayer-3' -> 'SigmoidLayer-7'>, <FullConnection 'FullConnection-5': 'SigmoidLayer-7' -> 'LinearLayer-8'>]
+
+Note that the output on your machine will not necessarily be the same. 
+
+One way of using the network is to call its 'activate()' method with an input to
+be transformed::
+
+   >>> n.activate([1, 2])
+   array([-0.11302355])
+   
+Again, this might look different on your machine - the weights of the 
+connections have already been initialized randomly. To have a look at those 
+parameters, just check the ``.params`` field of the connections:
+	
+We can access the trainable parameters (weights) of a connection directly, or 
+read all weights of the network at once::
+  
+   >>> in_to_hidden.params
+   array([ 1.37751406,  1.39320901, -0.24052686, -0.67970042, -0.5999425 , -1.27774679])
+   >>> hidden_to_out.params
+   array([-0.32156782,  1.09338421,  0.48784924])
+
+The network encapsulating the modules actually holds the parameters too. You can
+check them out here::
+
+  >>> n.params
+  array([ 1.37751406,  1.39320901, -0.24052686, -0.67970042, -0.5999425 ,
+       -1.27774679, -0.32156782,  1.09338421,  0.48784924])
+
+As you can see, the last three parameters of the network equal the parameters of
+the second connection.  
+
+
+Naming your Networks structure
+------------------------------
+
+In some settings it makes sense to give the parts of a network explicit 
+identifiers. The structural components are derive from the :class:`Named` 
+class, which means that they have an attribute `.name` by which you can 
+identify it by. If no name is given, a new name will be generated automatically.
+
+Subclasses can also be named by passing the `name` argument on initialization::
+
+   >>> LinearLayer(2)
+   <LinearLayer 'LinearLayer-11'>
+   >>> LinearLayer(2, name="foo")
+   <LinearLayer 'foo'>
+
+.. note:
+
+   Although names should be unique in your PyBrain environment, this is not
+   enforced by the library.
+
+By using names for your networks, printouts look more concise and readable. They
+also ensure that your network components are named in the same way every time 
+you run your program.
+
+
+Using Recurrent Networks
+------------------------
+
+In order to allow recurrency, networks have to be able to "look back in time".
+Due to this, the :class:`RecurrentNetwork` class is different from the 
+:class:`FeedForwardNetwork` class in the substantial way, that the complete 
+history is saved. This is actually memory consuming, but necessary for some 
+learning algorithms.
+
+To create a recurrent network, just do as with feedforward networks but use the
+appropriate class::
+
+   >>> from pybrain.structure import RecurrentNetwork
+   >>> n = RecurrentNetwork()
+
+We will quickly build up a network that is the same as in the example above:
+
+   >>> n.addInputModule(LinearLayer(2, name='in'))
+   >>> n.addModule(SigmoidLayer(3, name='hidden'))
+   >>> n.addOutputModule(LinearLayer(1, name='out'))
+   >>> n.addConnection(FullConnection(n['in'], n['hidden'], name='c1'))
+   >>> n.addConnection(FullConnection(n['hidden'], n['out'], name='c2'))
+
+The :class:`RecurrentNetwork` class has one additional method, 
+``.addRecurrentConnection()``, which looks back in time one timestep. We can
+add one from the hidden to the hidden layer::
+
+   >>> n.addRecurrentConnection(FullConnection(n['hidden'], n['hidden'], name='c3'))
+
+If we now activate the network, we will get different outputs each time::
+
+   >>> n.sortModules()
+   >>> n.activate((2, 2))
+   array([-0.1959887])
+   >>> n.activate((2, 2))
+   array([-0.19623716])
+   >>> n.activate((2, 2))
+   array([-0.19675801])
+
+Of course, we can clear the history of the network. This can be done by calling
+the `reset` method::
+
+   >>> n.reset()
+   >>> n.activate((2, 2))
+   array([-0.1959887])
+   >>> n.activate((2, 2))
+   array([-0.19623716])
+   >>> n.activate((2, 2))
+   array([-0.19675801])
+          
+After the call to ``.reset()``, we are getting the same outputs as just after
+the objects creation.
+
+
+
+

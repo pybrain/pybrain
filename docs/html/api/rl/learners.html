@@ -1,0 +1,294 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>learners – RL Components: Learners &mdash; PyBrain v0.3 documentation</title>
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.3',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="PyBrain v0.3 documentation" href="../../index.html" />
+    <link rel="next" title="tasks – RL Components: Tasks" href="tasks.html" />
+    <link rel="prev" title="explorers – RL Components: Explorers" href="explorers.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="tasks.html" title="tasks – RL Components: Tasks"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="explorers.html" title="explorers – RL Components: Explorers"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">PyBrain v0.3 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="learners-rl-components-learners">
+<h1><tt class="xref docutils literal"><span class="pre">learners</span></tt> &#8211; RL Components: Learners<a class="headerlink" href="#learners-rl-components-learners" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-pybrain.rl.learners.directsearch.directsearch">
+<h2>Abstract classes<a class="headerlink" href="#module-pybrain.rl.learners.directsearch.directsearch" title="Permalink to this headline">¶</a></h2>
+<p>The top of the learner hierarchy is more conceptual than functional. 
+The different classes distinguish algorithms in such a way that we can automatically 
+determine when an algorithm is not applicable for a problem.</p>
+<dl class="class">
+<dt id="pybrain.rl.learners.learner.Learner">
+<em class="property">class </em><tt class="descclassname">pybrain.rl.learners.learner.</tt><tt class="descname">Learner</tt><a class="headerlink" href="#pybrain.rl.learners.learner.Learner" title="Permalink to this definition">¶</a></dt>
+<dd><p>Top-level class for all reinforcement learning algorithms.
+Any learning algorithm changes a policy (in some way) in order 
+to increase the expected reward/fitness.</p>
+<dl class="method">
+<dt id="pybrain.rl.learners.learner.Learner.learn">
+<tt class="descname">learn</tt><big>(</big><big>)</big><a class="headerlink" href="#pybrain.rl.learners.learner.Learner.learn" title="Permalink to this definition">¶</a></dt>
+<dd>The main method, that invokes a learning step.</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pybrain.rl.learners.learner.EpisodicLearner">
+<em class="property">class </em><tt class="descclassname">pybrain.rl.learners.learner.</tt><tt class="descname">EpisodicLearner</tt><a class="headerlink" href="#pybrain.rl.learners.learner.EpisodicLearner" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a title="pybrain.rl.learners.learner.Learner" class="reference internal" href="#pybrain.rl.learners.learner.Learner"><tt class="xref docutils literal"><span class="pre">pybrain.rl.learners.learner.Learner</span></tt></a></p>
+<p>Assumes the task is episodic, not life-long,
+and therefore does a learning step only after the end of each episode.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="pybrain.rl.learners.learner.DataSetLearner">
+<em class="property">class </em><tt class="descclassname">pybrain.rl.learners.learner.</tt><tt class="descname">DataSetLearner</tt><a class="headerlink" href="#pybrain.rl.learners.learner.DataSetLearner" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a title="pybrain.rl.learners.learner.EpisodicLearner" class="reference internal" href="#pybrain.rl.learners.learner.EpisodicLearner"><tt class="xref docutils literal"><span class="pre">pybrain.rl.learners.learner.EpisodicLearner</span></tt></a></p>
+<p>A class for learners that learn from a dataset, which has no target output but 
+only a reinforcement signal for each sample. It requires a 
+ReinforcementDataSet object (which provides state-action-reward tuples).</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="pybrain.rl.learners.learner.ExploringLearner">
+<em class="property">class </em><tt class="descclassname">pybrain.rl.learners.learner.</tt><tt class="descname">ExploringLearner</tt><a class="headerlink" href="#pybrain.rl.learners.learner.ExploringLearner" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a title="pybrain.rl.learners.learner.Learner" class="reference internal" href="#pybrain.rl.learners.learner.Learner"><tt class="xref docutils literal"><span class="pre">pybrain.rl.learners.learner.Learner</span></tt></a></p>
+<p>A Learner determines how to change the adaptive parameters of a module.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="pybrain.rl.learners.directsearch.directsearch.DirectSearchLearner">
+<em class="property">class </em><tt class="descclassname">pybrain.rl.learners.directsearch.directsearch.</tt><tt class="descname">DirectSearchLearner</tt><a class="headerlink" href="#pybrain.rl.learners.directsearch.directsearch.DirectSearchLearner" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a title="pybrain.rl.learners.learner.Learner" class="reference internal" href="#pybrain.rl.learners.learner.Learner"><tt class="xref docutils literal"><span class="pre">pybrain.rl.learners.learner.Learner</span></tt></a></p>
+<p>The class of learners that (in contrast to value-based learners) 
+searches directly in policy space.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-pybrain.rl.learners.valuebased">
+<h2>Value-based Learners<a class="headerlink" href="#module-pybrain.rl.learners.valuebased" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="pybrain.rl.learners.valuebased.valuebased.ValueBasedLearner">
+<em class="property">class </em><tt class="descclassname">pybrain.rl.learners.valuebased.valuebased.</tt><tt class="descname">ValueBasedLearner</tt><a class="headerlink" href="#pybrain.rl.learners.valuebased.valuebased.ValueBasedLearner" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a title="pybrain.rl.learners.learner.ExploringLearner" class="reference internal" href="#pybrain.rl.learners.learner.ExploringLearner"><tt class="xref docutils literal"><span class="pre">pybrain.rl.learners.learner.ExploringLearner</span></tt></a>, <a title="pybrain.rl.learners.learner.DataSetLearner" class="reference internal" href="#pybrain.rl.learners.learner.DataSetLearner"><tt class="xref docutils literal"><span class="pre">pybrain.rl.learners.learner.DataSetLearner</span></tt></a>, <a title="pybrain.rl.learners.learner.EpisodicLearner" class="reference internal" href="#pybrain.rl.learners.learner.EpisodicLearner"><tt class="xref docutils literal"><span class="pre">pybrain.rl.learners.learner.EpisodicLearner</span></tt></a></p>
+<p>An RL algorithm based on estimating a value-function.</p>
+<dl class="attribute">
+<dt id="pybrain.rl.learners.valuebased.valuebased.ValueBasedLearner.batchMode">
+<tt class="descname">batchMode</tt><a class="headerlink" href="#pybrain.rl.learners.valuebased.valuebased.ValueBasedLearner.batchMode" title="Permalink to this definition">¶</a></dt>
+<dd>Does the algorithm run in batch mode or online?</dd></dl>
+
+<dl class="attribute">
+<dt id="pybrain.rl.learners.valuebased.valuebased.ValueBasedLearner.explorer">
+<tt class="descname">explorer</tt><a class="headerlink" href="#pybrain.rl.learners.valuebased.valuebased.ValueBasedLearner.explorer" title="Permalink to this definition">¶</a></dt>
+<dd>Return the internal explorer.</dd></dl>
+
+<dl class="attribute">
+<dt id="pybrain.rl.learners.valuebased.valuebased.ValueBasedLearner.module">
+<tt class="descname">module</tt><a class="headerlink" href="#pybrain.rl.learners.valuebased.valuebased.ValueBasedLearner.module" title="Permalink to this definition">¶</a></dt>
+<dd>Return the internal module.</dd></dl>
+
+<dl class="attribute">
+<dt id="pybrain.rl.learners.valuebased.valuebased.ValueBasedLearner.offPolicy">
+<tt class="descname">offPolicy</tt><a class="headerlink" href="#pybrain.rl.learners.valuebased.valuebased.ValueBasedLearner.offPolicy" title="Permalink to this definition">¶</a></dt>
+<dd>Does the algorithm work on-policy or off-policy?</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pybrain.rl.learners.valuebased.Q">
+<em class="property">class </em><tt class="descclassname">pybrain.rl.learners.valuebased.</tt><tt class="descname">Q</tt><big>(</big><em>alpha=0.5</em>, <em>gamma=0.98999999999999999</em><big>)</big><a class="headerlink" href="#pybrain.rl.learners.valuebased.Q" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a title="pybrain.rl.learners.valuebased.valuebased.ValueBasedLearner" class="reference internal" href="#pybrain.rl.learners.valuebased.valuebased.ValueBasedLearner"><tt class="xref docutils literal"><span class="pre">pybrain.rl.learners.valuebased.valuebased.ValueBasedLearner</span></tt></a></p>
+<dl class="method">
+<dt id="pybrain.rl.learners.valuebased.Q.learn">
+<tt class="descname">learn</tt><big>(</big><big>)</big><a class="headerlink" href="#pybrain.rl.learners.valuebased.Q.learn" title="Permalink to this definition">¶</a></dt>
+<dd><p>Learn on the current dataset, either for many timesteps and
+even episodes (batchMode = True) or for a single timestep 
+(batchMode = False). Batch mode is possible, because Q-Learning 
+is an off-policy method.</p>
+<p>In batchMode, the algorithm goes through all the samples in the
+history and performs an update on each of them. if batchMode is
+False, only the last data sample is considered. The user himself
+has to make sure to keep the dataset consistent with the agent&#8217;s 
+history.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pybrain.rl.learners.valuebased.QLambda">
+<em class="property">class </em><tt class="descclassname">pybrain.rl.learners.valuebased.</tt><tt class="descname">QLambda</tt><big>(</big><em>alpha=0.5</em>, <em>gamma=0.98999999999999999</em>, <em>qlambda=0.90000000000000002</em><big>)</big><a class="headerlink" href="#pybrain.rl.learners.valuebased.QLambda" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a title="pybrain.rl.learners.valuebased.valuebased.ValueBasedLearner" class="reference internal" href="#pybrain.rl.learners.valuebased.valuebased.ValueBasedLearner"><tt class="xref docutils literal"><span class="pre">pybrain.rl.learners.valuebased.valuebased.ValueBasedLearner</span></tt></a></p>
+<p>Q-lambda is a variation of Q-learning that uses an eligibility trace.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="pybrain.rl.learners.valuebased.SARSA">
+<em class="property">class </em><tt class="descclassname">pybrain.rl.learners.valuebased.</tt><tt class="descname">SARSA</tt><big>(</big><em>alpha=0.5</em>, <em>gamma=0.98999999999999999</em><big>)</big><a class="headerlink" href="#pybrain.rl.learners.valuebased.SARSA" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a title="pybrain.rl.learners.valuebased.valuebased.ValueBasedLearner" class="reference internal" href="#pybrain.rl.learners.valuebased.valuebased.ValueBasedLearner"><tt class="xref docutils literal"><span class="pre">pybrain.rl.learners.valuebased.valuebased.ValueBasedLearner</span></tt></a></p>
+<p>State-Action-Reward-State-Action (SARSA) algorithm.</p>
+<p>In batchMode, the algorithm goes through all the samples in the
+history and performs an update on each of them. if batchMode is
+False, only the last data sample is considered. The user himself
+has to make sure to keep the dataset consistent with the agent&#8217;s 
+history.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="pybrain.rl.learners.valuebased.NFQ">
+<em class="property">class </em><tt class="descclassname">pybrain.rl.learners.valuebased.</tt><tt class="descname">NFQ</tt><a class="headerlink" href="#pybrain.rl.learners.valuebased.NFQ" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a title="pybrain.rl.learners.valuebased.valuebased.ValueBasedLearner" class="reference internal" href="#pybrain.rl.learners.valuebased.valuebased.ValueBasedLearner"><tt class="xref docutils literal"><span class="pre">pybrain.rl.learners.valuebased.valuebased.ValueBasedLearner</span></tt></a></p>
+<p>Neuro-fitted Q-learning</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-pybrain.rl.learners.directsearch.enac">
+<h2>Direct-search Learners<a class="headerlink" href="#module-pybrain.rl.learners.directsearch.enac" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="pybrain.rl.learners.directsearch.policygradient.PolicyGradientLearner">
+<em class="property">class </em><tt class="descclassname">pybrain.rl.learners.directsearch.policygradient.</tt><tt class="descname">PolicyGradientLearner</tt><a class="headerlink" href="#pybrain.rl.learners.directsearch.policygradient.PolicyGradientLearner" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a title="pybrain.rl.learners.directsearch.directsearch.DirectSearchLearner" class="reference internal" href="#pybrain.rl.learners.directsearch.directsearch.DirectSearchLearner"><tt class="xref docutils literal"><span class="pre">pybrain.rl.learners.directsearch.directsearch.DirectSearchLearner</span></tt></a>, <a title="pybrain.rl.learners.learner.DataSetLearner" class="reference internal" href="#pybrain.rl.learners.learner.DataSetLearner"><tt class="xref docutils literal"><span class="pre">pybrain.rl.learners.learner.DataSetLearner</span></tt></a>, <a title="pybrain.rl.learners.learner.ExploringLearner" class="reference internal" href="#pybrain.rl.learners.learner.ExploringLearner"><tt class="xref docutils literal"><span class="pre">pybrain.rl.learners.learner.ExploringLearner</span></tt></a></p>
+<p>PolicyGradientLearner is a super class for all continuous direct search
+algorithms that use the log likelihood of the executed action to update
+the weights. Subclasses are ENAC, GPOMDP, or REINFORCE.</p>
+<dl class="method">
+<dt id="pybrain.rl.learners.directsearch.policygradient.PolicyGradientLearner.learn">
+<tt class="descname">learn</tt><big>(</big><big>)</big><a class="headerlink" href="#pybrain.rl.learners.directsearch.policygradient.PolicyGradientLearner.learn" title="Permalink to this definition">¶</a></dt>
+<dd>calls the gradient calculation function and executes a step in direction
+of the gradient, scaled with a small learning rate alpha.</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pybrain.rl.learners.directsearch.reinforce.Reinforce">
+<em class="property">class </em><tt class="descclassname">pybrain.rl.learners.directsearch.reinforce.</tt><tt class="descname">Reinforce</tt><a class="headerlink" href="#pybrain.rl.learners.directsearch.reinforce.Reinforce" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a title="pybrain.rl.learners.directsearch.policygradient.PolicyGradientLearner" class="reference internal" href="#pybrain.rl.learners.directsearch.policygradient.PolicyGradientLearner"><tt class="xref docutils literal"><span class="pre">pybrain.rl.learners.directsearch.policygradient.PolicyGradientLearner</span></tt></a></p>
+<p>Reinforce is a gradient estimator technique by Williams (see
+&#8220;Simple Statistical Gradient-Following Algorithms for
+Connectionist Reinforcement Learning&#8221;). It uses optimal
+baselines and calculates the gradient with the log likelihoods
+of the taken actions.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="pybrain.rl.learners.directsearch.enac.ENAC">
+<em class="property">class </em><tt class="descclassname">pybrain.rl.learners.directsearch.enac.</tt><tt class="descname">ENAC</tt><a class="headerlink" href="#pybrain.rl.learners.directsearch.enac.ENAC" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a title="pybrain.rl.learners.directsearch.policygradient.PolicyGradientLearner" class="reference internal" href="#pybrain.rl.learners.directsearch.policygradient.PolicyGradientLearner"><tt class="xref docutils literal"><span class="pre">pybrain.rl.learners.directsearch.policygradient.PolicyGradientLearner</span></tt></a></p>
+<p>Episodic Natural Actor-Critic. See J. Peters &#8220;Natural Actor-Critic&#8221;, 2005.
+Estimates natural gradient with regression of log likelihoods to rewards.</p>
+</dd></dl>
+
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Black-box optimization algorithms can also be seen as direct-search RL algorithms, but are not included here.</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/pybrain_logo.gif" alt="Logo"/>
+            </a></p>
+            <h3><a href="../../index.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href=""><tt class="docutils literal"><span class="pre">learners</span></tt> &#8211; RL Components: Learners</a><ul>
+<li><a class="reference external" href="#module-pybrain.rl.learners.directsearch.directsearch">Abstract classes</a></li>
+<li><a class="reference external" href="#module-pybrain.rl.learners.valuebased">Value-based Learners</a></li>
+<li><a class="reference external" href="#module-pybrain.rl.learners.directsearch.enac">Direct-search Learners</a></li>
+</ul>
+</li>
+</ul>
+
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="explorers.html"
+                                  title="previous chapter"><tt class="docutils literal docutils literal docutils literal"><span class="pre">explorers</span></tt> &#8211; RL Components: Explorers</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="tasks.html"
+                                  title="next chapter"><tt class="docutils literal docutils literal"><span class="pre">tasks</span></tt> &#8211; RL Components: Tasks</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../../_sources/api/rl/learners.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="tasks.html" title="tasks – RL Components: Tasks"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="explorers.html" title="explorers – RL Components: Explorers"
+             >previous</a> |</li>
+        <li><a href="../../index.html">PyBrain v0.3 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; Copyright 2009, CogBotLab &amp; Idsia.
+      Last updated on Nov 11, 2009.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.3.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,190 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>networks – Structural Components: Networks &mdash; PyBrain v0.3 documentation</title>
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.3',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="PyBrain v0.3 documentation" href="../../index.html" />
+    <link rel="next" title="actionvalues – RL Components: ActionValues" href="../rl/actionvalues.html" />
+    <link rel="prev" title="modules – Structural Components: Modules" href="modules.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="../rl/actionvalues.html" title="actionvalues – RL Components: ActionValues"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="modules.html" title="modules – Structural Components: Modules"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">PyBrain v0.3 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-pybrain.structure.networks">
+<h1><tt class="xref docutils literal"><span class="pre">networks</span></tt> &#8211; Structural Components: Networks<a class="headerlink" href="#module-pybrain.structure.networks" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="pybrain.structure.networks.Network">
+<em class="property">class </em><tt class="descclassname">pybrain.structure.networks.</tt><tt class="descname">Network</tt><big>(</big><em>name=None</em>, <em>**args</em><big>)</big><a class="headerlink" href="#pybrain.structure.networks.Network" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref docutils literal"><span class="pre">pybrain.structure.modules.module.Module</span></tt>, <tt class="xref docutils literal"><span class="pre">pybrain.structure.parametercontainer.ParameterContainer</span></tt></p>
+<p>Abstract class for linking different modules with connections.</p>
+<dl class="method">
+<dt id="pybrain.structure.networks.Network.activate">
+<tt class="descname">activate</tt><big>(</big><em>inpt</em><big>)</big><a class="headerlink" href="#pybrain.structure.networks.Network.activate" title="Permalink to this definition">¶</a></dt>
+<dd>Do one transformation of an input and return the result.</dd></dl>
+
+<dl class="method">
+<dt id="pybrain.structure.networks.Network.activateOnDataset">
+<tt class="descname">activateOnDataset</tt><big>(</big><em>dataset</em><big>)</big><a class="headerlink" href="#pybrain.structure.networks.Network.activateOnDataset" title="Permalink to this definition">¶</a></dt>
+<dd>Run the module&#8217;s forward pass on the given dataset unconditionally
+and return the output.</dd></dl>
+
+<dl class="method">
+<dt id="pybrain.structure.networks.Network.addConnection">
+<tt class="descname">addConnection</tt><big>(</big><em>c</em><big>)</big><a class="headerlink" href="#pybrain.structure.networks.Network.addConnection" title="Permalink to this definition">¶</a></dt>
+<dd>Add the given connection to the network.</dd></dl>
+
+<dl class="method">
+<dt id="pybrain.structure.networks.Network.addInputModule">
+<tt class="descname">addInputModule</tt><big>(</big><em>m</em><big>)</big><a class="headerlink" href="#pybrain.structure.networks.Network.addInputModule" title="Permalink to this definition">¶</a></dt>
+<dd>Add the given module to the network and mark it as an input module.</dd></dl>
+
+<dl class="method">
+<dt id="pybrain.structure.networks.Network.addModule">
+<tt class="descname">addModule</tt><big>(</big><em>m</em><big>)</big><a class="headerlink" href="#pybrain.structure.networks.Network.addModule" title="Permalink to this definition">¶</a></dt>
+<dd>Add the given module to the network.</dd></dl>
+
+<dl class="method">
+<dt id="pybrain.structure.networks.Network.addOutputModule">
+<tt class="descname">addOutputModule</tt><big>(</big><em>m</em><big>)</big><a class="headerlink" href="#pybrain.structure.networks.Network.addOutputModule" title="Permalink to this definition">¶</a></dt>
+<dd>Add the given module to the network and mark it as an output module.</dd></dl>
+
+<dl class="method">
+<dt id="pybrain.structure.networks.Network.reset">
+<tt class="descname">reset</tt><big>(</big><big>)</big><a class="headerlink" href="#pybrain.structure.networks.Network.reset" title="Permalink to this definition">¶</a></dt>
+<dd>Reset all component modules and the network.</dd></dl>
+
+<dl class="method">
+<dt id="pybrain.structure.networks.Network.sortModules">
+<tt class="descname">sortModules</tt><big>(</big><big>)</big><a class="headerlink" href="#pybrain.structure.networks.Network.sortModules" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prepare the network for activation by sorting the internal 
+datastructure.</p>
+<p>Needs to be called before activation.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pybrain.structure.networks.FeedForwardNetwork">
+<em class="property">class </em><tt class="descclassname">pybrain.structure.networks.</tt><tt class="descname">FeedForwardNetwork</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#pybrain.structure.networks.FeedForwardNetwork" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref docutils literal"><span class="pre">pybrain.structure.networks.feedforward.FeedForwardNetworkComponent</span></tt>, <tt class="xref docutils literal"><span class="pre">pybrain.structure.networks.network.Network</span></tt></p>
+<p>FeedForwardNetworks are networks that do not work for sequential data. 
+Every input is treated as independent of any previous or following inputs.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="pybrain.structure.networks.RecurrentNetwork">
+<em class="property">class </em><tt class="descclassname">pybrain.structure.networks.</tt><tt class="descname">RecurrentNetwork</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#pybrain.structure.networks.RecurrentNetwork" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref docutils literal"><span class="pre">pybrain.structure.networks.recurrent.RecurrentNetworkComponent</span></tt>, <tt class="xref docutils literal"><span class="pre">pybrain.structure.networks.network.Network</span></tt></p>
+<p>Class that implements networks which can work with sequential data.</p>
+<p>Until .reset() is called, the network keeps track of all previous inputs and
+thus allows the use of recurrent connections and layers that look back in 
+time.</p>
+<dl class="method">
+<dt id="pybrain.structure.networks.RecurrentNetwork.addRecurrentConnection">
+<tt class="descname">addRecurrentConnection</tt><big>(</big><em>c</em><big>)</big><a class="headerlink" href="#pybrain.structure.networks.RecurrentNetwork.addRecurrentConnection" title="Permalink to this definition">¶</a></dt>
+<dd>Add a connection to the network and mark it as a recurrent one.</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/pybrain_logo.gif" alt="Logo"/>
+            </a></p>
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="modules.html"
+                                  title="previous chapter"><tt class="docutils literal docutils literal docutils literal"><span class="pre">modules</span></tt> &#8211; Structural Components: Modules</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="../rl/actionvalues.html"
+                                  title="next chapter"><tt class="docutils literal docutils literal docutils literal"><span class="pre">actionvalues</span></tt> &#8211; RL Components: ActionValues</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../../_sources/api/structure/networks.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../rl/actionvalues.html" title="actionvalues – RL Components: ActionValues"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="modules.html" title="modules – Structural Components: Modules"
+             >previous</a> |</li>
+        <li><a href="../../index.html">PyBrain v0.3 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; Copyright 2009, CogBotLab &amp; Idsia.
+      Last updated on Nov 11, 2009.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.3.
+    </div>
+  </body>
+</html>

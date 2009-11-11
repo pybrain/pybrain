@@ -1,0 +1,229 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>trainers – Supervised Training for Networks and other Modules &mdash; PyBrain v0.3 documentation</title>
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.3',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="PyBrain v0.3 documentation" href="../../index.html" />
+    <link rel="next" title="tools – Some Useful Tools and Macros" href="../tools.html" />
+    <link rel="prev" title="svmunit – LIBSVM Support Vector Machine Unit" href="svm.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="../tools.html" title="tools – Some Useful Tools and Macros"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="svm.html" title="svmunit – LIBSVM Support Vector Machine Unit"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">PyBrain v0.3 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-pybrain.supervised.trainers">
+<h1><tt class="xref docutils literal"><span class="pre">trainers</span></tt> &#8211; Supervised Training for Networks and other Modules<a class="headerlink" href="#module-pybrain.supervised.trainers" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="pybrain.supervised.trainers.BackpropTrainer">
+<em class="property">class </em><tt class="descclassname">pybrain.supervised.trainers.</tt><tt class="descname">BackpropTrainer</tt><big>(</big><em>module</em>, <em>dataset=None</em>, <em>learningrate=0.01</em>, <em>lrdecay=1.0</em>, <em>momentum=0.0</em>, <em>verbose=False</em>, <em>batchlearning=False</em>, <em>weightdecay=0.0</em><big>)</big><a class="headerlink" href="#pybrain.supervised.trainers.BackpropTrainer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Trainer that trains the parameters of a module according to a 
+supervised dataset (potentially sequential) by backpropagating the errors
+(through time).</p>
+<dl class="method">
+<dt id="pybrain.supervised.trainers.BackpropTrainer.__init__">
+<tt class="descname">__init__</tt><big>(</big><em>module</em>, <em>dataset=None</em>, <em>learningrate=0.01</em>, <em>lrdecay=1.0</em>, <em>momentum=0.0</em>, <em>verbose=False</em>, <em>batchlearning=False</em>, <em>weightdecay=0.0</em><big>)</big><a class="headerlink" href="#pybrain.supervised.trainers.BackpropTrainer.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a BackpropTrainer to train the specified <cite>module</cite> on the 
+specified <cite>dataset</cite>.</p>
+<p>The learning rate gives the ratio of which parameters are changed into 
+the direction of the gradient. The learning rate decreases by <cite>lrdecay</cite>, 
+which is used to to multiply the learning rate after each training 
+step. The parameters are also adjusted with respect to <cite>momentum</cite>, which 
+is the ratio by which the gradient of the last timestep is used.</p>
+<p>If <cite>batchlearning</cite> is set, the parameters are updated only at the end of
+each epoch. Default is False.</p>
+<p><cite>weightdecay</cite> corresponds to the weightdecay rate, where 0 is no weight
+decay at all.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pybrain.supervised.trainers.BackpropTrainer.setData">
+<tt class="descname">setData</tt><big>(</big><em>dataset</em><big>)</big><a class="headerlink" href="#pybrain.supervised.trainers.BackpropTrainer.setData" title="Permalink to this definition">¶</a></dt>
+<dd>Associate the given dataset with the trainer.</dd></dl>
+
+<dl class="method">
+<dt id="pybrain.supervised.trainers.BackpropTrainer.testOnClassData">
+<tt class="descname">testOnClassData</tt><big>(</big><em>dataset=None</em>, <em>verbose=False</em>, <em>return_targets=False</em><big>)</big><a class="headerlink" href="#pybrain.supervised.trainers.BackpropTrainer.testOnClassData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return winner-takes-all classification output on a given dataset.</p>
+<p>If no dataset is given, the dataset passed during Trainer 
+initialization is used. If return_targets is set, also return 
+corresponding target classes.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pybrain.supervised.trainers.BackpropTrainer.train">
+<tt class="descname">train</tt><big>(</big><big>)</big><a class="headerlink" href="#pybrain.supervised.trainers.BackpropTrainer.train" title="Permalink to this definition">¶</a></dt>
+<dd>Train the associated module for one epoch.</dd></dl>
+
+<dl class="method">
+<dt id="pybrain.supervised.trainers.BackpropTrainer.trainEpochs">
+<tt class="descname">trainEpochs</tt><big>(</big><em>epochs=1</em>, <em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#pybrain.supervised.trainers.BackpropTrainer.trainEpochs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Train on the current dataset for the given number of <cite>epochs</cite>.</p>
+<p>Additional arguments are passed on to the train method.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pybrain.supervised.trainers.BackpropTrainer.trainOnDataset">
+<tt class="descname">trainOnDataset</tt><big>(</big><em>dataset</em>, <em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#pybrain.supervised.trainers.BackpropTrainer.trainOnDataset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the dataset and train.</p>
+<p>Additional arguments are passed on to the train method.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pybrain.supervised.trainers.BackpropTrainer.trainUntilConvergence">
+<tt class="descname">trainUntilConvergence</tt><big>(</big><em>dataset=None</em>, <em>maxEpochs=None</em>, <em>verbose=None</em>, <em>continueEpochs=10</em>, <em>validationProportion=0.25</em><big>)</big><a class="headerlink" href="#pybrain.supervised.trainers.BackpropTrainer.trainUntilConvergence" title="Permalink to this definition">¶</a></dt>
+<dd><p>Train the module on the dataset until it converges.</p>
+<p>Return the module with the parameters that gave the minimal validation 
+error.</p>
+<p>If no dataset is given, the dataset passed during Trainer 
+initialization is used. validationProportion is the ratio of the dataset
+that is used for the validation dataset.</p>
+<p>If maxEpochs is given, at most that many epochs
+are trained. Each time validation error hits a minimum, try for 
+continueEpochs epochs to find a better one.</p>
+</dd></dl>
+
+</dd></dl>
+
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This documentation comprises just a subjective excerpt of available methods. See the source code for additional functionality.</p>
+</div>
+<dl class="class">
+<dt id="pybrain.supervised.trainers.RPropMinusTrainer">
+<em class="property">class </em><tt class="descclassname">pybrain.supervised.trainers.</tt><tt class="descname">RPropMinusTrainer</tt><big>(</big><em>module</em>, <em>etaminus=0.5</em>, <em>etaplus=1.2</em>, <em>deltamin=9.9999999999999995e-07</em>, <em>deltamax=5.0</em>, <em>delta0=0.10000000000000001</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#pybrain.supervised.trainers.RPropMinusTrainer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Train the parameters of a module according to a supervised dataset (possibly sequential)
+by RProp without weight backtracking (aka RProp-, cf. [Igel&amp;Huesken, Neurocomputing 50, 2003]) 
+and without ponderation, ie. all training samples have the same weight.</p>
+<dl class="method">
+<dt id="pybrain.supervised.trainers.RPropMinusTrainer.__init__">
+<tt class="descname">__init__</tt><big>(</big><em>module</em>, <em>etaminus=0.5</em>, <em>etaplus=1.2</em>, <em>deltamin=9.9999999999999995e-07</em>, <em>deltamax=5.0</em>, <em>delta0=0.10000000000000001</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#pybrain.supervised.trainers.RPropMinusTrainer.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set up training algorithm parameters, and objects associated with the trainer.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameter:</th><td class="field-body"><em>module</em> &#8211; the module whose parameters should be trained.</td>
+</tr>
+<tr class="field"><th class="field-name">Key etaminus:</th><td class="field-body">factor by which step width is decreased when overstepping (0.5)</td>
+</tr>
+<tr class="field"><th class="field-name">Key etaplus:</th><td class="field-body">factor by which step width is increased when following gradient (1.2)</td>
+</tr>
+<tr class="field"><th class="field-name">Key delta:</th><td class="field-body">step width for each weight</td>
+</tr>
+<tr class="field"><th class="field-name">Key deltamin:</th><td class="field-body">minimum step width (1e-6)</td>
+</tr>
+<tr class="field"><th class="field-name">Key deltamax:</th><td class="field-body">maximum step width (5.0)</td>
+</tr>
+<tr class="field"><th class="field-name">Key delta0:</th><td class="field-body">initial step width (0.1)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">See the documentation of <a title="pybrain.supervised.trainers.BackpropTrainer" class="reference internal" href="#pybrain.supervised.trainers.BackpropTrainer"><tt class="xref docutils literal"><span class="pre">BackpropTrainer</span></tt></a> for inherited methods.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/pybrain_logo.gif" alt="Logo"/>
+            </a></p>
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="svm.html"
+                                  title="previous chapter"><tt class="docutils literal docutils literal docutils literal"><span class="pre">svmunit</span></tt> &#8211; LIBSVM Support Vector Machine Unit</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="../tools.html"
+                                  title="next chapter"><tt class="docutils literal"><span class="pre">tools</span></tt> &#8211; Some Useful Tools and Macros</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../../_sources/api/supervised/trainers.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../tools.html" title="tools – Some Useful Tools and Macros"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="svm.html" title="svmunit – LIBSVM Support Vector Machine Unit"
+             >previous</a> |</li>
+        <li><a href="../../index.html">PyBrain v0.3 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; Copyright 2009, CogBotLab &amp; Idsia.
+      Last updated on Nov 11, 2009.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.3.
+    </div>
+  </body>
+</html>

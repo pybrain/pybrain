@@ -1,0 +1,62 @@
+:mod:`tools` -- Some Useful Tools and Macros
+============================================
+
+.. rubric:: Neural network tools
+
+.. automodule:: pybrain.tools.shortcuts
+
+.. autofunction:: buildNetwork
+
+.. automodule:: pybrain.tools.neuralnets
+
+.. autoclass:: NNregression
+   :members: __init__, initGraphics, setupNN, runTraining, saveTrainingCurve, saveNetwork
+
+.. autoclass:: NNclassifier
+   :members: __init__, initGraphics, setupNN, setupRNN, runTraining, saveTrainingCurve, saveNetwork
+
+.. rubric:: Dataset tools
+
+.. automodule:: pybrain.tools.datasettools
+
+.. autofunction:: convertSequenceToTimeWindows
+
+.. rubric:: Training performance validation tools
+
+.. automodule:: pybrain.tools.validation
+
+.. autoclass:: Validator
+   :members:
+
+.. autoclass:: ModuleValidator
+   :members:
+
+.. autoclass:: CrossValidator
+   :members:
+
+.. autofunction:: testOnSequenceData
+
+.. rubric:: Auxiliary functions
+
+.. automodule:: pybrain.tools.functions
+
+.. autofunction:: semilinear
+
+.. autofunction:: semilinearPrime
+
+.. autofunction:: sigmoid
+
+.. autofunction:: sigmoidPrime
+
+.. autofunction:: tanhPrime
+
+.. autofunction:: safeExp
+
+.. autofunction:: ranking
+
+.. autofunction:: multivariateNormalPdf
+
+.. autofunction:: simpleMultivariateNormalPdf
+
+.. autofunction:: multivariateCauchy
+

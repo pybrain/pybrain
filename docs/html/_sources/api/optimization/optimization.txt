@@ -1,0 +1,85 @@
+:mod:`optimization` -- Black-box Optimization Algorithms
+========================================================
+
+The two base classes
+--------------------
+
+.. automodule:: pybrain.optimization.optimizer
+
+.. autoclass:: BlackBoxOptimizer
+   :members: __init__, setEvaluator, learn, 
+   		minimize, 
+   		maxEvaluations, maxLearningSteps, desiredEvaluation,
+   		verbose, storeAllEvaluations, storeAllEvaluated,
+   		numParameters    
+    
+.. autoclass:: ContinuousOptimizer
+   :members: __init__
+   :show-inheritance:
+   
+
+General Black-box optimizers
+----------------------------
+
+.. automodule:: pybrain.optimization
+
+.. autoclass:: RandomSearch
+   :members: 
+
+.. autoclass:: HillClimber
+   :members: 
+
+.. autoclass:: StochasticHillClimber
+   :members: temperature
+   
+
+Continuous optimizers
+---------------------
+
+.. autoclass:: NelderMead
+   :members: 
+
+.. autoclass:: CMAES
+   :members:
+   
+.. autoclass:: OriginalNES
+   :members:
+
+.. autoclass:: ExactNES
+   :members:
+   
+.. autoclass:: FEM
+   :members:
+   
+Finite difference methods
+^^^^^^^^^^^^^^^^^^^^^^^^^
+   
+.. autoclass:: FiniteDifferences
+   :members:   
+
+.. autoclass:: PGPE
+   :members:   
+   :show-inheritance:
+   
+.. autoclass:: SimpleSPSA
+   :members:   
+   :show-inheritance:
+
+Population-based
+^^^^^^^^^^^^^^^^
+
+.. autoclass:: ParticleSwarmOptimizer
+   :members:   
+
+.. autoclass:: GA
+   :members:   
+
+
+   
+Multi-objective Optimization
+----------------------------
+
+.. autoclass:: MultiObjectiveGA
+   :members:   
+   
+   

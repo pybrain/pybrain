@@ -1,0 +1,292 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Black-box Optimization &mdash; PyBrain v0.3 documentation</title>
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.3',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="PyBrain v0.3 documentation" href="../index.html" />
+    <link rel="next" title="Reinforcement Learning" href="reinforcement-learning.html" />
+    <link rel="prev" title="Using Datasets" href="datasets.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="reinforcement-learning.html" title="Reinforcement Learning"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="datasets.html" title="Using Datasets"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">PyBrain v0.3 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="black-box-optimization">
+<span id="optimization"></span><h1>Black-box Optimization<a class="headerlink" href="#black-box-optimization" title="Permalink to this headline">¶</a></h1>
+<p>This tutorial will illustrate how to use the optimization algorithms in PyBrain.</p>
+<p>Very many practical problems can be framed as optimization problems: finding the best settings for a controller,
+minimizing the risk of an investment portfolio, finding a good strategy in a game, etc.
+It always involves determining a certain number of <em>variables</em> (the <em>problem dimension</em>),
+each of them chosen from a set,
+that maximizing (or minimize) a given <em>objective function</em>.</p>
+<p>The main categories of optimization problems are based
+on the kinds of sets the variables are chosen from:</p>
+<blockquote>
+<ul class="simple">
+<li>all real numbers: continuous optimization</li>
+<li>real numbers with bounds: constrained optimization</li>
+<li>integers: integer programming</li>
+<li>combinations of the above</li>
+<li>others, e.g. graphs</li>
+</ul>
+</blockquote>
+<p>These can be further classified according to properties of the objective function
+(e.g. continuity, explicit access to partial derivatives, quadratic form, etc.).
+In black-box optimization the objective function is a black box,
+i.e. there are no conditions about it.
+The optimization tools that PyBrain provides are all for the most general, black-box case.
+They fall into 2 groups:</p>
+<blockquote>
+<ul class="simple">
+<li><a title="pybrain.optimization.optimizer.BlackBoxOptimizer" class="reference external" href="../api/optimization/optimization.html#pybrain.optimization.optimizer.BlackBoxOptimizer"><tt class="xref docutils literal"><span class="pre">BlackBoxOptimizer</span></tt></a> are applicable to all kinds of variable sets</li>
+<li><a title="pybrain.optimization.optimizer.ContinuousOptimizer" class="reference external" href="../api/optimization/optimization.html#pybrain.optimization.optimizer.ContinuousOptimizer"><tt class="xref docutils literal"><span class="pre">ContinuousOptimizer</span></tt></a> can only be used for continuous optimization</li>
+</ul>
+</blockquote>
+<p>We will introduce the optimization framework for the more restrictive kind first,
+because that case is simpler.</p>
+<div class="section" id="continuous-optimization">
+<h2>Continuous optimization<a class="headerlink" href="#continuous-optimization" title="Permalink to this headline">¶</a></h2>
+<p>Let&#8217;s start by defining a simple objective function for (<tt class="xref docutils literal"><span class="pre">numpy</span></tt> arrays of) continuous variables,
+e.g. the sum of squares:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">objF</span><span class="p">(</span><span class="n">x</span><span class="p">):</span> <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="n">x</span><span class="o">**</span><span class="mf">2</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>and an initial guess for where to start looking:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">x0</span> <span class="o">=</span> <span class="n">array</span><span class="p">([</span><span class="mf">2.1</span><span class="p">,</span> <span class="o">-</span><span class="mf">1</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>Now we can initialize one of the optimization algorithms,
+e.g. <tt class="xref docutils literal"><span class="pre">CMAES</span></tt>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">from</span> <span class="nn">pybrain.optimization</span> <span class="k">import</span> <span class="n">CMAES</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">l</span> <span class="o">=</span> <span class="n">CMAES</span><span class="p">(</span><span class="n">objF</span><span class="p">,</span> <span class="n">x0</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>By default, all optimization algorithms <em>maximize</em> the objective function,
+but you can change this by setting the <tt class="xref docutils literal"><span class="pre">minimize</span></tt> attribute:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">l</span><span class="o">.</span><span class="n">minimize</span> <span class="o">=</span> <span class="bp">True</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">We could also have done that upon construction:
+<tt class="docutils literal"><span class="pre">CMAES(objF,</span> <span class="pre">x0,</span> <span class="pre">minimize</span> <span class="pre">=</span> <span class="pre">True)</span></tt></p>
+</div>
+<p>Stopping criteria can be algorithm-specific, but in addition,
+it is always possible to define the following ones:</p>
+<blockquote>
+<ul class="simple">
+<li>maximal number of evaluations</li>
+<li>maximal number of learning steps</li>
+<li>reaching a desired value</li>
+</ul>
+</blockquote>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">l</span><span class="o">.</span><span class="n">maxEvaluations</span> <span class="o">=</span> <span class="mf">200</span>
+</pre></div>
+</div>
+<p>Now that the optimizer is set up, all we need to use is the <tt class="xref docutils literal"><span class="pre">learn()</span></tt> method, which will
+attempt to optimize the variables until a stopping criterion is reached. It returns
+a tuple with the best evaluable (= array of variables) found, and the corresponding fitness:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">l</span><span class="o">.</span><span class="n">learn</span><span class="p">()</span>
+<span class="go">(array([ -1.59778097e-05,  -1.14434779e-03]), 1.3097871509722648e-06)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="general-optimization-using-evolvable">
+<h2>General optimization: using <tt class="xref docutils literal"><span class="pre">Evolvable</span></tt><a class="headerlink" href="#general-optimization-using-evolvable" title="Permalink to this headline">¶</a></h2>
+<p>Our approach to doing optimization in the most general setting (no assumptions about the variables) is
+to let the user define a subclass of <tt class="xref docutils literal"><span class="pre">Evolvable</span></tt> that implements:</p>
+<blockquote>
+<ul class="simple">
+<li>a <tt class="xref docutils literal"><span class="pre">copy()</span></tt> operator,</li>
+<li>a method for generating random other points: <tt class="xref docutils literal"><span class="pre">randomize()</span></tt>,</li>
+<li><tt class="xref docutils literal"><span class="pre">mutate()</span></tt>, an operator that does a small step in search space, according to <em>some</em> distance metric,</li>
+<li>(optionally) a <tt class="xref docutils literal"><span class="pre">crossover()</span></tt> operator that produces <em>some</em> combination with other evolvables of the same class.</li>
+</ul>
+</blockquote>
+<p>The optimization algorithm is then initialized with an instance of this class
+and an objective function that can evaluate such instances.</p>
+<p>Here&#8217;s a minimalistic example of such a subclass with a single constrained variable
+(and a bias to do mutation steps toward larger values):</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">from</span> <span class="nn">random</span> <span class="k">import</span> <span class="n">random</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">from</span> <span class="nn">pybrain.structure.evolvables.evolvable</span> <span class="k">import</span> <span class="n">Evolvable</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">class</span> <span class="nc">SimpleEvo</span><span class="p">(</span><span class="n">Evolvable</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0</span><span class="p">,</span> <span class="nb">min</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="mf">10</span><span class="p">))</span>
+<span class="gp">... </span>    <span class="k">def</span> <span class="nf">mutate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>      <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0</span><span class="p">,</span> <span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">+</span> <span class="n">random</span><span class="p">()</span> <span class="o">-</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">10</span><span class="p">))</span>
+<span class="gp">... </span>    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>        <span class="k">return</span> <span class="n">SimpleEvo</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
+<span class="gp">... </span>    <span class="k">def</span> <span class="nf">randomize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>   <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="mf">10</span><span class="o">*</span><span class="n">random</span><span class="p">()</span>
+<span class="gp">... </span>    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>    <span class="k">return</span> <span class="s">&#39;&lt;-</span><span class="si">%.2f</span><span class="s">-&gt;&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>which can be optimized using, for example, <tt class="xref docutils literal"><span class="pre">HillClimber</span></tt>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">from</span> <span class="nn">pybrain.optimization</span> <span class="k">import</span> <span class="n">HillClimber</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x0</span> <span class="o">=</span> <span class="n">SimpleEvo</span><span class="p">(</span><span class="mf">1.2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">l</span> <span class="o">=</span> <span class="n">HillClimber</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">maxEvaluations</span> <span class="o">=</span> <span class="mf">50</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">l</span><span class="o">.</span><span class="n">learn</span><span class="p">()</span>
+<span class="go">(&lt;-10.00-&gt;, 10)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="optimization-in-reinforcement-learning">
+<h2>Optimization in Reinforcement Learning<a class="headerlink" href="#optimization-in-reinforcement-learning" title="Permalink to this headline">¶</a></h2>
+<p>This section illustrates how to use optimization algorithms in the reinforcement learning framework.</p>
+<p>As our objective function we use any episodic task, e.g:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">from</span> <span class="nn">pybrain.rl.environments.cartpole.balancetask</span> <span class="k">import</span> <span class="n">BalanceTask</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">task</span> <span class="o">=</span> <span class="n">BalanceTask</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Then we construct a module that can interact with the task,
+for example a neural network controller,</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">from</span> <span class="nn">pybrain.tools.shortcuts</span> <span class="k">import</span> <span class="n">buildNetwork</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">net</span> <span class="o">=</span> <span class="n">buildNetwork</span><span class="p">(</span><span class="n">task</span><span class="o">.</span><span class="n">outdim</span><span class="p">,</span> <span class="mf">3</span><span class="p">,</span> <span class="n">task</span><span class="o">.</span><span class="n">indim</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>and we choose any optimization algorithm, e.g. a simple <tt class="xref docutils literal"><span class="pre">HillClimber</span></tt>.</p>
+<p>Now, we have 2 (equivalent) ways for connecting those:</p>
+<blockquote>
+<ol class="arabic">
+<li><dl class="first docutils">
+<dt>using the same syntax as before, where the task plays the role of the objective function directly:</dt>
+<dd><div class="first last highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">HillClimber</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">net</span><span class="p">,</span> <span class="n">maxEvaluations</span> <span class="o">=</span> <span class="mf">100</span><span class="p">)</span><span class="o">.</span><span class="n">learn</span><span class="p">()</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>or, using the agent-based framework:</dt>
+<dd><div class="first last highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">from</span> <span class="nn">pybrain.rl.agents</span> <span class="k">import</span> <span class="n">OptimizationAgent</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">from</span> <span class="nn">pybrain.rl.experiments</span> <span class="k">import</span> <span class="n">EpisodicExperiment</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">agent</span> <span class="o">=</span> <span class="n">OptimizationAgent</span><span class="p">(</span><span class="n">net</span><span class="p">,</span> <span class="n">HillClimber</span><span class="p">())</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">exp</span> <span class="o">=</span> <span class="n">EpisodicExperiment</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">agent</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">exp</span><span class="o">.</span><span class="n">doEpisodes</span><span class="p">(</span><span class="mf">100</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</li>
+</ol>
+</blockquote>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>This is very similar to the typical (non-optimization) reinforcement learning setup,
+the key difference being the use of a <tt class="xref docutils literal"><span class="pre">LearningAgent</span></tt> instead of an <tt class="xref docutils literal"><span class="pre">OptimizationAgent</span></tt>.</p>
+<div class="last highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">from</span> <span class="nn">pybrain.rl.learners</span> <span class="k">import</span> <span class="n">ENAC</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">from</span> <span class="nn">pybrain.rl.agents</span> <span class="k">import</span> <span class="n">LearningAgent</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">agent</span> <span class="o">=</span> <span class="n">LearningAgent</span><span class="p">(</span><span class="n">net</span><span class="p">,</span> <span class="n">ENAC</span><span class="p">())</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">exp</span> <span class="o">=</span> <span class="n">EpisodicExperiment</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">agent</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">exp</span><span class="o">.</span><span class="n">doEpisodes</span><span class="p">(</span><span class="mf">100</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/pybrain_logo.gif" alt="Logo"/>
+            </a></p>
+            <h3><a href="../index.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="">Black-box Optimization</a><ul>
+<li><a class="reference external" href="#continuous-optimization">Continuous optimization</a></li>
+<li><a class="reference external" href="#general-optimization-using-evolvable">General optimization: using <tt class="docutils literal"><span class="pre">Evolvable</span></tt></a></li>
+<li><a class="reference external" href="#optimization-in-reinforcement-learning">Optimization in Reinforcement Learning</a></li>
+</ul>
+</li>
+</ul>
+
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="datasets.html"
+                                  title="previous chapter">Using Datasets</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="reinforcement-learning.html"
+                                  title="next chapter">Reinforcement Learning</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../_sources/tutorial/optimization.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="reinforcement-learning.html" title="Reinforcement Learning"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="datasets.html" title="Using Datasets"
+             >previous</a> |</li>
+        <li><a href="../index.html">PyBrain v0.3 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; Copyright 2009, CogBotLab &amp; Idsia.
+      Last updated on Nov 11, 2009.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.3.
+    </div>
+  </body>
+</html>

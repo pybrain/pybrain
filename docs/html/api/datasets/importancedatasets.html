@@ -1,0 +1,145 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>importance – Datasets for Weighted Supervised Training &mdash; PyBrain v0.3 documentation</title>
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.3',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="PyBrain v0.3 documentation" href="../../index.html" />
+    <link rel="next" title="sequential – Dataset for Supervised Sequences Regression Training" href="sequentialdataset.html" />
+    <link rel="prev" title="classification – Datasets for Supervised Classification Training" href="classificationdataset.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="sequentialdataset.html" title="sequential – Dataset for Supervised Sequences Regression Training"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="classificationdataset.html" title="classification – Datasets for Supervised Classification Training"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">PyBrain v0.3 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-pybrain.datasets.importance">
+<span id="importancedataset"></span><h1><tt class="xref docutils literal"><span class="pre">importance</span></tt> &#8211; Datasets for Weighted Supervised Training<a class="headerlink" href="#module-pybrain.datasets.importance" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="pybrain.datasets.importance.ImportanceDataSet">
+<em class="property">class </em><tt class="descclassname">pybrain.datasets.importance.</tt><tt class="descname">ImportanceDataSet</tt><big>(</big><em>indim</em>, <em>targetdim</em><big>)</big><a class="headerlink" href="#pybrain.datasets.importance.ImportanceDataSet" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a title="pybrain.datasets.sequential.SequentialDataSet" class="reference external" href="sequentialdataset.html#pybrain.datasets.sequential.SequentialDataSet"><tt class="xref docutils literal"><span class="pre">pybrain.datasets.sequential.SequentialDataSet</span></tt></a></p>
+<p>Allows setting an importance value for each of the targets of a sample.</p>
+<dl class="method">
+<dt id="pybrain.datasets.importance.ImportanceDataSet.addSample">
+<tt class="descname">addSample</tt><big>(</big><em>inp</em>, <em>target</em>, <em>importance=None</em><big>)</big><a class="headerlink" href="#pybrain.datasets.importance.ImportanceDataSet.addSample" title="Permalink to this definition">¶</a></dt>
+<dd><p>adds a new sample consisting of input, target and importance.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><em>inp</em> &#8211; the input of the sample</li>
+<li><em>target</em> &#8211; the target of the sample</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Key importance:</th><td class="field-body"><p class="first last">the importance of the sample. If left None, the
+importance will be set to 1.0</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/pybrain_logo.gif" alt="Logo"/>
+            </a></p>
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="classificationdataset.html"
+                                  title="previous chapter"><tt class="docutils literal docutils literal"><span class="pre">classification</span></tt> &#8211; Datasets for Supervised Classification Training</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="sequentialdataset.html"
+                                  title="next chapter"><tt class="docutils literal"><span class="pre">sequential</span></tt> &#8211; Dataset for Supervised Sequences Regression Training</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../../_sources/api/datasets/importancedatasets.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="sequentialdataset.html" title="sequential – Dataset for Supervised Sequences Regression Training"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="classificationdataset.html" title="classification – Datasets for Supervised Classification Training"
+             >previous</a> |</li>
+        <li><a href="../../index.html">PyBrain v0.3 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; Copyright 2009, CogBotLab &amp; Idsia.
+      Last updated on Nov 11, 2009.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.3.
+    </div>
+  </body>
+</html>

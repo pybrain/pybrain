@@ -1,0 +1,253 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Reinforcement Learning &mdash; PyBrain v0.3 documentation</title>
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.3',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="PyBrain v0.3 documentation" href="../index.html" />
+    <link rel="next" title="Fast networks for PyBrain" href="../advanced/fast-pybrain.html" />
+    <link rel="prev" title="Black-box Optimization" href="optimization.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="../advanced/fast-pybrain.html" title="Fast networks for PyBrain"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="optimization.html" title="Black-box Optimization"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">PyBrain v0.3 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="reinforcement-learning">
+<span id="id1"></span><h1>Reinforcement Learning<a class="headerlink" href="#reinforcement-learning" title="Permalink to this headline">¶</a></h1>
+<p>A reinforcement learning (RL) task in PyBrain always consists of a few
+components that interact with each other: <tt class="xref docutils literal"><span class="pre">Environment</span></tt>, <tt class="xref docutils literal"><span class="pre">Agent</span></tt>, <tt class="xref docutils literal"><span class="pre">Task</span></tt>, and
+<tt class="xref docutils literal"><span class="pre">Experiment</span></tt>. In this tutorial we will go through each of them, create
+the instances and explain what they do.</p>
+<img alt="../_images/rl.png" src="../_images/rl.png" />
+<p>But first of all, we need to import some general packages and the RL
+components from PyBrain:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">from</span> <span class="nn">scipy</span> <span class="k">import</span> <span class="o">*</span>
+<span class="k">import</span> <span class="nn">sys</span><span class="o">,</span> <span class="nn">time</span>
+
+<span class="k">from</span> <span class="nn">pybrain.rl.environments.mazes</span> <span class="k">import</span> <span class="n">Maze</span><span class="p">,</span> <span class="n">MDPMazeTask</span>
+<span class="k">from</span> <span class="nn">pybrain.rl.learners.valuebased</span> <span class="k">import</span> <span class="n">ActionValueTable</span>
+<span class="k">from</span> <span class="nn">pybrain.rl.agents</span> <span class="k">import</span> <span class="n">LearningAgent</span>
+<span class="k">from</span> <span class="nn">pybrain.rl.learners</span> <span class="k">import</span> <span class="n">Q</span><span class="p">,</span> <span class="n">SARSA</span>
+<span class="k">from</span> <span class="nn">pybrain.rl.experiments</span> <span class="k">import</span> <span class="n">Experiment</span>
+<span class="k">from</span> <span class="nn">pybrain.rl.environments</span> <span class="k">import</span> <span class="n">Task</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">You can directly run the code in this tutorial by running the script <tt class="docutils literal"><span class="pre">docs/tutorials/rl.py</span></tt>.</p>
+</div>
+<p>For later visualization purposes, we also need to initialize the
+plotting engine (interactive mode).</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">import</span> <span class="nn">pylab</span>
+<span class="n">pylab</span><span class="o">.</span><span class="n">gray</span><span class="p">()</span>
+<span class="n">pylab</span><span class="o">.</span><span class="n">ion</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>The <tt class="xref docutils literal"><span class="pre">Environment</span></tt> is the world, in which the agent acts. It receives input
+with the <tt class="xref docutils literal"><span class="pre">performAction()</span></tt> method and returns an output with
+<tt class="xref docutils literal"><span class="pre">getSensors()</span></tt>. All environments in PyBrain are located under
+<tt class="docutils literal"><span class="pre">pybrain/rl/environments</span></tt>.</p>
+<p>One of these environments is the maze environment, which we will use for
+this tutorial. It creates a labyrinth with free fields, walls, and an
+goal point. An agent can move over the free fields and needs to find the
+goal point. Let&#8217;s define the maze structure, a simple 2D numpy array, where
+1 is a wall and 0 is a free field:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">structure</span> <span class="o">=</span> <span class="n">array</span><span class="p">([[</span><span class="mf">1</span><span class="p">,</span> <span class="mf">1</span><span class="p">,</span> <span class="mf">1</span><span class="p">,</span> <span class="mf">1</span><span class="p">,</span> <span class="mf">1</span><span class="p">,</span> <span class="mf">1</span><span class="p">,</span> <span class="mf">1</span><span class="p">,</span> <span class="mf">1</span><span class="p">,</span> <span class="mf">1</span><span class="p">],</span>
+                   <span class="p">[</span><span class="mf">1</span><span class="p">,</span> <span class="mf">0</span><span class="p">,</span> <span class="mf">0</span><span class="p">,</span> <span class="mf">1</span><span class="p">,</span> <span class="mf">0</span><span class="p">,</span> <span class="mf">0</span><span class="p">,</span> <span class="mf">0</span><span class="p">,</span> <span class="mf">0</span><span class="p">,</span> <span class="mf">1</span><span class="p">],</span>
+                   <span class="p">[</span><span class="mf">1</span><span class="p">,</span> <span class="mf">0</span><span class="p">,</span> <span class="mf">0</span><span class="p">,</span> <span class="mf">1</span><span class="p">,</span> <span class="mf">0</span><span class="p">,</span> <span class="mf">0</span><span class="p">,</span> <span class="mf">1</span><span class="p">,</span> <span class="mf">0</span><span class="p">,</span> <span class="mf">1</span><span class="p">],</span>
+                   <span class="p">[</span><span class="mf">1</span><span class="p">,</span> <span class="mf">0</span><span class="p">,</span> <span class="mf">0</span><span class="p">,</span> <span class="mf">1</span><span class="p">,</span> <span class="mf">0</span><span class="p">,</span> <span class="mf">0</span><span class="p">,</span> <span class="mf">1</span><span class="p">,</span> <span class="mf">0</span><span class="p">,</span> <span class="mf">1</span><span class="p">],</span>
+                   <span class="p">[</span><span class="mf">1</span><span class="p">,</span> <span class="mf">0</span><span class="p">,</span> <span class="mf">0</span><span class="p">,</span> <span class="mf">1</span><span class="p">,</span> <span class="mf">0</span><span class="p">,</span> <span class="mf">1</span><span class="p">,</span> <span class="mf">1</span><span class="p">,</span> <span class="mf">0</span><span class="p">,</span> <span class="mf">1</span><span class="p">],</span>
+                   <span class="p">[</span><span class="mf">1</span><span class="p">,</span> <span class="mf">0</span><span class="p">,</span> <span class="mf">0</span><span class="p">,</span> <span class="mf">0</span><span class="p">,</span> <span class="mf">0</span><span class="p">,</span> <span class="mf">0</span><span class="p">,</span> <span class="mf">1</span><span class="p">,</span> <span class="mf">0</span><span class="p">,</span> <span class="mf">1</span><span class="p">],</span>
+                   <span class="p">[</span><span class="mf">1</span><span class="p">,</span> <span class="mf">1</span><span class="p">,</span> <span class="mf">1</span><span class="p">,</span> <span class="mf">1</span><span class="p">,</span> <span class="mf">1</span><span class="p">,</span> <span class="mf">1</span><span class="p">,</span> <span class="mf">1</span><span class="p">,</span> <span class="mf">0</span><span class="p">,</span> <span class="mf">1</span><span class="p">],</span>
+                   <span class="p">[</span><span class="mf">1</span><span class="p">,</span> <span class="mf">0</span><span class="p">,</span> <span class="mf">0</span><span class="p">,</span> <span class="mf">0</span><span class="p">,</span> <span class="mf">0</span><span class="p">,</span> <span class="mf">0</span><span class="p">,</span> <span class="mf">0</span><span class="p">,</span> <span class="mf">0</span><span class="p">,</span> <span class="mf">1</span><span class="p">],</span>
+                   <span class="p">[</span><span class="mf">1</span><span class="p">,</span> <span class="mf">1</span><span class="p">,</span> <span class="mf">1</span><span class="p">,</span> <span class="mf">1</span><span class="p">,</span> <span class="mf">1</span><span class="p">,</span> <span class="mf">1</span><span class="p">,</span> <span class="mf">1</span><span class="p">,</span> <span class="mf">1</span><span class="p">,</span> <span class="mf">1</span><span class="p">]])</span>
+</pre></div>
+</div>
+<p>Then we create the environment with the structure as first parameter
+and the goal field tuple as second parameter:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">environment</span> <span class="o">=</span> <span class="n">Maze</span><span class="p">(</span><span class="n">structure</span><span class="p">,</span> <span class="p">(</span><span class="mf">7</span><span class="p">,</span> <span class="mf">7</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>Next, we need an agent. The agent is where the learning happens. It can
+interact with the environment with its <tt class="xref docutils literal"><span class="pre">getAction()</span></tt> and
+<tt class="xref docutils literal"><span class="pre">integrateObservation()</span></tt> methods.</p>
+<p>The agent itself consists of a controller, which maps states to actions,
+a learner, which updates the controller parameters according to the
+interaction it had with the world, and an explorer, which adds some
+explorative behavior to the actions. All standard agents already have a
+default explorer, so we don&#8217;t need to take care of that in this
+tutorial.</p>
+<p>The controller in PyBrain is a module, that takes states as inputs and
+transforms them into actions. For value-based methods, like the
+Q-Learning algorithm we will use here, we need a module that implements
+the <tt class="xref docutils literal"><span class="pre">ActionValueInterface</span></tt>. There are currently two modules in PyBrain
+that do this: The <tt class="xref docutils literal"><span class="pre">ActionValueTable</span></tt> for discrete actions and the
+<tt class="xref docutils literal"><span class="pre">ActionValueNetwork</span></tt> for continuous actions. Our maze uses discrete
+actions, so we need a table:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">controller</span> <span class="o">=</span> <span class="n">ActionValueTable</span><span class="p">(</span><span class="mf">81</span><span class="p">,</span> <span class="mf">4</span><span class="p">)</span>
+<span class="n">controller</span><span class="o">.</span><span class="n">initialize</span><span class="p">(</span><span class="mf">1.</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The table needs the number of states and actions as parameters. The standard
+maze environment comes with the following 4 actions: north, south, east, west.</p>
+<p>Then, we initialize the table with 1 everywhere. This is not always necessary
+but will help converge faster, because unvisited state-action pairs have a
+promising positive value and will be preferred over visited ones that didn&#8217;t
+lead to the goal.</p>
+<p>Each agent also has a learner component. Several classes of RL learners
+are currently implemented in PyBrain: black box optimizers, direct
+search methods, and value-based learners. The classical Reinforcement
+Learning mostly consists of value-based learning, in which of the most
+well-known algorithms is the Q-Learning algorithm. Let&#8217;s now create
+the agent and give it the controller and learner as parameters.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">learner</span> <span class="o">=</span> <span class="n">Q</span><span class="p">()</span>
+<span class="n">agent</span> <span class="o">=</span> <span class="n">LearningAgent</span><span class="p">(</span><span class="n">controller</span><span class="p">,</span> <span class="n">learner</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>So far, there is no connection between the agent and the environment. In fact,
+in PyBrain, there is a special component that connects environment and agent: the
+task. A task also specifies what the goal is in an environment and how the
+agent is rewarded for its actions. For episodic experiments, the Task also
+decides when an episode is over. Environments usually bring along their own
+tasks. The Maze environment for example has a MDPMazeTask, that we will use.
+MDP stands for &#8220;markov decision process&#8221; and means here, that the agent knows
+its exact location in the maze. The task receives the environment as parameter.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">task</span> <span class="o">=</span> <span class="n">MDPMazeTask</span><span class="p">(</span><span class="n">environment</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Finally, in order to learn something, we create an experiment, tell it both
+task and agent (it knows the environment through the task) and let it run
+for some number of steps or infinitely, like here:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">experiment</span> <span class="o">=</span> <span class="n">Experiment</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">agent</span><span class="p">)</span>
+
+<span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+    <span class="n">experiment</span><span class="o">.</span><span class="n">doInteractions</span><span class="p">(</span><span class="mf">100</span><span class="p">)</span>
+    <span class="n">agent</span><span class="o">.</span><span class="n">learn</span><span class="p">()</span>
+    <span class="n">agent</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+
+    <span class="n">pylab</span><span class="o">.</span><span class="n">pcolor</span><span class="p">(</span><span class="n">controller</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mf">81</span><span class="p">,</span><span class="mf">4</span><span class="p">)</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="mf">1</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mf">9</span><span class="p">,</span><span class="mf">9</span><span class="p">))</span>
+    <span class="n">pylab</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Above, the experiment executes 100 interactions between agent and
+environment, or, to be exact, between the agent and the task. The task
+will process the agent&#8217;s actions, possibly scale it and hand it over to
+the environment. The environment responds, returns the new state back to
+the task which decides what information should be given to the agent.
+The task also gives a reward value for each step to the agent.</p>
+<p>After 100 steps, we call the agent&#8217;s <tt class="xref docutils literal"><span class="pre">learn()</span></tt> method and then reset it.
+This will make the agent forget the previously executed steps but of
+course it won&#8217;t undo the changes it learned.</p>
+<p>Then the loop is repeated, until a desired behavior is learned.</p>
+<p>In order to observe the learning progress, we visualize the controller
+with the last two code lines in the loop. The ActionValueTable consists
+of a scalar value for each state/action pair, in this case 81x4 values.
+A nice way to visualize learning is to only consider the maximum value
+over all actions for each state. This value is called the state-value V
+and is defined as <tt class="docutils literal"><span class="pre">V(s)</span> <span class="pre">=</span> <span class="pre">max_a</span> <span class="pre">Q(s,</span> <span class="pre">a)</span></tt>.</p>
+<p>We plot the new table after learning and resetting the agent, <em>inside</em> the
+while loop. Running this code, you should see the shape of the maze and
+a change of colors for the free fields. During learning, colors may jump
+and change back and forth, but eventually the learning should converge
+to the true state values, having higher scores (brighter fields) the
+closer they are to the goal.</p>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/pybrain_logo.gif" alt="Logo"/>
+            </a></p>
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="optimization.html"
+                                  title="previous chapter">Black-box Optimization</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="../advanced/fast-pybrain.html"
+                                  title="next chapter">Fast networks for PyBrain</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../_sources/tutorial/reinforcement-learning.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../advanced/fast-pybrain.html" title="Fast networks for PyBrain"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="optimization.html" title="Black-box Optimization"
+             >previous</a> |</li>
+        <li><a href="../index.html">PyBrain v0.3 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; Copyright 2009, CogBotLab &amp; Idsia.
+      Last updated on Nov 11, 2009.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.3.
+    </div>
+  </body>
+</html>

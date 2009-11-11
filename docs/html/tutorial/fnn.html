@@ -1,0 +1,244 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Classification with Feed-Forward Neural Networks &mdash; PyBrain v0.3 documentation</title>
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.3',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="PyBrain v0.3 documentation" href="../index.html" />
+    <link rel="next" title="Using Datasets" href="datasets.html" />
+    <link rel="prev" title="Building Networks with Modules and Connections" href="netmodcon.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="datasets.html" title="Using Datasets"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="netmodcon.html" title="Building Networks with Modules and Connections"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">PyBrain v0.3 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="classification-with-feed-forward-neural-networks">
+<span id="fnn"></span><h1>Classification with Feed-Forward Neural Networks<a class="headerlink" href="#classification-with-feed-forward-neural-networks" title="Permalink to this headline">¶</a></h1>
+<p>This tutorial walks you through the process of setting up a dataset
+for classification, and train a network on it while visualizing the results
+online.</p>
+<p>First we need to import the necessary components from PyBrain.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">from</span> <span class="nn">pybrain.datasets</span>            <span class="k">import</span> <span class="n">ClassificationDataSet</span>
+<span class="k">from</span> <span class="nn">pybrain.utilities</span>           <span class="k">import</span> <span class="n">percentError</span>
+<span class="k">from</span> <span class="nn">pybrain.tools.shortcuts</span>     <span class="k">import</span> <span class="n">buildNetwork</span>
+<span class="k">from</span> <span class="nn">pybrain.supervised.trainers</span> <span class="k">import</span> <span class="n">BackpropTrainer</span>
+<span class="k">from</span> <span class="nn">pybrain.structure.modules</span>   <span class="k">import</span> <span class="n">SoftmaxLayer</span>
+</pre></div>
+</div>
+<p>Furthermore, pylab is needed for the graphical output.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">from</span> <span class="nn">pylab</span> <span class="k">import</span> <span class="n">ion</span><span class="p">,</span> <span class="n">ioff</span><span class="p">,</span> <span class="n">figure</span><span class="p">,</span> <span class="n">draw</span><span class="p">,</span> <span class="n">contourf</span><span class="p">,</span> <span class="n">clf</span><span class="p">,</span> <span class="n">show</span><span class="p">,</span> <span class="n">hold</span><span class="p">,</span> <span class="n">plot</span>
+<span class="k">from</span> <span class="nn">scipy</span> <span class="k">import</span> <span class="n">diag</span><span class="p">,</span> <span class="n">arange</span><span class="p">,</span> <span class="n">meshgrid</span><span class="p">,</span> <span class="n">where</span>
+<span class="k">from</span> <span class="nn">numpy.random</span> <span class="k">import</span> <span class="n">multivariate_normal</span>
+</pre></div>
+</div>
+<p>To have a nice dataset for visualization, we produce a set of
+points in 2D belonging to three different classes. You could also
+read in your data from a file, e.g. using pylab.load().</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">means</span> <span class="o">=</span> <span class="p">[(</span><span class="o">-</span><span class="mf">1</span><span class="p">,</span><span class="mf">0</span><span class="p">),(</span><span class="mf">2</span><span class="p">,</span><span class="mf">4</span><span class="p">),(</span><span class="mf">3</span><span class="p">,</span><span class="mf">1</span><span class="p">)]</span>
+<span class="n">cov</span> <span class="o">=</span> <span class="p">[</span><span class="n">diag</span><span class="p">([</span><span class="mf">1</span><span class="p">,</span><span class="mf">1</span><span class="p">]),</span> <span class="n">diag</span><span class="p">([</span><span class="mf">0.5</span><span class="p">,</span><span class="mf">1.2</span><span class="p">]),</span> <span class="n">diag</span><span class="p">([</span><span class="mf">1.5</span><span class="p">,</span><span class="mf">0.7</span><span class="p">])]</span>
+<span class="n">alldata</span> <span class="o">=</span> <span class="n">ClassificationDataSet</span><span class="p">(</span><span class="mf">2</span><span class="p">,</span> <span class="mf">1</span><span class="p">,</span> <span class="n">nb_classes</span><span class="o">=</span><span class="mf">3</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="mf">400</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">klass</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mf">3</span><span class="p">):</span>
+        <span class="nb">input</span> <span class="o">=</span> <span class="n">multivariate_normal</span><span class="p">(</span><span class="n">means</span><span class="p">[</span><span class="n">klass</span><span class="p">],</span><span class="n">cov</span><span class="p">[</span><span class="n">klass</span><span class="p">])</span>
+        <span class="n">alldata</span><span class="o">.</span><span class="n">addSample</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="p">[</span><span class="n">klass</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>Randomly split the dataset into 75% training and 25% test data sets. Of course, we
+could also have created two different datasets to begin with.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">tstdata</span><span class="p">,</span> <span class="n">trndata</span> <span class="o">=</span> <span class="n">alldata</span><span class="o">.</span><span class="n">splitWithProportion</span><span class="p">(</span> <span class="mf">0.25</span> <span class="p">)</span>
+</pre></div>
+</div>
+<p>For neural network classification, it is highly advisable to encode classes
+with one output neuron per class. Note that this operation duplicates the original
+targets and stores them in an (integer) field named &#8216;class&#8217;.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">trndata</span><span class="o">.</span><span class="n">_convertToOneOfMany</span><span class="p">(</span> <span class="p">)</span>
+<span class="n">tstdata</span><span class="o">.</span><span class="n">_convertToOneOfMany</span><span class="p">(</span> <span class="p">)</span>
+</pre></div>
+</div>
+<p>Test our dataset by printing a little information about it.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">print</span> <span class="s">&quot;Number of training patterns: &quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">trndata</span><span class="p">)</span>
+<span class="k">print</span> <span class="s">&quot;Input and output dimensions: &quot;</span><span class="p">,</span> <span class="n">trndata</span><span class="o">.</span><span class="n">indim</span><span class="p">,</span> <span class="n">trndata</span><span class="o">.</span><span class="n">outdim</span>
+<span class="k">print</span> <span class="s">&quot;First sample (input, target, class):&quot;</span>
+<span class="k">print</span> <span class="n">trndata</span><span class="p">[</span><span class="s">&#39;input&#39;</span><span class="p">][</span><span class="mf">0</span><span class="p">],</span> <span class="n">trndata</span><span class="p">[</span><span class="s">&#39;target&#39;</span><span class="p">][</span><span class="mf">0</span><span class="p">],</span> <span class="n">trndata</span><span class="p">[</span><span class="s">&#39;class&#39;</span><span class="p">][</span><span class="mf">0</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>Now build a feed-forward network with 5 hidden units. We use the shortcut
+<tt class="xref docutils literal"><span class="pre">buildNetwork()</span></tt> for this. The input and output layer size must match the
+dataset&#8217;s input and target dimension. You could add additional hidden layers by
+inserting more numbers giving the desired layer sizes.</p>
+<p>The output layer uses a softmax function because we are doing classification.
+There are more options to explore here, e.g. try changing the hidden layer transfer
+function to linear instead of (the default) sigmoid.</p>
+<div class="admonition-see-also admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last">Description <tt class="xref docutils literal"><span class="pre">buildNetwork()</span></tt> for more info on options, and the
+Network tutorial <a class="reference external" href="netmodcon.html#netmodcon"><em>Building Networks with Modules and Connections</em></a> for info on how to build your own
+non-standard networks.</p>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">fnn</span> <span class="o">=</span> <span class="n">buildNetwork</span><span class="p">(</span> <span class="n">trndata</span><span class="o">.</span><span class="n">indim</span><span class="p">,</span> <span class="mf">5</span><span class="p">,</span> <span class="n">trndata</span><span class="o">.</span><span class="n">outdim</span><span class="p">,</span> <span class="n">outclass</span><span class="o">=</span><span class="n">SoftmaxLayer</span> <span class="p">)</span>
+</pre></div>
+</div>
+<p>Set up a trainer that basically takes the network and training dataset as input.
+For a list of trainers, see <tt class="xref docutils literal"><span class="pre">trainers</span></tt>. We are using a
+<tt class="xref docutils literal"><span class="pre">BackpropTrainer</span></tt> for this.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">trainer</span> <span class="o">=</span> <span class="n">BackpropTrainer</span><span class="p">(</span> <span class="n">fnn</span><span class="p">,</span> <span class="n">dataset</span><span class="o">=</span><span class="n">trndata</span><span class="p">,</span> <span class="n">momentum</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">weightdecay</span><span class="o">=</span><span class="mf">0.01</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Now generate a square grid of data points and put it into a dataset,
+which we can then classify to obtain a nice contour field for visualization.
+Therefore the target values for this data set can be ignored.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">ticks</span> <span class="o">=</span> <span class="n">arange</span><span class="p">(</span><span class="o">-</span><span class="mf">3.</span><span class="p">,</span><span class="mf">6.</span><span class="p">,</span><span class="mf">0.2</span><span class="p">)</span>
+<span class="n">X</span><span class="p">,</span> <span class="n">Y</span> <span class="o">=</span> <span class="n">meshgrid</span><span class="p">(</span><span class="n">ticks</span><span class="p">,</span> <span class="n">ticks</span><span class="p">)</span>
+<span class="c"># need column vectors in dataset, not arrays</span>
+<span class="n">griddata</span> <span class="o">=</span> <span class="n">ClassificationDataSet</span><span class="p">(</span><span class="mf">2</span><span class="p">,</span><span class="mf">1</span><span class="p">,</span> <span class="n">nb_classes</span><span class="o">=</span><span class="mf">3</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">size</span><span class="p">):</span>
+    <span class="n">griddata</span><span class="o">.</span><span class="n">addSample</span><span class="p">([</span><span class="n">X</span><span class="o">.</span><span class="n">ravel</span><span class="p">()[</span><span class="n">i</span><span class="p">],</span><span class="n">Y</span><span class="o">.</span><span class="n">ravel</span><span class="p">()[</span><span class="n">i</span><span class="p">]],</span> <span class="p">[</span><span class="mf">0</span><span class="p">])</span>
+<span class="n">griddata</span><span class="o">.</span><span class="n">_convertToOneOfMany</span><span class="p">()</span>  <span class="c"># this is still needed to make the fnn feel comfy</span>
+</pre></div>
+</div>
+<p>Start the training iterations.</p>
+<div class="highlight-python"><pre>for i in range(20):</pre>
+</div>
+<p>Train the network for some epochs. Usually you would set something like 5 here,
+but for visualization purposes we do this one epoch at a time.</p>
+<div class="highlight-python"><pre>...
+    trainer.trainEpochs( 1 )</pre>
+</div>
+<p>Evaluate the network on the training and test data. There are several ways to do this - check
+out the <a title="" class="reference external" href="../api/tools.html#module-pybrain.tools.validation"><tt class="xref docutils literal"><span class="pre">pybrain.tools.validation</span></tt></a> module, for instance. Here we let the trainer do the test.</p>
+<div class="highlight-python"><pre>...
+    trnresult = percentError( trainer.testOnClassData(),
+                              trndata['class'] )
+    tstresult = percentError( trainer.testOnClassData(
+           dataset=tstdata ), tstdata['class'] )
+
+    print "epoch: %4d" % trainer.totalepochs, \
+          "  train error: %5.2f%%" % trnresult, \
+          "  test error: %5.2f%%" % tstresult</pre>
+</div>
+<p>Run our grid data through the FNN, get the most likely class
+and shape it into a square array again.</p>
+<div class="highlight-python"><pre>...
+    out = fnn.activateOnDataset(griddata)
+    out = out.argmax(axis=1)  # the highest output activation gives the class
+    out = out.reshape(X.shape)</pre>
+</div>
+<p>Now plot the test data and the underlying grid as a filled contour.</p>
+<div class="highlight-python"><pre>...
+    figure(1)
+    ioff()  # interactive graphics off
+    clf()   # clear the plot
+    hold(True) # overplot on
+    for c in [0,1,2]:
+        here, _ = where(tstdata['class']==c)
+        plot(tstdata['input'][here,0],tstdata['input'][here,1],'o')
+    if out.max()!=out.min():  # safety check against flat field
+        contourf(X, Y, out)   # plot the contour
+    ion()   # interactive graphics on
+    draw()  # update the plot</pre>
+</div>
+<p>Finally, keep showing the plot until user kills it.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">ioff</span><span class="p">()</span>
+<span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/pybrain_logo.gif" alt="Logo"/>
+            </a></p>
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="netmodcon.html"
+                                  title="previous chapter">Building Networks with Modules and Connections</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="datasets.html"
+                                  title="next chapter">Using Datasets</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../_sources/tutorial/fnn.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="datasets.html" title="Using Datasets"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="netmodcon.html" title="Building Networks with Modules and Connections"
+             >previous</a> |</li>
+        <li><a href="../index.html">PyBrain v0.3 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; Copyright 2009, CogBotLab &amp; Idsia.
+      Last updated on Nov 11, 2009.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.3.
+    </div>
+  </body>
+</html>

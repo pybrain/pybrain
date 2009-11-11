@@ -1,0 +1,10 @@
+.. _superviseddataset:
+
+:mod:`supervised` -- Dataset for Supervised Regression Training
+===============================================================
+
+.. automodule:: pybrain.datasets.supervised
+
+.. autoclass:: SupervisedDataSet
+   :show-inheritance:
+   :members: __init__, __len__, addSample, batches, clear, copy, loadFromFile, randomBatches, reconstruct, saveToFile, splitWithProportion

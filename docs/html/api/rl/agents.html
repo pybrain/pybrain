@@ -1,0 +1,230 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>agents – RL Components: Agents &mdash; PyBrain v0.3 documentation</title>
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.3',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="PyBrain v0.3 documentation" href="../../index.html" />
+    <link rel="next" title="experiments – RL Components: Experiments" href="experiments.html" />
+    <link rel="prev" title="actionvalues – RL Components: ActionValues" href="actionvalues.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="experiments.html" title="experiments – RL Components: Experiments"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="actionvalues.html" title="actionvalues – RL Components: ActionValues"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">PyBrain v0.3 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-pybrain.rl.agents">
+<h1><tt class="xref docutils literal"><span class="pre">agents</span></tt> &#8211; RL Components: Agents<a class="headerlink" href="#module-pybrain.rl.agents" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="pybrain.rl.agents.agent.Agent">
+<em class="property">class </em><tt class="descclassname">pybrain.rl.agents.agent.</tt><tt class="descname">Agent</tt><a class="headerlink" href="#pybrain.rl.agents.agent.Agent" title="Permalink to this definition">¶</a></dt>
+<dd><p>An agent is an entity capable of producing actions, based on previous observations.
+Generally it will also learn from experience. It can interact directly with a Task.</p>
+<dl class="method">
+<dt id="pybrain.rl.agents.agent.Agent.getAction">
+<tt class="descname">getAction</tt><big>(</big><big>)</big><a class="headerlink" href="#pybrain.rl.agents.agent.Agent.getAction" title="Permalink to this definition">¶</a></dt>
+<dd>Return a chosen action.
+:rtype: by default, this is assumed to ba a numpy array of doubles.
+:note: This method is abstract and needs to be implemented.</dd></dl>
+
+<dl class="method">
+<dt id="pybrain.rl.agents.agent.Agent.giveReward">
+<tt class="descname">giveReward</tt><big>(</big><em>r</em><big>)</big><a class="headerlink" href="#pybrain.rl.agents.agent.Agent.giveReward" title="Permalink to this definition">¶</a></dt>
+<dd>Reward or punish the agent.
+:key r: reward, if C{r} is positive, punishment if C{r} is negative
+:type r: double</dd></dl>
+
+<dl class="method">
+<dt id="pybrain.rl.agents.agent.Agent.integrateObservation">
+<tt class="descname">integrateObservation</tt><big>(</big><em>obs</em><big>)</big><a class="headerlink" href="#pybrain.rl.agents.agent.Agent.integrateObservation" title="Permalink to this definition">¶</a></dt>
+<dd>Integrate the current observation of the environment.
+:arg obs: The last observation returned from the environment
+:type obs: by default, this is assumed to be a numpy array of doubles</dd></dl>
+
+<dl class="method">
+<dt id="pybrain.rl.agents.agent.Agent.newEpisode">
+<tt class="descname">newEpisode</tt><big>(</big><big>)</big><a class="headerlink" href="#pybrain.rl.agents.agent.Agent.newEpisode" title="Permalink to this definition">¶</a></dt>
+<dd>Inform the agent that a new episode has started.</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pybrain.rl.agents.logging.LoggingAgent">
+<em class="property">class </em><tt class="descclassname">pybrain.rl.agents.logging.</tt><tt class="descname">LoggingAgent</tt><big>(</big><em>indim</em>, <em>outdim</em><big>)</big><a class="headerlink" href="#pybrain.rl.agents.logging.LoggingAgent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a title="pybrain.rl.agents.agent.Agent" class="reference internal" href="#pybrain.rl.agents.agent.Agent"><tt class="xref docutils literal"><span class="pre">pybrain.rl.agents.agent.Agent</span></tt></a></p>
+<p>This agent stores actions, states, and rewards encountered during
+interaction with an environment in a ReinforcementDataSet (which is 
+a variation of SequentialDataSet).
+The stored history can be used for learning and is erased by resetting
+the agent. It also makes sure that integrateObservation, getAction and
+giveReward are called in exactly that order.</p>
+<dl class="method">
+<dt id="pybrain.rl.agents.logging.LoggingAgent.getAction">
+<tt class="descname">getAction</tt><big>(</big><big>)</big><a class="headerlink" href="#pybrain.rl.agents.logging.LoggingAgent.getAction" title="Permalink to this definition">¶</a></dt>
+<dd>Step 2: store the action in a temporary variable until reward is given.</dd></dl>
+
+<dl class="method">
+<dt id="pybrain.rl.agents.logging.LoggingAgent.giveReward">
+<tt class="descname">giveReward</tt><big>(</big><em>r</em><big>)</big><a class="headerlink" href="#pybrain.rl.agents.logging.LoggingAgent.giveReward" title="Permalink to this definition">¶</a></dt>
+<dd>Step 3: store observation, action and reward in the history dataset.</dd></dl>
+
+<dl class="method">
+<dt id="pybrain.rl.agents.logging.LoggingAgent.integrateObservation">
+<tt class="descname">integrateObservation</tt><big>(</big><em>obs</em><big>)</big><a class="headerlink" href="#pybrain.rl.agents.logging.LoggingAgent.integrateObservation" title="Permalink to this definition">¶</a></dt>
+<dd>Step 1: store the observation received in a temporary variable until action is called and
+reward is given.</dd></dl>
+
+<dl class="method">
+<dt id="pybrain.rl.agents.logging.LoggingAgent.newEpisode">
+<tt class="descname">newEpisode</tt><big>(</big><big>)</big><a class="headerlink" href="#pybrain.rl.agents.logging.LoggingAgent.newEpisode" title="Permalink to this definition">¶</a></dt>
+<dd>Indicate the beginning of a new episode in the training cycle.</dd></dl>
+
+<dl class="method">
+<dt id="pybrain.rl.agents.logging.LoggingAgent.reset">
+<tt class="descname">reset</tt><big>(</big><big>)</big><a class="headerlink" href="#pybrain.rl.agents.logging.LoggingAgent.reset" title="Permalink to this definition">¶</a></dt>
+<dd>Clear the history of the agent.</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pybrain.rl.agents.LearningAgent">
+<em class="property">class </em><tt class="descclassname">pybrain.rl.agents.</tt><tt class="descname">LearningAgent</tt><big>(</big><em>module</em>, <em>learner=None</em><big>)</big><a class="headerlink" href="#pybrain.rl.agents.LearningAgent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a title="pybrain.rl.agents.logging.LoggingAgent" class="reference internal" href="#pybrain.rl.agents.logging.LoggingAgent"><tt class="xref docutils literal"><span class="pre">pybrain.rl.agents.logging.LoggingAgent</span></tt></a></p>
+<p>LearningAgent has a module, a learner, that modifies the module, and an explorer,
+which perturbs the actions. It can have learning enabled or disabled and can be 
+used continuously or with episodes.</p>
+<dl class="method">
+<dt id="pybrain.rl.agents.LearningAgent.getAction">
+<tt class="descname">getAction</tt><big>(</big><big>)</big><a class="headerlink" href="#pybrain.rl.agents.LearningAgent.getAction" title="Permalink to this definition">¶</a></dt>
+<dd>Activate the module with the last observation, adda the exploration from
+the explorer object and store the result as last action.</dd></dl>
+
+<dl class="method">
+<dt id="pybrain.rl.agents.LearningAgent.learn">
+<tt class="descname">learn</tt><big>(</big><em>episodes=1</em><big>)</big><a class="headerlink" href="#pybrain.rl.agents.LearningAgent.learn" title="Permalink to this definition">¶</a></dt>
+<dd>Call the learner&#8217;s learn method, which has access to both module and history.</dd></dl>
+
+<dl class="attribute">
+<dt id="pybrain.rl.agents.LearningAgent.learning">
+<tt class="descname">learning</tt><a class="headerlink" href="#pybrain.rl.agents.LearningAgent.learning" title="Permalink to this definition">¶</a></dt>
+<dd>Return whether the agent currently learns from experience or not.</dd></dl>
+
+<dl class="method">
+<dt id="pybrain.rl.agents.LearningAgent.newEpisode">
+<tt class="descname">newEpisode</tt><big>(</big><big>)</big><a class="headerlink" href="#pybrain.rl.agents.LearningAgent.newEpisode" title="Permalink to this definition">¶</a></dt>
+<dd>Indicate the beginning of a new episode in the training cycle.</dd></dl>
+
+<dl class="method">
+<dt id="pybrain.rl.agents.LearningAgent.reset">
+<tt class="descname">reset</tt><big>(</big><big>)</big><a class="headerlink" href="#pybrain.rl.agents.LearningAgent.reset" title="Permalink to this definition">¶</a></dt>
+<dd>Clear the history of the agent and resets the module and learner.</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pybrain.rl.agents.OptimizationAgent">
+<em class="property">class </em><tt class="descclassname">pybrain.rl.agents.</tt><tt class="descname">OptimizationAgent</tt><big>(</big><em>module</em>, <em>learner</em><big>)</big><a class="headerlink" href="#pybrain.rl.agents.OptimizationAgent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a title="pybrain.rl.agents.agent.Agent" class="reference internal" href="#pybrain.rl.agents.agent.Agent"><tt class="xref docutils literal"><span class="pre">pybrain.rl.agents.agent.Agent</span></tt></a></p>
+<p>A simple wrapper to allow optimizers to conform to the RL interface.
+Works only in conjunction with EpisodicExperiment.</p>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/pybrain_logo.gif" alt="Logo"/>
+            </a></p>
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="actionvalues.html"
+                                  title="previous chapter"><tt class="docutils literal docutils literal"><span class="pre">actionvalues</span></tt> &#8211; RL Components: ActionValues</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="experiments.html"
+                                  title="next chapter"><tt class="docutils literal"><span class="pre">experiments</span></tt> &#8211; RL Components: Experiments</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../../_sources/api/rl/agents.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="experiments.html" title="experiments – RL Components: Experiments"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="actionvalues.html" title="actionvalues – RL Components: ActionValues"
+             >previous</a> |</li>
+        <li><a href="../../index.html">PyBrain v0.3 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; Copyright 2009, CogBotLab &amp; Idsia.
+      Last updated on Nov 11, 2009.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.3.
+    </div>
+  </body>
+</html>

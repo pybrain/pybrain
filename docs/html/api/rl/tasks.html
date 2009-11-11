@@ -1,0 +1,201 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>tasks – RL Components: Tasks &mdash; PyBrain v0.3 documentation</title>
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.3',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="PyBrain v0.3 documentation" href="../../index.html" />
+    <link rel="next" title="optimization – Black-box Optimization Algorithms" href="../optimization/optimization.html" />
+    <link rel="prev" title="learners – RL Components: Learners" href="learners.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="../optimization/optimization.html" title="optimization – Black-box Optimization Algorithms"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="learners.html" title="learners – RL Components: Learners"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">PyBrain v0.3 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-pybrain.rl.environments.episodic">
+<h1><tt class="xref docutils literal"><span class="pre">tasks</span></tt> &#8211; RL Components: Tasks<a class="headerlink" href="#module-pybrain.rl.environments.episodic" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="pybrain.rl.environments.task.Task">
+<em class="property">class </em><tt class="descclassname">pybrain.rl.environments.task.</tt><tt class="descname">Task</tt><big>(</big><em>environment</em><big>)</big><a class="headerlink" href="#pybrain.rl.environments.task.Task" title="Permalink to this definition">¶</a></dt>
+<dd><p>A task is associating a purpose with an environment. It decides how to evaluate the 
+observations, potentially returning reinforcement rewards or fitness values. 
+Furthermore it is a filter for what should be visible to the agent.
+Also, it can potentially act as a filter on how actions are transmitted to the environment.</p>
+<dl class="method">
+<dt id="pybrain.rl.environments.task.Task.denormalize">
+<tt class="descname">denormalize</tt><big>(</big><em>actors</em><big>)</big><a class="headerlink" href="#pybrain.rl.environments.task.Task.denormalize" title="Permalink to this definition">¶</a></dt>
+<dd>The function scales the parameters from -1 and 1 to the given interval (min, max) for each actor.</dd></dl>
+
+<dl class="method">
+<dt id="pybrain.rl.environments.task.Task.getObservation">
+<tt class="descname">getObservation</tt><big>(</big><big>)</big><a class="headerlink" href="#pybrain.rl.environments.task.Task.getObservation" title="Permalink to this definition">¶</a></dt>
+<dd>A filtered mapping to getSample of the underlying environment.</dd></dl>
+
+<dl class="method">
+<dt id="pybrain.rl.environments.task.Task.getReward">
+<tt class="descname">getReward</tt><big>(</big><big>)</big><a class="headerlink" href="#pybrain.rl.environments.task.Task.getReward" title="Permalink to this definition">¶</a></dt>
+<dd>Compute and return the current reward (i.e. corresponding to the last action performed)</dd></dl>
+
+<dl class="method">
+<dt id="pybrain.rl.environments.task.Task.normalize">
+<tt class="descname">normalize</tt><big>(</big><em>sensors</em><big>)</big><a class="headerlink" href="#pybrain.rl.environments.task.Task.normalize" title="Permalink to this definition">¶</a></dt>
+<dd>The function scales the parameters to be between -1 and 1. e.g. [(-pi, pi), (0, 1), (-0.001, 0.001)]</dd></dl>
+
+<dl class="method">
+<dt id="pybrain.rl.environments.task.Task.performAction">
+<tt class="descname">performAction</tt><big>(</big><em>action</em><big>)</big><a class="headerlink" href="#pybrain.rl.environments.task.Task.performAction" title="Permalink to this definition">¶</a></dt>
+<dd>A filtered mapping towards performAction of the underlying environment.</dd></dl>
+
+<dl class="method">
+<dt id="pybrain.rl.environments.task.Task.setScaling">
+<tt class="descname">setScaling</tt><big>(</big><em>sensor_limits</em>, <em>actor_limits</em><big>)</big><a class="headerlink" href="#pybrain.rl.environments.task.Task.setScaling" title="Permalink to this definition">¶</a></dt>
+<dd>Expects scaling lists of 2-tuples - e.g. [(-3.14, 3.14), (0, 1), (-0.001, 0.001)] - 
+one tuple per parameter, giving min and max for that parameter. The functions 
+normalize and denormalize scale the parameters between -1 and 1 and vice versa. 
+To disable this feature, use &#8216;None&#8217;.</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pybrain.rl.environments.episodic.EpisodicTask">
+<em class="property">class </em><tt class="descclassname">pybrain.rl.environments.episodic.</tt><tt class="descname">EpisodicTask</tt><big>(</big><em>environment</em><big>)</big><a class="headerlink" href="#pybrain.rl.environments.episodic.EpisodicTask" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a title="pybrain.rl.environments.task.Task" class="reference internal" href="#pybrain.rl.environments.task.Task"><tt class="xref docutils literal"><span class="pre">pybrain.rl.environments.task.Task</span></tt></a>, <tt class="xref docutils literal"><span class="pre">pybrain.rl.environments.fitnessevaluator.FitnessEvaluator</span></tt></p>
+<p>A task that consists of independent episodes.</p>
+<dl class="method">
+<dt id="pybrain.rl.environments.episodic.EpisodicTask.addReward">
+<tt class="descname">addReward</tt><big>(</big><big>)</big><a class="headerlink" href="#pybrain.rl.environments.episodic.EpisodicTask.addReward" title="Permalink to this definition">¶</a></dt>
+<dd>A filtered mapping towards performAction of the underlying environment.</dd></dl>
+
+<dl class="attribute">
+<dt id="pybrain.rl.environments.episodic.EpisodicTask.discount">
+<tt class="descname">discount</tt><a class="headerlink" href="#pybrain.rl.environments.episodic.EpisodicTask.discount" title="Permalink to this definition">¶</a></dt>
+<dd>Discount factor</dd></dl>
+
+<dl class="method">
+<dt id="pybrain.rl.environments.episodic.EpisodicTask.f">
+<tt class="descname">f</tt><big>(</big><em>x</em><big>)</big><a class="headerlink" href="#pybrain.rl.environments.episodic.EpisodicTask.f" title="Permalink to this definition">¶</a></dt>
+<dd>An episodic task can be used as an evaluation function of a module that produces actions 
+from observations, or as an evaluator of an agent.</dd></dl>
+
+<dl class="method">
+<dt id="pybrain.rl.environments.episodic.EpisodicTask.getTotalReward">
+<tt class="descname">getTotalReward</tt><big>(</big><big>)</big><a class="headerlink" href="#pybrain.rl.environments.episodic.EpisodicTask.getTotalReward" title="Permalink to this definition">¶</a></dt>
+<dd>Return the accumulated reward since the start of the episode</dd></dl>
+
+<dl class="method">
+<dt id="pybrain.rl.environments.episodic.EpisodicTask.isFinished">
+<tt class="descname">isFinished</tt><big>(</big><big>)</big><a class="headerlink" href="#pybrain.rl.environments.episodic.EpisodicTask.isFinished" title="Permalink to this definition">¶</a></dt>
+<dd>Is the current episode over?</dd></dl>
+
+<dl class="method">
+<dt id="pybrain.rl.environments.episodic.EpisodicTask.performAction">
+<tt class="descname">performAction</tt><big>(</big><em>action</em><big>)</big><a class="headerlink" href="#pybrain.rl.environments.episodic.EpisodicTask.performAction" title="Permalink to this definition">¶</a></dt>
+<dd>Execute one action.</dd></dl>
+
+<dl class="method">
+<dt id="pybrain.rl.environments.episodic.EpisodicTask.reset">
+<tt class="descname">reset</tt><big>(</big><big>)</big><a class="headerlink" href="#pybrain.rl.environments.episodic.EpisodicTask.reset" title="Permalink to this definition">¶</a></dt>
+<dd>Re-initialize the environment</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/pybrain_logo.gif" alt="Logo"/>
+            </a></p>
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="learners.html"
+                                  title="previous chapter"><tt class="docutils literal docutils literal docutils literal"><span class="pre">learners</span></tt> &#8211; RL Components: Learners</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="../optimization/optimization.html"
+                                  title="next chapter"><tt class="docutils literal docutils literal docutils literal"><span class="pre">optimization</span></tt> &#8211; Black-box Optimization Algorithms</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../../_sources/api/rl/tasks.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../optimization/optimization.html" title="optimization – Black-box Optimization Algorithms"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="learners.html" title="learners – RL Components: Learners"
+             >previous</a> |</li>
+        <li><a href="../../index.html">PyBrain v0.3 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; Copyright 2009, CogBotLab &amp; Idsia.
+      Last updated on Nov 11, 2009.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.3.
+    </div>
+  </body>
+</html>

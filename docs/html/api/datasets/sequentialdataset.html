@@ -1,0 +1,205 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>sequential – Dataset for Supervised Sequences Regression Training &mdash; PyBrain v0.3 documentation</title>
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.3',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="PyBrain v0.3 documentation" href="../../index.html" />
+    <link rel="next" title="supervised – Dataset for Supervised Regression Training" href="superviseddataset.html" />
+    <link rel="prev" title="importance – Datasets for Weighted Supervised Training" href="importancedatasets.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="superviseddataset.html" title="supervised – Dataset for Supervised Regression Training"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="importancedatasets.html" title="importance – Datasets for Weighted Supervised Training"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">PyBrain v0.3 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-pybrain.datasets.sequential">
+<span id="sequentialdataset"></span><h1><tt class="xref docutils literal"><span class="pre">sequential</span></tt> &#8211; Dataset for Supervised Sequences Regression Training<a class="headerlink" href="#module-pybrain.datasets.sequential" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="pybrain.datasets.sequential.SequentialDataSet">
+<em class="property">class </em><tt class="descclassname">pybrain.datasets.sequential.</tt><tt class="descname">SequentialDataSet</tt><big>(</big><em>indim</em>, <em>targetdim</em><big>)</big><a class="headerlink" href="#pybrain.datasets.sequential.SequentialDataSet" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a title="pybrain.datasets.supervised.SupervisedDataSet" class="reference external" href="superviseddataset.html#pybrain.datasets.supervised.SupervisedDataSet"><tt class="xref docutils literal"><span class="pre">pybrain.datasets.supervised.SupervisedDataSet</span></tt></a></p>
+<p>A SequentialDataSet is like a SupervisedDataSet except that it can keep
+track of sequences of samples. Indices of a new sequence are stored whenever
+the method newSequence() is called. The last (open) sequence is considered
+a normal sequence even though it does not have a following &#8220;new sequence&#8221;
+marker.</p>
+<dl class="method">
+<dt id="pybrain.datasets.sequential.SequentialDataSet.endOfSequence">
+<tt class="descname">endOfSequence</tt><big>(</big><em>index</em><big>)</big><a class="headerlink" href="#pybrain.datasets.sequential.SequentialDataSet.endOfSequence" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return True if the marker was moved over the last element of 
+sequence <cite>index</cite>, False otherwise.</p>
+<p>Mostly used like .endOfData() with while loops.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pybrain.datasets.sequential.SequentialDataSet.evaluateModuleMSE">
+<tt class="descname">evaluateModuleMSE</tt><big>(</big><em>module</em>, <em>averageOver=1</em>, <em>**args</em><big>)</big><a class="headerlink" href="#pybrain.datasets.sequential.SequentialDataSet.evaluateModuleMSE" title="Permalink to this definition">¶</a></dt>
+<dd>Evaluate the predictions of a module on a sequential dataset
+and return the MSE (potentially average over a number of epochs).</dd></dl>
+
+<dl class="method">
+<dt id="pybrain.datasets.sequential.SequentialDataSet.getCurrentSequence">
+<tt class="descname">getCurrentSequence</tt><big>(</big><big>)</big><a class="headerlink" href="#pybrain.datasets.sequential.SequentialDataSet.getCurrentSequence" title="Permalink to this definition">¶</a></dt>
+<dd>Return the current sequence, according to the marker position.</dd></dl>
+
+<dl class="method">
+<dt id="pybrain.datasets.sequential.SequentialDataSet.getNumSequences">
+<tt class="descname">getNumSequences</tt><big>(</big><big>)</big><a class="headerlink" href="#pybrain.datasets.sequential.SequentialDataSet.getNumSequences" title="Permalink to this definition">¶</a></dt>
+<dd>Return the number of sequences. The last (open) sequence is also 
+counted in, even though there is no additional &#8216;newSequence&#8217; marker.</dd></dl>
+
+<dl class="method">
+<dt id="pybrain.datasets.sequential.SequentialDataSet.getSequence">
+<tt class="descname">getSequence</tt><big>(</big><em>index</em><big>)</big><a class="headerlink" href="#pybrain.datasets.sequential.SequentialDataSet.getSequence" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the sequence given by <cite>index</cite>.</p>
+<p>A list of arrays is returned for the linked arrays. It is assumed that 
+the last sequence goes until the end of the dataset.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pybrain.datasets.sequential.SequentialDataSet.getSequenceIterator">
+<tt class="descname">getSequenceIterator</tt><big>(</big><em>index</em><big>)</big><a class="headerlink" href="#pybrain.datasets.sequential.SequentialDataSet.getSequenceIterator" title="Permalink to this definition">¶</a></dt>
+<dd>Return an iterator over the samples of the sequence specified by 
+<cite>index</cite>.</dd></dl>
+
+<dl class="method">
+<dt id="pybrain.datasets.sequential.SequentialDataSet.getSequenceLength">
+<tt class="descname">getSequenceLength</tt><big>(</big><em>index</em><big>)</big><a class="headerlink" href="#pybrain.datasets.sequential.SequentialDataSet.getSequenceLength" title="Permalink to this definition">¶</a></dt>
+<dd>Return the length of the given sequence. If <cite>index</cite> is pointing
+to the last sequence, the sequence is considered to go until the end
+of the dataset.</dd></dl>
+
+<dl class="method">
+<dt id="pybrain.datasets.sequential.SequentialDataSet.gotoSequence">
+<tt class="descname">gotoSequence</tt><big>(</big><em>index</em><big>)</big><a class="headerlink" href="#pybrain.datasets.sequential.SequentialDataSet.gotoSequence" title="Permalink to this definition">¶</a></dt>
+<dd>Move the internal marker to the beginning of sequence <cite>index</cite>.</dd></dl>
+
+<dl class="method">
+<dt id="pybrain.datasets.sequential.SequentialDataSet.newSequence">
+<tt class="descname">newSequence</tt><big>(</big><big>)</big><a class="headerlink" href="#pybrain.datasets.sequential.SequentialDataSet.newSequence" title="Permalink to this definition">¶</a></dt>
+<dd>Marks the beginning of a new sequence. this function does nothing if
+called at the very start of the data set. Otherwise, it starts a new
+sequence. Empty sequences are not allowed, and an EmptySequenceError
+exception will be raised.</dd></dl>
+
+<dl class="method">
+<dt id="pybrain.datasets.sequential.SequentialDataSet.removeSequence">
+<tt class="descname">removeSequence</tt><big>(</big><em>index</em><big>)</big><a class="headerlink" href="#pybrain.datasets.sequential.SequentialDataSet.removeSequence" title="Permalink to this definition">¶</a></dt>
+<dd>Remove the <cite>index</cite>&#8216;th sequence from the dataset and places the
+marker to the sample following the removed sequence.</dd></dl>
+
+<dl class="method">
+<dt id="pybrain.datasets.sequential.SequentialDataSet.splitWithProportion">
+<tt class="descname">splitWithProportion</tt><big>(</big><em>proportion=0.5</em><big>)</big><a class="headerlink" href="#pybrain.datasets.sequential.SequentialDataSet.splitWithProportion" title="Permalink to this definition">¶</a></dt>
+<dd><p>Produce two new datasets, each containing a part of the sequences.</p>
+<p>The first dataset will have a fraction given by <cite>proportion</cite> of the 
+dataset.</p>
+</dd></dl>
+
+</dd></dl>
+
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This documentation comprises just a subjective excerpt of available methods.
+See the source code for additional functionality.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/pybrain_logo.gif" alt="Logo"/>
+            </a></p>
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="importancedatasets.html"
+                                  title="previous chapter"><tt class="docutils literal docutils literal docutils literal"><span class="pre">importance</span></tt> &#8211; Datasets for Weighted Supervised Training</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="superviseddataset.html"
+                                  title="next chapter"><tt class="docutils literal"><span class="pre">supervised</span></tt> &#8211; Dataset for Supervised Regression Training</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../../_sources/api/datasets/sequentialdataset.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="superviseddataset.html" title="supervised – Dataset for Supervised Regression Training"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="importancedatasets.html" title="importance – Datasets for Weighted Supervised Training"
+             >previous</a> |</li>
+        <li><a href="../../index.html">PyBrain v0.3 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; Copyright 2009, CogBotLab &amp; Idsia.
+      Last updated on Nov 11, 2009.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.3.
+    </div>
+  </body>
+</html>

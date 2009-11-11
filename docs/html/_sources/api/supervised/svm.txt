@@ -1,0 +1,25 @@
+.. _svm:
+
+:mod:`svmunit` -- LIBSVM Support Vector Machine Unit
+====================================================
+
+.. automodule:: pybrain.structure.modules.svmunit
+
+.. autoclass:: SVMUnit
+   :members: __init__, forwardPass, activateOnDataset, getNbClasses, reset, setModel, loadModel, saveModel
+
+:mod:`svmtrainer` -- LIBSVM Support Vector Machine Trainer
+==========================================================
+
+.. automodule:: pybrain.supervised.trainers.svmtrainer
+
+.. autoclass:: SVMTrainer
+   :members: __init__, train, setParams, load, save
+
+.. autoclass:: GridSearch
+   :members: __init__, search, setParams
+
+.. autoclass:: GridSearchDOE
+   :members: search
+
+

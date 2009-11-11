@@ -1,0 +1,335 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>svmunit – LIBSVM Support Vector Machine Unit &mdash; PyBrain v0.3 documentation</title>
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.3',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="PyBrain v0.3 documentation" href="../../index.html" />
+    <link rel="next" title="trainers – Supervised Training for Networks and other Modules" href="trainers.html" />
+    <link rel="prev" title="supervised – Dataset for Supervised Regression Training" href="../datasets/superviseddataset.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="trainers.html" title="trainers – Supervised Training for Networks and other Modules"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="../datasets/superviseddataset.html" title="supervised – Dataset for Supervised Regression Training"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">PyBrain v0.3 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-pybrain.structure.modules.svmunit">
+<span id="svm"></span><h1><tt class="xref docutils literal"><span class="pre">svmunit</span></tt> &#8211; LIBSVM Support Vector Machine Unit<a class="headerlink" href="#module-pybrain.structure.modules.svmunit" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="pybrain.structure.modules.svmunit.SVMUnit">
+<em class="property">class </em><tt class="descclassname">pybrain.structure.modules.svmunit.</tt><tt class="descname">SVMUnit</tt><big>(</big><em>indim=0</em>, <em>outdim=0</em>, <em>model=None</em><big>)</big><a class="headerlink" href="#pybrain.structure.modules.svmunit.SVMUnit" title="Permalink to this definition">¶</a></dt>
+<dd><p>This unit represents an Support Vector Machine and is implemented through the 
+LIBSVM Python interface. It functions somewhat like a Model or a Network, but combining
+it with other PyBrain Models is currently discouraged. Its main function is to compare 
+against feed-forward network classifications. You cannot get or set model parameters, but 
+you can load and save the entire model in LIBSVM format. Sequential data and backward 
+passes are not supported. See the corresponding example code for usage.</p>
+<dl class="method">
+<dt id="pybrain.structure.modules.svmunit.SVMUnit.__init__">
+<tt class="descname">__init__</tt><big>(</big><em>indim=0</em>, <em>outdim=0</em>, <em>model=None</em><big>)</big><a class="headerlink" href="#pybrain.structure.modules.svmunit.SVMUnit.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initializes as empty module.</p>
+<p>If <cite>model</cite> is given, initialize using this LIBSVM model instead. <cite>indim</cite>
+and <cite>outdim</cite> are for compatibility only, and ignored.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pybrain.structure.modules.svmunit.SVMUnit.forwardPass">
+<tt class="descname">forwardPass</tt><big>(</big><em>values=False</em><big>)</big><a class="headerlink" href="#pybrain.structure.modules.svmunit.SVMUnit.forwardPass" title="Permalink to this definition">¶</a></dt>
+<dd><p>Produce the output from the current input vector, or process a 
+dataset.</p>
+<p>If <cite>values</cite> is False or &#8216;class&#8217;, output is set to the number of the 
+predicted class. If True or &#8216;raw&#8217;, produces decision values instead. 
+These are stored in a dictionary for multi-class SVM. If <cite>prob</cite>, class
+probabilities are produced. This works only if probability option was
+set for SVM training.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pybrain.structure.modules.svmunit.SVMUnit.activateOnDataset">
+<tt class="descname">activateOnDataset</tt><big>(</big><em>dataset</em>, <em>values=False</em><big>)</big><a class="headerlink" href="#pybrain.structure.modules.svmunit.SVMUnit.activateOnDataset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run the module&#8217;s forward pass on the given dataset unconditionally
+and return the output as a list.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameter:</th><td class="field-body"><em>dataset</em> &#8211; A non-sequential supervised data set.</td>
+</tr>
+<tr class="field"><th class="field-name">Key values:</th><td class="field-body">Passed trough to forwardPass() method.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pybrain.structure.modules.svmunit.SVMUnit.getNbClasses">
+<tt class="descname">getNbClasses</tt><big>(</big><big>)</big><a class="headerlink" href="#pybrain.structure.modules.svmunit.SVMUnit.getNbClasses" title="Permalink to this definition">¶</a></dt>
+<dd>return number of classes the current model uses</dd></dl>
+
+<dl class="method">
+<dt id="pybrain.structure.modules.svmunit.SVMUnit.reset">
+<tt class="descname">reset</tt><big>(</big><big>)</big><a class="headerlink" href="#pybrain.structure.modules.svmunit.SVMUnit.reset" title="Permalink to this definition">¶</a></dt>
+<dd>Reset input and output buffers</dd></dl>
+
+<dl class="method">
+<dt id="pybrain.structure.modules.svmunit.SVMUnit.setModel">
+<tt class="descname">setModel</tt><big>(</big><em>model</em><big>)</big><a class="headerlink" href="#pybrain.structure.modules.svmunit.SVMUnit.setModel" title="Permalink to this definition">¶</a></dt>
+<dd>Set the SVM model.</dd></dl>
+
+<dl class="method">
+<dt id="pybrain.structure.modules.svmunit.SVMUnit.loadModel">
+<tt class="descname">loadModel</tt><big>(</big><em>filename</em><big>)</big><a class="headerlink" href="#pybrain.structure.modules.svmunit.SVMUnit.loadModel" title="Permalink to this definition">¶</a></dt>
+<dd>Read the SVM model description from a file</dd></dl>
+
+<dl class="method">
+<dt id="pybrain.structure.modules.svmunit.SVMUnit.saveModel">
+<tt class="descname">saveModel</tt><big>(</big><em>filename</em><big>)</big><a class="headerlink" href="#pybrain.structure.modules.svmunit.SVMUnit.saveModel" title="Permalink to this definition">¶</a></dt>
+<dd>Save the SVM model description from a file</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-pybrain.supervised.trainers.svmtrainer">
+<h1><tt class="xref docutils literal"><span class="pre">svmtrainer</span></tt> &#8211; LIBSVM Support Vector Machine Trainer<a class="headerlink" href="#module-pybrain.supervised.trainers.svmtrainer" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="pybrain.supervised.trainers.svmtrainer.SVMTrainer">
+<em class="property">class </em><tt class="descclassname">pybrain.supervised.trainers.svmtrainer.</tt><tt class="descname">SVMTrainer</tt><big>(</big><em>svmunit</em>, <em>dataset</em>, <em>modelfile=None</em>, <em>plot=False</em><big>)</big><a class="headerlink" href="#pybrain.supervised.trainers.svmtrainer.SVMTrainer" title="Permalink to this definition">¶</a></dt>
+<dd><p>A class performing supervised learning of a DataSet by an SVM unit. See 
+the remarks on <tt class="xref docutils literal"><span class="pre">SVMUnit</span></tt> above. This whole class is a bit of a hack,
+and provided mostly for convenience of comparisons.</p>
+<dl class="method">
+<dt id="pybrain.supervised.trainers.svmtrainer.SVMTrainer.__init__">
+<tt class="descname">__init__</tt><big>(</big><em>svmunit</em>, <em>dataset</em>, <em>modelfile=None</em>, <em>plot=False</em><big>)</big><a class="headerlink" href="#pybrain.supervised.trainers.svmtrainer.SVMTrainer.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize data and unit to be trained, and load the model, if 
+provided.</p>
+<p>The passed <cite>svmunit</cite> has to be an object of class <tt class="xref docutils literal"><span class="pre">SVMUnit</span></tt> 
+that is going to be trained on the <tt class="xref docutils literal"><span class="pre">ClassificationDataSet</span></tt> object
+dataset. 
+Compared to FNN training we do not use a test data set, instead 5-fold 
+cross-validation is performed if needed.</p>
+<p>If <cite>modelfile</cite> is provided, this model is loaded instead of training.
+If <cite>plot</cite> is True, a grid search is performed and the resulting pattern
+is plotted.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pybrain.supervised.trainers.svmtrainer.SVMTrainer.train">
+<tt class="descname">train</tt><big>(</big><em>search=False</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#pybrain.supervised.trainers.svmtrainer.SVMTrainer.train" title="Permalink to this definition">¶</a></dt>
+<dd><p>Train the SVM on the dataset. For RBF kernels (the default), an optional meta-parameter search can be performed.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Key search:</th><td class="field-body">optional name of grid search class to use for RBF kernels: &#8216;GridSearch&#8217; or &#8216;GridSearchDOE&#8217;</td>
+</tr>
+<tr class="field"><th class="field-name">Key log2g:</th><td class="field-body">base 2 log of the RBF width parameter</td>
+</tr>
+<tr class="field"><th class="field-name">Key log2c:</th><td class="field-body">base 2 log of the slack parameter</td>
+</tr>
+<tr class="field"><th class="field-name">Key searchlog:</th><td class="field-body">filename into which to dump the search log</td>
+</tr>
+<tr class="field"><th class="field-name">Key others:</th><td class="field-body">...are passed through to the grid search and/or libsvm</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pybrain.supervised.trainers.svmtrainer.SVMTrainer.setParams">
+<tt class="descname">setParams</tt><big>(</big><em>**kwargs</em><big>)</big><a class="headerlink" href="#pybrain.supervised.trainers.svmtrainer.SVMTrainer.setParams" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set parameters for SVM training. Apart from the ones below, you can use all parameters 
+defined for the LIBSVM svm_model class, see their documentation.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Key searchlog:</th><td class="field-body">Save a list of coordinates and the achieved CV accuracy to this file.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pybrain.supervised.trainers.svmtrainer.SVMTrainer.load">
+<tt class="descname">load</tt><big>(</big><em>filename</em><big>)</big><a class="headerlink" href="#pybrain.supervised.trainers.svmtrainer.SVMTrainer.load" title="Permalink to this definition">¶</a></dt>
+<dd>no training at all - just load the SVM model from a file</dd></dl>
+
+<dl class="method">
+<dt id="pybrain.supervised.trainers.svmtrainer.SVMTrainer.save">
+<tt class="descname">save</tt><big>(</big><em>filename</em><big>)</big><a class="headerlink" href="#pybrain.supervised.trainers.svmtrainer.SVMTrainer.save" title="Permalink to this definition">¶</a></dt>
+<dd>save the trained SVM</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pybrain.supervised.trainers.svmtrainer.GridSearch">
+<em class="property">class </em><tt class="descclassname">pybrain.supervised.trainers.svmtrainer.</tt><tt class="descname">GridSearch</tt><big>(</big><em>problem</em>, <em>targets</em>, <em>cmin</em>, <em>cmax</em>, <em>cstep=None</em>, <em>crossval=5</em>, <em>plotflag=False</em>, <em>maxdepth=8</em>, <em>searchlog='gridsearch_results.txt'</em>, <em>**params</em><big>)</big><a class="headerlink" href="#pybrain.supervised.trainers.svmtrainer.GridSearch" title="Permalink to this definition">¶</a></dt>
+<dd><p>Helper class used by <a title="pybrain.supervised.trainers.svmtrainer.SVMTrainer" class="reference internal" href="#pybrain.supervised.trainers.svmtrainer.SVMTrainer"><tt class="xref docutils literal"><span class="pre">SVMTrainer</span></tt></a> to perform an exhaustive grid search, and plot the
+resulting accuracy surface, if desired. Adapted from the LIBSVM python toolkit.</p>
+<dl class="method">
+<dt id="pybrain.supervised.trainers.svmtrainer.GridSearch.__init__">
+<tt class="descname">__init__</tt><big>(</big><em>problem</em>, <em>targets</em>, <em>cmin</em>, <em>cmax</em>, <em>cstep=None</em>, <em>crossval=5</em>, <em>plotflag=False</em>, <em>maxdepth=8</em>, <em>searchlog='gridsearch_results.txt'</em>, <em>**params</em><big>)</big><a class="headerlink" href="#pybrain.supervised.trainers.svmtrainer.GridSearch.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set up (log) grid search over the two RBF kernel parameters C and gamma.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><em>problem</em> &#8211; the LIBSVM svm_problem to be optimized, ie. the input and target data</li>
+<li><em>targets</em> &#8211; unfortunately, the targets used in the problem definition have to be given again here</li>
+<li><em>cmin</em> &#8211; lower left corner of the log2C/log2gamma window to search</li>
+<li><em>cmax</em> &#8211; upper right corner of the log2C/log2gamma window to search</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Key cstep:</th><td class="field-body"><p class="first">step width for log2C and log2gamma (ignored for DOE search)</p>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Key crossval:</th><td class="field-body"><p class="first">split dataset into this many parts for cross-validation</p>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Key plotflag:</th><td class="field-body"><p class="first">if True, plot the error surface contour (regular) or search pattern (DOE)</p>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Key maxdepth:</th><td class="field-body"><p class="first">maximum window bisection depth (DOE only)</p>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Key searchlog:</th><td class="field-body"><p class="first">Save a list of coordinates and the achieved CV accuracy to this file</p>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Key others:</th><td class="field-body"><p class="first last">...are passed through to the cross_validation method of LIBSVM</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pybrain.supervised.trainers.svmtrainer.GridSearch.search">
+<tt class="descname">search</tt><big>(</big><big>)</big><a class="headerlink" href="#pybrain.supervised.trainers.svmtrainer.GridSearch.search" title="Permalink to this definition">¶</a></dt>
+<dd>iterate successive parameter grid refinement and evaluation; adapted from LIBSVM grid search tool</dd></dl>
+
+<dl class="method">
+<dt id="pybrain.supervised.trainers.svmtrainer.GridSearch.setParams">
+<tt class="descname">setParams</tt><big>(</big><em>**kwargs</em><big>)</big><a class="headerlink" href="#pybrain.supervised.trainers.svmtrainer.GridSearch.setParams" title="Permalink to this definition">¶</a></dt>
+<dd>set parameters for SVM training</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pybrain.supervised.trainers.svmtrainer.GridSearchDOE">
+<em class="property">class </em><tt class="descclassname">pybrain.supervised.trainers.svmtrainer.</tt><tt class="descname">GridSearchDOE</tt><big>(</big><em>problem</em>, <em>targets</em>, <em>cmin</em>, <em>cmax</em>, <em>cstep=None</em>, <em>crossval=5</em>, <em>plotflag=False</em>, <em>maxdepth=8</em>, <em>searchlog='gridsearch_results.txt'</em>, <em>**params</em><big>)</big><a class="headerlink" href="#pybrain.supervised.trainers.svmtrainer.GridSearchDOE" title="Permalink to this definition">¶</a></dt>
+<dd><p>Same as GridSearch, but implements a design-of-experiments based search pattern, as
+described by C. Staelin, <a class="reference external" href="http://www.hpl.hp.com/techreports/2002/HPL-2002-354R1.pdf">http://www.hpl.hp.com/techreports/2002/HPL-2002-354R1.pdf</a></p>
+<dl class="method">
+<dt id="pybrain.supervised.trainers.svmtrainer.GridSearchDOE.search">
+<tt class="descname">search</tt><big>(</big><em>cmin=None</em>, <em>cmax=None</em><big>)</big><a class="headerlink" href="#pybrain.supervised.trainers.svmtrainer.GridSearchDOE.search" title="Permalink to this definition">¶</a></dt>
+<dd>iterate parameter grid refinement and evaluation recursively</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/pybrain_logo.gif" alt="Logo"/>
+            </a></p>
+            <h3><a href="../../index.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href=""><tt class="docutils literal"><span class="pre">svmunit</span></tt> &#8211; LIBSVM Support Vector Machine Unit</a></li>
+<li><a class="reference external" href="#module-pybrain.supervised.trainers.svmtrainer"><tt class="docutils literal"><span class="pre">svmtrainer</span></tt> &#8211; LIBSVM Support Vector Machine Trainer</a></li>
+</ul>
+
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="../datasets/superviseddataset.html"
+                                  title="previous chapter"><tt class="docutils literal docutils literal docutils literal"><span class="pre">supervised</span></tt> &#8211; Dataset for Supervised Regression Training</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="trainers.html"
+                                  title="next chapter"><tt class="docutils literal"><span class="pre">trainers</span></tt> &#8211; Supervised Training for Networks and other Modules</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../../_sources/api/supervised/svm.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="trainers.html" title="trainers – Supervised Training for Networks and other Modules"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="../datasets/superviseddataset.html" title="supervised – Dataset for Supervised Regression Training"
+             >previous</a> |</li>
+        <li><a href="../../index.html">PyBrain v0.3 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; Copyright 2009, CogBotLab &amp; Idsia.
+      Last updated on Nov 11, 2009.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.3.
+    </div>
+  </body>
+</html>

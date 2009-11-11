@@ -1,0 +1,97 @@
+.. PyBrain documentation master file, created by sphinx-quickstart on Thu May  1 16:37:40 2008.
+   You can adapt this file completely to your liking, but it should at least
+   contain the root `toctree` directive.
+
+Welcome to PyBrain's documentation!
+===================================
+
+The documentation is build up in the following parts: first, there is the
+quickstart tutorial which aims at getting you started with PyBrain as quickly as
+possible. This is the right place for you if you just want get a feel for the
+library or if you never used PyBrain before.
+
+Although the quickstart uses supervised learning with neural networks as an
+example, this does not mean that that's it. PyBrain is not only about supervised
+learning and neural networks.
+
+While the quickstart should be read sequentially, the tutorial chapters can 
+mostly be read independently of each other.
+
+In case this does not suffice, we also have an API reference, the
+:ref:`modindex`. Most of the packages and modules of PyBrain are auto-documented
+there.
+
+If at any point the documentation does not suffice, you can always get help at
+the pybrain Google Group at http://groups.google.com/group/pybrain.
+
+Installation
+------------
+
+Quick answer:
+::
+
+	$ git clone git://github.com/pybrain/pybrain.git
+	$ python setup.py install
+
+Long answer: 
+We keep more detailed installation instructions (including dependencies) 
+up-to-date in a wiki at http://wiki.github.com/pybrain/pybrain/installation.
+  
+
+
+Quickstart
+----------
+
+.. toctree::
+    :maxdepth: 1
+
+    quickstart/network
+    quickstart/dataset
+    quickstart/training    
+
+
+Tutorials
+----------
+
+.. toctree::
+   :maxdepth: 2
+
+   tutorial/intro
+   tutorial/netmodcon
+   tutorial/fnn
+   tutorial/datasets
+   tutorial/optimization
+   tutorial/reinforcement-learning
+   
+Advanced
+--------
+
+.. toctree::
+   :maxdepth: 2
+
+   advanced/fast-pybrain
+   advanced/ode
+
+
+API
+---
+
+.. toctree::
+   :maxdepth: 1
+   :glob:
+
+   api/structure/*
+   api/rl/*
+   api/optimization/*
+   api/datasets/*
+   api/supervised/*
+   api/*
+   api/supervised/knn/lsh/*
+
+
+Indices and tables
+==================
+
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`

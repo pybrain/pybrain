@@ -1,0 +1,513 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>tools – Some Useful Tools and Macros &mdash; PyBrain v0.3 documentation</title>
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.3',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="PyBrain v0.3 documentation" href="../index.html" />
+    <link rel="next" title="utilities – Simple but useful Utility Functions" href="utilities.html" />
+    <link rel="prev" title="trainers – Supervised Training for Networks and other Modules" href="supervised/trainers.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="utilities.html" title="utilities – Simple but useful Utility Functions"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="supervised/trainers.html" title="trainers – Supervised Training for Networks and other Modules"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">PyBrain v0.3 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-pybrain.tools.functions">
+<h1><tt class="xref docutils literal"><span class="pre">tools</span></tt> &#8211; Some Useful Tools and Macros<a class="headerlink" href="#module-pybrain.tools.functions" title="Permalink to this headline">¶</a></h1>
+<p class="rubric">Neural network tools</p>
+<dl class="function">
+<dt id="pybrain.tools.shortcuts.buildNetwork">
+<tt class="descclassname">pybrain.tools.shortcuts.</tt><tt class="descname">buildNetwork</tt><big>(</big><em>*layers</em>, <em>**options</em><big>)</big><a class="headerlink" href="#pybrain.tools.shortcuts.buildNetwork" title="Permalink to this definition">¶</a></dt>
+<dd><p>Build arbitrarily deep networks.</p>
+<p><cite>layers</cite> should be a list or tuple of integers, that indicate how many 
+neurons the layers should have. <cite>bias</cite> and <cite>outputbias</cite> are flags to 
+indicate whether the network should have the corresponding biases; both
+default to True.</p>
+<p>To adjust the classes for the layers use the <cite>hiddenclass</cite> and  <cite>outclass</cite>
+parameters, which expect a subclass of <tt class="xref docutils literal"><span class="pre">NeuronLayer</span></tt>.</p>
+<p>If the <cite>recurrent</cite> flag is set, a <tt class="xref docutils literal"><span class="pre">RecurrentNetwork</span></tt> will be created, 
+otherwise a <tt class="xref docutils literal"><span class="pre">FeedForwardNetwork</span></tt>.</p>
+<p>If the <cite>fast</cite> flag is set, faster arac networks will be used instead of the 
+pybrain implementations.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="pybrain.tools.neuralnets.NNregression">
+<em class="property">class </em><tt class="descclassname">pybrain.tools.neuralnets.</tt><tt class="descname">NNregression</tt><big>(</big><em>DS</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#pybrain.tools.neuralnets.NNregression" title="Permalink to this definition">¶</a></dt>
+<dd><p>Learns to numerically predict the targets of a set of data, with optional online progress plots.</p>
+<dl class="method">
+<dt id="pybrain.tools.neuralnets.NNregression.__init__">
+<tt class="descname">__init__</tt><big>(</big><em>DS</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#pybrain.tools.neuralnets.NNregression.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize with the training data set DS. All keywords given are set as member variables. 
+The following are particularly important:</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Key hidden:</th><td class="field-body">number of hidden units</td>
+</tr>
+<tr class="field"><th class="field-name">Key tds:</th><td class="field-body">test data set for checking convergence</td>
+</tr>
+<tr class="field"><th class="field-name">Key vds:</th><td class="field-body">validation data set for final performance evaluation</td>
+</tr>
+<tr class="field"><th class="field-name">Key epoinc:</th><td class="field-body">number of epochs to train for, before checking convergence (default: 5)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pybrain.tools.neuralnets.NNregression.initGraphics">
+<tt class="descname">initGraphics</tt><big>(</big><em>ymax=10</em>, <em>xmax=-1</em><big>)</big><a class="headerlink" href="#pybrain.tools.neuralnets.NNregression.initGraphics" title="Permalink to this definition">¶</a></dt>
+<dd>initialize the interactive graphics output window, and return a handle to the plot</dd></dl>
+
+<dl class="method">
+<dt id="pybrain.tools.neuralnets.NNregression.setupNN">
+<tt class="descname">setupNN</tt><big>(</big><em>trainer=&lt;class 'pybrain.supervised.trainers.rprop.RPropMinusTrainer'&gt;</em>, <em>hidden=None</em>, <em>**trnargs</em><big>)</big><a class="headerlink" href="#pybrain.tools.neuralnets.NNregression.setupNN" title="Permalink to this definition">¶</a></dt>
+<dd>Constructs a 3-layer FNN for regression. Optional arguments are passed on to the Trainer class.</dd></dl>
+
+<dl class="method">
+<dt id="pybrain.tools.neuralnets.NNregression.runTraining">
+<tt class="descname">runTraining</tt><big>(</big><em>convergence=0</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#pybrain.tools.neuralnets.NNregression.runTraining" title="Permalink to this definition">¶</a></dt>
+<dd>Trains the network on the stored dataset. If convergence is &gt;0, check after that many epoch increments
+whether test error is going down again, and stop training accordingly. 
+CAVEAT: No support for Sequential datasets!</dd></dl>
+
+<dl class="method">
+<dt id="pybrain.tools.neuralnets.NNregression.saveTrainingCurve">
+<tt class="descname">saveTrainingCurve</tt><big>(</big><em>learnfname</em><big>)</big><a class="headerlink" href="#pybrain.tools.neuralnets.NNregression.saveTrainingCurve" title="Permalink to this definition">¶</a></dt>
+<dd>save the training curves into a file with the given name (CSV format)</dd></dl>
+
+<dl class="method">
+<dt id="pybrain.tools.neuralnets.NNregression.saveNetwork">
+<tt class="descname">saveNetwork</tt><big>(</big><em>fname</em><big>)</big><a class="headerlink" href="#pybrain.tools.neuralnets.NNregression.saveNetwork" title="Permalink to this definition">¶</a></dt>
+<dd>save the trained network to a file</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pybrain.tools.neuralnets.NNclassifier">
+<em class="property">class </em><tt class="descclassname">pybrain.tools.neuralnets.</tt><tt class="descname">NNclassifier</tt><big>(</big><em>DS</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#pybrain.tools.neuralnets.NNclassifier" title="Permalink to this definition">¶</a></dt>
+<dd><p>Learns to classify a set of data, with optional online progress plots.</p>
+<dl class="method">
+<dt id="pybrain.tools.neuralnets.NNclassifier.__init__">
+<tt class="descname">__init__</tt><big>(</big><em>DS</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#pybrain.tools.neuralnets.NNclassifier.__init__" title="Permalink to this definition">¶</a></dt>
+<dd>Initialize the classifier: the least we need is the dataset to be classified. All keywords given are set as member variables.</dd></dl>
+
+<dl class="method">
+<dt id="pybrain.tools.neuralnets.NNclassifier.initGraphics">
+<tt class="descname">initGraphics</tt><big>(</big><em>ymax=10</em>, <em>xmax=-1</em><big>)</big><a class="headerlink" href="#pybrain.tools.neuralnets.NNclassifier.initGraphics" title="Permalink to this definition">¶</a></dt>
+<dd>initialize the interactive graphics output window, and return a handle to the plot</dd></dl>
+
+<dl class="method">
+<dt id="pybrain.tools.neuralnets.NNclassifier.setupNN">
+<tt class="descname">setupNN</tt><big>(</big><em>trainer=&lt;class 'pybrain.supervised.trainers.rprop.RPropMinusTrainer'&gt;</em>, <em>hidden=None</em>, <em>**trnargs</em><big>)</big><a class="headerlink" href="#pybrain.tools.neuralnets.NNclassifier.setupNN" title="Permalink to this definition">¶</a></dt>
+<dd>Setup FNN and trainer for classification.</dd></dl>
+
+<dl class="method">
+<dt id="pybrain.tools.neuralnets.NNclassifier.setupRNN">
+<tt class="descname">setupRNN</tt><big>(</big><em>trainer=&lt;class 'pybrain.supervised.trainers.backprop.BackpropTrainer'&gt;</em>, <em>hidden=None</em>, <em>**trnargs</em><big>)</big><a class="headerlink" href="#pybrain.tools.neuralnets.NNclassifier.setupRNN" title="Permalink to this definition">¶</a></dt>
+<dd>Setup an LSTM RNN and trainer for sequence classification.</dd></dl>
+
+<dl class="method">
+<dt id="pybrain.tools.neuralnets.NNclassifier.runTraining">
+<tt class="descname">runTraining</tt><big>(</big><em>convergence=0</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#pybrain.tools.neuralnets.NNclassifier.runTraining" title="Permalink to this definition">¶</a></dt>
+<dd>Trains the network on the stored dataset. If convergence is &gt;0, check after that many epoch increments
+whether test error is going down again, and stop training accordingly.</dd></dl>
+
+<dl class="method">
+<dt id="pybrain.tools.neuralnets.NNclassifier.saveTrainingCurve">
+<tt class="descname">saveTrainingCurve</tt><big>(</big><em>learnfname</em><big>)</big><a class="headerlink" href="#pybrain.tools.neuralnets.NNclassifier.saveTrainingCurve" title="Permalink to this definition">¶</a></dt>
+<dd>save the training curves into a file with the given name (CSV format)</dd></dl>
+
+<dl class="method">
+<dt id="pybrain.tools.neuralnets.NNclassifier.saveNetwork">
+<tt class="descname">saveNetwork</tt><big>(</big><em>fname</em><big>)</big><a class="headerlink" href="#pybrain.tools.neuralnets.NNclassifier.saveNetwork" title="Permalink to this definition">¶</a></dt>
+<dd>save the trained network to a file</dd></dl>
+
+</dd></dl>
+
+<p class="rubric">Dataset tools</p>
+<dl class="function">
+<dt id="pybrain.tools.datasettools.convertSequenceToTimeWindows">
+<tt class="descclassname">pybrain.tools.datasettools.</tt><tt class="descname">convertSequenceToTimeWindows</tt><big>(</big><em>DSseq</em>, <em>NewClass</em>, <em>winsize</em><big>)</big><a class="headerlink" href="#pybrain.tools.datasettools.convertSequenceToTimeWindows" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts a sequential classification dataset into time windows of fixed length. 
+Assumes the correct class is given at the last timestep of each sequence. Incomplete windows at the 
+sequence end are pruned. No overlap between windows.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><em>DSseq</em> &#8211; the sequential data set to cut up</li>
+<li><em>winsize</em> &#8211; size of the data window</li>
+<li><em>NewClass</em> &#8211; class of the windowed data set to be returned (gets initialised with indim*winsize, outdim)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<p class="rubric">Training performance validation tools</p>
+<dl class="class">
+<dt id="pybrain.tools.validation.Validator">
+<em class="property">class </em><tt class="descclassname">pybrain.tools.validation.</tt><tt class="descname">Validator</tt><a class="headerlink" href="#pybrain.tools.validation.Validator" title="Permalink to this definition">¶</a></dt>
+<dd><p>This class provides methods for the validation of calculated output
+values compared to their destined target values. It does
+not know anything about modules or other pybrain stuff. It just works
+on arrays, hence contains just the core calculations.</p>
+<p>The class has just classmethods, as it is used as kind of namespace
+instead of an object definition.</p>
+<dl class="classmethod">
+<dt id="pybrain.tools.validation.Validator.ESS">
+<em class="property">classmethod </em><tt class="descname">ESS</tt><big>(</big><em>output</em>, <em>target</em><big>)</big><a class="headerlink" href="#pybrain.tools.validation.Validator.ESS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the explained sum of squares (ESS).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><em>output</em> &#8211; array of output values</li>
+<li><em>target</em> &#8211; array of target values</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="pybrain.tools.validation.Validator.MSE">
+<em class="property">classmethod </em><tt class="descname">MSE</tt><big>(</big><em>output</em>, <em>target</em>, <em>importance=None</em><big>)</big><a class="headerlink" href="#pybrain.tools.validation.Validator.MSE" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the mean squared error. The multidimensional arrays will get
+flattened in order to compare them.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><em>output</em> &#8211; array of output values</li>
+<li><em>target</em> &#8211; array of target values</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Key importance:</th><td class="field-body"><p class="first last">each squared error will be multiplied with its
+corresponding importance value. After summing
+up these values, the result will be divided by the
+sum of all importance values for normalization
+purposes.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="pybrain.tools.validation.Validator.classificationPerformance">
+<em class="property">classmethod </em><tt class="descname">classificationPerformance</tt><big>(</big><em>output</em>, <em>target</em><big>)</big><a class="headerlink" href="#pybrain.tools.validation.Validator.classificationPerformance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the hit rate of the outputs compared to the targets.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><em>output</em> &#8211; array of output values</li>
+<li><em>target</em> &#8211; array of target values</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pybrain.tools.validation.ModuleValidator">
+<em class="property">class </em><tt class="descclassname">pybrain.tools.validation.</tt><tt class="descname">ModuleValidator</tt><a class="headerlink" href="#pybrain.tools.validation.ModuleValidator" title="Permalink to this definition">¶</a></dt>
+<dd><p>This class provides methods for the validation of calculated output
+values compared to their destined target values. It especially handles
+pybrains modules and dataset classes.
+For the core calculations, the Validator class is used.</p>
+<p>The class has just classmethods, as it is used as kind of namespace
+instead of an object definition.</p>
+<dl class="classmethod">
+<dt id="pybrain.tools.validation.ModuleValidator.MSE">
+<em class="property">classmethod </em><tt class="descname">MSE</tt><big>(</big><em>module</em>, <em>dataset</em><big>)</big><a class="headerlink" href="#pybrain.tools.validation.ModuleValidator.MSE" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the mean squared error.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><em>module</em> &#8211; Object of any subclass of pybrain&#8217;s Module type</li>
+<li><em>dataset</em> &#8211; Dataset object at least containing the fields
+&#8216;input&#8217; and &#8216;target&#8217; (for example SupervisedDataSet)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="pybrain.tools.validation.ModuleValidator.calculateModuleOutput">
+<em class="property">classmethod </em><tt class="descname">calculateModuleOutput</tt><big>(</big><em>module</em>, <em>dataset</em><big>)</big><a class="headerlink" href="#pybrain.tools.validation.ModuleValidator.calculateModuleOutput" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the module&#8217;s output on the dataset. Can be called with
+any type of dataset.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameter:</th><td class="field-body"><em>dataset</em> &#8211; Any Dataset object containing an &#8216;input&#8217; field.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="pybrain.tools.validation.ModuleValidator.classificationPerformance">
+<em class="property">classmethod </em><tt class="descname">classificationPerformance</tt><big>(</big><em>module</em>, <em>dataset</em><big>)</big><a class="headerlink" href="#pybrain.tools.validation.ModuleValidator.classificationPerformance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the hit rate of the module&#8217;s output compared to the targets
+stored inside dataset.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><em>module</em> &#8211; Object of any subclass of pybrain&#8217;s Module type</li>
+<li><em>dataset</em> &#8211; Dataset object at least containing the fields
+&#8216;input&#8217; and &#8216;target&#8217; (for example SupervisedDataSet)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="pybrain.tools.validation.ModuleValidator.validate">
+<em class="property">classmethod </em><tt class="descname">validate</tt><big>(</big><em>valfunc</em>, <em>module</em>, <em>dataset</em><big>)</big><a class="headerlink" href="#pybrain.tools.validation.ModuleValidator.validate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Abstract validate function, that is heavily used by this class.
+First, it calculates the module&#8217;s output on the dataset.
+In advance, it compares the output to the target values of the dataset
+through the valfunc function and returns the result.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><em>valfunc</em> &#8211; A function expecting arrays for output, target and
+importance (optional). See Validator.MSE for an example.</li>
+<li><em>module</em> &#8211; Object of any subclass of pybrain&#8217;s Module type</li>
+<li><em>dataset</em> &#8211; Dataset object at least containing the fields
+&#8216;input&#8217; and &#8216;target&#8217; (for example SupervisedDataSet)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pybrain.tools.validation.CrossValidator">
+<em class="property">class </em><tt class="descclassname">pybrain.tools.validation.</tt><tt class="descname">CrossValidator</tt><big>(</big><em>trainer</em>, <em>dataset</em>, <em>n_folds=5</em>, <em>valfunc=&lt;bound method type.classificationPerformance of &lt;class 'pybrain.tools.validation.ModuleValidator'&gt;&gt;</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#pybrain.tools.validation.CrossValidator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class for crossvalidating data.
+An object of CrossValidator must be supplied with a trainer that contains
+a module and a dataset.
+Then the dataset ist shuffled and split up into n parts of equal length.</p>
+<p>A clone of the trainer and its module is made, and trained with n-1 parts
+of the split dataset. After training, the module is validated with
+the n&#8217;th part of the dataset that was not used during training.</p>
+<p>This is done for each possible combination of n-1 dataset pieces.
+The the mean of the calculated validation results will be returned.</p>
+<dl class="method">
+<dt id="pybrain.tools.validation.CrossValidator.setArgs">
+<tt class="descname">setArgs</tt><big>(</big><em>**kwargs</em><big>)</big><a class="headerlink" href="#pybrain.tools.validation.CrossValidator.setArgs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the specified member variables.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Key max_epochs:</th><td class="field-body">maximum number of epochs the trainer should train the module for.</td>
+</tr>
+<tr class="field"><th class="field-name">Key verbosity:</th><td class="field-body">set verbosity level</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pybrain.tools.validation.CrossValidator.validate">
+<tt class="descname">validate</tt><big>(</big><big>)</big><a class="headerlink" href="#pybrain.tools.validation.CrossValidator.validate" title="Permalink to this definition">¶</a></dt>
+<dd>The main method of this class. It runs the crossvalidation process
+and returns the validation result (e.g. performance).</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="pybrain.tools.validation.testOnSequenceData">
+<tt class="descclassname">pybrain.tools.validation.</tt><tt class="descname">testOnSequenceData</tt><big>(</big><em>module</em>, <em>dataset</em><big>)</big><a class="headerlink" href="#pybrain.tools.validation.testOnSequenceData" title="Permalink to this definition">¶</a></dt>
+<dd>Fetch targets and calculate the modules output on dataset.
+Output and target are in one-of-many format. The class for each sequence is
+determined by first summing the probabilities for each individual sample over 
+the sequence, and then finding its maximum.</dd></dl>
+
+<p class="rubric">Auxiliary functions</p>
+<dl class="function">
+<dt id="pybrain.tools.functions.semilinear">
+<tt class="descclassname">pybrain.tools.functions.</tt><tt class="descname">semilinear</tt><big>(</big><em>x</em><big>)</big><a class="headerlink" href="#pybrain.tools.functions.semilinear" title="Permalink to this definition">¶</a></dt>
+<dd>This function ensures that the values of the array are always positive. It is 
+x+1 for x=&gt;0 and exp(x) for x&lt;0.</dd></dl>
+
+<dl class="function">
+<dt id="pybrain.tools.functions.semilinearPrime">
+<tt class="descclassname">pybrain.tools.functions.</tt><tt class="descname">semilinearPrime</tt><big>(</big><em>x</em><big>)</big><a class="headerlink" href="#pybrain.tools.functions.semilinearPrime" title="Permalink to this definition">¶</a></dt>
+<dd>This function is the first derivative of the semilinear function (above).
+It is needed for the backward pass of the module.</dd></dl>
+
+<dl class="function">
+<dt id="pybrain.tools.functions.sigmoid">
+<tt class="descclassname">pybrain.tools.functions.</tt><tt class="descname">sigmoid</tt><big>(</big><em>x</em><big>)</big><a class="headerlink" href="#pybrain.tools.functions.sigmoid" title="Permalink to this definition">¶</a></dt>
+<dd>Logistic sigmoid function.</dd></dl>
+
+<dl class="function">
+<dt id="pybrain.tools.functions.sigmoidPrime">
+<tt class="descclassname">pybrain.tools.functions.</tt><tt class="descname">sigmoidPrime</tt><big>(</big><em>x</em><big>)</big><a class="headerlink" href="#pybrain.tools.functions.sigmoidPrime" title="Permalink to this definition">¶</a></dt>
+<dd>Derivative of logistic sigmoid.</dd></dl>
+
+<dl class="function">
+<dt id="pybrain.tools.functions.tanhPrime">
+<tt class="descclassname">pybrain.tools.functions.</tt><tt class="descname">tanhPrime</tt><big>(</big><em>x</em><big>)</big><a class="headerlink" href="#pybrain.tools.functions.tanhPrime" title="Permalink to this definition">¶</a></dt>
+<dd>Derivative of tanh.</dd></dl>
+
+<dl class="function">
+<dt id="pybrain.tools.functions.safeExp">
+<tt class="descclassname">pybrain.tools.functions.</tt><tt class="descname">safeExp</tt><big>(</big><em>x</em><big>)</big><a class="headerlink" href="#pybrain.tools.functions.safeExp" title="Permalink to this definition">¶</a></dt>
+<dd>Bounded range for the exponential function (won&#8217;t rpoduce inf or NaN).</dd></dl>
+
+<dl class="function">
+<dt id="pybrain.tools.functions.ranking">
+<tt class="descclassname">pybrain.tools.functions.</tt><tt class="descname">ranking</tt><big>(</big><em>R</em><big>)</big><a class="headerlink" href="#pybrain.tools.functions.ranking" title="Permalink to this definition">¶</a></dt>
+<dd>Produces a linear ranking of the values in R.</dd></dl>
+
+<dl class="function">
+<dt id="pybrain.tools.functions.multivariateNormalPdf">
+<tt class="descclassname">pybrain.tools.functions.</tt><tt class="descname">multivariateNormalPdf</tt><big>(</big><em>z</em>, <em>x</em>, <em>sigma</em><big>)</big><a class="headerlink" href="#pybrain.tools.functions.multivariateNormalPdf" title="Permalink to this definition">¶</a></dt>
+<dd>The pdf of a multivariate normal distribution (not in scipy).
+The sample z and the mean x should be 1-dim-arrays, and sigma a square 2-dim-array.</dd></dl>
+
+<dl class="function">
+<dt id="pybrain.tools.functions.simpleMultivariateNormalPdf">
+<tt class="descclassname">pybrain.tools.functions.</tt><tt class="descname">simpleMultivariateNormalPdf</tt><big>(</big><em>z</em>, <em>detFactorSigma</em><big>)</big><a class="headerlink" href="#pybrain.tools.functions.simpleMultivariateNormalPdf" title="Permalink to this definition">¶</a></dt>
+<dd>Assuming z has been transformed to a mean of zero and an identity matrix of covariances. 
+Needs to provide the determinant of the factorized (real) covariance matrix.</dd></dl>
+
+<dl class="function">
+<dt id="pybrain.tools.functions.multivariateCauchy">
+<tt class="descclassname">pybrain.tools.functions.</tt><tt class="descname">multivariateCauchy</tt><big>(</big><em>mu</em>, <em>sigma</em>, <em>onlyDiagonal=True</em><big>)</big><a class="headerlink" href="#pybrain.tools.functions.multivariateCauchy" title="Permalink to this definition">¶</a></dt>
+<dd>Generates a sample according to a given multivariate Cauchy distribution.</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/pybrain_logo.gif" alt="Logo"/>
+            </a></p>
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="supervised/trainers.html"
+                                  title="previous chapter"><tt class="docutils literal docutils literal docutils literal"><span class="pre">trainers</span></tt> &#8211; Supervised Training for Networks and other Modules</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="utilities.html"
+                                  title="next chapter"><tt class="docutils literal docutils literal"><span class="pre">utilities</span></tt> &#8211; Simple but useful Utility Functions</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../_sources/api/tools.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="utilities.html" title="utilities – Simple but useful Utility Functions"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="supervised/trainers.html" title="trainers – Supervised Training for Networks and other Modules"
+             >previous</a> |</li>
+        <li><a href="../index.html">PyBrain v0.3 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; Copyright 2009, CogBotLab &amp; Idsia.
+      Last updated on Nov 11, 2009.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.3.
+    </div>
+  </body>
+</html>

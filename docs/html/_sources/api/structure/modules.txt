@@ -1,0 +1,43 @@
+:mod:`modules` -- Structural Components: Modules
+================================================
+
+.. automodule:: pybrain.structure.modules
+
+.. autoclass:: BiasUnit
+   :members: __init__
+   :show-inheritance:
+
+
+.. autoclass:: GaussianLayer
+   :members: __init__, setSigma
+   :show-inheritance:
+
+
+.. autoclass:: LinearLayer
+   :members: __init__
+   :show-inheritance:
+
+
+.. autoclass:: LSTMLayer
+   :members: __init__
+   :show-inheritance:
+
+.. autoclass:: MDLSTMLayer
+   :members: __init__
+   :show-inheritance:
+
+.. autoclass:: SigmoidLayer
+   :members: __init__
+   :show-inheritance:
+
+.. autoclass:: SoftmaxLayer
+   :members: __init__
+   :show-inheritance:
+
+.. autoclass:: StateDependentLayer
+   :members: __init__, setState, drawRandomWeights
+   :show-inheritance:
+
+.. autoclass:: TanhLayer
+   :members: __init__
+   :show-inheritance:

@@ -1,0 +1,79 @@
+.. fast-pybrain:
+
+
+Fast networks for PyBrain
+=========================
+
+Writing a neural networking framework in Python imposes certain speed
+restrictions upon it. Python is just not as fast as languages such as C++
+or Fortran.
+
+Due to this, PyBrain has its own spin-off called arac, which is a 
+re-implementation of its neural networking facilities that integrates 
+transparently with it.
+
+Depending on the configuration of your system, speedups of **5-10x faster** can
+be expected. This speedup might be even higher (ranging into the hundreds) if 
+you use sophisticated topologies such as MDRNNs. If you want some numbers on
+your system, there is a comparison script shipped with PyBrain at 
+``examples/arac/benchmark.py``.
+
+
+Installation
+------------
+
+However, the installation process is less easy than for pure Python PyBrain. On
+the other hand, it's mostly about installing an additional library and telling
+PyBrain to use fast networks.
+
+You will find detailed installation instructions for arac on the `arac wiki <http://wiki.github.com/bayerj/arac/installation>`_.
+
+This instructions are work in progress. If you run into difficulties, ask on the
+PyBrain mailing list.
+
+
+Usage
+-----
+
+Once you have installed it, there are three ways to use fast networks.
+
+First, the shortcut ``buildNetwork`` has a keyword ``fast`` which builds an arac
+network instead:
+
+    >>> from pybrain.tools.shortcuts import buildNetwork
+    >>> n = buildNetwork(2, 3, 1, fast=True)
+    >>> n.activate((2, 3))
+    array([-0.20781205])
+
+As you can see by examining the network, it is a special class:
+
+    >>> n
+    <_FeedForwardNetwork '_FeedForwardNetwork-8'>
+
+which is prefixed with an underscore, the Python convention for naming C 
+implementations of already existing classes. We can import these classes 
+directly from arac and use them in the same way as PyBrain classes:
+
+    >>> from arac.pybrainbridge import _FeedForwardNetwork, _RecurrentNetwork
+
+The third method is to construct a network as a PyBrain network and call the 
+method ``convertToFastNetwork`` afterwards:
+
+    >>> n = buildNetwork(2, 3, 1, fast=False)
+    >>> n.convertToFastNetwork()
+    <_FeedForwardNetwork '_FeedForwardNetwork-18'>
+
+However, be cautious with the last method since changes to the PyBrain network
+are not reflected in the arac network.
+
+
+Limitations
+-----------
+
+Since arac is implemented in C++ and currently maintained by only a single 
+person, arac development is likely to be slower than PyBrain's. This might lead
+to certain features (e.g. layer types) to be implemented later than the pure 
+python versions. This also applies to custom layer types. As soon as you have 
+your layer type, you will not be able to use fast networks anymore -- except if 
+you chose to also implement them for arac yourself.
+

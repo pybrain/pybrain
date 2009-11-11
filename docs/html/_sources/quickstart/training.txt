@@ -1,0 +1,36 @@
+.. training:
+
+Training your Network on your Dataset
+=====================================
+
+For adjusting parameters of modules in supervised learning, PyBrain has the 
+concept of trainers. Trainers take a module and a dataset in order to train the
+module to fit the data in the dataset.
+
+A classic example for training is backpropagation. PyBrain comes with 
+backpropagation, of course, and we will use the ``BackpropTrainer`` here::
+
+   >>> from pybrain.supervised.trainers import BackpropTrainer
+   
+We have already build a dataset for XOR and we have also learned to build 
+networks that can handle such problems. Let's just connect the two with a 
+trainer::
+
+   >>> net = buildNetwork(2, 3, 1, bias=True, hiddenclass=TanhLayer)
+   >>> trainer = BackpropTrainer(net, ds)
+   
+The trainer now knows about the network and the dataset and we can train the net
+on the data::
+
+   >>> trainer.train()
+   0.31516384514375834
+
+This call trains the net for one full epoch and returns a double proportional to
+the error. If we want to train the network until convergence, there is another
+method::
+
+   >>> trainer.trainUntilConvergence()
+   ...
+   
+This returns a whole bunch of data, which is nothing but a tuple containing the
+errors for every training epoch. 

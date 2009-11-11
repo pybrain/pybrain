@@ -1,0 +1,135 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Introduction &mdash; PyBrain v0.3 documentation</title>
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.3',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="PyBrain v0.3 documentation" href="../index.html" />
+    <link rel="next" title="Building Networks with Modules and Connections" href="netmodcon.html" />
+    <link rel="prev" title="Training your Network on your Dataset" href="../quickstart/training.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="netmodcon.html" title="Building Networks with Modules and Connections"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="../quickstart/training.html" title="Training your Network on your Dataset"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">PyBrain v0.3 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="introduction">
+<span id="intro"></span><h1>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h1>
+<p>PyBrain&#8217;s concept is to encapsulate different data processing algorithms in what
+we call a <tt class="xref docutils literal"><span class="pre">Module</span></tt>. A minimal Module contains a forward implementation
+depending on a collection of free parameters that can be adjusted, usually
+through some machine learning algorithm.</p>
+<p>Modules have an input and an output buffer, plus corresponding error buffers
+which are used in error backpropagation algorithms.</p>
+<p>They are assembled into objects of the class <tt class="xref docutils literal"><span class="pre">Network</span></tt> and are
+connected via <tt class="xref docutils literal"><span class="pre">Connection</span></tt> objects. These may contain a number of
+adjustable parameters themselves, such as weights.</p>
+<p>Note that a Network itself is again a Module, such that it is easy to build
+hierarchical networks as well. Shortcuts exist for building the most common
+network architectures, but in principle this system allows almost arbitrary
+connectionist systems to be assembled, as long as they form a directed acyclic
+graph.</p>
+<p>The free parameters of the Network are adjusted by means of a <tt class="xref docutils literal"><span class="pre">Trainer</span></tt>,
+which uses a <tt class="xref docutils literal"><span class="pre">Dataset</span></tt> to learn the optimum parameters from examples.
+For reinforcement learning experiments, a simulation environment with an
+associated optimization task is used instead of a Dataset.</p>
+<img alt="../_images/dataprocessing_flowchart.jpg" src="../_images/dataprocessing_flowchart.jpg" />
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/pybrain_logo.gif" alt="Logo"/>
+            </a></p>
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="../quickstart/training.html"
+                                  title="previous chapter">Training your Network on your Dataset</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="netmodcon.html"
+                                  title="next chapter">Building Networks with Modules and Connections</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../_sources/tutorial/intro.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="netmodcon.html" title="Building Networks with Modules and Connections"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="../quickstart/training.html" title="Training your Network on your Dataset"
+             >previous</a> |</li>
+        <li><a href="../index.html">PyBrain v0.3 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; Copyright 2009, CogBotLab &amp; Idsia.
+      Last updated on Nov 11, 2009.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.3.
+    </div>
+  </body>
+</html>

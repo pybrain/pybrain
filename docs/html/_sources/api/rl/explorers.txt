@@ -1,0 +1,44 @@
+:mod:`explorers` -- RL Components: Explorers
+================================================
+
+.. automodule:: pybrain.rl.explorers.explorer
+
+.. autoclass:: Explorer
+   :members:
+
+Continuous Explorers
+--------------------
+
+.. automodule:: pybrain.rl.explorers.continuous
+
+.. autoclass:: NormalExplorer
+   :members:   
+
+.. automodule:: pybrain.rl.explorers.continuous.sde
+
+.. autoclass:: StateDependentExplorer
+   :members:
+   
+Discrete Explorers
+--------------------
+
+.. automodule:: pybrain.rl.explorers.discrete.discrete
+
+.. autoclass:: DiscreteExplorer
+   :members: _setModule
+   :show-inheritance:
+   
+.. automodule:: pybrain.rl.explorers.discrete
+
+.. autoclass:: EpsilonGreedyExplorer
+   :members: _forwardImplementation
+   :show-inheritance:
+
+.. autoclass:: BoltzmannExplorer
+   :members: activate, _forwardImplementation
+   :show-inheritance:
+
+.. autoclass:: DiscreteStateDependentExplorer
+   :members: activate, _forwardImplementation
+   :show-inheritance:
+   

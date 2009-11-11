@@ -1,0 +1,192 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Building a DataSet &mdash; PyBrain v0.3 documentation</title>
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.3',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="PyBrain v0.3 documentation" href="../index.html" />
+    <link rel="next" title="Training your Network on your Dataset" href="training.html" />
+    <link rel="prev" title="Building a Network" href="network.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="training.html" title="Training your Network on your Dataset"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="network.html" title="Building a Network"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">PyBrain v0.3 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="building-a-dataset">
+<h1>Building a DataSet<a class="headerlink" href="#building-a-dataset" title="Permalink to this headline">¶</a></h1>
+<p>In order for our networks to learn anything, we need a dataset that contains
+inputs and targets. PyBrain has the <tt class="docutils literal"><span class="pre">pybrain.dataset</span></tt> package for this, and we
+will use the <tt class="docutils literal"><span class="pre">SupervisedDataSet</span></tt> class for our needs.</p>
+<div class="section" id="a-customized-dataset">
+<h2>A customized DataSet<a class="headerlink" href="#a-customized-dataset" title="Permalink to this headline">¶</a></h2>
+<p>The <tt class="docutils literal"><span class="pre">SupervisedDataSet</span></tt> class is used for standard supervised learning. It
+supports input and target values, whose size we have to specify on object
+creation:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">from</span> <span class="nn">pybrain.datasets</span> <span class="k">import</span> <span class="n">SupervisedDataSet</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ds</span> <span class="o">=</span> <span class="n">SupervisedDataSet</span><span class="p">(</span><span class="mf">2</span><span class="p">,</span> <span class="mf">1</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Here we have generated a dataset that supports two dimensional inputs and one
+dimensional targets.</p>
+</div>
+<div class="section" id="adding-samples">
+<h2>Adding samples<a class="headerlink" href="#adding-samples" title="Permalink to this headline">¶</a></h2>
+<p>A classic example for neural network training is the XOR function, so let&#8217;s just
+build a dataset for this. We can do this by just adding samples to the dataset:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">ds</span><span class="o">.</span><span class="n">addSample</span><span class="p">((</span><span class="mf">0</span><span class="p">,</span> <span class="mf">0</span><span class="p">),</span> <span class="p">(</span><span class="mf">0</span><span class="p">,))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ds</span><span class="o">.</span><span class="n">addSample</span><span class="p">((</span><span class="mf">0</span><span class="p">,</span> <span class="mf">1</span><span class="p">),</span> <span class="p">(</span><span class="mf">1</span><span class="p">,))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ds</span><span class="o">.</span><span class="n">addSample</span><span class="p">((</span><span class="mf">1</span><span class="p">,</span> <span class="mf">0</span><span class="p">),</span> <span class="p">(</span><span class="mf">1</span><span class="p">,))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ds</span><span class="o">.</span><span class="n">addSample</span><span class="p">((</span><span class="mf">1</span><span class="p">,</span> <span class="mf">1</span><span class="p">),</span> <span class="p">(</span><span class="mf">0</span><span class="p">,))</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="examining-the-dataset">
+<h2>Examining the dataset<a class="headerlink" href="#examining-the-dataset" title="Permalink to this headline">¶</a></h2>
+<p>We now have a dataset that has 4 samples in it. We can check that with python&#8217;s
+idiomatic way of checking the size of something:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">ds</span><span class="p">)</span>
+<span class="go">4</span>
+</pre></div>
+</div>
+<p>We can also iterate over it in the standard way:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">inpt</span><span class="p">,</span> <span class="n">target</span> <span class="ow">in</span> <span class="n">ds</span><span class="p">:</span>
+<span class="gp">... </span>  <span class="k">print</span> <span class="n">inpt</span><span class="p">,</span> <span class="n">target</span>
+<span class="gp">...</span>
+<span class="go">[ 0.  0.] [ 0.]</span>
+<span class="go">[ 0.  1.] [ 1.]</span>
+<span class="go">[ 1.  0.] [ 1.]</span>
+<span class="go">[ 1.  1.] [ 0.]</span>
+</pre></div>
+</div>
+<p>We can access the input and target field directly as arrays:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">ds</span><span class="p">[</span><span class="s">&#39;input&#39;</span><span class="p">]</span>
+<span class="go">array([[ 0.,  0.],</span>
+<span class="go">       [ 0.,  1.],</span>
+<span class="go">       [ 1.,  0.],</span>
+<span class="go">       [ 1.,  1.]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ds</span><span class="p">[</span><span class="s">&#39;target&#39;</span><span class="p">]</span>
+<span class="go">array([[ 0.],</span>
+<span class="go">       [ 1.],</span>
+<span class="go">       [ 1.],</span>
+<span class="go">       [ 0.]])</span>
+</pre></div>
+</div>
+<p>It is also possible to clear a dataset again, and delete all the values from it:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">ds</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ds</span><span class="p">[</span><span class="s">&#39;input&#39;</span><span class="p">]</span>
+<span class="go">array([], shape=(0, 2), dtype=float64)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ds</span><span class="p">[</span><span class="s">&#39;target&#39;</span><span class="p">]</span>
+<span class="go">array([], shape=(0, 1), dtype=float64)</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/pybrain_logo.gif" alt="Logo"/>
+            </a></p>
+            <h3><a href="../index.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="">Building a DataSet</a><ul>
+<li><a class="reference external" href="#a-customized-dataset">A customized DataSet</a></li>
+<li><a class="reference external" href="#adding-samples">Adding samples</a></li>
+<li><a class="reference external" href="#examining-the-dataset">Examining the dataset</a></li>
+</ul>
+</li>
+</ul>
+
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="network.html"
+                                  title="previous chapter">Building a Network</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="training.html"
+                                  title="next chapter">Training your Network on your Dataset</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../_sources/quickstart/dataset.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="training.html" title="Training your Network on your Dataset"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="network.html" title="Building a Network"
+             >previous</a> |</li>
+        <li><a href="../index.html">PyBrain v0.3 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; Copyright 2009, CogBotLab &amp; Idsia.
+      Last updated on Nov 11, 2009.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.3.
+    </div>
+  </body>
+</html>
