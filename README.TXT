@@ -1,4 +1,6 @@
 PyBrain -- the Python Machine Learning Library
+===============================================
+
 
 INSTALLATION
 ------------
@@ -16,7 +18,11 @@ DOCUMENTATION
 -------------
 Please read 
 	docs/documentation.pdf
-featuring:
-- quickstart tutorial
-- tutorial
-- API
+or browse
+	docs/html/*	
+featuring: quickstart, tutorials, API, etc.
+
+If you have matplotlib, the scripts in
+	examples/*
+may be instructive as well.
+

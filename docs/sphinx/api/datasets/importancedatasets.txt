@@ -1,0 +1,10 @@
+.. _importancedataset:
+
+:mod:`importance` -- Datasets for Weighted Supervised Training
+========================================================================
+
+.. automodule:: pybrain.datasets.importance
+
+.. autoclass:: ImportanceDataSet
+   :members: 
+   :show-inheritance:
