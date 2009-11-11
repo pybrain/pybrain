@@ -1,10 +1,12 @@
 __author__ = "Martin Felder, felder@in.tum.de"
 
 
-from svm import svm_model, svm_parameter, svm_problem, cross_validation #@UnresolvedImport
-from svm import C_SVC, NU_SVC, ONE_CLASS, EPSILON_SVR, NU_SVR #@UnresolvedImport @UnusedImport
-from svm import LINEAR, POLY, RBF, SIGMOID, PRECOMPUTED #@UnresolvedImport @UnusedImport
-
+try:
+    from svm import svm_model, svm_parameter, svm_problem, cross_validation #@UnresolvedImport
+    from svm import C_SVC, NU_SVC, ONE_CLASS, EPSILON_SVR, NU_SVR #@UnresolvedImport @UnusedImport
+    from svm import LINEAR, POLY, RBF, SIGMOID, PRECOMPUTED #@UnresolvedImport @UnusedImport
+except ImportError:
+    raise ImportError("Cannot find LIBSVM installation. Make sure svm.py and svmc.* are in the PYTHONPATH!")
 
 from numpy import * #@UnusedWildImport
 import logging
@@ -43,11 +45,12 @@ class SVMTrainer(object):
         
     def train(self, search=False, **kwargs):
         """ Train the SVM on the dataset. For RBF kernels (the default), an optional meta-parameter search can be performed.
-        @param search: optional name of grid search class to use for RBF kernels: 'GridSearch' or 'GridSearchDOE' 
-        @param log2g: base 2 log of the RBF width parameter
-        @param log2C: base 2 log of the slack parameter
-        @param searchlog: filename into which to dump the search log
-        @param others: ...are passed through to the grid search and/or libsvm 
+
+        :key search: optional name of grid search class to use for RBF kernels: 'GridSearch' or 'GridSearchDOE' 
+        :key log2g: base 2 log of the RBF width parameter
+        :key log2C: base 2 log of the slack parameter
+        :key searchlog: filename into which to dump the search log
+        :key others: ...are passed through to the grid search and/or libsvm 
         """
         
         self.setParams(**kwargs)
@@ -76,7 +79,8 @@ class SVMTrainer(object):
     def setParams(self, **kwargs):
         """ Set parameters for SVM training. Apart from the ones below, you can use all parameters 
         defined for the LIBSVM svm_model class, see their documentation. 
-        @param searchlog: Save a list of coordinates and the achieved CV accuracy to this file."""
+
+        :key searchlog: Save a list of coordinates and the achieved CV accuracy to this file."""
         if kwargs.has_key('weight'):
             self.params['nr_weight'] = len(kwargs['weight'])
         if kwargs.has_key('log2C'):
@@ -102,16 +106,17 @@ class GridSearch(svm_model):
     def __init__(self, problem, targets, cmin, cmax, cstep=None, crossval=5,
                  plotflag=False, maxdepth=8, searchlog='gridsearch_results.txt', **params):
         """ Set up (log) grid search over the two RBF kernel parameters C and gamma.
-        @param problem: the LIBSVM svm_problem to be optimized, ie. the input and target data
-        @param targets: unfortunately, the targets used in the problem definition have to be given again here
-        @param cmin: lower left corner of the log2C/log2gamma window to search
-        @param cmax: upper right corner of the log2C/log2gamma window to search
-        @param cstep: step width for log2C and log2gamma (ignored for DOE search)
-        @param crossval: split dataset into this many parts for cross-validation
-        @param plotflag: if True, plot the error surface contour (regular) or search pattern (DOE)
-        @param maxdepth: maximum window bisection depth (DOE only)
-        @param searchlog: Save a list of coordinates and the achieved CV accuracy to this file
-        @param others: ...are passed through to the cross_validation method of LIBSVM
+
+        :arg problem: the LIBSVM svm_problem to be optimized, ie. the input and target data
+        :arg targets: unfortunately, the targets used in the problem definition have to be given again here
+        :arg cmin: lower left corner of the log2C/log2gamma window to search
+        :arg cmax: upper right corner of the log2C/log2gamma window to search
+        :key cstep: step width for log2C and log2gamma (ignored for DOE search)
+        :key crossval: split dataset into this many parts for cross-validation
+        :key plotflag: if True, plot the error surface contour (regular) or search pattern (DOE)
+        :key maxdepth: maximum window bisection depth (DOE only)
+        :key searchlog: Save a list of coordinates and the achieved CV accuracy to this file
+        :key others: ...are passed through to the cross_validation method of LIBSVM
         """
         self.nPars = len(cmin)
         self.usermin = cmin

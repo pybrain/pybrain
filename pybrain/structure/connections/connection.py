@@ -16,12 +16,13 @@ class Connection(Named):
     def __init__(self, inmod, outmod, name = None,
                  inSliceFrom = 0, inSliceTo = None, outSliceFrom = 0, outSliceTo = None):
         """ every connection requires an input and an output module. Optionally, it is possible to define slices on the buffers.
-            @param inmod: input module
-            @param outmod: output module
-            @param inSliceFrom: starting index on the buffer of inmod (default = 0)
-            @param inSliceTo: ending index on the buffer of inmod (default = last)
-            @param outSliceFrom: starting index on the buffer of outmod (default = 0)
-            @param outSliceTo: ending index on the buffer of outmod (default = last)
+        
+            :arg inmod: input module
+            :arg outmod: output module
+            :key inSliceFrom: starting index on the buffer of inmod (default = 0)
+            :key inSliceTo: ending index on the buffer of inmod (default = last)
+            :key outSliceFrom: starting index on the buffer of outmod (default = 0)
+            :key outSliceTo: ending index on the buffer of outmod (default = last)
         """        
         self._name = name
         self.inSliceFrom = inSliceFrom

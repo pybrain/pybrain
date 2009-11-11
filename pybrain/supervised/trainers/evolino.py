@@ -33,24 +33,24 @@ class EvolinoTrainer(Trainer):
 
     def __init__(self, evolino_network, dataset, **kwargs):
         """
-            @param subPopulationSize: Size of the subpopulations.
-            @param nCombinations: Number of times each chromosome is built into an individual. default=1
-            @param nParents: Number of individuals left in a subpopulation after selection.
-            @param initialWeightRange: Range of the weights of the RNN after initialization. default=(-0.1,0.1)
-            @param weightInitializer: Initializer object for the weights of the RNN. default=Randomization(...)
-            @param mutationAlpha: The mutation's intensity. default=0.01
-            @param mutationVariate: The variate used for mutation. default=CauchyVariate(...)
-            @param wtRatio: The quotient: washout-time/training-time. Needed to
+            :key subPopulationSize: Size of the subpopulations.
+            :key nCombinations: Number of times each chromosome is built into an individual. default=1
+            :key nParents: Number of individuals left in a subpopulation after selection.
+            :key initialWeightRange: Range of the weights of the RNN after initialization. default=(-0.1,0.1)
+            :key weightInitializer: Initializer object for the weights of the RNN. default=Randomization(...)
+            :key mutationAlpha: The mutation's intensity. default=0.01
+            :key mutationVariate: The variate used for mutation. default=CauchyVariate(...)
+            :key wtRatio: The quotient: washout-time/training-time. Needed to
                             split the sequences into washout phase and training phase.
-            @param nBurstMutationEpochs: Number of epochs without increase of fitness in a row,
+            :key nBurstMutationEpochs: Number of epochs without increase of fitness in a row,
                                          before burstmutation is applied. default=Infinity
-            @param backprojectionFactor: Weight of the backprojection. Usually
+            :key backprojectionFactor: Weight of the backprojection. Usually
                                          supplied through evolino_network.
-            @param selection: Selection object for evolino
-            @param reproduction: Reproduction object for evolino
-            @param burstMutation: BurstMutation object for evolino
-            @param evaluation: Evaluation object for evolino
-            @param verbosity: verbosity level
+            :key selection: Selection object for evolino
+            :key reproduction: Reproduction object for evolino
+            :key burstMutation: BurstMutation object for evolino
+            :key evaluation: Evaluation object for evolino
+            :key verbosity: verbosity level
         """
         Trainer.__init__(self, evolino_network)
 

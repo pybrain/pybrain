@@ -11,22 +11,25 @@ class GraphicalEnvironment(Environment):
         
     def setRenderInterface(self, renderer):
         """ set the renderer, which is an object of or inherited from class Renderer.
-            @param renderer: The renderer that should display the Environment
-            @type renderer: L{Renderer}
-            @see Renderer
+        
+            :arg renderer: The renderer that should display the Environment
+            :type renderer: L{Renderer}
+            .. seealso:: :class:`Renderer`
         """
         self.renderInterface = renderer
         
     def getRenderInterface(self):
-        """ returns the current renderer. 
-            @return: the current renderer
-            @rtype: L{Renderer}
+        """ returns the current renderer.
+        
+            :return: the current renderer
+            :rtype: L{Renderer}
         """
         return self.renderInterface
     
     def hasRenderInterface(self):
         """ tells you, if a Renderer has been set previously or not
-            @return: True if a renderer was set, False otherwise
-            @rtype: Boolean
+        
+            :return: True if a renderer was set, False otherwise
+            :rtype: Boolean
         """
         return (self.getRenderInterface() != None)

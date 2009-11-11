@@ -126,9 +126,9 @@ class PseudoPybrainAgent(LearningAgent):
     def giveReward(self, r):
         """ Reward or punish the agent.
         
-            @param r: reward, if C{r} is positive, punishment if C{r} is
+            :key r: reward, if C{r} is positive, punishment if C{r} is
                       negative
-            @type r: double            
+            :type r: double            
         """          
         print "I was given %.2f" % float(r)
         
@@ -136,7 +136,7 @@ class PseudoPybrainAgent(LearningAgent):
         print "I got a new episode"
         
     def reset(self):
-        print "I was reseted"
+        print "I was resetted"
         
         
 if __name__ == "__main__":

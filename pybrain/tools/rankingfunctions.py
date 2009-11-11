@@ -37,7 +37,7 @@ class RankingFunction(Named):
         self.name = n
 
     def __call__(self, R):
-        """ @param R: one-dimensional array containing fitnesses. """
+        """ :key R: one-dimensional array containing fitnesses. """
         res = rankedFitness(R)
         return res / float(max(res))
         

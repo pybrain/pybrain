@@ -27,10 +27,10 @@ def buildNetwork(*layers, **options):
     default to True.
         
     To adjust the classes for the layers use the `hiddenclass` and  `outclass`
-    parameters, which expect a subclass of NeuronLayer.
+    parameters, which expect a subclass of :class:`NeuronLayer`.
     
-    If the `recurrent` flag is set, a RecurrentNetwork will be created, 
-    otherwise a FeedForwardNetwork.
+    If the `recurrent` flag is set, a :class:`RecurrentNetwork` will be created, 
+    otherwise a :class:`FeedForwardNetwork`.
     
     If the `fast` flag is set, faster arac networks will be used instead of the 
     pybrain implementations."""

@@ -18,11 +18,12 @@ class GaussianProcess:
 
     def __init__(self, indim, start=0, stop=1, step=0.1):
         """ initializes the gaussian process object.
-            @param indim: input dimension
-            @param start: start of interval for sampling the GP. 
-            @param stop: stop of interval for sampling the GP.
-            @param step: stepsize for sampling interval.
-            @note: start, stop, step can either be scalars or tuples of size 'indim'.
+        
+            :arg indim: input dimension
+            :key start: start of interval for sampling the GP. 
+            :key stop: stop of interval for sampling the GP.
+            :key step: stepsize for sampling interval.
+            :note: start, stop, step can either be scalars or tuples of size 'indim'.
         """
         self.mean = 0
         self.start = start

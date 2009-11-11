@@ -10,10 +10,11 @@ class CompetitiveEnvironment(Environment):
     """
     
     def performAction(self, action):
-        """ perform an action on the world that changes it's internal state (maybe stochastically) 
-            @param action: an action that should be executed in the Environment, by an agent. 
-            @type action: tuple: (agentID, action value)
-            @note: This function is abstract and has to be implemented.
+        """ perform an action on the world that changes it's internal state (maybe stochastically)
+        
+            :key action: an action that should be executed in the Environment, by an agent. 
+            :type action: tuple: (agentID, action value)
+            :note: This function is abstract and has to be implemented.
         """
         abstractMethod()
 

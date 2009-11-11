@@ -36,9 +36,9 @@ class CaptureGameNetwork(BorderSwipingNetwork):
     
     def __init__(self, **args):
         """
-        @param clusterssize: the side of the square for clustering: if > 1, an extra layer for cluster-construction is added 
-        @param clusteroverlap: by how much should the cluster overlap (default = 0)
-        @param directlink: should connections from the input directly to the bottleneck be included?         
+        :key clusterssize: the side of the square for clustering: if > 1, an extra layer for cluster-construction is added 
+        :key clusteroverlap: by how much should the cluster overlap (default = 0)
+        :key directlink: should connections from the input directly to the bottleneck be included?         
         """
         if 'size' in args:
             self.size = args['size']      

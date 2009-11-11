@@ -30,8 +30,8 @@ class Coevolution(Named):
     
     def __init__(self, relEvaluator, seeds, **args):
         """ 
-        @param relevaluator: an anti-symmetric function that can evaluate 2 elements
-        @param seeds: a list of initial guesses
+        :arg relevaluator: an anti-symmetric function that can evaluate 2 elements
+        :arg seeds: a list of initial guesses
         """
         # set parameters
         self.setArgs(**args)
@@ -64,7 +64,8 @@ class Coevolution(Named):
         
     def learn(self, maxSteps=None):
         """ Toplevel function, can be called iteratively.
-        @return: best evaluable found in the last generation. """
+        
+        :return: best evaluable found in the last generation. """
         if maxSteps != None:
             maxSteps += self.steps
         while True:
@@ -181,7 +182,8 @@ class Coevolution(Named):
                 
     def _doTournament(self, pop1, pop2, tournamentSize=None):
         """ Play a tournament. 
-        @param tournamentSize: If unspecified, play all-against-all 
+        
+        :key tournamentSize: If unspecified, play all-against-all 
         """
         # TODO: Preferably select high-performing opponents?
         for p in pop1:

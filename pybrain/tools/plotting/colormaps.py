@@ -7,7 +7,8 @@ from scipy import array, amin, amax
 class ColorMap:
     def __init__(self, mat, cmap=None, pixelspervalue=20, minvalue=None, maxvalue=None):
         """ Make a colormap image of a matrix
-        @param mat: the matrix to be used for the colormap. 
+        
+        :key mat: the matrix to be used for the colormap. 
         """
         if minvalue == None:
             minvalue = amin(mat)

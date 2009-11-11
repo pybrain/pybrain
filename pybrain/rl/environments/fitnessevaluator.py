@@ -20,6 +20,7 @@ class FitnessEvaluator(object):
 
     def __call__(self, x):
         """ All FitnessEvaluators are callable.
-        @return: float """
+        
+        :return: float """
         return self.f(x)
     

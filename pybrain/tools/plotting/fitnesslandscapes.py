@@ -13,7 +13,7 @@ class FitnessPlotter:
     """ plot the function's values in the rectangular region specified by ranges. By default, plot in [-1,1] """
     def __init__(self, f, xmin= -1, xmax=1, ymin= -1, ymax=1, precision=50, is3d=False, newfig=True,
                  colorbar=False, cblabel=None):
-        """ @param precision: how many steps along every dimension """        
+        """ :key precision: how many steps along every dimension """        
         if isinstance(f, FunctionEnvironment):
             assert f.xdim == 2
             self.f = lambda x, y: f(array([x, y]))            
@@ -45,7 +45,7 @@ class FitnessPlotter:
         return vals
     
     def plotAll(self, levels=50, popup=True):
-        """ @param levels: how many fitness levels should be drawn."""
+        """ :key levels: how many fitness levels should be drawn."""
         if self.is3d:
             X, Y = meshgrid(self.xs, self.ys)    
             self.fig.contour3D(X, Y, self.zs, levels)                 
@@ -59,8 +59,9 @@ class FitnessPlotter:
         if popup: show()
     
     def addSamples(self, samples, rescale=True, color=''):
-        """plot some sample points on the fitness landscape. 
-        @param rescale: should the plotting ranges be adjusted? """
+        """plot some sample points on the fitness landscape.
+        
+        :key rescale: should the plotting ranges be adjusted? """
         # split samples into x and y
         sx = zeros(len(samples))
         sy = zeros(len(samples))

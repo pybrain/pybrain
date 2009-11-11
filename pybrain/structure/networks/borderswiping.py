@@ -81,7 +81,8 @@ class BorderSwipingNetwork(SwipingNetwork):
         
     def _canonicForm(self, tup, dim):
         """ determine if there is a symmetrical tuple of lower coordinates
-        @param dim: the removed coordinate. """
+        
+        :key dim: the removed coordinate. """
         if not self.symmetricdimensions:
             return tup
         canonic = []

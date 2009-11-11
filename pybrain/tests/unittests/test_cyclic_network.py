@@ -23,7 +23,8 @@ from pybrain.tests import runModuleTestSuite
 
 def buildCyclicNetwork(recurrent):
     """ build a cyclic network with 4 modules
-    @param recurrent: make one of the connections recurrent """
+    
+    :key recurrent: make one of the connections recurrent """
     Network = RecurrentNetwork if recurrent else FeedForwardNetwork
     N = Network('cyc')
     a = LinearLayer(1, name='a')

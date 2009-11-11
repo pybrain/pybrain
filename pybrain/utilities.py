@@ -43,7 +43,8 @@ def combineLists(lsts):
 
 def drawIndex(probs, tolerant=False):
     """ Draws an index given an array of probabilities.
-    @param tolerant: if set to True, the array is normalized to sum to 1.  """
+    
+    :key tolerant: if set to True, the array is normalized to sum to 1.  """
     if not sum(probs) < 1.00001 or not sum(probs) > 0.99999:
         if tolerant:
             probs /= sum(probs)

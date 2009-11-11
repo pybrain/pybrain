@@ -23,14 +23,14 @@ class EvolinoPopulation(Population):
         A subpopulation of size subPopulationSize is created for each of these
         chromosomes.
         
-        @param nCombinations: Denotes the number of times each subindividual should
+        :key nCombinations: Denotes the number of times each subindividual should
                               be built into an individual. default=1
-        @param valueInitializer: 
+        :key valueInitializer: 
     """
     def __init__(self, individual, subPopulationSize, nCombinations=1, valueInitializer=Randomization(-0.1, 0.1), **kwargs):
-        """ @param individual: A prototype individual which is used to determine
+        """ :key individual: A prototype individual which is used to determine
                                the structure of the genome.
-            @param subPopulationSize: integer describing the size of the subpopulations
+            :key subPopulationSize: integer describing the size of the subpopulations
         """
         Population.__init__(self)
 
@@ -132,8 +132,8 @@ class EvolinoSubPopulation(SimplePopulation):
         operator.
     """
     def __init__(self, chromosome, maxNIndividuals, valueInitializer=Randomization(-0.1, 0.1), **kwargs):
-        """ @param chromosome: The prototype chromosome
-            @param maxNIndividuals: The maximum allowed number of individuals
+        """ :key chromosome: The prototype chromosome
+            :key maxNIndividuals: The maximum allowed number of individuals
         """
         SimplePopulation.__init__(self)
 
@@ -163,7 +163,7 @@ class EvolinoSubPopulation(SimplePopulation):
 
     def addIndividualFitness(self, individual, fitness):
         """ Add fitness to the individual's fitness value.
-            @param fitness: a float value denoting the fitness
+            :key fitness: a float value denoting the fitness
         """
         self._fitness[individual] += fitness
 

@@ -9,8 +9,8 @@ class ModuleMesh(Named):
     All modules need to have the same indim and outdim """
     
     def __init__(self, constructor, dimensions, name = None, baserename = False):
-        """ @param constructor: a constructor method that returns a module
-        @param dimensions: tuple of dimensions. """
+        """:arg constructor: a constructor method that returns a module
+        :arg dimensions: tuple of dimensions. """
         self.dims = dimensions
         if name != None:
             self.name = name

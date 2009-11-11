@@ -329,7 +329,7 @@ class NetworkWrapper(object):
 
     """
     def __init__(self, network):
-        """ @param network: The network to be wrapped
+        """ :key network: The network to be wrapped
         """
         self.network = network
         self._output_connection = None
@@ -453,7 +453,8 @@ class NetworkWrapper(object):
         """ Injects a vector into the recurrent connection.
             This will be used in the evolino trainingsphase, where the target
             values need to be backprojected instead of the real output of the net.
-            @param injection: vector of length self.network.outdim
+            
+            :key injection: vector of length self.network.outdim
         """
         outlayer = self.getOutputLayer()
         outlayer.outputbuffer[self.network.time - 1][:] = injection

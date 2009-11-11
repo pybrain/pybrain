@@ -9,7 +9,7 @@ class ModuleSlice(Named):
     (i.e) do the slicing on the base module directly. """
     
     def __init__(self, base, inSliceFrom = 0, inSliceTo = None, outSliceFrom = 0, outSliceTo = None):
-        """ @param base: the base module that is sliced """
+        """ :key base: the base module that is sliced """
         if isinstance(base, ModuleSlice):
             # tolerantly handle the case of a slice of another slice
             self.base = base.base
