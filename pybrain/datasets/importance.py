@@ -24,7 +24,7 @@ class ImportanceDataSet(SequentialDataSet):
             :arg inp: the input of the sample
             :arg target: the target of the sample
             :key importance: the importance of the sample. If left None, the
-            importance will be set to 1.0 
+                 importance will be set to 1.0 
         """
         if importance == None:
             importance = ones(len(target))
