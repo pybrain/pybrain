@@ -20,7 +20,7 @@ class CCRLEnvironment(ODEEnvironment):
         self.addActuator(actuators.JointActuator())
             
         #set act- and obsLength, the min/max angles and the relative max touques of the joints  
-        self.actLen = self.getActionLength()
+        self.actLen = self.indim
         self.obsLen = len(self.getSensors())
         #ArmLeft, ArmRight, Hip, PevelLeft, PevelRight, TibiaLeft, TibiaRight, KneeLeft, KneeRight, FootLeft, FootRight
         self.tourqueList = array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 0.8, 0.8, 0.8, 0.5, 0.5, 0.1],)

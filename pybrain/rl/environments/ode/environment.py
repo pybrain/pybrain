@@ -369,7 +369,7 @@ class ODEEnvironment(GraphicalEnvironment):
         return num
 
     def getActionLength(self):
-        print "getActionLength() is depricated. use property 'indim' instead."
+        print "getActionLength() is deprecated. use property 'indim' instead."
         return self.indim
 
     @property
