@@ -65,7 +65,9 @@ Tutorials
    tutorial/datasets
    tutorial/optimization
    tutorial/reinforcement-learning
+   tutorial/extending-structure
    
+
 Advanced
 --------
 
