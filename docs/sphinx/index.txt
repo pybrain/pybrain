@@ -59,6 +59,7 @@ Tutorials
    tutorial/intro
    tutorial/netmodcon
    tutorial/fnn
+   tutorial/datasets
    tutorial/optimization
    tutorial/reinforcement-learning
    

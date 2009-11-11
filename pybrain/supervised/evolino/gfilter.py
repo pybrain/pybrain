@@ -30,10 +30,11 @@ class SimpleGenomeManipulation(Filter):
     def _manipulateGenome(self, genome, manfunc=None):
         """ Manipulates the genome inplace by calling the abstract _manipulateValue()
             method on each float found.
-            @param genome: Arbitrary netsted iterateable container whose leaf
+            
+            :key genome: Arbitrary netsted iterateable container whose leaf
                            elements may be floats or empty containers.
                            E.g. [ [1.] , [1. , 2. , 2 , [3. , 4.] ] , [] ]
-            @param manfunc: function that manipulates the found floats.
+            :key manfunc: function that manipulates the found floats.
                             If omitted, self._manipulateValue() is used.
                             See its documentation for the signature description.
         """
@@ -60,7 +61,7 @@ class SimpleMutation(SimpleGenomeManipulation):
         for mutation.
     """
     def __init__(self):
-        """ @param kwargs: See setArgs() method documentation
+        """ :key kwargs: See setArgs() method documentation
         """
         SimpleGenomeManipulation.__init__(self)
         self.mutationVariate = GaussianVariate()
@@ -70,14 +71,16 @@ class SimpleMutation(SimpleGenomeManipulation):
 
     def apply(self, population):
         """ Apply the mutation to the population
-            @param population: must implement the getIndividuals() method
+        
+            :key population: must implement the getIndividuals() method
         """
         for individual in population.getIndividuals():
             self._mutateIndividual(individual)
 
     def _mutateIndividual(self, individual):
         """ Mutate a single individual
-            @param individual: must implement the getGenome() method
+        
+            :key individual: must implement the getGenome() method
         """
         genome = individual.getGenome()
         self._manipulateGenome(genome)

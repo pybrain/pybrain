@@ -9,10 +9,11 @@ from pylab import clf, plot, axes, show, xlabel, ylabel, savefig, ioff, draw_if_
 class MultilinePlotter:
     """  Basic plotting class build on pylab   
   Implementing by instancing the class with the number of different plots to show.
-  Every plot has an id so adding data is done by addData(id, xValue, yValue) of the given data point   
-  @todo: Add possibility to stick markers to the plots
-  @todo: Some error checking and documentation
-  @todo: Derive from this to make classes for trn/tst data plotting with different linestyles
+  Every plot has an id so adding data is done by addData(id, xValue, yValue) of the given data point
+  
+  :todo: Add possibility to stick markers to the plots
+  :todo: Some error checking and documentation
+  :todo: Derive from this to make classes for trn/tst data plotting with different linestyles
   """
     
     # some nice color definitions for graphs (from colorbrewer.org)
@@ -28,10 +29,10 @@ class MultilinePlotter:
     
     def __init__(self, maxLines=1, autoscale=0.0, **kwargs):
         """
-    @param maxLines: Number of Plots to draw and so max ID.
-    @param autoscale: If set to a factor > 1, axes are automatically expanded whenever out-range data points are added
-    @var indexList: The x-component of the data points
-    @var DataList: The y-component of the data points"""
+    :key maxLines: Number of Plots to draw and so max ID.
+    :key autoscale: If set to a factor > 1, axes are automatically expanded whenever out-range data points are added
+    :var indexList: The x-component of the data points
+    :var DataList: The y-component of the data points"""
         self.indexList = []  
         self.dataList = []
         self.Lines = []
@@ -46,8 +47,9 @@ class MultilinePlotter:
         self.offset = 0              # external references to IDs are modified by this
         
     def setOffset(self, offs):
-        """ Set an offset that modifies all subsequent references to line IDs 
-    @param offs: The desired offset """
+        """ Set an offset that modifies all subsequent references to line IDs
+        
+    :key offs: The desired offset """
         self.offset = offs
         
     #def createFigure(self, size=[12,8], interactive=True):
@@ -58,7 +60,8 @@ class MultilinePlotter:
 
     def _checkMaxId(self, id):
         """ Appends additional lines as necessary
-    @param id: Lines up to this id are added automatically """
+        
+    :key id: Lines up to this id are added automatically """
         if id >= self.nbLines:
             for i in range(self.nbLines, id + 1):
                 # create a new line with corresponding x/y data, and attach it to the plot
@@ -71,10 +74,11 @@ class MultilinePlotter:
 
 
     def addData(self, id0, x, y):
-        """ The given data point or points is appended to the given line. 
-    @param id0: The plot ID (counted from 0) the data point(s) belong to.
-    @param x: The x-component of the data point(s)
-    @param y: The y-component of the data point(s)"""
+        """ The given data point or points is appended to the given line.
+        
+    :key id0: The plot ID (counted from 0) the data point(s) belong to.
+    :key x: The x-component of the data point(s)
+    :key y: The y-component of the data point(s)"""
         id = id0 + self.offset
         if not (isinstance(x, list) | isinstance(x, tuple)):
             self._checkMaxId(id)
@@ -88,9 +92,10 @@ class MultilinePlotter:
 
     def setData(self, id0, x, y):
         """ Data series id0 is replaced by the given lists
-    @param id0: The plot ID (counted from 0) the data point(s) belong to.
-    @param x: The x-component of the data points
-    @param y: The y-component of the data points"""
+        
+    :key id0: The plot ID (counted from 0) the data point(s) belong to.
+    :key x: The x-component of the data points
+    :key y: The y-component of the data points"""
         id = id0 + self.offset
         self._checkMaxId(id)
         self.indexList[id] = x
@@ -98,8 +103,9 @@ class MultilinePlotter:
         self.replot = True
         
     def saveData(self, filename):
-        """ Writes the data series for all points to a file 
-    @param filename: The name of the output file """
+        """ Writes the data series for all points to a file
+        
+    :key filename: The name of the output file """
         file = open(filename, "w")
         for i in range(self.nbLines):
             datLen = len(self.indexList[i])
@@ -120,8 +126,9 @@ class MultilinePlotter:
         self.Axes.legend(*args, **kwargs)
     
     def setLineStyle(self, id=None, **kwargs):
-        """ hand parameters to the specified line(s), and set them as default for new lines 
-    @param id: The line or lines (list!) to be modified - defaults to last one added """
+        """ hand parameters to the specified line(s), and set them as default for new lines
+        
+    :key id: The line or lines (list!) to be modified - defaults to last one added """
         if id is None: 
             id = self.currentID
             
@@ -174,11 +181,12 @@ class MultilinePlotter:
 
 
     def show(self, xLabel='', yLabel='', title='', popup=False, imgfile=None):
-        """ Plots the data internally and saves an image of it to the plotting directory. 
-    @param title: The title of the plot.
-    @param xLable: The label for the x-axis
-    @param yLable: The label for the y-axis
-    @param popup: also produce a popup window with the image?"""
+        """ Plots the data internally and saves an image of it to the plotting directory.
+        
+    :key title: The title of the plot.
+    :key xLable: The label for the x-axis
+    :key yLable: The label for the y-axis
+    :key popup: also produce a popup window with the image?"""
         clf()
         for i in range(self.nbLines):
             plot(self.indexList[i], self.dataList[i])

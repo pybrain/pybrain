@@ -20,16 +20,16 @@ def plotFitnessProgession(fitdict, batchsize=1, semilog=True,
                           resolution=1000):
     """ Plot multiple fitness curves on a single figure, with the following customizations:
     
-        @param fitdict: a dictionary mapping a name to a list of fitness-arrays 
-        @param batchsize: the number of evaluations between two points in fitness-arrays 
+        :arg fitdict: a dictionary mapping a name to a list of fitness-arrays 
+        :key batchsize: the number of evaluations between two points in fitness-arrays 
                           specific batch sizes can also be given given in fitdict
-        @param targetcutoff: this gives the cutoff point at the best fitness
-        @param averageOverEvaluations: averaging is done over fitnesses (for a given number of evaluations) 
+        :key targetcutoff: this gives the cutoff point at the best fitness
+        :key averageOverEvaluations: averaging is done over fitnesses (for a given number of evaluations) 
                                     or over evaluations required to reach a certain fitness.
-        @param resolution: resolution when averaging over evaluations
-        @param onlysuccessful: consider only successful runs
-        @param title: specify a title.
-        @param varyplotsymbols: used different line types for each curve.
+        :key resolution: resolution when averaging over evaluations
+        :key onlysuccessful: consider only successful runs
+        :key title: specify a title.
+        :key varyplotsymbols: used different line types for each curve.
         """
         
     def isSuccessful(l):

@@ -214,7 +214,7 @@ class CaptureGame(TwoPlayerGame):
     
     def randomBoard(self, nbmoves):
         """ produce a random, undecided and legal capture-game board, after at most nbmoves. 
-        @return: the number of moves actually done. """
+        :return: the number of moves actually done. """
         c = self.BLACK
         self.reset()
         for i in range(nbmoves):

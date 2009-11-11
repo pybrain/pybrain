@@ -21,15 +21,15 @@ class GridSearch2D:
         progress of the Gridsearch at several intermediate steps.
     """
     def __init__(self, min_params, max_params, n_steps=7, **kwargs):
-        """ @param min_params: Tuple of two elements specifying the minima
+        """ :key min_params: Tuple of two elements specifying the minima
                                of the two metaparameters
-            @param max_params: Tuple of two elements specifying the minima
+            :key max_params: Tuple of two elements specifying the minima
                                of the two metaparameters
-            @param max_param:  Tuple of two elements, specifying the number of
+            :key max_param:  Tuple of two elements, specifying the number of
                                steps between the minimum and maximum of each search
                                dimension. Alternative, specify a scalar to set
                                the same granularity for each dimension.
-            @param **kwargs:   See setArgs()
+            :key **kwargs:   See setArgs()
         """
         assert len(min_params) == len(max_params)
 
@@ -43,7 +43,7 @@ class GridSearch2D:
         self.setArgs(**kwargs)
 
     def setArgs(self, **kwargs):
-        """ @param **kwargs:
+        """ :key **kwargs:
                 verbosity : set verbosity
         """
         for key, value in kwargs.items():
@@ -174,7 +174,7 @@ class GridSearchDOE:
         self.setArgs(**kwargs)
 
     def setArgs(self, **kwargs):
-        """ @param **kwargs:
+        """ :key **kwargs:
                 verbosity : set verbosity
         """
         for key, value in kwargs.items():
@@ -213,8 +213,9 @@ class GridSearchDOE:
 
     def _calcGrid(self, center, level):
         """ Calculate the next grid to validate.
-            @param center: The central position of the grid
-            @param level:  The iteration number
+        
+            :arg center: The central position of the grid
+            :arg level:  The iteration number
         """
         local_range = self._range / (self._refine_factor ** level)
         scale = local_range / 2
@@ -258,9 +259,10 @@ class GridSearchCostGamma(GridSearch2D):
     """
     def __init__(self, trainer, dataset, min_params=[-5, -15], max_params=[15, 3], n_steps=7, **kwargs):
         """ The parameter boundaries are specified in log2-space.
-            @param trainer: The SVM trainer including the SVM module.
+        
+            :arg trainer: The SVM trainer including the SVM module.
                             (Could be any kind of trainer and module)
-            @param dataset: Dataset used for crossvalidation
+            :arg dataset: Dataset used for crossvalidation
         """
         GridSearch2D.__init__(self, min_params, max_params, n_steps)
         self._trainer = trainer
@@ -272,7 +274,7 @@ class GridSearchCostGamma(GridSearch2D):
 
 
     def setArgs(self, **kwargs):
-        """ @param **kwargs:
+        """ :key **kwargs:
                 nfolds    : Number of folds of crossvalidation
                 max_epochs: Maximum number of epochs for training
                 verbosity : set verbosity

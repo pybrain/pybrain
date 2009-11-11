@@ -11,9 +11,10 @@ def convertSequenceToTimeWindows(DSseq, NewClass, winsize):
     """ Converts a sequential classification dataset into time windows of fixed length. 
     Assumes the correct class is given at the last timestep of each sequence. Incomplete windows at the 
     sequence end are pruned. No overlap between windows.
-    @param DSseq: the sequential data set to cut up
-    @param winsize: size of the data window
-    @param NewClass: class of the windowed data set to be returned (gets initialised with indim*winsize, outdim)"""
+    
+    :arg DSseq: the sequential data set to cut up
+    :arg winsize: size of the data window
+    :arg NewClass: class of the windowed data set to be returned (gets initialised with indim*winsize, outdim)"""
     assert isinstance(DSseq, SequentialDataSet)
     #assert isinstance(DSwin, SupervisedDataSet)
     

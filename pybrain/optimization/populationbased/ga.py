@@ -78,8 +78,9 @@ class GA(ContinuousOptimizer, Evolution):
             return 0
         
     def select(self):
-        """ select some of the individuals of the population, taking into account their fitnesses 
-        @return: list of selected parents """
+        """ select some of the individuals of the population, taking into account their fitnesses
+        
+        :return: list of selected parents """
         if not self.tournament:
             tmp = zip(self.fitnesses, self.currentpop)
             tmp.sort(key = lambda x: x[0])            

@@ -51,9 +51,9 @@ class SwipingNetwork(FeedForwardNetwork):
         
     def _buildSwipingStructure(self, inmesh, hiddenmesh, outmesh):
         """
-        @param inmesh: a mesh of input units
-        @param hiddenmesh: a mesh of hidden units
-        @param outmesh: a mesh of output units
+        :key inmesh: a mesh of input units
+        :key hiddenmesh: a mesh of hidden units
+        :key outmesh: a mesh of output units
         """
         self._verifyDimensions(inmesh, hiddenmesh, outmesh)
         

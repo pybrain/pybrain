@@ -20,8 +20,8 @@ class UniformVariate:
 
 class CauchyVariate:
     def __init__(self, x0=0., alpha=1.):
-        """ @param x0: Median and mode of the Cauchy distribution
-            @param alpha: scale
+        """ :key x0: Median and mode of the Cauchy distribution
+            :key alpha: scale
         """
         self.x0 = x0
         self.alpha = alpha
@@ -36,8 +36,8 @@ class CauchyVariate:
 
 class GaussianVariate:
     def __init__(self, x0=0., alpha=1.):
-        """ @param x0: Mean
-            @param alpha: standard deviation
+        """ :key x0: Mean
+            :key alpha: standard deviation
         """
         self.x0 = x0
         self.alpha = alpha

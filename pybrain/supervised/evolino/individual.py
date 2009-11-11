@@ -12,7 +12,7 @@ class EvolinoIndividual(Individual):
         The genome of an individual encodes the RNN's connection weights.
     """
     def __init__(self, sub_individuals):
-        """ @param sub_individuals: sequence (e.g. list) of sub-individuals
+        """ :key sub_individuals: sequence (e.g. list) of sub-individuals
         """
         self._sub_individuals = list(sub_individuals)
 
@@ -36,7 +36,7 @@ class EvolinoSubIndividual(Individual):
     """
     _next_id = 0
     def __init__(self, genome):
-        """ @param genome: Any kind of nested iteratable container containing
+        """ :key genome: Any kind of nested iteratable container containing
                            floats as leafs
         """
         self.setGenome(genome)

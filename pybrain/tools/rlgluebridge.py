@@ -43,8 +43,8 @@ def adaptAgent(agent_klass):
     """Return a factory function that instantiates a pybrain agent and adapts
     it to the rlglue framework interface.
     
-    @type   agent_klass:    subclass of some pybrain agent
-    @param  agent_klass:    Some class that is to be adapted to the rlglue
+    :type   agent_klass:    subclass of some pybrain agent
+    :key  agent_klass:    Some class that is to be adapted to the rlglue
                             framework
     
     """
@@ -74,8 +74,8 @@ class RlglueAgentAdapter(object):
         Create an object that adapts an object of class klass to the
         protocol of rlglue agents.
         
-        @type   klass:    subclass of some pybrain agent
-        @param  klass:    Some class that is to be adapted to the rlglue
+        :type   klass:    subclass of some pybrain agent
+        :key  klass:    Some class that is to be adapted to the rlglue
                           framework
         """
         if not issubclass(klass, LearningAgent):
@@ -99,7 +99,7 @@ class RlglueAgentAdapter(object):
         The specification for the specifications can be found here:
         http://rlai.cs.ualberta.ca/RLBB/TaskSpecification.html
         
-        @type task_specification:   string
+        :type task_specification:   string
         """
         # This is (for now) actually a dummy method to satisfy the
         # RLGlue interface. It is the programmer's job to check wether an
@@ -110,7 +110,7 @@ class RlglueAgentAdapter(object):
         """
         Return an action depending on the first observation.
         
-        @type firstObservation:     Observation
+        :type firstObservation:     Observation
         """
         self._integrateObservation(firstObservation)
         return self._getAction()
@@ -119,8 +119,8 @@ class RlglueAgentAdapter(object):
         """
         Return an action depending on an observation and a reward.
         
-        @type reward:               number
-        @type firstObservation:     Observation
+        :type reward:               number
+        :type firstObservation:     Observation
         """
         self._giveReward(reward)
         self._integrateObservation(observation)
@@ -130,7 +130,7 @@ class RlglueAgentAdapter(object):
         """
         Give the last reward to the agent.
         
-        @type reward: number
+        :type reward: number
         """
         self._giveReward(reward)
         self.agent.newEpisode()
@@ -170,7 +170,7 @@ class RlglueAgentAdapter(object):
         Take an RLGlue observation and convert it into a numpy array to feed
         it into the pybrain agent.
         
-        @type observation:     Observation
+        :type observation:     Observation
         """
         observation = array(observation.doubleArray)
         self.agent.integrateObservation(observation)

@@ -37,7 +37,8 @@ class GradientDescent(object):
     def init(self, values):
         """ call this to initialize data structures *after* algorithm to use
         has been selected
-        @param values: the list (or array) of parameters to perform gradient descent on
+        
+        :arg values: the list (or array) of parameters to perform gradient descent on
                        (will be copied, original not modified)
         """
         assert isinstance(values, ndarray)

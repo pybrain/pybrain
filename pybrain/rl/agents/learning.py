@@ -11,8 +11,8 @@ class LearningAgent(LoggingAgent):
     
     def __init__(self, module, learner = None):
         """ 
-        @param module: the acting module
-        @param learner: the learner (optional) """
+        :key module: the acting module
+        :key learner: the learner (optional) """
         
         LoggingAgent.__init__(self, module.indim, module.outdim)
         

@@ -14,7 +14,7 @@ class XMLHandling:
     """
     
     def __init__(self, filename, newfile):
-        """ @param newfile: is the file to be read or is it a new file? """
+        """ :key newfile: is the file to be read or is it a new file? """
         self.filename = filename
         if not newfile:
             self.dom = parse(filename)
@@ -32,7 +32,7 @@ class XMLHandling:
             
     def readAttrDict(self, node, transform = None):    
         """ read a dictionnary of attributes 
-        @param transform: optionally function transforming the attribute values on reading """
+        :key transform: optionally function transforming the attribute values on reading """
         args = {}    
         for name, val in node.attributes.items():            
             name = str(name)
@@ -43,8 +43,9 @@ class XMLHandling:
         return args        
     
     def writeAttrDict(self, node, adict, transform = None):
-        """ read a dictionnary of attributes 
-        @param transform: optionally transform the attribute values on writing """
+        """ read a dictionnary of attributes
+        
+        :key transform: optionally transform the attribute values on writing """
         for name, val in adict.items():
             if val != None:
                 if transform != None:

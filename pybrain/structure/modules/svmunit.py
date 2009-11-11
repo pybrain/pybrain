@@ -16,8 +16,8 @@ class SVMUnit(object):
     def __init__(self, indim=0, outdim=0, model=None):
         """ Initializes as empty module. 
         
-        If `model`is given, initialize using this LIBSVM model instead. `indim`
-        and `outdim` are for compatibility only currently, and ignored."""
+        If `model` is given, initialize using this LIBSVM model instead. `indim`
+        and `outdim` are for compatibility only, and ignored."""
         self.reset()
         # set some dummy input/ouput dimensions - these become obsolete when 
         # the SVM is initialized
@@ -65,8 +65,9 @@ class SVMUnit(object):
     def activateOnDataset(self, dataset, values=False):
         """ Run the module's forward pass on the given dataset unconditionally
         and return the output as a list.
-        @param dataset: A non-sequential supervised data set. 
-        @param values: Passed trough to forwardPass() method."""
+
+        :arg dataset: A non-sequential supervised data set. 
+        :key values: Passed trough to forwardPass() method."""
         out = []
         inp = dataset['input']
         for i in range(inp.shape[0]):

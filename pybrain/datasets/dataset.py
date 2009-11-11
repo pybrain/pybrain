@@ -55,7 +55,8 @@ class DataSet(Serializable):
         
     def setVectorFormat(self, vf):
         """Determine which format to use for returning vectors. Use the property vectorformat.
-            @param type: possible types are '1d', '2d', 'list' 
+        
+            :key type: possible types are '1d', '2d', 'list' 
                   '1d' - example: array([1,2,3])
                   '2d' - example: array([[1,2,3]])
                 'list' - example: [1,2,3]
