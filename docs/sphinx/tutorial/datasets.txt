@@ -5,15 +5,172 @@ Using Datasets
 
 Datasets are useful for allowing comfortable access to training, test and 
 validation data. Instead of having to mangle with arrays, PyBrain gives you a
-much more sophisticated datastructure that allows easier work with your data.
+more sophisticated datastructure that allows easier work with your data.
 
-For the different tasks that arise in machine learning, there are of course 
-different datasets:
+For the different tasks that arise in machine learning, there is a special  
+dataset type, possibly with a few sub-types. The different types share some 
+common functionality, which we'll discuss first.
 
-* :ref:`superviseddataset`
-* :ref:`sequentialdataset`
-* :ref:`classificationdataset`
+A dataset can be seen as a collection of named 2d-arrays, called `fields` 
+in this context. For instance, if DS implements :class:`DataSet`::
 
-The different types share some common functionality.
+   inp = DS['input']
+   
+returns the input field. The last dimension of this field corresponds to 
+the input dimension, such that
+::
 
- 
+   inp[0,:]
+   
+would yield the first input vector. In most cases there is also a field named
+'target', which follows the same rules. 
+However, didn't we say we will spare you the array mangling? Well, in most cases you
+will want iterate over a dataset like so::
+
+  for inp, targ in DS:
+    ...
+    
+Note that whether you get one, two, or more sample rows as a return depends on the number
+of `linked fields` in the DataSet: These are fields containing the same number of 
+samples and assumed to be used together, like the above 'input' and 'target' fields. You
+can always check the DS.link property to see which fields are linked.
+
+Similarly, DataSets can be created by adding samples one-by-one -- the cleaner but slower 
+method -- or by assembling them from arrays.
+::
+
+  for inp, targ in samples:
+      DS.appendLinked(inp, targ)
+  # or alternatively, with  ia  and  ta  being arrays:
+  assert(ia.shape[0] == ta.shape[0])
+  DS.setField('input', ia)
+  DS.setField('target', ta)
+
+In the latter case DS cannot check the linked array dimensions for you, otherwise it would not be
+possible to build a dataset from scratch.
+
+You may add your own linked or unlinked data to the dataset. However, note that many training algorithms 
+iterate over the linked fields and may fail if their number has changed::
+
+  DS.addField('myfield')
+  DS.setField('myfield', myarray)
+  DS.linkFields('input','target','myfield') # must provide complete list here
+
+A useful utility method for quick generation of randomly picked training and testing data is also provided::
+
+    >>> len(DS)
+    100
+    >>> TrainDS, TestDS = DS.splitWithProportion(0.8)
+    >>> len(TrainDS), len(TestDS)
+    (80, 20)
+
+
+:ref:`superviseddataset`
+------------------------
+
+As the name says, this simplest form of a dataset is meant to be used with 
+supervised learning tasks. It is comprised of the fields 'input' and 'target', the pattern
+size of which must be set upon creation::
+
+    >>> from pybrain.datasets import SupervisedDataSet
+    >>> DS = SupervisedDataSet( 3, 2 )
+    >>> DS.appendLinked( [1,2,3], [4,5] )
+    >>> len(DS)
+    1
+    >>> DS['input']
+    array([[ 1.,  2.,  3.]])
+    
+
+:ref:`sequentialdataset`
+------------------------
+
+This dataset introduces the concept of ``sequences``. With this we are moving further away from the array 
+mangling towards something more practical for sequence learning tasks. Essentially, its patterns are subdivided into 
+sequences of variable length, that can be accessed via the methods
+::
+
+    getNumSequences()
+    getSequence(index)
+    getSequenceLength(index)
+
+Creating a :class:`Sequentialdataset` is no different from its parent, since it still contains only 'input' and 'target' fields.
+:class:`Sequentialdataset` inherits from :class:`SupervisedDataSet`, which can be seen as a special 
+case with a sequence length of 1 for all sequences.
+
+To fill the dataset with content, it is advisable to call :meth:`newSequence` at the start of each sequence to be 
+stored, and then add patterns by using :meth:`appendLinked` as above. This way, the class handles indexing and such
+transparently. One can theoretically construct a :class:`Sequentialdataset` directly from arrays, but messing with 
+the index field is not recommended.
+
+A typical way of iterating over a sequence dataset ``DS`` would be something like::
+   
+   for i in range(DS.getNumSequences):
+       for input, target in DS.getSequenceIterator(i):
+          # do stuff
+
+
+:ref:`classificationdataset`
+----------------------------
+
+The purpose of this dataset is to facilitate dealing with classification problems, whereas the above are more
+geared towards regression. Its 'target' field is defined as integer, and it contains an extra field called 'class' 
+which is basically an automated backup of the targets, for reasons that we be apparent shortly. For the most part,
+you don't have to bother with it. Initialization requires something like::
+
+    DS = ClassificationDataSet(inputdim, nb_classes=2, class_labels=['Fish','Chips'])
+
+The labels are optional, and mainly used for documentation. Target dimension is supposed to be 1. The targets 
+are class labels starting from zero. If for some reason you don't know beforehand how many you have, or you 
+fiddled around with the :meth:`setField` method, it is possible to regenerate the class information using 
+:meth:`assignClasses`, or :meth:`calculateStatistics`::
+
+    >>> DS = ClassificationDataSet(2, class_labels=['Urd', 'Verdandi', 'Skuld'])
+    >>> DS.appendLinked([ 0.1, 0.5 ]   , [0])
+    >>> DS.appendLinked([ 1.2, 1.2 ]   , [1])
+    >>> DS.appendLinked([ 1.4, 1.6 ]   , [1])
+    >>> DS.appendLinked([ 1.6, 1.8 ]   , [1])
+    >>> DS.appendLinked([ 0.10, 0.80 ] , [2])
+    >>> DS.appendLinked([ 0.20, 0.90 ] , [2])
+
+    >>> DS.calculateStatistics()
+    {0: 1, 1: 3, 2: 2}
+    >>> print DS.classHist
+    {0: 1, 1: 3, 2: 2}
+    >>> print DS.nClasses
+    3
+    >>> print DS.getClass(1)
+    Verdandi
+    >>> print DS.getField('target').transpose()
+    [[0 1 1 1 2 2]]
+
+When doing classification, many algorithms work better if classes are encoded into one output unit per class, 
+that takes on a certain value if the class is present. As an advanced feature, :class:`ClassificationDataSet`
+does this conversion automatically::
+
+    >>> DS._convertToOneOfMany(bounds=[0, 1])
+    >>> print DS.getField('target')
+    [[1 0 0]
+     [0 1 0]
+     [0 1 0]
+     [0 1 0]
+     [0 0 1]
+     [0 0 1]]
+    >>> print DS.getField('class').transpose()
+    [[0 1 1 1 2 2]]
+    >>> DS._convertToClassNb()
+    >>> print DS.getField('target').transpose()
+    [[0 1 1 1 2 2]]
+
+In case you want to do sequence classification, there is also a :class:`SequenceClassificationDataSet`, which combines
+the features of this class and the :class:`Sequentialdataset`.
+
+:ref:`importancedataset`
+------------------------
+
+This is another extension of :class:`Sequentialdataset` that allows assigning different weights to patterns. Essentially, 
+it works like its parent, except comprising another linked field named 'importance', which should contain a value between 
+0.0 and 1.0 for each pattern. A :class:`Sequentialdataset` is a special case with all weights equal to 1.0. 
+
+We have packed this functionality into a different class because it is rarely used and drains some computational resources.
+So far, there is no corresponding non-sequential dataset class.
+
