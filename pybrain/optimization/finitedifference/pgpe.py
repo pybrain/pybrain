@@ -9,12 +9,11 @@ from fd import FiniteDifferences
 class PGPE(FiniteDifferences):
     """ Policy Gradients with Parameter Exploration (ICANN 2008)."""
     
-    batchSize = 2
-    
+    batchSize = 2    
     #: Initial value of sigmas
     epsilon = 2.0
     #:lasso weight decay (0 to deactivate)
-    wDecay = 0.001
+    wDecay = 0.0
     #:exploration type
     exploration = "local"
     
