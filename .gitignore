@@ -3,6 +3,7 @@
 *.xml
 *.o
 *.so
+*.log
 .settings
 build
 dist
