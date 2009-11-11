@@ -7,14 +7,18 @@ from fd import FiniteDifferences
 
 
 class PGPE(FiniteDifferences):
-    """ Policy Gradients with Parameter Exploration"""
+    """ Policy Gradients with Parameter Exploration (ICANN 2008)."""
     
     batchSize = 2
-    epsilon = 2.0 #Initial value of sigmas (TODO: rename!)
-    wDecay = 0.001 #lasso weight decay (0 to deactivate)
+    
+    #: Initial value of sigmas
+    epsilon = 2.0
+    #:lasso weight decay (0 to deactivate)
+    wDecay = 0.001
+    #:exploration type
     exploration = "local"
     
-    # specific settings for sigma updates
+    #: specific settings for sigma updates
     sigmaLearningRate = None
     
     def _additionalInit(self):
@@ -28,7 +32,7 @@ class PGPE(FiniteDifferences):
         self.baseline = None
         
     def perturbation(self):
-        # generates a difference vector with the given standard deviations
+        """ Generate a difference vector with the given standard deviations """
         return random.normal(0., self.sigList)
             
     def _learnStep(self):

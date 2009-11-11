@@ -21,12 +21,10 @@ The two base classes
 General Black-box optimizers
 ----------------------------
 
-.. automodule:: pybrain.optimization.randomsearch
+.. automodule:: pybrain.optimization
 
 .. autoclass:: RandomSearch
    :members: 
-
-.. automodule:: pybrain.optimization.hillclimber
 
 .. autoclass:: HillClimber
    :members: 
@@ -38,12 +36,50 @@ General Black-box optimizers
 Continuous optimizers
 ---------------------
 
-.. automodule:: pybrain.optimization.neldermead
-
 .. autoclass:: NelderMead
    :members: 
 
-.. automodule:: pybrain.optimization.distributionbased.cmaes
-
 .. autoclass:: CMAES
-   :members: 
+   :members:
+   
+.. autoclass:: OriginalNES
+   :members:
+
+.. autoclass:: ExactNES
+   :members:
+   
+.. autoclass:: FEM
+   :members:
+   
+Finite difference methods
+^^^^^^^^^^^^^^^^^^^^^^^^^
+   
+.. autoclass:: FiniteDifferences
+   :members:   
+
+.. autoclass:: PGPE
+   :members:   
+   :show-inheritance:
+   
+.. autoclass:: SimpleSPSA
+   :members:   
+   :show-inheritance:
+
+Population-based
+^^^^^^^^^^^^^^^^
+
+.. autoclass:: ParticleSwarmOptimizer
+   :members:   
+
+.. autoclass:: GA
+   :members:   
+
+
+   
+Multi-objective Optimization
+----------------------------
+
+.. autoclass:: MultiObjectiveGA
+   :members:   
+   
+   

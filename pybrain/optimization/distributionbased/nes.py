@@ -1,15 +1,16 @@
 __author__ = 'Daan Wierstra, Tom Schaul and Sun Yi'
 
+
 from ves import VanillaGradientEvolutionStrategies
 from pybrain.utilities import triu2flat, blockCombine
 from scipy.linalg import inv, pinv2
 from scipy import outer, dot, multiply, zeros, diag, mat, sum
 
 
-
 class ExactNES(VanillaGradientEvolutionStrategies):
     """ A new version of NES, using the exact instead of the approximate
     Fisher Information Matrix, as well as a number of other improvements.
+    (GECCO 2009).
     """
     
     # 4 kinds of baselines can be used:
@@ -18,7 +19,7 @@ class ExactNES(VanillaGradientEvolutionStrategies):
     SPECIFICBASELINE = 2
     BLOCKBASELINE = 3
     
-    # the most robust one is also the default:
+    #: Type of baseline. The most robust one is also the default.
     baselineType = BLOCKBASELINE
     
     learningRate = 1.
@@ -107,8 +108,7 @@ class ExactNES(VanillaGradientEvolutionStrategies):
 
 
 class OriginalNES(VanillaGradientEvolutionStrategies):    
-    """ In the same framework, the formulation of the original NES algorithm (CEC-2008) 
-    is now much simpler too. """
+    """ Reference implementation of the original Natural Evolution Strategies algorithm (CEC-2008). """
 
     learningRate = 1.
 
@@ -137,5 +137,3 @@ class OriginalNES(VanillaGradientEvolutionStrategies):
             res[i] = triu2flat(R)
         return res
     
-    
-

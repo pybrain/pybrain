@@ -1,5 +1,5 @@
 :mod:`actionvalues` -- RL Components: ActionValues
-================================================
+====================================================
 
 .. automodule:: pybrain.rl.learners.valuebased.interface
 

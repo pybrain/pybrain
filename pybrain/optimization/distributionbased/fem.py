@@ -13,7 +13,7 @@ from pybrain.optimization.distributionbased.distributionbased import Distributio
 
 
 class FEM(DistributionBasedOptimizer):
-    """ Fitness Expectation-Maximization 
+    """ Fitness Expectation-Maximization (PPSN 2008).
     """
     
     # fundamental parameters

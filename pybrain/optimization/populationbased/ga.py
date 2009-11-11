@@ -8,18 +8,20 @@ from pybrain.optimization.optimizer import ContinuousOptimizer
 
 
 class GA(ContinuousOptimizer, Evolution):
-    """ Genetic algorithm """
+    """ Standard Genetic Algorithm. """
     
-    # selection schemes
+    #: selection scheme
     tournament = False
     tournamentSize = 2
     
+    #: selection proportion
     topProportion = 0.2
     
     elitism = False
     eliteProportion = 0.5
     _eliteSize = None # override with an exact number
     
+    #: mutation probability
     mutationProb = 0.1
     mutationStdDev = 0.5
     initRangeScaling = 10.

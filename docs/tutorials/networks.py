@@ -113,12 +113,8 @@ print n2.activate([1, 2]),
 print n2.activate([1, 2])
 
 """ This is already a good coverage of the basics, but if you're an advanced user
-and would like to know more about the possibilities of nesting networks within
+you might want to find out about the possibilities of nesting networks within
 others, using weight-sharing, and more exotic types of networks, connections 
-and modules, then please read on.
-
- 
-To be continued... 
-... until then, you can read the comments in the source files of the pybrain/structure/ folder.
+and modules... but that goes beyond the scope of this tutorial.
 """
 

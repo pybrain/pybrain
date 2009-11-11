@@ -12,7 +12,7 @@ Getting into the development cycle
 ----------------------------------
 
 
-PyBrain uses `git <http://git-scm.com/>`_ as its source control managment 
+PyBrain uses `git <http://git-scm.com/>`_ as its source control management 
 system. The project is hosted at `github <http://github.com/pybrain/pybrain>`_,
 a social development portal. 
 
@@ -38,7 +38,7 @@ via the github web interface. We will then try to incorporate your changes.
 
 In some cases, you may already have a clone of the pybrain repository without a
 github account. In that case, fork the pybrain project as above on the github 
-wegpage. Now go into your old clone and use::
+webpage. Now go into your old clone and use::
 
     $ git remote add <your-username> <your-private-clone-url>
 
@@ -78,7 +78,7 @@ The PyBrain project follows the `Python style guide
 <http://www.python.org/dev/peps/pep-0008>`_. Other than most Python projects, 
 we follow the "camelCase" way of naming classes and methods. Furthermore, every
 module should have a ``__author__`` variable at the top. It should include the
-authors' names and email adresses.
+authors' names and email addresses.
 
 
 Writing tests

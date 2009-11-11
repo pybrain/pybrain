@@ -18,15 +18,9 @@ Abstract classes
 .. autoclass:: ExploringLearner
    :show-inheritance:
 
-.. autoclass:: OntogeneticLearner
-   :show-inheritance:
-
 .. automodule:: pybrain.rl.learners.directsearch.directsearch
 
 .. autoclass:: DirectSearchLearner
-   :show-inheritance:
-
-.. autoclass:: PhylogeneticLearner
    :show-inheritance:
 
 
