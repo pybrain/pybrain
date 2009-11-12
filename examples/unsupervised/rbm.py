@@ -1,10 +1,6 @@
-#! /usr/bin/env python2.5
-# -*- coding: utf-8 -*-
-
-# Miniscule restricted boltzmann machine usage example 
+""" Miniscule restricted Boltzmann machine usage example """ 
 
 __author__ = 'Justin S Bayer, bayer.justin@googlemail.com'
-__version__ = '$Id$'
 
 
 from pybrain.structure.networks.rbm import Rbm
