@@ -5,7 +5,7 @@ from pybrain.structure.moduleslice import ModuleSlice
 
 
 class Connection(Named):
-    """ a connection links 2 modules, more precisely: the output of the first module
+    """ A connection links 2 modules, more precisely: the output of the first module
     to the input of the second. It can potentially transform the information on the way. 
     It also transmits errors backwards between the same modules. """
     
@@ -15,7 +15,7 @@ class Connection(Named):
     
     def __init__(self, inmod, outmod, name = None,
                  inSliceFrom = 0, inSliceTo = None, outSliceFrom = 0, outSliceTo = None):
-        """ every connection requires an input and an output module. Optionally, it is possible to define slices on the buffers.
+        """ Every connection requires an input and an output module. Optionally, it is possible to define slices on the buffers.
         
             :arg inmod: input module
             :arg outmod: output module

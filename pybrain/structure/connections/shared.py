@@ -26,8 +26,9 @@ class MotherConnection(ParameterContainer):
 
 class SharedConnection(Connection):
     """A shared connection can link different couples of modules, with a single
-    set of parameters."""
+    set of parameters (encapsulated in a MotherConnection)."""
     
+    #: pointer to MotherConnection
     mother = None
     
     def __init__(self, mother, *args, **kwargs):

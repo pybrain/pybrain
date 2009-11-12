@@ -100,15 +100,16 @@ Remembering Neural Networks 101, we can implement the derivative as such::
 
 
 Further readings: Layers can be used in numerous different ways. The interested
-reader is referred to the source code of the :class:`LSTMLayer` and the mailing
+reader is referred to the source code of the :class:`~pybrain.structure.modules.LSTMLayer` and the mailing
 list for further help.
 
 
 Connections
 -----------
 
-Connections work similar to Layers in many ways. The key difference is that they
-process data they do not "own", meaning that their primary task is to shift data
+A :class:`~pybrain.structure.connections.connection.Connection` works similarly to a Layer in many ways. 
+The key difference is that a Connection
+processes data it does not "own", meaning that their primary task is to shift data
 from one node of the network graph to another. 
 
 The API is similar to that of Layers, having :meth:`_forwardImplementation`
@@ -145,7 +146,7 @@ another. They do not transform it in any way.
             inerr += outerr
 
 The constructor basically does two things. First, it calls the constructor of
-the superclass in order to perfrom any bookkeeping. After that, it asserts that
+the superclass in order to perform any bookkeeping. After that, it asserts that
 the incoming and the outgoing module (the modules that are connected by the
 connection) are actually compatible, which means that the input dimension of the
 outgoing module equals the output dimension of the incoming module.
@@ -205,7 +206,7 @@ amount of parameters the FullConnection needs, which is the product of the
 incoming modules size and the outgoing modules size.
 
 Due this, the constructor of ParameterContainer gives the object two fields:
-:attr:`params` and :attr:`derivs` which are two arrays of size *N*. This is used
+:attr:`params` and :attr:`derivs` which are two arrays of size *N*. These are used
 to hold parameters and possibly derivatives.
 
 In the case of backpropagation, learning happens during calls to 

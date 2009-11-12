@@ -21,6 +21,9 @@ In case this does not suffice, we also have an API reference, the
 :ref:`modindex`. Most of the packages and modules of PyBrain are auto-documented
 there.
 
+If you want to develop for PyBrain and contribute, check out our guidelines in
+our wiki: http://wiki.github.com/pybrain/pybrain/guidelines.
+
 If at any point the documentation does not suffice, you can always get help at
 the pybrain Google Group at http://groups.google.com/group/pybrain.
 
@@ -47,7 +50,7 @@ Quickstart
 
     quickstart/network
     quickstart/dataset
-    quickstart/training    
+    quickstart/training
 
 
 Tutorials
@@ -62,7 +65,9 @@ Tutorials
    tutorial/datasets
    tutorial/optimization
    tutorial/reinforcement-learning
+   tutorial/extending-structure
    
+
 Advanced
 --------
 

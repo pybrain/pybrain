@@ -51,9 +51,71 @@
   <div class="section" id="module-pybrain.structure.connections">
 <h1><tt class="xref docutils literal"><span class="pre">connections</span></tt> &#8211; Structural Components: Connections<a class="headerlink" href="#module-pybrain.structure.connections" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
+<dt id="pybrain.structure.connections.connection.Connection">
+<em class="property">class </em><tt class="descclassname">pybrain.structure.connections.connection.</tt><tt class="descname">Connection</tt><big>(</big><em>inmod</em>, <em>outmod</em>, <em>name=None</em>, <em>inSliceFrom=0</em>, <em>inSliceTo=None</em>, <em>outSliceFrom=0</em>, <em>outSliceTo=None</em><big>)</big><a class="headerlink" href="#pybrain.structure.connections.connection.Connection" title="Permalink to this definition">¶</a></dt>
+<dd><p>A connection links 2 modules, more precisely: the output of the first module
+to the input of the second. It can potentially transform the information on the way. 
+It also transmits errors backwards between the same modules.</p>
+<dl class="method">
+<dt id="pybrain.structure.connections.connection.Connection.__init__">
+<tt class="descname">__init__</tt><big>(</big><em>inmod</em>, <em>outmod</em>, <em>name=None</em>, <em>inSliceFrom=0</em>, <em>inSliceTo=None</em>, <em>outSliceFrom=0</em>, <em>outSliceTo=None</em><big>)</big><a class="headerlink" href="#pybrain.structure.connections.connection.Connection.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Every connection requires an input and an output module. Optionally, it is possible to define slices on the buffers.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><em>inmod</em> &#8211; input module</li>
+<li><em>outmod</em> &#8211; output module</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name" colspan="2">Key inslicefrom:</th></tr>
+<tr><td>&nbsp;</td><td class="field-body"><p class="first">starting index on the buffer of inmod (default = 0)</p>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Key insliceto:</th><td class="field-body"><p class="first">ending index on the buffer of inmod (default = last)</p>
+</td>
+</tr>
+<tr class="field"><th class="field-name" colspan="2">Key outslicefrom:</th></tr>
+<tr><td>&nbsp;</td><td class="field-body"><p class="first">starting index on the buffer of outmod (default = 0)</p>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Key outsliceto:</th><td class="field-body"><p class="first last">ending index on the buffer of outmod (default = last)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pybrain.structure.connections.connection.Connection.forward">
+<tt class="descname">forward</tt><big>(</big><em>inmodOffset=0</em>, <em>outmodOffset=0</em><big>)</big><a class="headerlink" href="#pybrain.structure.connections.connection.Connection.forward" title="Permalink to this definition">¶</a></dt>
+<dd><p>Propagate the information from the incoming module&#8217;s output buffer, 
+adding it to the outgoing node&#8217;s input buffer, and possibly transforming
+it on the way.</p>
+<p>For this transformation use inmodOffset as an offset for the inmod and
+outmodOffset as an offset for the outmodules offset.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pybrain.structure.connections.connection.Connection.backward">
+<tt class="descname">backward</tt><big>(</big><em>inmodOffset=0</em>, <em>outmodOffset=0</em><big>)</big><a class="headerlink" href="#pybrain.structure.connections.connection.Connection.backward" title="Permalink to this definition">¶</a></dt>
+<dd><p>Propagate the error found at the outgoing module, adding it to the 
+incoming module&#8217;s output-error buffer and doing the inverse 
+transformation of forward propagation.</p>
+<p>For this transformation use inmodOffset as an offset for the inmod and
+outmodOffset as an offset for the outmodules offset.</p>
+<p>If appropriate, also compute the parameter derivatives.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
 <dt id="pybrain.structure.connections.FullConnection">
 <em class="property">class </em><tt class="descclassname">pybrain.structure.connections.</tt><tt class="descname">FullConnection</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#pybrain.structure.connections.FullConnection" title="Permalink to this definition">¶</a></dt>
-<dd><p>Connection which fully connects every element from the first module&#8217;s 
+<dd><p>Bases: <a title="pybrain.structure.connections.connection.Connection" class="reference internal" href="#pybrain.structure.connections.connection.Connection"><tt class="xref docutils literal"><span class="pre">pybrain.structure.connections.connection.Connection</span></tt></a>, <tt class="xref docutils literal"><span class="pre">pybrain.structure.parametercontainer.ParameterContainer</span></tt></p>
+<p>Connection which fully connects every element from the first module&#8217;s 
 output buffer to the second module&#8217;s input buffer in a matrix multiplicative
 manner.</p>
 <dl class="method">
@@ -67,25 +129,38 @@ the output module&#8217;s input buffer for the given weight.</dd></dl>
 <dl class="class">
 <dt id="pybrain.structure.connections.IdentityConnection">
 <em class="property">class </em><tt class="descclassname">pybrain.structure.connections.</tt><tt class="descname">IdentityConnection</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#pybrain.structure.connections.IdentityConnection" title="Permalink to this definition">¶</a></dt>
-<dd>Connection which connects the i&#8217;th element from the first module&#8217;s output
-buffer to the i&#8217;th element of the second module&#8217;s input buffer.</dd></dl>
-
-<dl class="class">
-<dt id="pybrain.structure.connections.SharedConnection">
-<em class="property">class </em><tt class="descclassname">pybrain.structure.connections.</tt><tt class="descname">SharedConnection</tt><big>(</big><em>mother</em>, <em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#pybrain.structure.connections.SharedConnection" title="Permalink to this definition">¶</a></dt>
-<dd>A shared connection can link different couples of modules, with a single
-set of parameters.</dd></dl>
-
-<dl class="class">
-<dt id="pybrain.structure.connections.SharedFullConnection">
-<em class="property">class </em><tt class="descclassname">pybrain.structure.connections.</tt><tt class="descname">SharedFullConnection</tt><big>(</big><em>mother</em>, <em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#pybrain.structure.connections.SharedFullConnection" title="Permalink to this definition">¶</a></dt>
-<dd>Shared version of FullConnection.</dd></dl>
+<dd><p>Bases: <a title="pybrain.structure.connections.connection.Connection" class="reference internal" href="#pybrain.structure.connections.connection.Connection"><tt class="xref docutils literal"><span class="pre">pybrain.structure.connections.connection.Connection</span></tt></a></p>
+<p>Connection which connects the i&#8217;th element from the first module&#8217;s output
+buffer to the i&#8217;th element of the second module&#8217;s input buffer.</p>
+</dd></dl>
 
 <dl class="class">
 <dt id="pybrain.structure.connections.MotherConnection">
 <em class="property">class </em><tt class="descclassname">pybrain.structure.connections.</tt><tt class="descname">MotherConnection</tt><big>(</big><em>nbparams</em>, <em>**args</em><big>)</big><a class="headerlink" href="#pybrain.structure.connections.MotherConnection" title="Permalink to this definition">¶</a></dt>
-<dd>The container for the shared parameters of connections (just a container
-with a constructor, actually).</dd></dl>
+<dd><p>Bases: <tt class="xref docutils literal"><span class="pre">pybrain.structure.parametercontainer.ParameterContainer</span></tt></p>
+<p>The container for the shared parameters of connections (just a container
+with a constructor, actually).</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="pybrain.structure.connections.SharedConnection">
+<em class="property">class </em><tt class="descclassname">pybrain.structure.connections.</tt><tt class="descname">SharedConnection</tt><big>(</big><em>mother</em>, <em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#pybrain.structure.connections.SharedConnection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a title="pybrain.structure.connections.connection.Connection" class="reference internal" href="#pybrain.structure.connections.connection.Connection"><tt class="xref docutils literal"><span class="pre">pybrain.structure.connections.connection.Connection</span></tt></a></p>
+<p>A shared connection can link different couples of modules, with a single
+set of parameters (encapsulated in a MotherConnection).</p>
+<dl class="attribute">
+<dt id="pybrain.structure.connections.SharedConnection.mother">
+<tt class="descname">mother</tt><a class="headerlink" href="#pybrain.structure.connections.SharedConnection.mother" title="Permalink to this definition">¶</a></dt>
+<dd>pointer to MotherConnection</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pybrain.structure.connections.SharedFullConnection">
+<em class="property">class </em><tt class="descclassname">pybrain.structure.connections.</tt><tt class="descname">SharedFullConnection</tt><big>(</big><em>mother</em>, <em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#pybrain.structure.connections.SharedFullConnection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref docutils literal"><span class="pre">pybrain.structure.connections.shared.SharedConnection</span></tt>, <tt class="xref docutils literal"><span class="pre">pybrain.structure.connections.full.FullConnection</span></tt></p>
+<p>Shared version of FullConnection.</p>
+</dd></dl>
 
 </div>
 
@@ -146,7 +221,7 @@ with a constructor, actually).</dd></dl>
     </div>
     <div class="footer">
       &copy; Copyright 2009, CogBotLab &amp; Idsia.
-      Last updated on Nov 11, 2009.
+      Last updated on Nov 12, 2009.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.3.
     </div>
   </body>

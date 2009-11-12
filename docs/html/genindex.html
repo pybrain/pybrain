@@ -58,6 +58,8 @@
     <dt><a href="api/datasets/superviseddataset.html#pybrain.datasets.supervised.SupervisedDataSet.__init__">(pybrain.datasets.supervised.SupervisedDataSet method)</a></dt>
     <dt><a href="api/optimization/optimization.html#pybrain.optimization.optimizer.BlackBoxOptimizer.__init__">(pybrain.optimization.optimizer.BlackBoxOptimizer method)</a></dt>
     <dt><a href="api/optimization/optimization.html#pybrain.optimization.optimizer.ContinuousOptimizer.__init__">(pybrain.optimization.optimizer.ContinuousOptimizer method)</a></dt>
+    <dt><a href="api/structure/connections.html#pybrain.structure.connections.connection.Connection.__init__">(pybrain.structure.connections.connection.Connection method)</a></dt>
+    <dt><a href="api/structure/modules.html#pybrain.structure.modules.LSTMLayer.__init__">(pybrain.structure.modules.LSTMLayer method)</a></dt>
     <dt><a href="api/structure/modules.html#pybrain.structure.modules.LinearLayer.__init__">(pybrain.structure.modules.LinearLayer method)</a></dt>
     <dt><a href="api/structure/modules.html#pybrain.structure.modules.SigmoidLayer.__init__">(pybrain.structure.modules.SigmoidLayer method)</a></dt>
     <dt><a href="api/structure/modules.html#pybrain.structure.modules.SoftmaxLayer.__init__">(pybrain.structure.modules.SoftmaxLayer method)</a></dt>
@@ -119,6 +121,7 @@
 <dl>
 
 <dt><a href="api/supervised/trainers.html#pybrain.supervised.trainers.BackpropTrainer">BackpropTrainer (class in pybrain.supervised.trainers)</a></dt>
+<dt><a href="api/structure/connections.html#pybrain.structure.connections.connection.Connection.backward">backward() (pybrain.structure.connections.connection.Connection method)</a></dt>
 <dt><a href="api/optimization/optimization.html#pybrain.optimization.ExactNES.baselineType">baselineType (pybrain.optimization.ExactNES attribute)</a></dt>
 <dt><a href="api/datasets/superviseddataset.html#pybrain.datasets.supervised.SupervisedDataSet.batches">batches() (pybrain.datasets.supervised.SupervisedDataSet method)</a></dt>
 <dt><a href="api/rl/learners.html#pybrain.rl.learners.valuebased.valuebased.ValueBasedLearner.batchMode">batchMode (pybrain.rl.learners.valuebased.valuebased.ValueBasedLearner attribute)</a></dt>
@@ -145,7 +148,8 @@
   </dl></dd>
 <dt><a href="api/datasets/superviseddataset.html#pybrain.datasets.supervised.SupervisedDataSet.clear">clear() (pybrain.datasets.supervised.SupervisedDataSet method)</a></dt>
 <dt><a href="api/optimization/optimization.html#pybrain.optimization.CMAES">CMAES (class in pybrain.optimization)</a></dt>
-<dt><a href="api/rl/experiments.html#pybrain.rl.experiments.ContinuousExperiment">ContinuousExperiment (class in pybrain.rl.experiments)</a></dt></dl></td><td width="33%" valign="top"><dl>
+<dt><a href="api/structure/connections.html#pybrain.structure.connections.connection.Connection">Connection (class in pybrain.structure.connections.connection)</a></dt></dl></td><td width="33%" valign="top"><dl>
+<dt><a href="api/rl/experiments.html#pybrain.rl.experiments.ContinuousExperiment">ContinuousExperiment (class in pybrain.rl.experiments)</a></dt>
 <dt><a href="api/optimization/optimization.html#pybrain.optimization.optimizer.ContinuousOptimizer">ContinuousOptimizer (class in pybrain.optimization.optimizer)</a></dt>
 <dt><a href="api/tools.html#pybrain.tools.datasettools.convertSequenceToTimeWindows">convertSequenceToTimeWindows() (in module pybrain.tools.datasettools)</a></dt>
 <dt><a href="api/datasets/superviseddataset.html#pybrain.datasets.supervised.SupervisedDataSet.copy">copy() (pybrain.datasets.supervised.SupervisedDataSet method)</a></dt>
@@ -204,8 +208,9 @@
 <dt><a href="api/rl/tasks.html#pybrain.rl.environments.episodic.EpisodicTask.f">f() (pybrain.rl.environments.episodic.EpisodicTask method)</a></dt>
 <dt><a href="api/structure/networks.html#pybrain.structure.networks.FeedForwardNetwork">FeedForwardNetwork (class in pybrain.structure.networks)</a></dt>
 <dt><a href="api/optimization/optimization.html#pybrain.optimization.FEM">FEM (class in pybrain.optimization)</a></dt>
-<dt><a href="api/optimization/optimization.html#pybrain.optimization.FiniteDifferences">FiniteDifferences (class in pybrain.optimization)</a></dt></dl></td><td width="33%" valign="top"><dl>
-<dt><a href="api/utilities.html#pybrain.utilities.flat2triu">flat2triu() (in module pybrain.utilities)</a></dt>
+<dt><a href="api/optimization/optimization.html#pybrain.optimization.FiniteDifferences">FiniteDifferences (class in pybrain.optimization)</a></dt>
+<dt><a href="api/utilities.html#pybrain.utilities.flat2triu">flat2triu() (in module pybrain.utilities)</a></dt></dl></td><td width="33%" valign="top"><dl>
+<dt><a href="api/structure/connections.html#pybrain.structure.connections.connection.Connection.forward">forward() (pybrain.structure.connections.connection.Connection method)</a></dt>
 <dt><a href="api/supervised/svm.html#pybrain.structure.modules.svmunit.SVMUnit.forwardPass">forwardPass() (pybrain.structure.modules.svmunit.SVMUnit method)</a></dt>
 <dt><a href="api/structure/connections.html#pybrain.structure.connections.FullConnection">FullConnection (class in pybrain.structure.connections)</a></dt>
 </dl></td></tr></table>
@@ -311,6 +316,7 @@
 <dt><a href="api/optimization/optimization.html#pybrain.optimization.optimizer.BlackBoxOptimizer.minimize">minimize (pybrain.optimization.optimizer.BlackBoxOptimizer attribute)</a></dt>
 <dt><a href="api/rl/learners.html#pybrain.rl.learners.valuebased.valuebased.ValueBasedLearner.module">module (pybrain.rl.learners.valuebased.valuebased.ValueBasedLearner attribute)</a></dt>
 <dt><a href="api/tools.html#pybrain.tools.validation.ModuleValidator">ModuleValidator (class in pybrain.tools.validation)</a></dt>
+<dt><a href="api/structure/connections.html#pybrain.structure.connections.SharedConnection.mother">mother (pybrain.structure.connections.SharedConnection attribute)</a></dt>
 <dt><a href="api/structure/connections.html#pybrain.structure.connections.MotherConnection">MotherConnection (class in pybrain.structure.connections)</a></dt>
 <dt><a href="api/tools.html#pybrain.tools.validation.ModuleValidator.MSE">MSE() (pybrain.tools.validation.ModuleValidator class method)</a></dt>
   <dd><dl>
@@ -390,8 +396,8 @@
 <dt><a href="api/rl/explorers.html#module-pybrain.rl.explorers.continuous">pybrain.rl.explorers.continuous (module)</a></dt>
 <dt><a href="api/rl/explorers.html#module-pybrain.rl.explorers.continuous.sde">pybrain.rl.explorers.continuous.sde (module)</a></dt>
 <dt><a href="api/rl/explorers.html#module-pybrain.rl.explorers.discrete">pybrain.rl.explorers.discrete (module)</a></dt>
-<dt><a href="api/rl/explorers.html#module-pybrain.rl.explorers.discrete.discrete">pybrain.rl.explorers.discrete.discrete (module)</a></dt></dl></td><td width="33%" valign="top"><dl>
-<dt><a href="api/rl/explorers.html#module-pybrain.rl.explorers.explorer">pybrain.rl.explorers.explorer (module)</a></dt>
+<dt><a href="api/rl/explorers.html#module-pybrain.rl.explorers.discrete.discrete">pybrain.rl.explorers.discrete.discrete (module)</a></dt>
+<dt><a href="api/rl/explorers.html#module-pybrain.rl.explorers.explorer">pybrain.rl.explorers.explorer (module)</a></dt></dl></td><td width="33%" valign="top"><dl>
 <dt><a href="api/rl/learners.html#module-pybrain.rl.learners.directsearch.directsearch">pybrain.rl.learners.directsearch.directsearch (module)</a></dt>
 <dt><a href="api/rl/learners.html#module-pybrain.rl.learners.directsearch.enac">pybrain.rl.learners.directsearch.enac (module)</a></dt>
 <dt><a href="api/rl/learners.html#module-pybrain.rl.learners.directsearch.policygradient">pybrain.rl.learners.directsearch.policygradient (module)</a></dt>
@@ -401,6 +407,7 @@
 <dt><a href="api/rl/actionvalues.html#module-pybrain.rl.learners.valuebased.interface">pybrain.rl.learners.valuebased.interface (module)</a></dt>
 <dt><a href="api/rl/learners.html#module-pybrain.rl.learners.valuebased.valuebased">pybrain.rl.learners.valuebased.valuebased (module)</a></dt>
 <dt><a href="api/structure/connections.html#module-pybrain.structure.connections">pybrain.structure.connections (module)</a></dt>
+<dt><a href="api/structure/connections.html#module-pybrain.structure.connections.connection">pybrain.structure.connections.connection (module)</a></dt>
 <dt><a href="api/structure/evolvables.html#module-pybrain.structure.evolvables.evolvable">pybrain.structure.evolvables.evolvable (module)</a></dt>
 <dt><a href="api/structure/modules.html#module-pybrain.structure.modules">pybrain.structure.modules (module)</a></dt>
 <dt><a href="api/supervised/svm.html#module-pybrain.structure.modules.svmunit">pybrain.structure.modules.svmunit (module)</a></dt>
@@ -605,7 +612,7 @@
     </div>
     <div class="footer">
       &copy; Copyright 2009, CogBotLab &amp; Idsia.
-      Last updated on Nov 11, 2009.
+      Last updated on Nov 12, 2009.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.3.
     </div>
   </body>
