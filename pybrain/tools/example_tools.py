@@ -17,9 +17,10 @@ class ExTools():
     rl = []
     rll = []
 
-    def __init__(self, batch = 2, prnts = 1):
+    def __init__(self, batch = 2, prnts = 1, kind = "optimizer"):
         self.batch = batch
         self.prnts = prnts
+        self.kind = kind
 
     # Method for loading a weight matrix and initialize the network
     def loadWeights(self, filename):
@@ -43,14 +44,23 @@ class ExTools():
         filepointer.close()
 
     def printResults(self,resList, runs, updates):
-        rLen = len(resList)
-        avReward = array(resList).sum()/rLen
-        print "Parameters: ", self.agent.learner._bestFound()
-        print "Step: ", runs, "/", (updates+1)*self.batch*self.prnts,
-        print "Best: ", self.agent.learner.bestEvaluation, 
-        print "Base: ", avReward
-        print 
-        self.rl.append(avReward)
+        if self.kind == "optimizer":
+            rLen = len(resList)
+            avReward = array(resList).sum()/rLen
+            print "Parameters: ", self.agent.learner._bestFound()
+            print "Step: ", runs, "/", (updates+1)*self.batch*self.prnts,
+            print "Best: ", self.agent.learner.bestEvaluation, 
+            print "Base: ", avReward
+            print 
+            self.rl.append(avReward)
+        else:
+            avReward = resList
+            #print "Parameters: ", self.agent.learner._bestFound()
+            print "Step: ", runs, "/", (updates+1)*self.batch*self.prnts,
+            #print "Best: ", self.agent.learner.bestEvaluation, 
+            print "Base: ", avReward
+            #print 
+            self.rl.append(avReward)
 
     def addExps(self):
         self.rll.append(self.rl)
