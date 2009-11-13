@@ -10,15 +10,20 @@ class PGPE(FiniteDifferences):
     """ Policy Gradients with Parameter Exploration (ICANN 2008)."""
     
     batchSize = 2    
+    #:exploration type
+    exploration = "local"
+    #: specific settings for sigma updates
+    learningRate = 0.2    
+    #: specific settings for sigma updates
+    sigmaLearningRate = 0.1
     #: Initial value of sigmas
     epsilon = 2.0
     #:lasso weight decay (0 to deactivate)
     wDecay = 0.0
-    #:exploration type
-    exploration = "local"
-    
-    #: specific settings for sigma updates
-    sigmaLearningRate = None
+    #:momentum term (0 to deactivate)
+    momentum = 0.0
+    #:rprop decent (False to deactivate)
+    rprop = False
     
     def _additionalInit(self):
         if self.sigmaLearningRate is None:
@@ -77,5 +82,3 @@ class PGPE(FiniteDifferences):
                 raise NotImplementedError()
             else:
                 raise NotImplementedError(str(self.exploration) + " not a known exploration parameter setting.")
-            
-        
