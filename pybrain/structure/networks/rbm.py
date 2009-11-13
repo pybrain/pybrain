@@ -34,8 +34,8 @@ class Rbm(object):
         self.net.sortModules()
         self.bias = [i for i in self.net.modules if isinstance(i, BiasUnit)][0]
         self.biascon = self.net.connections[self.bias][0]
-        self.visible, self.hidden = \
-            [i for i in self.net.modules if not isinstance(i, BiasUnit)]
+        self.visible = net['visible']
+        self.hidden = ['hidden']
         self.con = self.net.connections[self.visible][0]
     
     @classmethod
