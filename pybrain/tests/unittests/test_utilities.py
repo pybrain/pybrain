@@ -1,19 +1,4 @@
-"""
-    
-    >>> from pybrain.utilities import threaded
-    >>> import threading
-    
-    >>> result = None
-    >>> def callback(c):
-    ...   global result
-    ...   result = c
-    >>> @threaded(callback)
-    ... def threadname():
-    ...   return threading.currentThread().getName()
-    >>> threadname()
-    >>> result != threading.currentThread().getName()
-    True
-    
+"""    
     >>> from pybrain.utilities import memoize
     >>> call_count = 0
     >>> @memoize

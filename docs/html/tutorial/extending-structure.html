@@ -1,0 +1,365 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Extending PyBrain’s structure &mdash; PyBrain v0.3 documentation</title>
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.3',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="PyBrain v0.3 documentation" href="../index.html" />
+    <link rel="next" title="Fast networks for PyBrain" href="../advanced/fast-pybrain.html" />
+    <link rel="prev" title="Reinforcement Learning" href="reinforcement-learning.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="../advanced/fast-pybrain.html" title="Fast networks for PyBrain"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="reinforcement-learning.html" title="Reinforcement Learning"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">PyBrain v0.3 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="extending-pybrain-s-structure">
+<h1>Extending PyBrain&#8217;s structure<a class="headerlink" href="#extending-pybrain-s-structure" title="Permalink to this headline">¶</a></h1>
+<p>In <a class="reference external" href="netmodcon.html#netmodcon"><em>Building Networks with Modules and Connections</em></a> we have learned that networks can be constructed as a
+directed acyclic graph, with <tt class="xref docutils literal"><span class="pre">Module</span></tt> instances taking the role of
+nodes and <tt class="xref docutils literal"><span class="pre">Connection</span></tt> instances being the edges between those nodes.</p>
+<p>In this tutorial, we will show how to implement new structural types, so we
+can use them in networks.</p>
+<div class="section" id="layers">
+<h2>Layers<a class="headerlink" href="#layers" title="Permalink to this headline">¶</a></h2>
+<p>We will now show how to implement new types of layers, which are a very simple
+form of a module. They can be used to implement transfer functions, resulting
+in special layers such as the <tt class="xref docutils literal"><span class="pre">SigmoidLayer</span></tt>.</p>
+<p>The <tt class="xref docutils literal"><span class="pre">NeuronLayer</span></tt> class serves as a base class for all types of layers.
+Let&#8217;s have a look at how a very basic layer, the <tt class="xref docutils literal"><span class="pre">LinearLayer</span></tt> looks like
+and implement a specific new type afterwards:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">from</span> <span class="nn">neuronlayer</span> <span class="k">import</span> <span class="n">NeuronLayer</span>
+
+
+<span class="k">class</span> <span class="nc">LinearLayer</span><span class="p">(</span><span class="n">NeuronLayer</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; The simplest kind of module, not doing any transformation. &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">_forwardImplementation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inbuf</span><span class="p">,</span> <span class="n">outbuf</span><span class="p">):</span>
+        <span class="n">outbuf</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">inbuf</span>
+
+    <span class="k">def</span> <span class="nf">_backwardImplementation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outerr</span><span class="p">,</span> <span class="n">inerr</span><span class="p">,</span> <span class="n">outbuf</span><span class="p">,</span> <span class="n">inbuf</span><span class="p">):</span>
+        <span class="n">inerr</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">outerr</span>
+</pre></div>
+</div>
+<p>As we can see, Layer class relies on two methods:
+<tt class="xref docutils literal"><span class="pre">_forwardImplementation()</span></tt> and <tt class="xref docutils literal"><span class="pre">_backwardImplementation()</span></tt>.
+(Note the leading underscores which are a Python convention to indicate
+pseudo-private methods.)</p>
+<p>The first method takes two arguments, <tt class="docutils literal"><span class="pre">inbuf</span></tt> and <tt class="docutils literal"><span class="pre">outbuf</span></tt>. Both are Scipy
+arrays of the size of the layer&#8217;s input and output dimension respectively. The
+arrays have already been created for us. The pybrain structure framework now
+expects us to produce an output from the input and put it into <tt class="docutils literal"><span class="pre">outbuf</span></tt> in
+place.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Manipulating an array in place with SciPy works via the <tt class="docutils literal"><span class="pre">[:]</span></tt>
+operator. Given an array <tt class="docutils literal"><span class="pre">a</span></tt>, the line <tt class="docutils literal"><span class="pre">a[:]</span> <span class="pre">=</span> <span class="pre">b</span></tt> will overwrite
+<tt class="docutils literal"><span class="pre">a</span></tt>&#8216;s memory with the contents of <tt class="docutils literal"><span class="pre">b</span></tt>.</p>
+</div>
+<p>The second method is used to calculate the derivative of the output error with
+respect to the input. From standard texts on neural networks, we know that the
+error of a unit (which is a field in a layer in our case) can be calculated
+as the derivative of the unit&#8217;s transfer function&#8217;s applied to the units input
+multiplied with the error. In the case of the identity, the derivative is a
+constant 1 and thus backpropagating the error is nothing but just copying it.</p>
+<p>Thus, any <tt class="xref docutils literal"><span class="pre">_backwardImplementation()</span></tt> implementation must fill <tt class="docutils literal"><span class="pre">inerror</span></tt>
+correctly.</p>
+<div class="section" id="an-example-quadratic-polynomial-as-transfer-function">
+<h3>An example: quadratic polynomial as transfer function<a class="headerlink" href="#an-example-quadratic-polynomial-as-transfer-function" title="Permalink to this headline">¶</a></h3>
+<p>For the sake of simplicity, let&#8217;s implement a layer that uses <img class="math" src="../_images/math/0dda5d9cc1f37a095f591d50370589b47e20111c.png" alt="f(x) = x^2"/>
+as a transfer function. The derivative is then given by <img class="math" src="../_images/math/eb2acfb40e59ad63c373e5fb92d05072836ea7e6.png" alt="f'(x) = 2x"/>.</p>
+<p>Let&#8217;s start out with the pure skeleton of the class:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">from</span> <span class="nn">pybrain.structure.modules.neuronlayer</span> <span class="k">import</span> <span class="n">NeuronLayer</span>
+
+<span class="k">class</span> <span class="nc">QuadraticPolynomialLayer</span><span class="p">(</span><span class="n">NeuronLayer</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">_forwardImplementation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inbuf</span><span class="p">,</span> <span class="n">outbuf</span><span class="p">):</span>
+      <span class="k">pass</span>
+
+    <span class="k">def</span> <span class="nf">_backwardImplementation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outerr</span><span class="p">,</span> <span class="n">inerr</span><span class="p">,</span> <span class="n">outbuf</span><span class="p">,</span> <span class="n">inbuf</span><span class="p">):</span>
+      <span class="k">pass</span>
+</pre></div>
+</div>
+<p>The current methods don&#8217;t do anything, so let&#8217;s implement one after the other.</p>
+<p>Using SciPy, we can use most of Python&#8217;s arithmetic syntax directly on the array
+and it is applied component wise to it. Thus, to get the square of an array
+<tt class="docutils literal"><span class="pre">a</span></tt> we can just call <tt class="docutils literal"><span class="pre">a**2</span></tt>. Thus:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">_forwardImplementation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inbuf</span><span class="p">,</span> <span class="n">outbuf</span><span class="p">):</span>
+  <span class="n">outbuf</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">inbuf</span><span class="o">**</span><span class="mf">2</span>
+</pre></div>
+</div>
+<p>Remembering Neural Networks 101, we can implement the derivative as such:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">_backwardImplementation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outerr</span><span class="p">,</span> <span class="n">inerr</span><span class="p">,</span> <span class="n">outbuf</span><span class="p">,</span> <span class="n">inbuf</span><span class="p">):</span>
+  <span class="n">inerr</span><span class="p">[:]</span> <span class="o">=</span> <span class="mf">2</span> <span class="o">*</span> <span class="n">inbuf</span> <span class="o">*</span> <span class="n">outerr</span>
+</pre></div>
+</div>
+<p>Further readings: Layers can be used in numerous different ways. The interested
+reader is referred to the source code of the <a title="pybrain.structure.modules.LSTMLayer" class="reference external" href="../api/structure/modules.html#pybrain.structure.modules.LSTMLayer"><tt class="xref docutils literal"><span class="pre">LSTMLayer</span></tt></a> and the mailing
+list for further help.</p>
+</div>
+</div>
+<div class="section" id="connections">
+<h2>Connections<a class="headerlink" href="#connections" title="Permalink to this headline">¶</a></h2>
+<p>A <a title="pybrain.structure.connections.connection.Connection" class="reference external" href="../api/structure/connections.html#pybrain.structure.connections.connection.Connection"><tt class="xref docutils literal"><span class="pre">Connection</span></tt></a> works similarly to a Layer in many ways.
+The key difference is that a Connection
+processes data it does not &#8220;own&#8221;, meaning that their primary task is to shift data
+from one node of the network graph to another.</p>
+<p>The API is similar to that of Layers, having <tt class="xref docutils literal"><span class="pre">_forwardImplementation()</span></tt>
+and <tt class="xref docutils literal"><span class="pre">_backwardImplementation()</span></tt> methods. However, sanity checks are
+performed in the constructors mostly to assure that the modules connected
+can actually be connected.</p>
+<p>As an example, we will now have a look at the <tt class="xref docutils literal"><span class="pre">IdentityConnection</span></tt> and
+afterwards implement a trivial example.</p>
+<p>IdentityConnections are just pushing the output of one module into the input of
+another. They do not transform it in any way.</p>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17</pre></td><td class="code"><div class="highlight"><pre> <span class="k">from</span> <span class="nn">connection</span> <span class="k">import</span> <span class="n">Connection</span>
+
+ <span class="k">class</span> <span class="nc">IdentityConnection</span><span class="p">(</span><span class="n">Connection</span><span class="p">):</span>
+     <span class="sd">&quot;&quot;&quot;Connection which connects the i&#39;th element from the first module&#39;s output</span>
+<span class="sd">     buffer to the i&#39;th element of the second module&#39;s input buffer.&quot;&quot;&quot;</span>
+
+     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+         <span class="n">Connection</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+         <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">indim</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">outdim</span><span class="p">,</span> \
+                <span class="s">&quot;Indim (</span><span class="si">%i</span><span class="s">) does not equal outdim (</span><span class="si">%i</span><span class="s">)&quot;</span> <span class="o">%</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">indim</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">outdim</span><span class="p">)</span>
+
+     <span class="k">def</span> <span class="nf">_forwardImplementation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inbuf</span><span class="p">,</span> <span class="n">outbuf</span><span class="p">):</span>
+         <span class="n">outbuf</span> <span class="o">+=</span> <span class="n">inbuf</span>
+
+     <span class="k">def</span> <span class="nf">_backwardImplementation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outerr</span><span class="p">,</span> <span class="n">inerr</span><span class="p">,</span> <span class="n">inbuf</span><span class="p">):</span>
+         <span class="n">inerr</span> <span class="o">+=</span> <span class="n">outerr</span>
+</pre></div>
+</td></tr></table></div>
+<p>The constructor basically does two things. First, it calls the constructor of
+the superclass in order to perform any bookkeeping. After that, it asserts that
+the incoming and the outgoing module (the modules that are connected by the
+connection) are actually compatible, which means that the input dimension of the
+outgoing module equals the output dimension of the incoming module.</p>
+<p>The <tt class="xref docutils literal"><span class="pre">_forwardImplementation()</span></tt> is called with the output buffer of the
+incoming module, depicted as <tt class="docutils literal"><span class="pre">inbuf</span></tt>, and the input buffer of the outgoing
+module, called <tt class="docutils literal"><span class="pre">outbuf</span></tt>. You can think of the two as a source and a sink.
+Mind that in line #14, we actually do not overwrite the buffer but instead
+perform an addition. This is because there might be other modules connected to
+the outgoing module. The buffers will be overwritten with by the
+<tt class="xref docutils literal"><span class="pre">Network</span></tt> instance containing the modules and connections.</p>
+<p>The <tt class="xref docutils literal"><span class="pre">_backwardImplementation()</span></tt> works similarly. However, connections do
+also get the <tt class="docutils literal"><span class="pre">inbuf</span></tt> buffer since in some cases (like <tt class="xref docutils literal"><span class="pre">FullConnection</span></tt>
+instances) it is necessary to calculate derivatives in order to adapt
+parameters.</p>
+</div>
+<div class="section" id="parametercontainers">
+<h2>ParameterContainers<a class="headerlink" href="#parametercontainers" title="Permalink to this headline">¶</a></h2>
+<p>In all neural networks, you want adaptable parameters that can be trained by an
+external learning algorithm. Structure that holds those parameters are realized
+via subclassing <tt class="xref docutils literal"><span class="pre">ParameterContainer</span></tt>. Due to Python&#8217;s ability of multiple
+inheritance, you can just add this to the list of your subclasses. We will now
+look at this with the <tt class="xref docutils literal"><span class="pre">FullConnection</span></tt> as an example. The linear
+connection is a connection which connects two layers and processes
+the data by multiplication with a weight matrix. This kind of connection is the
+most common in neural networks.</p>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18</pre></td><td class="code"><div class="highlight"><pre><span class="k">from</span> <span class="nn">scipy</span> <span class="k">import</span> <span class="n">reshape</span><span class="p">,</span> <span class="n">dot</span><span class="p">,</span> <span class="n">outer</span>
+
+<span class="k">from</span> <span class="nn">connection</span> <span class="k">import</span> <span class="n">Connection</span>
+<span class="k">from</span> <span class="nn">pybrain.structure.parametercontainer</span> <span class="k">import</span> <span class="n">ParameterContainer</span>
+
+
+<span class="k">class</span> <span class="nc">FullConnection</span><span class="p">(</span><span class="n">Connection</span><span class="p">,</span> <span class="n">ParameterContainer</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">Connection</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">ParameterContainer</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">indim</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">outdim</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_forwardImplementation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inbuf</span><span class="p">,</span> <span class="n">outbuf</span><span class="p">):</span>
+        <span class="n">outbuf</span> <span class="o">+=</span> <span class="n">dot</span><span class="p">(</span><span class="n">reshape</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">,</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">outdim</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">indim</span><span class="p">)),</span> <span class="n">inbuf</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_backwardImplementation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outerr</span><span class="p">,</span> <span class="n">inerr</span><span class="p">,</span> <span class="n">inbuf</span><span class="p">):</span>
+        <span class="n">inerr</span> <span class="o">+=</span> <span class="n">dot</span><span class="p">(</span><span class="n">reshape</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">,</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">outdim</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">indim</span><span class="p">))</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">outerr</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">derivs</span> <span class="o">+=</span> <span class="n">outer</span><span class="p">(</span><span class="n">inbuf</span><span class="p">,</span> <span class="n">outerr</span><span class="p">)</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+</pre></div>
+</td></tr></table></div>
+<p>In line 10 and 11 we can see how the superclasses&#8217; constructors are called.
+<tt class="xref docutils literal"><span class="pre">ParameterContainer</span></tt> expects an integer argument <em>N</em>, which depicts the
+amount of parameters the FullConnection needs, which is the product of the
+incoming modules size and the outgoing modules size.</p>
+<p>Due this, the constructor of ParameterContainer gives the object two fields:
+<tt class="xref docutils literal"><span class="pre">params</span></tt> and <tt class="xref docutils literal"><span class="pre">derivs</span></tt> which are two arrays of size <em>N</em>. These are used
+to hold parameters and possibly derivatives.</p>
+<p>In the case of backpropagation, learning happens during calls to
+<tt class="xref docutils literal"><span class="pre">_backwardImplementation()</span></tt>. In line 18, we can see how the field
+<tt class="xref docutils literal"><span class="pre">derivs</span></tt> is modified.</p>
+</div>
+<div class="section" id="checking-for-correctness">
+<h2>Checking for correctness<a class="headerlink" href="#checking-for-correctness" title="Permalink to this headline">¶</a></h2>
+<p>Remembering Neural Networks 102, we know that we can check the gradients of our
+neural network implementation numerically. PyBrain already comes with a function
+that does exactly that, <tt class="xref docutils literal"><span class="pre">gradientCheck()</span></tt>. You can pass it any network
+containing a structural component you programed and it will check whether the
+numerical gradients are (roughly) equal to the gradient given by the
+<tt class="xref docutils literal"><span class="pre">_backwardImplementation()</span></tt> methods.</p>
+<p>So let&#8217;s check our new QuadraticPolynomialLayer.</p>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><pre>1
+2
+3
+4
+5
+6</pre></td><td class="code"><div class="highlight"><pre><span class="k">from</span> <span class="nn">pybrain.tools.shortcuts</span> <span class="k">import</span> <span class="n">buildNetwork</span>
+<span class="k">from</span> <span class="nn">pybrain.tests.helpers</span> <span class="k">import</span> <span class="n">gradientCheck</span>
+
+<span class="n">n</span> <span class="o">=</span> <span class="n">buildNetwork</span><span class="p">(</span><span class="mf">2</span><span class="p">,</span> <span class="mf">3</span><span class="p">,</span> <span class="mf">1</span><span class="p">,</span> <span class="n">hiddenclass</span><span class="o">=</span><span class="n">QuadraticPolynomialLayer</span><span class="p">)</span>
+<span class="n">n</span><span class="o">.</span><span class="n">randomize</span><span class="p">()</span>
+<span class="n">gradientCheck</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+</pre></div>
+</td></tr></table></div>
+<p>First we do the necessary imports in line 1 and 2. Then we build a network with
+our special class in line 4. To initialize the weights of the network, we
+randomize its parameters in line 5 and call our gradient check in line 6. If we
+have done everything right, we will be rewarded with the output
+<tt class="docutils literal"><span class="pre">Perfect</span> <span class="pre">gradient</span></tt>.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/pybrain_logo.gif" alt="Logo"/>
+            </a></p>
+            <h3><a href="../index.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="">Extending PyBrain&#8217;s structure</a><ul>
+<li><a class="reference external" href="#layers">Layers</a><ul>
+<li><a class="reference external" href="#an-example-quadratic-polynomial-as-transfer-function">An example: quadratic polynomial as transfer function</a></li>
+</ul>
+</li>
+<li><a class="reference external" href="#connections">Connections</a></li>
+<li><a class="reference external" href="#parametercontainers">ParameterContainers</a></li>
+<li><a class="reference external" href="#checking-for-correctness">Checking for correctness</a></li>
+</ul>
+</li>
+</ul>
+
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="reinforcement-learning.html"
+                                  title="previous chapter">Reinforcement Learning</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="../advanced/fast-pybrain.html"
+                                  title="next chapter">Fast networks for PyBrain</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../_sources/tutorial/extending-structure.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../advanced/fast-pybrain.html" title="Fast networks for PyBrain"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="reinforcement-learning.html" title="Reinforcement Learning"
+             >previous</a> |</li>
+        <li><a href="../index.html">PyBrain v0.3 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; Copyright 2009, CogBotLab &amp; Idsia.
+      Last updated on Nov 12, 2009.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.3.
+    </div>
+  </body>
+</html>

@@ -1,12 +1,16 @@
 __author__ = 'Tom Schaul, tom@idsia.ch'
 
+import profile
+import pstats
+import tempfile
+
 from scipy import randn, zeros
-import profile, pstats
     
 from pybrain.structure.networks.network import Network
 from pybrain.datasets import SequentialDataSet, SupervisedDataSet
 from pybrain.supervised import BackpropTrainer
 from pybrain.tools.xml import NetworkWriter, NetworkReader
+
 
 
 def epsilonCheck(x, epsilon=1e-6):
@@ -68,45 +72,59 @@ def gradientCheck(module, tolerance=0.0001, dataset=None):
         return False
     
     
-def xmlInvariance(n, forwardpasses=1):
+def netCompare(net1, net2, forwardpasses=1, verbose=False):
+    identical = True
+    if str(net2) == str(net1):
+        if verbose:
+            print 'Same representation'
+    else:
+        identical = False
+        if verbose:
+            print net2
+            print "-" * 80
+            print net1
+        
+    outN = zeros(net2.outdim)
+    outEnd = zeros(net1.outdim)
+    net2.reset()
+    net1.reset()
+    for dummy in range(forwardpasses):
+        inp = randn(net2.indim)
+        outN += net2.activate(inp)
+        outEnd += net1.activate(inp)
+        
+    if sum(map(abs, outN - outEnd)) < 1e-9:
+        if verbose:
+            print 'Same function'
+    else:
+        identical = False
+        if verbose:
+            print outN
+            print outEnd
+
+    if net2.__class__ == net1.__class__:
+        if verbose:
+            print 'Same class'
+    else:        
+        identical = False
+        if verbose:
+            print net2.__class__
+            print net1.__class__
+
+    return False
+
+
+def xmlInvariance(n, forwardpasses = 1):
     """ try writing a network to an xml file, reading it, rewrite it, reread it, and compare
     if the result looks the same (compare string representation, and forward processing 
     of some random inputs) """
-    import os.path
-    f = 'temp/xmlInvarianceTest.xml'
-    if os.path.split(os.path.abspath(os.path.curdir))[1] == 'unittests':        
-        f = '../' + f
+    tmpfile = tempfile.NamedTemporaryFile()
+    f = tmpfile.name
     NetworkWriter.writeToFile(n, f)
     tmpnet = NetworkReader.readFrom(f)
     NetworkWriter.writeToFile(tmpnet, f)
     endnet = NetworkReader.readFrom(f)
-    if str(n) == str(endnet):
-        print 'Same representation'
-    else:
-        print n
-        print "-" * 80
-        print endnet
-        
-    outN = zeros(n.outdim)
-    outEnd = zeros(endnet.outdim)
-    n.reset()
-    endnet.reset()
-    for dummy in range(forwardpasses):
-        inp = randn(n.indim)
-        outN += n.activate(inp)
-        outEnd += endnet.activate(inp)
-        
-    if sum(map(abs, outN - outEnd)) < 1e-9:
-        print 'Same function'
-    else:
-        print outN
-        print outEnd
-
-    if n.__class__ == endnet.__class__:
-        print 'Same class'
-    else:        
-        print n.__class__
-        print endnet.__class__
+    netCompare(tmpnet, endnet, forwardpasses, True)
 
 
 def sortedProfiling(code, maxfunctions=50):
@@ -117,4 +135,3 @@ def sortedProfiling(code, maxfunctions=50):
     profile.run(code, f)
     p = pstats.Stats(f)
     p.sort_stats('time').print_stats(maxfunctions)
-
