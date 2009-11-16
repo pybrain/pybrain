@@ -8,15 +8,13 @@ from cartpole import CartPoleEnvironment
 
 
 class BalanceTask(EpisodicTask):
-    """ The task of balancing some pole(s) on a cart """
-    
-    desiredValue = 0
-    
-    def __init__(self, env=None, maxsteps=1000):
+    """ The task of balancing some pole(s) on a cart """   
+    def __init__(self, env=None, maxsteps=1000, desiredValue = 0):
         """
         :key env: (optional) an instance of a CartPoleEnvironment (or a subclass thereof)
         :key maxsteps: maximal number of steps (default: 1000) 
         """
+        self.desiredValue = desiredValue
         if env == None:
             env = CartPoleEnvironment()
         EpisodicTask.__init__(self, env) 
