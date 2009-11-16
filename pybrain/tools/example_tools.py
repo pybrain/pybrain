@@ -47,10 +47,11 @@ class ExTools():
         if self.kind == "optimizer":
             rLen = len(resList)
             avReward = array(resList).sum()/rLen
-            print "Parameters: ", self.agent.learner._bestFound()
-            print "Step: ", runs, "/", (updates+1)*self.batch*self.prnts,
-            print "Best: ", self.agent.learner.bestEvaluation, 
-            print "Base: ", avReward
+            print "Parameters:", self.agent.learner._bestFound()
+            print "Experiment:", runs, 
+            print " Evaluation:", (updates+1)*self.batch*self.prnts,
+            print " BestReward:", self.agent.learner.bestEvaluation, 
+            print " AverageReward:", avReward
             print 
             self.rl.append(avReward)
         else:
