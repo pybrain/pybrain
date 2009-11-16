@@ -15,7 +15,7 @@ from pybrain.rl.experiments import EpisodicExperiment
 from scipy import mean
 import sys
 
-episodes = 100
+episodes = 1
 epilen = 200
 
 if len(sys.argv) < 5:
@@ -29,21 +29,27 @@ env.delay = (episodes == 1)
 
 # create task
 task = BalanceTask(env, epilen)
+
 # create controller network
 net = buildNetwork(4, 1, bias=False)
-# set parameters from command line
-# create agent
+
+# create agent and set parameters from command line
 agent = LearningAgent(net, None)
 agent.module._setParameters([float(sys.argv[1]), float(sys.argv[2]), float(sys.argv[3]), float(sys.argv[4])]) 
-agent.disableLearning()
+agent.learning = False
+
 # create experiment
 experiment = EpisodicExperiment(task, agent)
 experiment.doEpisodes(episodes)
+
+# run environment
 ret = []
 for n in range(agent.history.getNumSequences()):
     returns = agent.history.getSequence(n)
     reward = returns[2]
     ret.append( sum(reward, 0).item() )
+
+# print results
 print ret, "mean:",mean(ret)
 env.getRenderer().stop()
 
