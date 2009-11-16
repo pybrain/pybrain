@@ -1,0 +1,44 @@
+#########################################################################
+# Reinforcement Learning with PGPE on the CartPoleEnvironment 
+#
+# Requirements: pylab (for plotting only). If not available, comment the
+# 9 lines total marked as "for plotting"
+# Author: Frank Sehnke, sehnke@in.tum.de
+#########################################################################
+
+from pybrain.tools.example_tools import ExTools
+from pybrain.tools.shortcuts import buildNetwork
+from pybrain.rl.environments.cartpole import CartPoleEnvironment, BalanceTask
+from pybrain.rl.agents import OptimizationAgent
+from pybrain.optimization import PGPE
+from pybrain.optimization import ExactNES
+from pybrain.optimization import FEM
+from pybrain.optimization import CMAES
+
+from pybrain.rl.experiments import EpisodicExperiment
+
+batch=2
+prnts=100
+epis=4000/batch/prnts
+numbExp=40
+et = ExTools(batch, prnts)
+expList = ["PGPE(storeAllEvaluations = True)", "ExactNES(storeAllEvaluations = True)", "FEM(storeAllEvaluations = True)", "CMAES(storeAllEvaluations = True)"]
+for e in expList:
+  for runs in range(numbExp):
+    env = CartPoleEnvironment()    
+    # create task
+    task = BalanceTask(env, 200, desiredValue=None)
+    # create controller network
+    net = buildNetwork(4, 1, bias=False)
+    # create agent with controller and learner (and its options)
+    agent = OptimizationAgent(net, eval(e))
+    et.agent = agent
+    experiment = EpisodicExperiment(task, agent)
+
+    for updates in range(epis):
+        for i in range(prnts):
+            experiment.doEpisodes(batch)
+        et.printResults((agent.learner._allEvaluations)[-50:-1], runs, updates)
+    et.addExps()
+  et.nextExps()
+et.showExps()
