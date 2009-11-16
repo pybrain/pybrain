@@ -26,7 +26,7 @@
 #
 # Author: Frank Sehnke, sehnke@in.tum.de
 #########################################################################
-
+from pybrain.tools.example_tools import ExTools
 from pybrain.rl.environments.ode import JohnnieEnvironment
 from pybrain.rl.environments.ode.tasks import StandingTask
 from pybrain.structure.modules.tanhlayer import TanhLayer
@@ -34,26 +34,14 @@ from pybrain.tools.shortcuts import buildNetwork
 from pybrain.rl.agents import OptimizationAgent
 from pybrain.optimization import PGPE
 from pybrain.rl.experiments import EpisodicExperiment
-from cPickle import load, dump
-
-# Method for loading a weight matrix and initialize the network
-def loadWeights(filename):
-    filepointer = file(filename)
-    original = load(filepointer)
-    filepointer.close()
-    return original
-
-# Method for saving the weight matrix    
-def saveWeights(filename, w):
-    filepointer = file(filename, 'w+')
-    dump(w, filepointer)
-    filepointer.close()
 
 hiddenUnits = 4
-loadNet = False
-saveNet = False
-saveName = "stand.wgt"
-numbExp = 1 #number of experiments
+batch=2
+prnts=1
+epis=4000/batch/prnts
+numbExp=10
+et = ExTools(batch, prnts)
+
 for runs in range(numbExp):
     # create environment
     #Options: Bool(OpenGL), Bool(Realtime simu. while client is connected), ServerIP(default:localhost), Port(default:21560)
@@ -63,34 +51,14 @@ for runs in range(numbExp):
     # create controller network
     net = buildNetwork(len(task.getObservation()), hiddenUnits, env.actLen, outclass=TanhLayer)    
     # create agent with controller and learner (and its options)
-    agent = OptimizationAgent(net, PGPE(learningRate = 0.2,
-                                        sigmaLearningRate = 0.1,
-                                        momentum = 0.0,
-                                        epsilon = 2.0,
-                                        #rprop = True,
-                                        ))
-    
-    #Loading weights
-    if loadNet:
-        agent.learner.current = loadWeights("stand.wgt")
-        agent.learner.gd.init(agent.learner.current)
-        agent.learner.epsilon = 0.2
-        agent.learner.initSigmas()
-
-    batch = 2 #number of samples per gradient estimate
-    #create experiment
+    agent = OptimizationAgent(net, PGPE(storeAllEvaluations = True))
+    et.agent = agent
     experiment = EpisodicExperiment(task, agent)
-    prnts = 1 #frequency of console output
-    epis = 5000000 / batch / prnts
-    
-    #actual roll outs
+
     for updates in range(epis):
         for i in range(prnts):
-            experiment.doEpisodes(batch) #execute batch episodes
-        #print out related data
-        print "Step: ", runs, "/", (updates + 1) * batch * prnts, "Best: ", agent.learner.bestEvaluation,
-        print "Base: ", agent.learner.baseline, "Reward: ", agent.learner.mreward 
-        #Saving weights
-        if saveNet:
-            if updates / 100 == float(updates) / 100.0: saveWeights(saveName, agent.learner.current)  
-
+            experiment.doEpisodes(batch)
+        print "Epsilon   : ", agent.learner.sigList
+        et.printResults((agent.learner._allEvaluations)[-50:-1], runs, updates)
+    et.addExps()
+et.showExps()
