@@ -8,12 +8,7 @@
 __author__ = "Martin Felder, Frank Sehnke"
 __version__ = '$Id$' 
 
-#--- 
-# default backend GtkAgg does not plot properly on Ubuntu 8.04
-import matplotlib
-matplotlib.use('TkAgg')
-#---
-
+from pybrain.tools.example_tools import ExTools
 from pybrain.structure.modules.tanhlayer import TanhLayer
 from pybrain.tools.shortcuts import buildNetwork
 from pybrain.rl.environments.shipsteer import ShipSteeringEnvironment
@@ -21,32 +16,13 @@ from pybrain.rl.environments.shipsteer import GoNorthwardTask
 from pybrain.rl.agents import OptimizationAgent
 from pybrain.optimization import PGPE 
 from pybrain.rl.experiments import EpisodicExperiment
-from pybrain.tools.plotting import MultilinePlotter
-from pylab import figure, ion 
-from cPickle import load, dump
-from scipy import random
 
-# Method for loading a weight matrix and initialize the network
-def loadWeights(filename):
-    filepointer = file(filename)
-    agent.learner.original = load(filepointer)
-    filepointer.close()
-    agent.learner.gd.init(agent.learner.original)
+batch=2
+prnts=50
+epis=2000/batch/prnts
+numbExp=10
+et = ExTools(batch, prnts)
 
-# Method for saving the weight matrix    
-def saveWeights(filename, w):
-    filepointer = file(filename, 'w+')
-    dump(w, filepointer)
-    filepointer.close()
-
-useGraphics = False
-if useGraphics:
-    figure()
-    ion()
-    pl = MultilinePlotter(autoscale=1.2, xlim=[0, 50], ylim=[0, 1])
-    pl.setLineStyle(linewidth=2)
-
-numbExp=25 #number of experiments
 for runs in range(numbExp):
     # create environment
     #Options: Bool(OpenGL), Bool(Realtime simu. while client is connected), ServerIP(default:localhost), Port(default:21560)
@@ -60,32 +36,15 @@ for runs in range(numbExp):
                                     sigmaLearningRate = 0.15,
                                     momentum = 0.0,
                                     epsilon = 2.0,
-                                    #rprop = True,
-                                    ))
-    batch=2 #number of samples per gradient estimate (was: 2; more here due to stochastic setting)
+                                    rprop = False,
+                                    storeAllEvaluations = True))
+    et.agent = agent
     #create experiment
     experiment = EpisodicExperiment(task, agent)
-    prnts=1 #frequency of console output
-    epis=2000/batch/prnts
     
-    #actual roll outs
-    filename="dataPGPE08NoRew"+repr(int(random.random()*1000000.0))+".dat"
-    wf = open(filename, 'wb')
     for updates in range(epis):
         for i in range(prnts):
-            experiment.doEpisodes(batch) #execute #batch episodes
-            #agent.learn() #learn from the gather experience
-            #agent.reset() #reset agent and environment
-        #print out related data
-        stp = (updates+1)*batch*prnts
-        print "Step: ", runs, "/", stp, "Best: ", agent.learner.bestEvaluation, "Base: ", agent.learner.baseline, "Reward: ", agent.learner.mreward   
-        wf.write(repr(stp)+"\n") 
-        wf.write(repr(agent.learner.baseline)+"\n") 
-        if useGraphics:
-            pl.addData(0,float(stp),agent.learner.baseline)
-            pl.addData(1,float(stp),agent.learner.bestEvaluation)
-            pl.update()
-
-        #if updates/100 == float(updates)/100.0:
-        #    saveWeights("walk.wgt", agent.learner.original)  
-    wf.close()      
+            experiment.doEpisodes(batch)
+        et.printResults((agent.learner._allEvaluations)[-50:-1], runs, updates)
+    et.addExps()
+et.showExps()
