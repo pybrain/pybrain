@@ -107,6 +107,8 @@ if len(sys.argv) > 2:
 if useGraphics:
     pl.show( popup = True)
 
+#To view what the simulation is doing at the moment set the environment with True, go to pybrain/rl/environments/ode/ and start viewer.py (python-openGL musst be installed, see PyBrain documentation)
+
 ## performance:
 ## experiment.doEpisodes(5) * 100 without weave: 
 ##    real    2m39.683s

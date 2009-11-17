@@ -49,3 +49,4 @@ for runs in range(numbExp):
         et.printResults((agent.learner._allEvaluations)[-50:-1], runs, updates)
     et.addExps()
 et.showExps()
+#To view what the simulation is doing at the moment set the environment with True, go to pybrain/rl/environments/ode/ and start viewer.py (python-openGL musst be installed, see PyBrain documentation)
