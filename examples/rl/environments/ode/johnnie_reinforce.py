@@ -1,31 +1,30 @@
 #########################################################################
-# Reinforcement Learning with PGPE on the FlexCube Environment 
+# Reinforcement Learning with PGPE on the Johnnie Environment 
 #
-# The FlexCube Environment is a Mass-Spring-System composed of 8 mass points.
-# These resemble a cube with flexible edges.
+# The Johnnie robot is a body structure with 11 DoF .
+# Complex balancing tasks can be learned with this environment.
 #
 # Control/Actions:
-# The agent can control the 12 equilibrium edge lengths. 
+# The agent can control all 11 DOF of the robot. 
 #
 # A wide variety of sensors are available for observation and reward:
-# - 12 edge lengths
-# - 12 wanted edge lengths (the last action)
-# - vertexes contact with floor
-# - vertexes min height (distance of closest vertex to the floor)
-# - distance to origin
-# - distance and angle to target
+# - 11 angles of joints
+# - 11 angle velocitys of joints
+# - Number of foot parts that have contact to floor
+# - Height sensor in head for reward calculation 
+# - Rotation sensor in 3 dimesnions
 #
 # Task available are:
-# - GrowTask, agent has to maximize the volume of the cube
-# - JumpTask, agent has to maximize the distance of the lowest mass point during the episode
-# - WalkTask, agent has to maximize the distance to the starting point
-# - WalkDirectionTask, agent has to minimize the distance to a target point.
-# - TargetTask, like the previous task but with several target points
+# - StandTask, agent has not to fall by himself
+# - Robust standing Task, agent has not to fall even then hit by reasonable random forces
+# - JumpTask, agent has to maximize the head-vertical position during the episode
 # 
-# Requirements: scipy for the environment and the learner.
-#
+# Requirements: pylab (for plotting only). If not available, comment the
+# last 3 lines out
 # Author: Frank Sehnke, sehnke@in.tum.de
 #########################################################################
+__author__ = "Frank Sehnke"
+__version__ = '$Id$' 
 
 from pybrain.tools.example_tools import ExTools
 from pybrain.rl.environments.ode import JohnnieEnvironment
@@ -37,11 +36,11 @@ from pybrain.rl.learners import Reinforce
 from pybrain.rl.experiments import EpisodicExperiment
 
 hiddenUnits = 4
-batch=2
-prnts=1
-epis=4000/batch/prnts
-numbExp=10
-et = ExTools(batch, prnts, kind = "learner")
+batch=2 #number of samples per learning step
+prnts=1 #number of learning steps after results are printed
+epis=5000000/batch/prnts #number of roleouts
+numbExp=10 #number of experiments
+et = ExTools(batch, prnts, kind = "learner")#tool for printing and plotting
 
 for runs in range(numbExp):
     # create environment
@@ -54,12 +53,13 @@ for runs in range(numbExp):
     # create agent with controller and learner (and its options)
     agent = LearningAgent(net, Reinforce())
     et.agent = agent
+    # create the experiment
     experiment = EpisodicExperiment(task, agent)
-    
+
+    #Do the experiment
     for updates in range(epis):
         for i in range(prnts):
             experiment.doEpisodes(batch)
-        state, action, reward = agent.learner.dataset.getSequence(agent.learner.dataset.getNumSequences()-1)
-        et.printResults(reward.sum(), runs, updates)
+        et.printResults((agent.learner._allEvaluations)[-50:-1], runs, updates)
     et.addExps()
-et.showExps()
+et.showExps()    

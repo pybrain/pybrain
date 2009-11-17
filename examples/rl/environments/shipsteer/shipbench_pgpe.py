@@ -1,8 +1,8 @@
 #########################################################################
 # Reinforcement Learning with PGPE on the ShipSteering Environment
 #
-# Requirements: 
-#   pybrain (tested on rev. 1195, ship env rev. 1202)
+# Requirements: pylab (for plotting only). If not available, comment the
+# last 3 lines out
 # Author: Frank Sehnke, sehnke@in.tum.de
 #########################################################################
 __author__ = "Martin Felder, Frank Sehnke"
@@ -17,11 +17,11 @@ from pybrain.rl.agents import OptimizationAgent
 from pybrain.optimization import PGPE 
 from pybrain.rl.experiments import EpisodicExperiment
 
-batch=2
-prnts=50
-epis=2000/batch/prnts
-numbExp=10
-et = ExTools(batch, prnts)
+batch=2 #number of samples per learning step
+prnts=50 #number of learning steps after results are printed
+epis=2000/batch/prnts #number of roleouts
+numbExp=10 #number of experiments
+et = ExTools(batch, prnts) #tool for printing and plotting
 
 for runs in range(numbExp):
     # create environment
@@ -41,7 +41,8 @@ for runs in range(numbExp):
     et.agent = agent
     #create experiment
     experiment = EpisodicExperiment(task, agent)
-    
+ 
+    #Do the experiment
     for updates in range(epis):
         for i in range(prnts):
             experiment.doEpisodes(batch)

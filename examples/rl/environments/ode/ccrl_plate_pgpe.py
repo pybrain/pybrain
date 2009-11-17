@@ -18,38 +18,29 @@
 # Task available are:
 # - Grasp Task, agent has to get hold of the object with avoiding collision with table
 # 
-# Requirements: scipy for the environment and the learner; ODE.
-#
+# Requirements: pylab (for plotting only). If not available, comment the
+# last 3 lines out
 # Author: Frank Sehnke, sehnke@in.tum.de
 #########################################################################
+__author__ = "Frank Sehnke"
+__version__ = '$Id$' 
 
+from pybrain.tools.example_tools import ExTools
 from pybrain.rl.environments.ode import CCRLEnvironment
-from pybrain.rl.environments.ode.tasks import CCRLPlateTask
+from pybrain.rl.environments.ode.tasks import CCRLGlasVarTask
 from pybrain.structure.modules.tanhlayer import TanhLayer
 from pybrain.tools.shortcuts import buildNetwork
 from pybrain.rl.agents import OptimizationAgent
 from pybrain.optimization import PGPE
 from pybrain.rl.experiments import EpisodicExperiment
-from cPickle import load, dump
-
-# Method for loading a weight matrix and initialize the network
-def loadWeights(filename):
-    filepointer = file(filename)
-    original = load(filepointer)
-    filepointer.close()
-    return original
-
-# Method for saving the weight matrix    
-def saveWeights(filename, w):
-    filepointer = file(filename, 'w+')
-    dump(w, filepointer)
-    filepointer.close()
 
 hiddenUnits = 10
-loadNet = False
-saveNet = False
-saveName = "plate.wgt"
-numbExp = 1 #number of experiments
+batch=2 #number of samples per learning step
+prnts=1 #number of learning steps after results are printed
+epis=5000000/batch/prnts #number of roleouts
+numbExp=10 #number of experiments
+et = ExTools(batch, prnts) #tool for printing and plotting
+
 for runs in range(numbExp):
     # create environment
     #Options: XML-Model, Bool(OpenGL), Bool(Realtime simu. while client is connected), ServerIP(default:localhost), Port(default:21560)
@@ -59,33 +50,15 @@ for runs in range(numbExp):
     # create controller network
     net = buildNetwork(len(task.getObservation()), hiddenUnits, env.actLen, outclass=TanhLayer)    
     # create agent with controller and learner (and its options)
-    agent = OptimizationAgent(net, PGPE(learningRate = 0.2,
-                                        sigmaLearningRate = 0.1,
-                                        momentum = 0.0,
-                                        epsilon = 2.0,
-                                        #rprop = True,
-                                        ))
-    
-    #Loading weights
-    if loadNet:
-        agent.learner.current = loadWeights("stand.wgt")
-        agent.learner.gd.init(agent.learner.current)
-        agent.learner.epsilon = 0.2
-        agent.learner.initSigmas()
-
-    batch = 2 #number of samples per gradient estimate
-    #create experiment
+    agent = OptimizationAgent(net, PGPE(storeAllEvaluations = True))
+    et.agent = agent
+    # create the experiment
     experiment = EpisodicExperiment(task, agent)
-    prnts = 1 #frequency of console output
-    epis = 5000000 / batch / prnts
-    
-    #actual roll outs
+
+    #Do the experiment
     for updates in range(epis):
         for i in range(prnts):
-            experiment.doEpisodes(batch) #execute batch episodes
-        #print out related data
-        print "Step: ", runs, "/", (updates + 1) * batch * prnts, "Best: ", agent.learner.bestEvaluation,
-        print "Base: ", agent.learner.baseline, "Reward: ", agent.learner.mreward 
-        #Saving weights
-        if saveNet:
-            if updates / 100 == float(updates) / 100.0: saveWeights(saveName, agent.learner.current)  
+            experiment.doEpisodes(batch)
+        et.printResults((agent.learner._allEvaluations)[-50:-1], runs, updates)
+    et.addExps()
+et.showExps()    

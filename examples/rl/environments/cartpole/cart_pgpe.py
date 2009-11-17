@@ -5,6 +5,8 @@
 # last 3 lines out
 # Author: Frank Sehnke, sehnke@in.tum.de
 #########################################################################
+__author__ = "Frank Sehnke"
+__version__ = '$Id$' 
 
 from pybrain.tools.example_tools import ExTools
 from pybrain.tools.shortcuts import buildNetwork
@@ -36,7 +38,6 @@ for runs in range(numbExp):
     for updates in range(epis):
         for i in range(prnts):
             experiment.doEpisodes(batch)
-        print "Epsilon   : ", agent.learner.sigList
         et.printResults((agent.learner._allEvaluations)[-50:-1], runs, updates)
     et.addExps()
 et.showExps()
