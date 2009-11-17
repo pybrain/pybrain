@@ -2,7 +2,7 @@
 # Reinforcement Learning with PGPE on the CartPoleEnvironment 
 #
 # Requirements: pylab (for plotting only). If not available, comment the
-# 9 lines total marked as "for plotting"
+# last 3 lines out
 # Author: Frank Sehnke, sehnke@in.tum.de
 #########################################################################
 
@@ -13,13 +13,14 @@ from pybrain.rl.agents import OptimizationAgent
 from pybrain.optimization import PGPE
 from pybrain.rl.experiments import EpisodicExperiment
 
-batch=2
-prnts=100
-epis=4000/batch/prnts
-numbExp=10
-et = ExTools(batch, prnts)
+batch=2 #number of samples per learning step
+prnts=100 #number of learning steps after results are printed
+epis=4000/batch/prnts #number of roleouts
+numbExp=10 #number of experiments
+et = ExTools(batch, prnts) #tool for printing and plotting
 
 for runs in range(numbExp):
+    # create environment
     env = CartPoleEnvironment()    
     # create task
     task = BalanceTask(env, 200, desiredValue=None)
@@ -28,8 +29,10 @@ for runs in range(numbExp):
     # create agent with controller and learner (and its options)
     agent = OptimizationAgent(net, PGPE(storeAllEvaluations = True))
     et.agent = agent
+    # create the experiment
     experiment = EpisodicExperiment(task, agent)
 
+    #Do the experiment
     for updates in range(epis):
         for i in range(prnts):
             experiment.doEpisodes(batch)
