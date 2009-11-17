@@ -27,7 +27,7 @@ __version__ = '$Id$'
 
 from pybrain.tools.example_tools import ExTools
 from pybrain.rl.environments.ode import CCRLEnvironment
-from pybrain.rl.environments.ode.tasks import CCRLGlasVarTask
+from pybrain.rl.environments.ode.tasks import CCRLGlasTask
 from pybrain.structure.modules.tanhlayer import TanhLayer
 from pybrain.tools.shortcuts import buildNetwork
 from pybrain.rl.agents import OptimizationAgent
@@ -46,7 +46,7 @@ for runs in range(numbExp):
     #Options: XML-Model, Bool(OpenGL), Bool(Realtime simu. while client is connected), ServerIP(default:localhost), Port(default:21560)
     env = CCRLEnvironment()
     # create task
-    task = CCRLGlasVarTask(env)
+    task = CCRLGlasTask(env)
     # create controller network
     net = buildNetwork(len(task.getObservation()), hiddenUnits, env.actLen, outclass=TanhLayer)    
     # create agent with controller and learner (and its options)

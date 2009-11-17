@@ -60,6 +60,7 @@ for runs in range(numbExp):
     for updates in range(epis):
         for i in range(prnts):
             experiment.doEpisodes(batch)
-        et.printResults((agent.learner._allEvaluations)[-50:-1], runs, updates)
+        state, action, reward = agent.learner.dataset.getSequence(agent.learner.dataset.getNumSequences()-1)
+        et.printResults(reward.sum(), runs, updates)
     et.addExps()
 et.showExps()    

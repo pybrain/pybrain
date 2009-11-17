@@ -27,7 +27,7 @@ __version__ = '$Id$'
 
 from pybrain.tools.example_tools import ExTools
 from pybrain.rl.environments.ode import CCRLEnvironment
-from pybrain.rl.environments.ode.tasks import CCRLGlasVarTask
+from pybrain.rl.environments.ode.tasks import CCRLPlateTask
 from pybrain.structure.modules.tanhlayer import TanhLayer
 from pybrain.tools.shortcuts import buildNetwork
 from pybrain.rl.agents import OptimizationAgent

@@ -53,7 +53,7 @@ for runs in range(numbExp):
     # create controller network
     net = buildNetwork(len(task.getObservation()), hiddenUnits, env.actLen, outclass=TanhLayer)    
     # create agent with controller and learner (and its options)
-    agent = OptimizationAgent(net, SimpleSPSA())
+    agent = OptimizationAgent(net, SimpleSPSA(storeAllEvaluations = True))
     et.agent = agent
      # create the experiment
     experiment = EpisodicExperiment(task, agent)

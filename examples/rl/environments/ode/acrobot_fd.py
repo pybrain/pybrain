@@ -11,9 +11,9 @@
 #
 # Requirements: pylab (for plotting only). If not available, comment the
 # last 3 lines out
-# Author: Frank Sehnke, sehnke@in.tum.de
+# Author: Thomas Rueckstiess, rueckst@in.tum.de
 #########################################################################
-__author__ = "Frank Sehnke"
+__author__ = "Thomas Rueckstiess, Frank Sehnke"
 __version__ = '$Id$' 
 
 from pybrain.tools.example_tools import ExTools
