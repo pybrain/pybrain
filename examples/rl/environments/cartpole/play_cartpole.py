@@ -35,7 +35,7 @@ net = buildNetwork(4, 1, bias=False)
 # create agent
 agent = LearningAgent(net, None)
 agent.module._setParameters([float(sys.argv[1]), float(sys.argv[2]), float(sys.argv[3]), float(sys.argv[4])]) 
-agent.disableLearning()
+
 # create experiment
 experiment = EpisodicExperiment(task, agent)
 experiment.doEpisodes(episodes)
