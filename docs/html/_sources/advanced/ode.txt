@@ -29,12 +29,17 @@ You can test if all your settings are ok by starting following example:
 	cd ~/pybrain/examples/rl/
 	python johnnie_pgpe.py
 
-... and then view whats happening by using the viewer:
+... and then view what is happening by using the viewer:
 ::
 
 	cd ~/pybrain/pybrain/rl/environments/ode
 	python viewer.py
 
+
+.. note:: 
+	On Linux, if that gives rise to a segmentation fault, try installing ``xorg-driver-fglrx``
+	
+	
 Existing ODE Environments that are tested are:
 	* Johnnie (a biped humanoid robot modeled after the real 
 	  robot Johnnie (http://www.amm.mw.tum.de)
