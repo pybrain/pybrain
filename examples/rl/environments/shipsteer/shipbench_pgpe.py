@@ -26,7 +26,7 @@ et = ExTools(batch, prnts) #tool for printing and plotting
 for runs in range(numbExp):
     # create environment
     #Options: Bool(OpenGL), Bool(Realtime simu. while client is connected), ServerIP(default:localhost), Port(default:21560)
-    env = ShipSteeringEnvironment(False)
+    env = ShipSteeringEnvironment()
     # create task
     task = GoNorthwardTask(env,maxsteps = 500)
     # create controller network

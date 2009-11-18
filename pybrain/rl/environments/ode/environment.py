@@ -5,7 +5,7 @@ from scipy import random, asarray
 import xode.parser, xode.body, xode.geom #@UnresolvedImport @UnusedImport @Reimport
 import ode #@UnresolvedImport
 
-from pybrain.rl.environments.graphical import GraphicalEnvironment
+from pybrain.rl.environments.environment import Environment
 from tools.configgrab import ConfigGrabber
 import sensors, actuators
 from pybrain.utilities import threaded
@@ -13,7 +13,7 @@ import threading
 import warnings
 from pybrain.tools.networking.udpconnection import UDPServer
 
-class ODEEnvironment(GraphicalEnvironment):
+class ODEEnvironment(Environment):
     """
     Virtual simulation for rigid bodies. Uses ODE as a physics engine and OpenGL as graphics
     interface to simulate and display arbitrary objects. Virtual worlds are defined through
@@ -26,18 +26,16 @@ class ODEEnvironment(GraphicalEnvironment):
     # define a verbosity level for selective debug output (0=none)
     verbosity = 0
 
-    def __init__(self, renderer=True, realtime=True, ip="127.0.0.1", port="21590", buf='16384'):
+    def __init__(self, render=True, realtime=True, ip="127.0.0.1", port="21590", buf='16384'):
         """ initializes the virtual world, variables, the frame rate and the callback functions."""
         print "ODEEnvironment -- based on Open Dynamics Engine."
         
         # initialize base class
-        GraphicalEnvironment.__init__(self)
-        
-        if renderer:
+        self.render = render
+        if self.render:
             self.updateDone = True
             self.updateLock = threading.Lock()
-            self.server = UDPServer(ip, port, buf)
-        self.render = renderer
+            self.server = UDPServer(ip, port)
         self.realtime = realtime
         
         # initialize attributes
@@ -160,6 +158,7 @@ class ODEEnvironment(GraphicalEnvironment):
         self.textures[name] = texture
 
     def centerOn(self, name):
+        return
         """ if set, keeps camera to the given ODE object name. """
         try:
             self.getRenderer().setCenterObj(self.root.namedChild(name).getODEObject())
@@ -224,7 +223,7 @@ class ODEEnvironment(GraphicalEnvironment):
 
         # <centerOn>
         # set focus of camera to the first object specified in the section, if any
-        if self.hasRenderer():
+        if self.render:
             try:
                 self.centerOn(self.config.getValue("centerOn")[0])
             except IndexError:
