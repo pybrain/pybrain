@@ -1,7 +1,7 @@
 ###########################################################################
 # This program takes 4 parameters at the command line and runs the
 # (single) cartpole environment with it, visualizing the cart and the pole.
-# if cart is green, no penality is given. if the cart is blue, a penalty of
+# if cart is green, no penalty is given. if the cart is blue, a penalty of
 # -1 per step is given. the program ends with the end of the episode. if
 # the variable "episodes" is changed to a bigger number, the task is executed
 # faster and the mean return of all episodes is printed.
