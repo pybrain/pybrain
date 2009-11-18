@@ -20,10 +20,11 @@ __author__ = 'Tom Schaul, tom@idsia.ch'
 
 from inspect import isclass
 from scipy import sum, array, ndarray, log10
-from random import random
+from random import random, choice
 
 import pybrain.optimization.optimizer as bbo
 import pybrain.optimization.populationbased.multiobjective as mobj
+import pybrain.optimization as allopts
 
 from pybrain.rl.environments.functions.unimodal import SphereFunction
 from pybrain.structure.parametercontainer import ParameterContainer
@@ -86,7 +87,8 @@ evo1 = SimpleEvo(-3.)
 # ----------------------
 
 def testInterface(algo):
-    """ Tests whether the algorithm is properly implementing the correct Blackbox-optimization interface."""
+    """ Tests whether the algorithm is properly implementing the 
+    correct Blackbox-optimization interface."""
     # without any arguments, initialization has to work 
     emptyalgo = algo()
     try:
@@ -143,27 +145,47 @@ def testContinuousInterface(algo):
 def testMinMax(algo):
     """ Verify that the algorithm is doing the minimization/maximization consistently. """
     if (issubclass(algo, bbo.TopologyOptimizer)
-        or algo == StochasticHillClimber):
+        or algo == allopts.StochasticHillClimber):
         # TODO
         return True
     
     xa1[0] = 2
     evalx = sf(xa1)    
     
-    amax = algo(sf, xa1, minimize=False)
-    assert amax.minimize is False or amax.mustMinimize, 'Max: Attribute not set correctly.' + str(amax.minimize) + str(amax.mustMinimize)
-    x, xv = amax.learn(1)
-    assert sf(x) == xv, 'Evaluation does not fit: ' + str((sf(x), xv))
-    assert xv >= evalx, 'Evaluation did not increase: ' + str(xv) + ' (init: ' + str(evalx) + ')'
+    amax1 = algo(sf, xa1, minimize=False)
+    amax2 = algo(sf, xa1)
+    amax2.minimize = False
+    amax3 = algo()
+    amax3.setEvaluator(sf, xa1)
+    amax3.minimize = False
+    amax4 = algo()
+    amax4.minimize = False
+    amax4.setEvaluator(sf, xa1)
+    for i, amax in enumerate([amax1, amax2, amax3, amax4]):
+        assert amax.minimize is False or amax.mustMinimize, 'Max: Attribute not set correctly.' \
+                                            + str(amax.minimize) + str(amax.mustMinimize) + str(i)
+        x, xv = amax.learn(1)
+        assert sf(x) == xv, 'Evaluation does not fit: ' + str((sf(x), xv))
+        assert xv >= evalx, 'Evaluation did not increase: ' + str(xv) + ' (init: ' + str(evalx) + ')'
     
     xa1[0] = 2
-    amin = algo(sf, xa1, minimize=True)
-    assert amin.minimize is True or amin.mustMaximize, 'Min: Attribute not set correctly.' + str(amin.minimize) + str(amin.mustMaximize)
-    x, xv = amin.learn(1)
-    assert sf(x) == xv, 'Evaluation does not fit: ' + str((sf(x), xv))
-    assert xv <= evalx, 'Evaluation did not decrease: ' + str(xv) + ' (init: ' + str(evalx) + ')'
-    assert ((amin.minimize is not amax.minimize) 
-            or not (amin.wasOpposed is amax.wasOpposed)), 'Inconsistent flags.' 
+    amin1 = algo(sf, xa1, minimize=True)
+    amin2 = algo(sf, xa1)
+    amin2.minimize = True
+    amin3 = algo()
+    amin3.setEvaluator(sf, xa1)
+    amin3.minimize = True
+    amin4 = algo()
+    amin4.minimize = True
+    amin4.setEvaluator(sf, xa1)
+    for i, amin in enumerate([amin1, amin2, amin3, amin4]):
+        assert amin.minimize is True or amin.mustMaximize, 'Min: Attribute not set correctly.' \
+                                            + str(amin.minimize) + str(amin.mustMaximize) + str(i)
+        x, xv = amin.learn(1)
+        assert sf(x) == xv, 'Evaluation does not fit: ' + str((sf(x), xv)) + str(i)
+        assert xv <= evalx, 'Evaluation did not decrease: ' + str(xv) + ' (init: ' + str(evalx) + ')' + str(i)
+        assert ((amin.minimize is not amax.minimize) 
+                or not (amin._wasOpposed is amax._wasOpposed)), 'Inconsistent flags.' 
         
     return True
     
@@ -224,17 +246,13 @@ def testAll(tests, allalgos, tolerant=True):
                 if m is not None:
                     print ' ' * int(log10(i + 1) + 2), '->', m
     print 
-    print 'Summary:', countgood, '/', len(allalgos), 'passed all tests.'
+    print 'Summary:', countgood, '/', len(allalgos), 'of test were passed.'
 
 
 
 if __name__ == '__main__':
     from pybrain.optimization import *  #@UnusedWildImport
-    l = HillClimber(evoEval, evo1, maxEvaluations=50)
-    print l.learn()
-    
-if False:    
-    
+    #from pybrain.optimization import CMAES #@UnusedImport
     allalgos = filter(lambda c: (isclass(c) 
                                  and issubclass(c, bbo.BlackBoxOptimizer)
                                  and not issubclass(c, mobj.MultiObjectiveGA) 
