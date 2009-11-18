@@ -10,7 +10,7 @@ from time import sleep
 
 class FlexCubeEnvironment(Environment):
     def __init__(self, render=True, realtime=True, ip="127.0.0.1", port="21560"):
-        # initialize base class
+        # initialize base class 
         self.render = render
         if self.render:
             self.updateDone = True
