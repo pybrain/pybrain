@@ -43,8 +43,7 @@ class CCRLTask(EpisodicTask):
         #normalization for the task spezific sensors
         for i in range(self.env.obsLen - 2 * self.env.actLen):
             self.sensor_limits.append((-4, 4))
-        
-
+        self.actor_limits = None
 
     def getObservation(self):
         """ a filtered mapping to getSample of the underlying environment. """
