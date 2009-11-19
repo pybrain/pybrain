@@ -7,12 +7,14 @@ class GradualRewardTask(EpisodicTask):
     ''' task gives more reward, the higher the bar is.'''
     def __init__(self, environment):
         EpisodicTask.__init__(self, environment)
+        self.maxPower = 0.5
         self.reward_history = []
         self.count = 0 
         # normalize to (-1, 1)
         self.sensor_limits = [(-pi, pi), (-20, 20)]
-        self.actor_limits = [(-1, 1)]
-        
+        #self.actor_limits = [(-1, 1)]
+        self.actor_limits = None
+
     def isFinished(self):
         if self.count > 1000:
             self.count = 0 
@@ -34,3 +36,5 @@ class GradualRewardTask(EpisodicTask):
         # time.sleep(0.001)
         return reward
 
+    def performAction(self, action):
+        EpisodicTask.performAction(self, action*self.maxPower)
