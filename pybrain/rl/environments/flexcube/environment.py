@@ -1,15 +1,21 @@
 __author__ = 'Frank Sehnke, sehnke@in.tum.de'
 
 import sensors
-from pybrain.rl.environments.serverinterface import GraphicalEnvironment
-from renderinterface import FlexCubeRenderInterface
+import threading
+from pybrain.utilities import threaded
+from pybrain.tools.networking.udpconnection import UDPServer
+from pybrain.rl.environments.environment import Environment
 from scipy import ones, zeros, array, clip, arange, sqrt 
 from time import sleep
 
-class FlexCubeEnvironment(GraphicalEnvironment):
-    def __init__(self, renderer=True, realtime=True, ip="127.0.0.1", port="21560"):
-        # initialize base class
-        GraphicalEnvironment.__init__(self)
+class FlexCubeEnvironment(Environment):
+    def __init__(self, render=True, realtime=True, ip="127.0.0.1", port="21560"):
+        # initialize base class 
+        self.render = render
+        if self.render:
+            self.updateDone = True
+            self.updateLock = threading.Lock()
+            self.server = UDPServer(ip, port)
         self.actLen = 12
         self.mySensors = sensors.Sensors(["EdgesReal"])
         self.dists = array([20.0, sqrt(2.0) * 20, sqrt(3.0) * 20])
@@ -33,10 +39,7 @@ class FlexCubeEnvironment(GraphicalEnvironment):
         self.euler()
         self.realtime = realtime
         self.step = 0
-        if renderer:
-            self.setRenderInterface(FlexCubeRenderInterface(ip, port))
-            self.getRenderInterface().updateData(self.pos, self.centerOfGrav)
-
+        
     def setEdges(self):
         self.edges = zeros((12, 2), int)
         count = 0
@@ -71,6 +74,10 @@ class FlexCubeEnvironment(GraphicalEnvironment):
         self.distM = self.springM.copy() #distance matrix
         self.step = 0
         self.mySensors.updateSensor(self.pos, self.vel, self.distM, self.centerOfGrav, self.step, self.action)    
+        if self.render:
+            if self.server.clients > 0: 
+                # If there are clients send them reset signal
+                self.server.send(["r", "r"])    
                       
     def performAction(self, action):
         action = self.normAct(action)
@@ -79,11 +86,11 @@ class FlexCubeEnvironment(GraphicalEnvironment):
         self.euler()
         self.step += 1
         
-        if self.hasRenderInterface(): 
-            if self.getRenderInterface().updateDone:
-                self.getRenderInterface().updateData(self.pos, self.centerOfGrav)
-            if self.getRenderInterface().server.clients > 0 and self.realtime: 
-                sleep(self.dt)
+        if self.render: 
+            if self.updateDone: 
+                self.updateRenderer()                    
+                if self.server.clients > 0 and self.realtime:
+                    sleep(0.02)
       
     def getSensors(self):
         self.mySensors.updateSensor(self.pos, self.vel, self.distM, self.centerOfGrav, self.step, self.action)   
@@ -139,4 +146,18 @@ class FlexCubeEnvironment(GraphicalEnvironment):
         idx1 = array(range(8) * 8)
         self.difM = self.pos[idx0, :] - self.pos[idx1, :] #vectors from all points to all other points
         self.distM = sqrt((self.difM ** 2).sum(axis=1)).reshape(64, 1) #distance matrix
+
+    @threaded()  
+    def updateRenderer(self):
+        self.updateDone = False      
+        if not self.updateLock.acquire(False): return
+      
+        # Listen for clients
+        self.server.listen()
+        if self.server.clients > 0: 
+            # If there are clients send them the new data
+            self.server.send(repr([self.pos, self.centerOfGrav]))
+        sleep(0.02)
+        self.updateLock.release()
+        self.updateDone = True
 

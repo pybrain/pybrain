@@ -25,7 +25,8 @@ class JohnnieTask(EpisodicTask):
         for i in range(self.env.actLen):
             self.sensor_limits.append((-20, 20))
         #Norm all actor dimensions to (-1, 1)
-        self.actor_limits = [(-1, 1)] * env.actLen
+        #self.actor_limits = [(-1, 1)] * env.actLen
+        self.actor_limits = None
 
     def performAction(self, action):
         #Filtered mapping towards performAction of the underlying environment   

@@ -48,15 +48,16 @@ net = buildNetwork(task.outdim, task.indim, bias=False)
 
 
 # create agent
-agent = LearningAgent(net, ENAC())
-agent.learner.gd.rprop = True
+learner = ENAC()
+learner.gd.rprop = True
 # only relevant for RP
-agent.learner.gd.deltamin = 0.0001
+learner.gd.deltamin = 0.0001
 #agent.learner.gd.deltanull = 0.05
 # only relevant for BP
-agent.learner.gd.alpha = 0.01
-agent.learner.gd.momentum = 0.9
+learner.gd.alpha = 0.01
+learner.gd.momentum = 0.9
 
+agent = LearningAgent(net, learner)
 agent.actaspg = False
 
 # create experiment
@@ -106,6 +107,8 @@ if len(sys.argv) > 2:
     agent.history.saveToFile(sys.argv[1], protocol=-1, arraysonly=True)
 if useGraphics:
     pl.show( popup = True)
+
+#To view what the simulation is doing at the moment set the environment with True, go to pybrain/rl/environments/ode/ and start viewer.py (python-openGL musst be installed, see PyBrain documentation)
 
 ## performance:
 ## experiment.doEpisodes(5) * 100 without weave: 

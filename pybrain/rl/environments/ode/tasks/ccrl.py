@@ -43,8 +43,7 @@ class CCRLTask(EpisodicTask):
         #normalization for the task spezific sensors
         for i in range(self.env.obsLen - 2 * self.env.actLen):
             self.sensor_limits.append((-4, 4))
-        
-
+        self.actor_limits = None
 
     def getObservation(self):
         """ a filtered mapping to getSample of the underlying environment. """
@@ -75,8 +74,8 @@ class CCRLTask(EpisodicTask):
         #This makes most tasks much simpler to learn             
         self.oldAction = action
         #Grasping as reflex depending on the distance to target - comment in for more easy grasping
-        #if abs(self.dist[2])<2.0: action[15]=(1.0+2.0*action[15])*.3333 #self.grepRew=action[15]*.01
-        #else: action[15]=(-1.0+2.0*action[15])*.3333 #self.grepRew=action[15]*-.03
+        if abs(self.dist[2])<2.0: action[15]=(1.0+2.0*action[15])*.3333 #self.grepRew=action[15]*.01
+        else: action[15]=(-1.0+2.0*action[15])*.3333 #self.grepRew=action[15]*-.03
         isJoints=array(self.env.getSensorByName('JointSensor')) #The joint angles
         isSpeeds=array(self.env.getSensorByName('JointVelocitySensor')) #The joint angular velocitys
         act=(action+1.0)/2.0*(self.env.cHighList-self.env.cLowList)+self.env.cLowList #norm output to action intervall  

@@ -1,19 +1,14 @@
 #########################################################################
 # Reinforcement Learning with PGPE on the ShipSteering Environment
 #
-# Requirements: 
-#   pybrain (tested on rev. 1195, ship env rev. 1202)
+# Requirements: pylab (for plotting only). If not available, comment the
+# last 3 lines out
 # Author: Frank Sehnke, sehnke@in.tum.de
 #########################################################################
 __author__ = "Martin Felder, Frank Sehnke"
 __version__ = '$Id$' 
 
-#--- 
-# default backend GtkAgg does not plot properly on Ubuntu 8.04
-import matplotlib
-matplotlib.use('TkAgg')
-#---
-
+from pybrain.tools.example_tools import ExTools
 from pybrain.structure.modules.tanhlayer import TanhLayer
 from pybrain.tools.shortcuts import buildNetwork
 from pybrain.rl.environments.shipsteer import ShipSteeringEnvironment
@@ -21,36 +16,17 @@ from pybrain.rl.environments.shipsteer import GoNorthwardTask
 from pybrain.rl.agents import OptimizationAgent
 from pybrain.optimization import PGPE 
 from pybrain.rl.experiments import EpisodicExperiment
-from pybrain.tools.plotting import MultilinePlotter
-from pylab import figure, ion 
-from cPickle import load, dump
-from scipy import random
 
-# Method for loading a weight matrix and initialize the network
-def loadWeights(filename):
-    filepointer = file(filename)
-    agent.learner.original = load(filepointer)
-    filepointer.close()
-    agent.learner.gd.init(agent.learner.original)
+batch=2 #number of samples per learning step
+prnts=50 #number of learning steps after results are printed
+epis=2000/batch/prnts #number of roleouts
+numbExp=10 #number of experiments
+et = ExTools(batch, prnts) #tool for printing and plotting
 
-# Method for saving the weight matrix    
-def saveWeights(filename, w):
-    filepointer = file(filename, 'w+')
-    dump(w, filepointer)
-    filepointer.close()
-
-useGraphics = False
-if useGraphics:
-    figure()
-    ion()
-    pl = MultilinePlotter(autoscale=1.2, xlim=[0, 50], ylim=[0, 1])
-    pl.setLineStyle(linewidth=2)
-
-numbExp=25 #number of experiments
 for runs in range(numbExp):
     # create environment
     #Options: Bool(OpenGL), Bool(Realtime simu. while client is connected), ServerIP(default:localhost), Port(default:21560)
-    env = ShipSteeringEnvironment(False)
+    env = ShipSteeringEnvironment()
     # create task
     task = GoNorthwardTask(env,maxsteps = 500)
     # create controller network
@@ -60,32 +36,17 @@ for runs in range(numbExp):
                                     sigmaLearningRate = 0.15,
                                     momentum = 0.0,
                                     epsilon = 2.0,
-                                    #rprop = True,
-                                    ))
-    batch=2 #number of samples per gradient estimate (was: 2; more here due to stochastic setting)
+                                    rprop = False,
+                                    storeAllEvaluations = True))
+    et.agent = agent
     #create experiment
     experiment = EpisodicExperiment(task, agent)
-    prnts=1 #frequency of console output
-    epis=2000/batch/prnts
-    
-    #actual roll outs
-    filename="dataPGPE08NoRew"+repr(int(random.random()*1000000.0))+".dat"
-    wf = open(filename, 'wb')
+ 
+    #Do the experiment
     for updates in range(epis):
         for i in range(prnts):
-            experiment.doEpisodes(batch) #execute #batch episodes
-            #agent.learn() #learn from the gather experience
-            #agent.reset() #reset agent and environment
-        #print out related data
-        stp = (updates+1)*batch*prnts
-        print "Step: ", runs, "/", stp, "Best: ", agent.learner.bestEvaluation, "Base: ", agent.learner.baseline, "Reward: ", agent.learner.mreward   
-        wf.write(repr(stp)+"\n") 
-        wf.write(repr(agent.learner.baseline)+"\n") 
-        if useGraphics:
-            pl.addData(0,float(stp),agent.learner.baseline)
-            pl.addData(1,float(stp),agent.learner.bestEvaluation)
-            pl.update()
-
-        #if updates/100 == float(updates)/100.0:
-        #    saveWeights("walk.wgt", agent.learner.original)  
-    wf.close()      
+            experiment.doEpisodes(batch)
+        et.printResults((agent.learner._allEvaluations)[-50:-1], runs, updates)
+    et.addExps()
+et.showExps()
+#To view what the simulation is doing at the moment set the environment with True, go to pybrain/rl/environments/ode/ and start viewer.py (python-openGL musst be installed, see PyBrain documentation)

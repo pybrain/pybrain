@@ -59,11 +59,11 @@ class FlexCubeRenderer(object):
         self.points = ones((8, 3), float)
         self.savePics = False
         self.drawCounter = 0
-        self.fps = 50
+        self.fps = 25
         self.dt = 1.0 / float(self.fps)
 
         self.client = UDPClient(servIP, ownIP, port)
-  
+
     # If self.savePics=True this method saves the produced images      
     def saveTo(self, filename, format="JPEG"):
         import Image # get PIL's functionality... @UnresolvedImport
@@ -88,9 +88,12 @@ class FlexCubeRenderer(object):
     def drawIdleScene(self):
         #recive data from server and update the points of the cube
         try: 
-            self.points, self.centerOfGrav, self.target = self.client.listen([self.points, self.centerOfGrav, self.target])
-        except: 
-            pass
+            self.points, self.centerOfGrav = eval(self.client.listen([self.points, self.centerOfGrav]))
+        except: pass
+        if self.points == "r": 
+            self.target = array([80.0, 0.0, 0.0])
+            self.centerOfGrav = array([0.0, -2.0, 0.0])
+            self.points = ones((8, 3), float)
         self.drawScene()
         if self.savePics:
             self.saveTo("./screenshots/image_jump" + repr(10000 + self.picCount) + ".jpg")
@@ -173,7 +176,7 @@ class FlexCubeRenderer(object):
         for xF in range(40):
             for yF in range(40):
                 if float(xF + yF) / 2.0 == (xF + yF) / 2: glColor3f(0.8, 0.8, 0.7)
-                else: glColor4f(0.8, 0.8, 0.8, 0.9)
+                else: glColor4f(0.8, 0.8, 0.8, 0.7)
                 glPushMatrix()
                 glTranslatef(0.0, -0.03, 0.0)
                 glBegin(GL_QUADS)

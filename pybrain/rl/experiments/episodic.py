@@ -24,7 +24,7 @@ class EpisodicExperiment(Experiment):
         if self.doOptimization:
             raise Exception('When using a black-box learning algorithm, only full episodes can be done.')
         else:
-            Experiment._oneInteraction(self)        
+            return Experiment._oneInteraction(self)        
         
     def doEpisodes(self, number = 1):
         """ Do one episode, and return the rewards of each step as a list. """

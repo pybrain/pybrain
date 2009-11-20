@@ -6,10 +6,10 @@ import threading
 from pybrain.utilities import threaded
 from time import sleep
 
-from pybrain.rl.environments.graphical import GraphicalEnvironment
+from pybrain.rl.environments.environment import Environment
 
 
-class ShipSteeringEnvironment(GraphicalEnvironment):
+class ShipSteeringEnvironment(Environment):
     """ 
     Simulates an ocean going ship with substantial inertia in both forward
     motion and rotation, plus noise.
@@ -27,11 +27,8 @@ class ShipSteeringEnvironment(GraphicalEnvironment):
     dt = 4.        # simulated time (in seconds) per step
     mass = 1000.   # mass of ship in unclear units
     I = 1000.      # rotational inertia of ship in unclear units
-
-    
+   
     def __init__(self, render=True, ip="127.0.0.1", port="21580", numdir=1):
-        GraphicalEnvironment.__init__(self)
-
         # initialize the environment (randomly)
         self.action = [0.0, 0.0]
         self.delay = False

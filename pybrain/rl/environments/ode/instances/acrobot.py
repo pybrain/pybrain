@@ -5,7 +5,7 @@ import imp
 from scipy import array
 
 class AcrobotEnvironment(ODEEnvironment):
-    def __init__(self, renderer=True, realtime=False, ip="127.0.0.1", port="21590", buf='16384'):
+    def __init__(self, renderer=True, realtime=True, ip="127.0.0.1", port="21590", buf='16384'):
         ODEEnvironment.__init__(self, renderer, realtime, ip, port, buf)
         # load model file
         self.loadXODE(imp.find_module('pybrain')[1] + "/rl/environments/ode/models/acrobot.xode")
