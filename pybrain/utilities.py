@@ -606,4 +606,43 @@ def avgFoundAfter(decreasingTargetValues, listsOfActualValues, batchSize=1):
 
 class DivergenceError(Exception):
     """ Raised when an algorithm diverges. """
+    
 
+def matchingDict(d, selection):
+    """ Determines if the dictionary d conforms to the specified selection,
+    i.e. if a (key, x) is in the selection, then if key is in d as well it must be x 
+    or contained in x (if x is a list). """
+    for k, v in selection.items():
+        if k in d:
+            if isinstance(v, list):
+                if d[k] not in v:
+                    return False
+            else:
+                if d[k] != v:
+                    return False
+    return True
+
+
+def subDict(d, allowedkeys, flip=False):
+    """ Returns a new dictionary with a subset of the entries of d 
+    that have on of the (dis-)allowed keys."""
+    res = {}
+    for k, v in d.items():
+        if (k in allowedkeys) ^ flip:
+            res[k] = v
+    return res
+
+
+def dictCombinations(listdict):
+    """ Iterates over dictionaries that go through every possible combination 
+    of key-value pairs as specified in the lists of values for each key in listdict."""
+    listdict = listdict.copy()
+    if len(listdict) == 0:
+        return [{}]    
+    k, vs = listdict.popitem()
+    res = dictCombinations(listdict)            
+    if isinstance(vs, list):
+        res = [dict(d, **{k:v}) for d in res for v in sorted(set(vs))]        
+    else:
+        res = [dict(d, **{k:vs}) for d in res]
+    return res
