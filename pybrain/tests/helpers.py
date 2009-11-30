@@ -118,7 +118,7 @@ def xmlInvariance(n, forwardpasses = 1):
     """ try writing a network to an xml file, reading it, rewrite it, reread it, and compare
     if the result looks the same (compare string representation, and forward processing 
     of some random inputs) """
-    tmpfile = tempfile.NamedTemporaryFile()
+    tmpfile = tempfile.NamedTemporaryFile(dir=".")
     f = tmpfile.name
     NetworkWriter.writeToFile(n, f)
     tmpnet = NetworkReader.readFrom(f)
