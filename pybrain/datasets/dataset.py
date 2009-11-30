@@ -6,6 +6,7 @@ import random
 import pickle
 from itertools import chain
 from scipy import zeros, resize, ravel, asarray
+import scipy
 
 from pybrain.utilities import Serializable
 

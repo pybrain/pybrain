@@ -71,7 +71,7 @@ class CMAES(ContinuousOptimizer):
         self.center = dot(arxsel, self.weights)
 
         if self.storeAllCenters: 
-            self.allCenters.append(self.center)
+            self._allCenters.append(self.center)
 
         # Cumulation: Update evolution paths
         self.stepPath = (1 - self.cumStep) * self.stepPath \

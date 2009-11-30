@@ -127,7 +127,7 @@ class XMLHandling:
 def baseTransform(val):
     """ back-conversion: modules are encoded by their name
     and classes by the classname """
-    from pybrain.structure.module import Module
+    from pybrain.structure.modules.module import Module
     from inspect import isclass
     
     if isinstance(val, Module):
