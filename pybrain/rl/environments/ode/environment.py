@@ -58,7 +58,10 @@ class ODEEnvironment(Environment):
         self.FricMu = 8.0
         self.stepsPerAction = 1
         self.stepCounter = 0
-        
+
+    def closeSocket(self):
+        self.server.UDPInSock.close()
+        time.sleep(10)        
 
     def resetAttributes(self):
         """resets the class attributes to their default values"""
