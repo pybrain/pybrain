@@ -112,7 +112,7 @@ def netCompare(net1, net2, forwardpasses=1, verbose=False):
             print net2.__class__
             print net1.__class__
 
-    return False
+    return identical
 
 
 def xmlInvariance(n, forwardpasses = 1):
@@ -120,7 +120,7 @@ def xmlInvariance(n, forwardpasses = 1):
     if the result looks the same (compare string representation, and forward processing 
     of some random inputs) """
     # We only use this for file creation.
-    tmpfile = tempfile.NamedTemporaryFile(dir=".", delete=False)
+    tmpfile = tempfile.NamedTemporaryFile(dir=".")
     f = tmpfile.name
     tmpfile.close()
 
