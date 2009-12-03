@@ -1,5 +1,6 @@
 __author__ = 'Tom Schaul, tom@idsia.ch'
 
+import os
 import profile
 import pstats
 import tempfile
@@ -118,13 +119,22 @@ def xmlInvariance(n, forwardpasses = 1):
     """ try writing a network to an xml file, reading it, rewrite it, reread it, and compare
     if the result looks the same (compare string representation, and forward processing 
     of some random inputs) """
-    tmpfile = tempfile.NamedTemporaryFile(dir=".")
+    # We only use this for file creation.
+    tmpfile = tempfile.NamedTemporaryFile(dir=".", delete=False)
     f = tmpfile.name
+    tmpfile.close()
+
     NetworkWriter.writeToFile(n, f)
     tmpnet = NetworkReader.readFrom(f)
     NetworkWriter.writeToFile(tmpnet, f)
     endnet = NetworkReader.readFrom(f)
+
+    # Unlink temporary file.
+    os.unlink(f)
+
     netCompare(tmpnet, endnet, forwardpasses, True)
+
+
 
 
 def sortedProfiling(code, maxfunctions=50):
