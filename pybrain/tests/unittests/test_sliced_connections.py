@@ -8,7 +8,7 @@ Trying to build a network with shared connections:
     >>> n = buildSlicedNetwork()
     >>> n.params[:] = array((2, 2))
     
-The transfomation of the first input to the second output is identical to the transformation of the 
+The transformation of the first input to the second output is identical to the transformation of the 
 second towards the first:
 
     >>> r1, r2 = 2.5, 3.2
@@ -30,8 +30,9 @@ from pybrain.tests import runModuleTestSuite
 
 
 def buildSlicedNetwork():
-    """ build a network with shared connections. Two hiddne modules are symetrically linked, but to a different 
-    input neuron than the output neuron. The weights are random. """
+    """ build a network with shared connections. Two hidden modules are 
+    symmetrically linked, but to a different input neuron than the 
+    output neuron. The weights are random. """
     N = FeedForwardNetwork('sliced')
     a = LinearLayer(2, name = 'a')
     b = LinearLayer(2, name = 'b')

@@ -14,7 +14,7 @@ Check if the parameters are the same:
     
     >>> from pybrain.tools.xml.networkwriter import NetworkWriter
     
-The transfomation of the first input to the second output is identical to the transformation of the
+The transformation of the first input to the second output is identical to the transformation of the
 second towards the first:
 
     >>> r1, r2 = random(), random()
@@ -55,8 +55,9 @@ from pybrain.tests import runModuleTestSuite
 
 
 def buildSharedCrossedNetwork():
-    """ build a network with shared connections. Two hiddne modules are symetrically linked, but to a different 
-    input neuron than the output neuron. The weights are random. """
+    """ build a network with shared connections. Two hidden modules are 
+    symmetrically linked, but to a different input neuron than the 
+    output neuron. The weights are random. """
     N = FeedForwardNetwork('shared-crossed')
     h = 1
     a = LinearLayer(2, name = 'a')
