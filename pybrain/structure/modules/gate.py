@@ -81,6 +81,7 @@ class DoubleGateLayer(NeuronLayer):
 
 class SwitchLayer(NeuronLayer):
     """Layer that implements pairwise multiplication."""
+    #:TODO: Misleading docstring
 
     def __init__(self, dim, name=None):
         Module.__init__(self, dim, dim * 2, name)
