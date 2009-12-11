@@ -26,10 +26,10 @@ from pybrain.optimization import PGPE
 from pybrain.rl.experiments import EpisodicExperiment
 from time import sleep
 
-batch=2 #number of samples per learning step
+batch=1 #number of samples per learning step
 prnts=1 #number of learning steps after results are printed
-epis=2000/batch/prnts #number of roleouts
-numbExp=10 #number of experiments
+epis=4000/batch/prnts #number of roleouts
+numbExp=40 #number of experiments
 et = ExTools(batch, prnts) #tool for printing and plotting
 
 env = None
@@ -43,9 +43,14 @@ for runs in range(numbExp):
     # create controller network
     net = buildNetwork(len(task.getObservation()), env.actLen, outclass=TanhLayer)    
     # create agent with controller and learner (and its options)
-    agent = OptimizationAgent(net, PGPE(storeAllEvaluations = True, learningRate = 0.05,
-                                    sigmaLearningRate = 0.025))
+    agent = OptimizationAgent(net, PGPE(storeAllEvaluations = True, 
+                                    learningRate = 0.05,
+                                    sigmaLearningRate = 0.025,
+                                    momentum = 0.0,
+                                    epsilon = 6.0,
+                                    rprop = False,))
     et.agent = agent
+    #agent.learner.bestEvaluation = 1500
     # create the experiment
     experiment = EpisodicExperiment(task, agent)
 

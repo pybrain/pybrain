@@ -14,7 +14,7 @@ from pybrain.rl.agents import OptimizationAgent
 from pybrain.optimization import PGPE
 from pybrain.rl.experiments import EpisodicExperiment
 
-batch=2 #number of samples per learning step
+batch=1 #number of samples per learning step
 prnts=100 #number of learning steps after results are printed
 epis=4000/batch/prnts #number of roleouts
 numbExp=10 #number of experiments

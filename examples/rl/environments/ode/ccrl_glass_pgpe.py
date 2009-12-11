@@ -34,16 +34,18 @@ from pybrain.rl.agents import OptimizationAgent
 from pybrain.optimization import PGPE
 from pybrain.rl.experiments import EpisodicExperiment
 
-hiddenUnits = 10
-batch=2 #number of samples per learning step
+hiddenUnits = 4
+batch=1 #number of samples per learning step
 prnts=1 #number of learning steps after results are printed
-epis=5000000/batch/prnts #number of roleouts
+epis=10000/batch/prnts #number of roleouts
 numbExp=10 #number of experiments
 et = ExTools(batch, prnts) #tool for printing and plotting
 
+env = None
 for runs in range(numbExp):
     # create environment
     #Options: XML-Model, Bool(OpenGL), Bool(Realtime simu. while client is connected), ServerIP(default:localhost), Port(default:21560)
+    if env != None: env.closeSocket()
     env = CCRLEnvironment()
     # create task
     task = CCRLGlasTask(env)

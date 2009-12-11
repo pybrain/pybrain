@@ -39,6 +39,10 @@ class FlexCubeEnvironment(Environment):
         self.euler()
         self.realtime = realtime
         self.step = 0
+
+    def closeSocket(self):
+        self.server.UDPInSock.close()
+        sleep(10)        
         
     def setEdges(self):
         self.edges = zeros((12, 2), int)

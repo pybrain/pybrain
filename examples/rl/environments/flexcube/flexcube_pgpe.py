@@ -38,15 +38,17 @@ from pybrain.optimization import PGPE
 from pybrain.rl.experiments import EpisodicExperiment
 
 hiddenUnits = 4
-batch=2 #number of samples per learning step
+batch=1 #number of samples per learning step
 prnts=1 #number of learning steps after results are printed
 epis=5000000/batch/prnts #number of roleouts
 numbExp=10 #number of experiments
 et = ExTools(batch, prnts) #tool for printing and plotting
 
+env = None
 for runs in range(numbExp):
     # create environment
     #Options: Bool(OpenGL), Bool(Realtime simu. while client is connected), ServerIP(default:localhost), Port(default:21560)
+    if env != None: env.closeSocket()
     env = FlexCubeEnvironment()
     # create task
     task = WalkTask(env)
