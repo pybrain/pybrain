@@ -43,7 +43,7 @@ class LearningAgent(LoggingAgent):
                 
     
     def getAction(self):
-        """ Activate the module with the last observation, adda the exploration from
+        """ Activate the module with the last observation, add the exploration from
             the explorer object and store the result as last action. """
         LoggingAgent.getAction(self)
         

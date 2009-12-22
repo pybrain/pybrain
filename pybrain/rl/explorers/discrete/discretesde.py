@@ -4,6 +4,7 @@ __author__ = "Thomas Rueckstiess, ruecksti@in.tum.de"
 from pybrain.rl.explorers.discrete.discrete import DiscreteExplorer
 from pybrain.rl.learners.valuebased.interface import ActionValueTable, ActionValueNetwork
 from copy import deepcopy
+from numpy import random, array
 
 
 class DiscreteStateDependentExplorer(DiscreteExplorer):
@@ -39,7 +40,10 @@ class DiscreteStateDependentExplorer(DiscreteExplorer):
         """ Activate the copied module instead of the original and
             feed it with the current state.
         """
-        outbuf[:] = self.explorerModule.activate(self.state)
+        if random.random() < 0.001:
+            outbuf[:] = array([random.randint(self.module.numActions)])
+        else:
+            outbuf[:] = self.explorerModule.activate(self.state)
     
     def newEpisode(self):
         """ Inform the explorer about the start of a new episode. """

@@ -24,7 +24,6 @@ class Environment(object):
     # number of possible actions for discrete action space
     numActions = None
     
-    
     def getSensors(self):
         """ the currently visible state of the world (the observation may be 
             stochastic - repeated calls returning different values)

@@ -22,7 +22,8 @@ class ValueBasedLearner(ExploringLearner, DataSetLearner, EpisodicLearner):
 
     def _setModule(self, module):
         """ Set module and tell explorer about the module. """
-        self.explorer.module = module
+        if self.explorer:
+            self.explorer.module = module
         self._module = module
 
     def _getModule(self):
