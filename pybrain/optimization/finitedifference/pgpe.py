@@ -9,7 +9,6 @@ from fd import FiniteDifferences
 class PGPE(FiniteDifferences):
     """ Policy Gradients with Parameter Exploration (ICANN 2008)."""
     
-    batchSize = 2    
     #:exploration type
     exploration = "local"
     #: specific settings for sigma updates
@@ -46,6 +45,7 @@ class PGPE(FiniteDifferences):
         #reward of positive and negative perturbations
         reward1 = self._oneEvaluation(self.current + deltas)        
         reward2 = self._oneEvaluation(self.current - deltas)
+
         self.mreward = (reward1 + reward2) / 2.                
         if self.baseline is None: 
             # first learning step

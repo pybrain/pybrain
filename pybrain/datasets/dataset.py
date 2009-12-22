@@ -6,6 +6,7 @@ import random
 import pickle
 from itertools import chain
 from scipy import zeros, resize, ravel, asarray
+import scipy
 
 from pybrain.utilities import Serializable
 
@@ -355,5 +356,13 @@ class DataSet(Serializable):
         """Like .batches(), but the order is random."""
         permutation = random.shuffle(range(len(self)))
         return self.batches(label, n, permutation)
-                      
-        
+
+    def replaceNansByMeans(self):
+        """Replace all not-a-number entries in the dataset by the means of the
+        corresponding column."""
+        for d in self.data.itervalues():
+            means = scipy.nansum(d[:self.getLength()], axis=0) / self.getLength()
+            for i in xrange(self.getLength()):
+                for j in xrange(ds.dim):
+                    if not scipy.isfinite(d[i, j]):
+                        d[i, j] = means[j]

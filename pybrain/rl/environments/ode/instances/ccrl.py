@@ -11,7 +11,7 @@ class CCRLEnvironment(ODEEnvironment):
     def __init__(self, xodeFile="ccrlGlas.xode", renderer=True, realtime=False, ip="127.0.0.1", port="21590", buf='16384'):
         ODEEnvironment.__init__(self, renderer, realtime, ip, port, buf)
         # load model file
-        self.pert = asarray([1.0, 0.0, 0.0])
+        self.pert = asarray([0.0, 0.0, 0.0])
         self.loadXODE(imp.find_module('pybrain')[1] + "/rl/environments/ode/models/" + xodeFile)
 
         # standard sensors and actuators    
@@ -131,7 +131,7 @@ class CCRLEnvironment(ODEEnvironment):
 
     def reset(self):
         ODEEnvironment.reset(self)
-        self.pert = asarray([1.0, 0.0, 0.0])
+        self.pert = asarray([1.25, 0.0, 0.75])
 
 if __name__ == '__main__' :
     w = CCRLEnvironment() 

@@ -8,7 +8,9 @@
 
 from cPickle import load, dump
 from scipy import array, sqrt
-from pylab import *
+from pylab import errorbar, show
+
+
 class ExTools():
     agent = None
     loadName = "none.wgt"
@@ -27,7 +29,7 @@ class ExTools():
         filepointer = file(filename)
         self.agent.learner.current = load(filepointer)
         filepointer.close()        
-        self.agent.learner.gd.init(agent.learner.current)
+        self.agent.learner.gd.init(self.agent.learner.current)
         self.agent.learner.epsilon = 0.2
         self.agent.learner.initSigmas()
 

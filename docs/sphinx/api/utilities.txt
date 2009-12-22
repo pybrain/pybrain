@@ -19,6 +19,14 @@
 
 .. autofunction:: crossproduct
 
+.. rubric:: Tools for dictionaries
+
+.. autofunction:: subDict
+
+.. autofunction:: matchingDict
+
+.. autofunction:: dictCombinations
+
 .. rubric:: Matrix tools
 
 .. autofunction:: triu2flat

@@ -42,7 +42,7 @@ def pca(data, dim):
     Every row of the matrix resembles a point in the data space.
     """
     
-    assert dim <= data.ndim, \
+    assert dim <= data.shape[1], \
         "dim must be less or equal than the original dimension"
     
     # We have to make a copy of the original data and substract the mean

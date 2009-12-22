@@ -11,7 +11,7 @@ from inspect import isclass
 
 class FitnessPlotter:
     """ plot the function's values in the rectangular region specified by ranges. By default, plot in [-1,1] """
-    def __init__(self, f, xmin= -1, xmax=1, ymin= -1, ymax=1, precision=50, is3d=False, newfig=True,
+    def __init__(self, f, xmin= -1, xmax=1, ymin= -1, ymax=1, precision=50, newfig=True,
                  colorbar=False, cblabel=None):
         """ :key precision: how many steps along every dimension """        
         if isinstance(f, FunctionEnvironment):
@@ -24,17 +24,13 @@ class FitnessPlotter:
             self.f = f
             
         self.precision = precision
-        self.is3d = is3d
         self.colorbar = colorbar
         self.cblabel = cblabel
         self.xs = r_[xmin:xmax:self.precision * 1j]
         self.ys = r_[ymin:ymax:self.precision * 1j]
         self.zs = self._generateValMap()
-        if newfig or self.is3d:        
+        if newfig:        
             self.fig = figure()
-        if self.is3d:
-            import matplotlib.axes3d as p3
-            self.fig = p3.Axes3D(self.fig) #@UndefinedVariable
             
     def _generateValMap(self):
         """ generate the function fitness values for the current grid of x and y """
@@ -46,15 +42,11 @@ class FitnessPlotter:
     
     def plotAll(self, levels=50, popup=True):
         """ :key levels: how many fitness levels should be drawn."""
-        if self.is3d:
-            X, Y = meshgrid(self.xs, self.ys)    
-            self.fig.contour3D(X, Y, self.zs, levels)                 
-        else:
-            tmp = contour(self.xs, self.ys, self.zs, levels)
-            if self.colorbar:
-                cb = colorbar(tmp)
-                if self.cblabel != None:
-                    cb.set_label(self.cblabel)
+        tmp = contour(self.xs, self.ys, self.zs, levels)
+        if self.colorbar:
+            cb = colorbar(tmp)
+            if self.cblabel != None:
+                cb.set_label(self.cblabel)
 
         if popup: show()
     
@@ -65,20 +57,13 @@ class FitnessPlotter:
         # split samples into x and y
         sx = zeros(len(samples))
         sy = zeros(len(samples))
-        if self.is3d:
-            sz = zeros(len(samples))
         for i, s in enumerate(samples):
             sx[i] = s[0]
             sy[i] = s[1]
-            if self.is3d:
-                sz[i] = self.f(s[0], s[1])
         if rescale:            
             self._rescale(min(sx), max(sx), min(sy), max(sy))
     
-        if self.is3d:
-            self.fig.plot3D(sx, sy, sz, color + '+')
-        else:
-            plot(sx, sy, color + '+')
+        plot(sx, sy, color + '+')
     
     def _rescale(self, xmin, xmax, ymin, ymax):
         self.xs = r_[min(xmin * 1.1, min(self.xs)):max(xmax * 1.1, max(self.xs)):self.precision * 1j]
@@ -105,13 +90,8 @@ class FitnessPlotter:
             self._rescale(min(ex), max(ex), min(ey), max(ey))
         
         # plot them
-        if self.is3d:
-            cz = self.f(center[0], center[1])
-            self.fig.plot3D([center[0]], [center[1]], [cz], color + '+')
-            self.fig.plot3D(ex, ey, ez, color + '-')
-        else:
-            plot([center[0]], [center[1]], '+', color=color, alpha=transp)
-            plot(ex, ey, '-', color=color, alpha=transp)
+        plot([center[0]], [center[1]], '+', color=color, alpha=transp)
+        plot(ex, ey, '-', color=color, alpha=transp)
             
         
     def saveAs(self, filename, format='.jpg'):
