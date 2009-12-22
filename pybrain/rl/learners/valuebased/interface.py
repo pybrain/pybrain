@@ -40,6 +40,7 @@ class ActionValueTable(Table, ActionValueInterface):
     def _forwardImplementation(self, inbuf, outbuf):
         """ Take a vector of length 1 (the state coordinate) and return
             the action with the maximum value over all actions for this state.
+            This table is used for value-based TD algorithms like Q or SARSA.
         """
         outbuf[0] = self.getMaxAction(inbuf[0])
 
@@ -56,6 +57,12 @@ class ActionValueTable(Table, ActionValueInterface):
 
 
 class ActionValueNetwork(Module, ActionValueInterface):
+    """ A network that approximates action values for continuous state / 
+        discrete action RL environments. To receive the maximum action
+        for a given state, a forward pass is executed for all discrete 
+        actions, and the maximal action is returned. This network is used
+        for the NFQ algorithm. """
+        
     def __init__(self, dimState, numActions, name=None):
         Module.__init__(self, dimState, 1, name)
         self.network = buildNetwork(dimState + numActions, dimState + numActions, 1)
