@@ -78,6 +78,9 @@ class VanillaGradientEvolutionStrategies(DistributionBasedOptimizer):
         # for baseline computation
         self.phiSquareWindow = zeros((self.batchSize, self.numDistrParams))
         
+        if self.storeAllDistributions:
+            self._allDistributions = [(self.x.copy(), self.sigma.copy())]
+        
     def _produceNewSample(self, z=None, p=None):
         if z == None:
             p = randn(self.numParameters)
@@ -175,6 +178,10 @@ class VanillaGradientEvolutionStrategies(DistributionBasedOptimizer):
         self.allCenters.append(self.x.copy())
         self.allFactorSigmas.append(self.factorSigma.copy())
         
+        if self.storeAllDistributions:
+            self._allDistributions.append((self.x.copy(), self.sigma.copy()))
+        
+        
     def _onlineLearn(self):      
         """ Online learning. """    
         # produce one sample and evaluate        
@@ -191,6 +198,9 @@ class VanillaGradientEvolutionStrategies(DistributionBasedOptimizer):
         self.x += self.learningRate * update[:xdim]
         self.factorSigma += self.learningRateSigma * flat2triu(update[xdim:], xdim)
         self.sigma = dot(self.factorSigma.T, self.factorSigma)
+        
+        if self.storeAllDistributions:
+            self._allDistributions.append(self.x.copy(), self.sigma.copy())
             
     def _calcBatchUpdate(self, fitnesses):
         gradient = self._calcVanillaBatchGradient(self.allSamples[-self.batchSize:], fitnesses)

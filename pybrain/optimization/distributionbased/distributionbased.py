@@ -20,6 +20,8 @@ class DistributionBasedOptimizer(ContinuousOptimizer):
     
     distributionType = GAUSSIAN
     
+    storeAllDistributions = False
+    
     def _updateDistribution(self, dparamDeltas):
         """ Update the parameters of the current distribution, directly. """
         
