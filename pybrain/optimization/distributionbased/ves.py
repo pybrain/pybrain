@@ -68,7 +68,7 @@ class VanillaGradientEvolutionStrategies(DistributionBasedOptimizer):
         # keeping track of history
         self.allSamples = []
         self.allFitnesses = []
-        self.allPs = []
+        #self.allPs = []
         
         self.allGenerated = [0]
         
@@ -85,9 +85,9 @@ class VanillaGradientEvolutionStrategies(DistributionBasedOptimizer):
         if z == None:
             p = randn(self.numParameters)
             z = dot(self.factorSigma.T, p) + self.x
-        if p == None:
-            p = dot(inv(self.factorSigma).T, (z - self.x))            
-        self.allPs.append(p)
+        #if p == None:
+        #    p = dot(inv(self.factorSigma).T, (z - self.x))            
+        #self.allPs.append(p)
         self.allSamples.append(z)
         fit = self._oneEvaluation(z)
         self.allFitnesses.append(fit) 
@@ -99,45 +99,82 @@ class VanillaGradientEvolutionStrategies(DistributionBasedOptimizer):
             for _ in range(self.batchSize):
                 self._produceNewSample()
             self.allGenerated.append(self.batchSize + self.allGenerated[-1])
+        
+        # using new importance mixing code 
         else:
-            olds = len(self.allSamples)
+            from pybrain.auxiliary.importancemixing import importanceMixing
+            oldpoints = self.allSamples[-self.batchSize:]
             oldDetFactorSigma = det(self.allFactorSigmas[-2])
             newDetFactorSigma = det(self.factorSigma)
             invA = inv(self.factorSigma)
-    
-            # All pdfs computed here are off by a coefficient of 1/power(2.0*pi, self.numDistrParams/2.)
-            # but as only their relative values matter, we ignore it.
-            
-            # stochastically reuse old samples, according to the change in distribution
-            for s in range(olds - self.batchSize, olds):
-                oldPdf = exp(-0.5 * dot(self.allPs[s], self.allPs[s])) / oldDetFactorSigma
-                sample = self.allSamples[s]
-                newPs = dot(invA.T, (sample - self.x))
-                newPdf = exp(-0.5 * dot(newPs, newPs)) / newDetFactorSigma
-                r = rand()
-                if r < (1 - self.forcedRefresh) * newPdf / oldPdf:
-                    self.allSamples.append(sample)
-                    self.allFitnesses.append(self.allFitnesses[s])
-                    self.allPs.append(newPs)
-                # never use only old samples
-                if (olds + self.batchSize) - len(self.allSamples) < self.batchSize * self.forcedRefresh:
-                    break
-            self.allGenerated.append(self.batchSize - (len(self.allSamples) - olds) + self.allGenerated[-1])
-
-            # add the remaining ones
+            offset = len(self.allSamples) - self.batchSize
             oldInvA = inv(self.allFactorSigmas[-2])
-            while  len(self.allSamples) < olds + self.batchSize:
-                r = rand()
-                if r < self.forcedRefresh:
-                    self._produceNewSample()
-                else:
-                    p = randn(self.numParameters)
-                    newPdf = exp(-0.5 * dot(p, p)) / newDetFactorSigma
-                    sample = dot(self.factorSigma.T, p) + self.x
-                    oldPs = dot(oldInvA.T, (sample - self.allCenters[-2]))
-                    oldPdf = exp(-0.5 * dot(oldPs, oldPs)) / oldDetFactorSigma
-                    if r < 1 - oldPdf / newPdf:
-                        self._produceNewSample(sample, p)
+            oldX = self.allCenters[-2]
+            
+            def oldpdf(s):
+                p = dot(oldInvA.T, (s- oldX))
+                return exp(-0.5 * dot(p, p)) / oldDetFactorSigma
+                
+            def newpdf(s):
+                p = dot(invA.T, (s - self.x))
+                return exp(-0.5 * dot(p, p)) / newDetFactorSigma
+            
+            def newSample():
+                p = randn(self.numParameters)
+                return dot(self.factorSigma.T, p) + self.x                
+                
+            reused, newpoints = importanceMixing(oldpoints, oldpdf, newpdf, 
+                                                 newSample, self.forcedRefresh)
+            
+            self.allGenerated.append(self.allGenerated[-1]+len(newpoints))
+            
+            for i in reused:
+                self.allSamples.append(self.allSamples[offset+i])
+                self.allFitnesses.append(self.allFitnesses[offset+i])
+            for s in newpoints:
+                self._produceNewSample(s)
+                    
+            
+            
+#        else:
+#            olds = len(self.allSamples)
+#            oldDetFactorSigma = det(self.allFactorSigmas[-2])
+#            newDetFactorSigma = det(self.factorSigma)
+#            invA = inv(self.factorSigma)
+#    
+#            # All pdfs computed here are off by a coefficient of 1/power(2.0*pi, self.numDistrParams/2.)
+#            # but as only their relative values matter, we ignore it.
+#            
+#            # stochastically reuse old samples, according to the change in distribution
+#            for s in range(olds - self.batchSize, olds):
+#                oldPdf = exp(-0.5 * dot(self.allPs[s], self.allPs[s])) / oldDetFactorSigma
+#                sample = self.allSamples[s]
+#                newPs = dot(invA.T, (sample - self.x))
+#                newPdf = exp(-0.5 * dot(newPs, newPs)) / newDetFactorSigma
+#                r = rand()
+#                if r < (1 - self.forcedRefresh) * newPdf / oldPdf:
+#                    self.allSamples.append(sample)
+#                    self.allFitnesses.append(self.allFitnesses[s])
+#                    self.allPs.append(newPs)
+#                # never use only old samples
+#                if (olds + self.batchSize) - len(self.allSamples) < self.batchSize * self.forcedRefresh:
+#                    break
+#            self.allGenerated.append(self.batchSize - (len(self.allSamples) - olds) + self.allGenerated[-1])
+#
+#            # add the remaining ones
+#            oldInvA = inv(self.allFactorSigmas[-2])
+#            while  len(self.allSamples) < olds + self.batchSize:
+#                r = rand()
+#                if r < self.forcedRefresh:
+#                    self._produceNewSample()
+#                else:
+#                    p = randn(self.numParameters)
+#                    newPdf = exp(-0.5 * dot(p, p)) / newDetFactorSigma
+#                    sample = dot(self.factorSigma.T, p) + self.x
+#                    oldPs = dot(oldInvA.T, (sample - self.allCenters[-2]))
+#                    oldPdf = exp(-0.5 * dot(oldPs, oldPs)) / oldDetFactorSigma
+#                    if r < 1 - oldPdf / newPdf:
+#                        self._produceNewSample(sample, p)
                 
     def _learnStep(self):
         if self.online:
