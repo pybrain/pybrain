@@ -17,7 +17,7 @@ def importanceMixing(oldpoints, oldpdf, newpdf, newdistr, forcedRefresh = 0.01):
         if r < (1-forcedRefresh) * newpdf(sample) / oldpdf(sample):
             reuseindices.append(i)
         # never use only old samples
-        if batch - len(reuseindices) < batch * forcedRefresh:
+        if batch - len(reuseindices) <= max(1, batch * forcedRefresh):
             break    
     newpoints = []
     # add the remaining ones

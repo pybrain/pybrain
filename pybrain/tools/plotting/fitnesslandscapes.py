@@ -9,6 +9,25 @@ from pybrain.rl.environments.functions import FunctionEnvironment
 from inspect import isclass
 
 
+def plotCovEllipse(emat, center, segments=50, color='y', transp=1.):
+    """ Plots a covariance ellipse. """
+    # compute a nb of points on the ellipse
+    ex = zeros(segments + 1)
+    ey = zeros(segments + 1)
+    u, s, d = svd(emat)       
+    sm = dot(d, dot(diag(sqrt(s)), u))
+    for i in range(segments + 1):            
+        circlex = cos((2 * pi * i) / float(segments))
+        circley = sin((2 * pi * i) / float(segments))
+        ex[i] = center[0] + sm[0, 0] * circlex + sm[0, 1] * circley
+        ey[i] = center[1] + sm[1, 0] * circlex + sm[1, 1] * circley            
+    
+    # plot them
+    plot([center[0]], [center[1]], '+', color=color, alpha=transp)
+    plot(ex, ey, '-', color=color, alpha=transp)
+    return ex, ey
+    
+
 class FitnessPlotter:
     """ plot the function's values in the rectangular region specified by ranges. By default, plot in [-1,1] """
     def __init__(self, f, xmin= -1, xmax=1, ymin= -1, ymax=1, precision=50, newfig=True,
@@ -72,27 +91,9 @@ class FitnessPlotter:
         
     def addCovEllipse(self, emat, center, segments=50, rescale=True, color='c', transp=1.):
         """plot a covariance ellipse """
-        # compute a nb of points on the ellipse
-        ex = zeros(segments + 1)
-        ey = zeros(segments + 1)
-        if self.is3d:
-            ez = zeros(segments + 1)     
-        u, s, d = svd(emat)       
-        sm = dot(d, dot(diag(sqrt(s)), u))
-        for i in range(segments + 1):            
-            circlex = cos((2 * pi * i) / float(segments))
-            circley = sin((2 * pi * i) / float(segments))
-            ex[i] = center[0] + sm[0, 0] * circlex + sm[0, 1] * circley
-            ey[i] = center[1] + sm[1, 0] * circlex + sm[1, 1] * circley
-            if self.is3d:
-                ez[i] = self.f(ex[i], ey[i])
+        ex, ey = plotCovEllipse(emat, center, segments, color, transp)
         if rescale:            
-            self._rescale(min(ex), max(ex), min(ey), max(ey))
-        
-        # plot them
-        plot([center[0]], [center[1]], '+', color=color, alpha=transp)
-        plot(ex, ey, '-', color=color, alpha=transp)
-            
+            self._rescale(min(ex), max(ex), min(ey), max(ey))                    
         
     def saveAs(self, filename, format='.jpg'):
         savefig(filename + format)

@@ -6,6 +6,7 @@ from scipy.linalg import cholesky, inv, det
 from pybrain.optimization.distributionbased.distributionbased import DistributionBasedOptimizer
 from pybrain.tools.rankingfunctions import TopLinearRanking
 from pybrain.utilities import flat2triu, triu2flat
+from pybrain.auxiliary import importanceMixing
 
 
 class VanillaGradientEvolutionStrategies(DistributionBasedOptimizer):
@@ -50,6 +51,8 @@ class VanillaGradientEvolutionStrategies(DistributionBasedOptimizer):
             self.momentumVector = zeros(self.numDistrParams)
         if self.learningRateSigma == None:
             self.learningRateSigma = self.learningRate
+        if self.batchSize is None:
+            self.batchSize = 10 * self.numParameters
         
         if self.rangemins == None:
             self.rangemins = -ones(xdim)
@@ -68,7 +71,6 @@ class VanillaGradientEvolutionStrategies(DistributionBasedOptimizer):
         # keeping track of history
         self.allSamples = []
         self.allFitnesses = []
-        #self.allPs = []
         
         self.allGenerated = [0]
         
@@ -81,13 +83,10 @@ class VanillaGradientEvolutionStrategies(DistributionBasedOptimizer):
         if self.storeAllDistributions:
             self._allDistributions = [(self.x.copy(), self.sigma.copy())]
         
-    def _produceNewSample(self, z=None, p=None):
+    def _produceNewSample(self, z=None):
         if z == None:
             p = randn(self.numParameters)
             z = dot(self.factorSigma.T, p) + self.x
-        #if p == None:
-        #    p = dot(inv(self.factorSigma).T, (z - self.x))            
-        #self.allPs.append(p)
         self.allSamples.append(z)
         fit = self._oneEvaluation(z)
         self.allFitnesses.append(fit) 
@@ -102,7 +101,6 @@ class VanillaGradientEvolutionStrategies(DistributionBasedOptimizer):
         
         # using new importance mixing code 
         else:
-            from pybrain.auxiliary.importancemixing import importanceMixing
             oldpoints = self.allSamples[-self.batchSize:]
             oldDetFactorSigma = det(self.allFactorSigmas[-2])
             newDetFactorSigma = det(self.factorSigma)
@@ -133,49 +131,7 @@ class VanillaGradientEvolutionStrategies(DistributionBasedOptimizer):
                 self.allFitnesses.append(self.allFitnesses[offset+i])
             for s in newpoints:
                 self._produceNewSample(s)
-                    
-            
-            
-#        else:
-#            olds = len(self.allSamples)
-#            oldDetFactorSigma = det(self.allFactorSigmas[-2])
-#            newDetFactorSigma = det(self.factorSigma)
-#            invA = inv(self.factorSigma)
-#    
-#            # All pdfs computed here are off by a coefficient of 1/power(2.0*pi, self.numDistrParams/2.)
-#            # but as only their relative values matter, we ignore it.
-#            
-#            # stochastically reuse old samples, according to the change in distribution
-#            for s in range(olds - self.batchSize, olds):
-#                oldPdf = exp(-0.5 * dot(self.allPs[s], self.allPs[s])) / oldDetFactorSigma
-#                sample = self.allSamples[s]
-#                newPs = dot(invA.T, (sample - self.x))
-#                newPdf = exp(-0.5 * dot(newPs, newPs)) / newDetFactorSigma
-#                r = rand()
-#                if r < (1 - self.forcedRefresh) * newPdf / oldPdf:
-#                    self.allSamples.append(sample)
-#                    self.allFitnesses.append(self.allFitnesses[s])
-#                    self.allPs.append(newPs)
-#                # never use only old samples
-#                if (olds + self.batchSize) - len(self.allSamples) < self.batchSize * self.forcedRefresh:
-#                    break
-#            self.allGenerated.append(self.batchSize - (len(self.allSamples) - olds) + self.allGenerated[-1])
-#
-#            # add the remaining ones
-#            oldInvA = inv(self.allFactorSigmas[-2])
-#            while  len(self.allSamples) < olds + self.batchSize:
-#                r = rand()
-#                if r < self.forcedRefresh:
-#                    self._produceNewSample()
-#                else:
-#                    p = randn(self.numParameters)
-#                    newPdf = exp(-0.5 * dot(p, p)) / newDetFactorSigma
-#                    sample = dot(self.factorSigma.T, p) + self.x
-#                    oldPs = dot(oldInvA.T, (sample - self.allCenters[-2]))
-#                    oldPdf = exp(-0.5 * dot(oldPs, oldPs)) / oldDetFactorSigma
-#                    if r < 1 - oldPdf / newPdf:
-#                        self._produceNewSample(sample, p)
-                
+                                            
     def _learnStep(self):
         if self.online:
             self._onlineLearn()

@@ -1,7 +1,7 @@
 __author__ = 'Tom Schaul, tom@idsia.ch'
 
-from scipy import array, exp, tanh, clip, log, dot, sqrt, power, pi, tan, diag, rand
-from scipy.linalg import inv, det, svd
+from scipy import array, exp, tanh, clip, log, dot, sqrt, power, pi, tan, diag, rand, real_if_close
+from scipy.linalg import inv, det, svd, logm, expm2
 
 
 def semilinear(x):
@@ -146,3 +146,10 @@ def approxChiFunction(dim):
     approximation according to: Ostermeier 1997. """
     dim = float(dim)
     return sqrt(dim) * (1 - 1 / (4 * dim) + 1 / (21 * dim ** 2))
+
+    
+def sqrtm(M):
+    """ Returns the symmetric semi-definite positive square root of a matrix. """
+    r = real_if_close(expm2(0.5 * logm(M)), 1e-8)
+    return (r + r.T) / 2
+
