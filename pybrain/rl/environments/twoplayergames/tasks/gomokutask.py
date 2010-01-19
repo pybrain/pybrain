@@ -82,7 +82,7 @@ class GomokuTask(EpisodicTask, Named):
         if not self.isFinished():
             EpisodicTask.performAction(self, self.opponent.getAction())            
             
-    def __call__(self, x):
+    def f(self, x):
         """ If a module is given, wrap it into a ModuleDecidingAgent before evaluating it. 
         Also, if applicable, average the result over multiple games. """
         if isinstance(x, Module):
@@ -96,7 +96,7 @@ class GomokuTask(EpisodicTask, Named):
         self.opponent.game = self.env
         for dummy in range(self.averageOverGames):
             agent.color = -self.opponent.color
-            res += EpisodicTask.__call__(self, agent)            
+            res += EpisodicTask.f(self, agent)            
         return res / float(self.averageOverGames)
     
     
