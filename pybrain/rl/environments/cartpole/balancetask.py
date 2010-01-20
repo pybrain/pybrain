@@ -154,8 +154,36 @@ class DiscreteNoHelpTask(DiscreteBalanceTask):
         else: 
             reward = 0.0
         return reward   
-    
 
+class DiscretePOMDPTask(DiscreteBalanceTask):
+    def __init__(self, env=None, maxsteps=1000):
+        """
+        :key env: (optional) an instance of a CartPoleEnvironment (or a subclass thereof)
+        :key maxsteps: maximal number of steps (default: 1000) 
+        """
+        if env == None:
+            env = CartPoleEnvironment()
+        EpisodicTask.__init__(self, env) 
+        self.N = maxsteps
+        self.t = 0
+        
+        # no scaling of sensors
+        self.sensor_limits = [None] * 2
+        
+        # scale actor
+        self.actor_limits = [(-50, 50)]
+
+    @property
+    def outdim(self):
+        return 2
+        
+    def getObservation(self):
+        """ a filtered mapping to getSample of the underlying environment. """
+        sensors = [self.env.getSensors()[0], self.env.getSensors()[2]]
+        
+        if self.sensor_limits:
+            sensors = self.normalize(sensors)
+        return sensors
 
 
 class LinearizedBalanceTask(BalanceTask):
