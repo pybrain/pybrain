@@ -37,7 +37,7 @@ from pybrain.rl.experiments import EpisodicExperiment
 hiddenUnits = 4
 batch=1 #number of samples per learning step
 prnts=1 #number of learning steps after results are printed
-epis=10000/batch/prnts #number of roleouts
+epis=2000/batch/prnts #number of roleouts
 numbExp=10 #number of experiments
 et = ExTools(batch, prnts) #tool for printing and plotting
 
@@ -50,7 +50,7 @@ for runs in range(numbExp):
     # create task
     task = CCRLGlasTask(env)
     # create controller network
-    net = buildNetwork(len(task.getObservation()), hiddenUnits, env.actLen, outclass=TanhLayer)    
+    net = buildNetwork(len(task.getObservation()), hiddenUnits, env.actLen, outclass=TanhLayer) #, hiddenUnits    
     # create agent with controller and learner (and its options)
     agent = OptimizationAgent(net, PGPE(storeAllEvaluations = True))
     et.agent = agent
