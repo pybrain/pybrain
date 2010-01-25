@@ -81,7 +81,7 @@ class CaptureGameTask(EpisodicTask, Named):
         if not self.isFinished():
             EpisodicTask.performAction(self, self.opponent.getAction())            
             
-    def __call__(self, x):
+    def f(self, x):
         """ If a module is given, wrap it into a ModuleDecidingAgent before evaluating it. 
         Also, if applicable, average the result over multiple games. """
         if isinstance(x, Module):
@@ -93,9 +93,9 @@ class CaptureGameTask(EpisodicTask, Named):
         res = 0
         agent.game = self.env
         self.opponent.game = self.env
-        for dummy in range(self.averageOverGames):
+        for _ in range(self.averageOverGames):
             agent.color = -self.opponent.color
-            x = EpisodicTask.__call__(self, agent)           
+            x = EpisodicTask.f(self, agent)           
             res += x
         return res / float(self.averageOverGames)
     
