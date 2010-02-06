@@ -57,7 +57,7 @@ class XNES(DistributionBasedOptimizer):
         utilities = self.shapingFunction(self._currentEvaluations)        
         utilities /= sum(utilities)  # make the utilities sum to 1
         if self.uniformBaseline:
-            utilities -= 1./self.batchSize             
+            utilities -= 1./self.batchSize      
         samples = array(map(self._base2sample, self._population))
         
         dCenter = dot(samples.T, utilities)
@@ -83,7 +83,10 @@ class XNES(DistributionBasedOptimizer):
     def _lastCenter(self): return self._allDistributions[-2][0]    
     @property
     def _population(self):
-        return [self._allEvaluated[i] for i in self._pointers]
+        if self._wasUnwrapped:
+            return [self._allEvaluated[i].params for i in self._pointers]
+        else:
+            return [self._allEvaluated[i] for i in self._pointers]
         
     @property
     def _currentEvaluations(self):        
