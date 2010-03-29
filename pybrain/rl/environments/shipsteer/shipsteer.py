@@ -63,6 +63,10 @@ class ShipSteeringEnvironment(Environment):
         elif h < -180.: 
             h += 360.
         self.sensors = (h, hdot, v)
+
+    def closeSocket(self):
+        self.server.UDPInSock.close()
+        sleep(10)        
                         
     def reset(self):
         """ re-initializes the environment, setting the ship to rest at a random orientation.
