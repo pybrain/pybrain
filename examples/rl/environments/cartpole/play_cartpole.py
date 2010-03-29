@@ -45,6 +45,7 @@ for n in range(agent.history.getNumSequences()):
     reward = returns[2]
     ret.append( sum(reward, 0).item() )
 print ret, "mean:",mean(ret)
-env.getRenderer().stop()
+#env.getRenderer().stop()
+
 
                          
