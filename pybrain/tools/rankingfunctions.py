@@ -4,7 +4,7 @@ __author__ = 'Daan Wierstra and Tom Schaul'
 
 from pybrain.utilities import Named
 from random import randint
-from scipy import zeros, argmax, array, power, exp, sqrt, var, zeros_like, arange, mean
+from scipy import zeros, argmax, array, power, exp, sqrt, var, zeros_like, arange, mean, log
 
 
 def rankedFitness(R):
@@ -83,7 +83,7 @@ class SmoothGiniRanking(RankingFunction):
 
        
 class ExponentialRanking(RankingFunction):
-    """ Exponantial transformation (with a temperature parameter) of the rank values. """
+    """ Exponential transformation (with a temperature parameter) of the rank values. """
 
     temperature = 10.
 
@@ -92,7 +92,14 @@ class ExponentialRanking(RankingFunction):
         ranks = ranks / (len(R) - 1.0)
         return exp(ranks * self.temperature)
         
-    
+class HansenRanking(RankingFunction):
+    """ Ranking, as used in CMA-ES """
+
+    def __call__(self, R):
+        ranks = rankedFitness(R)
+        return array([max(0., x) for x in log(len(R)/2.+1.0)-log(len(R)-array(ranks))])
+        
+        
 class TopSelection(RankingFunction):
     """ Select the fraction of the best ranked fitnesses. """
 

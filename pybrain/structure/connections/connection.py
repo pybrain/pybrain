@@ -27,11 +27,11 @@ class Connection(Named):
         self._name = name
         self.inSliceFrom = inSliceFrom
         self.outSliceFrom = outSliceFrom
-        if inSliceTo:
+        if inSliceTo is not None:
             self.inSliceTo = inSliceTo
         else:
             self.inSliceTo = inmod.outdim
-        if outSliceTo:
+        if outSliceTo is not None:
             self.outSliceTo = outSliceTo
         else:
             self.outSliceTo = outmod.indim

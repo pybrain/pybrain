@@ -421,12 +421,17 @@ def decrementAny(tup):
     return res
     
     
-def reachable(stepFunction, start, destinations):
+def reachable(stepFunction, start, destinations, _alreadyseen=None):
     """ Determines the subset of destinations that can be reached from a set of starting positions,
     while using stepFunction (which produces a list of neighbor states) to navigate. 
-    Uses breadth-first search. """
-    if len(start) == 0:
+    Uses breadth-first search. 
+    Returns a dictionary with reachable destinations and their distances. 
+    """
+    if len(start) == 0 or len(destinations) == 0:
         return {}
+    if _alreadyseen is None:
+        _alreadyseen = []
+    _alreadyseen.extend(start)
     
     # dict with distances to destinations
     res = {}
@@ -438,19 +443,50 @@ def reachable(stepFunction, start, destinations):
     # do one step
     new = set()
     for s in start:
-        new.update(stepFunction(s))
-    for s in new.copy():
+        new.update(stepFunction(s))    
+    new.difference_update(_alreadyseen)
+    ndestinations = list(destinations)
+    
+    for s in list(new):
         if s in destinations:
             res[s] = 1
             new.remove(s)
+            ndestinations.remove(s)
+            _alreadyseen.append(s)
     
     # recursively do the rest
-    deeper = reachable(stepFunction, new, destinations)
+    deeper = reachable(stepFunction, new, ndestinations, _alreadyseen)
     
     # adjust distances
     for k, val in deeper.items():
         res[k] = val + 1
     return res
+
+
+def flood(stepFunction, fullSet, initSet, relevant=None):
+    """ Returns a list of elements of fullSet linked to some element of initSet
+    through the neighborhood-setFunction (which must be defined on all elements of fullSet).
+    
+    :key relevant: (optional) list of relevant elements: stop once all relevant elements are found. 
+    """
+    full = set(fullSet)
+    flooded = full.intersection(set(initSet))
+                  
+    if relevant is None:
+        relevant = full.copy()
+    else:
+        relevant = set(relevant)
+    
+    change = flooded.copy()
+    while len(change)>0:
+        new = set()
+        for m in change:
+            new.update(full.intersection(stepFunction(m)))
+        change = new.difference(flooded)
+        flooded.update(change)            
+        if relevant.issubset(flooded):
+            break
+    return list(flooded)
     
     
 def crossproduct(ss, row=None, level=0):

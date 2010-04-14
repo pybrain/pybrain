@@ -10,6 +10,7 @@ class FullNotSelfConnection(FullConnection):
     manner, EXCEPT the corresponding elements with the same index of each buffer 
     (the diagonal of the parameter matrix is 0). Asserts that in and out dimensions 
     are equal. """
+    #:TODO: the values on the diagonal are counted as parameters but not used! FIX!
     
     def __init__(self, *args, **kwargs):
         FullConnection.__init__(self, *args, **kwargs)

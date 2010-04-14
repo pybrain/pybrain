@@ -87,7 +87,7 @@ class HandicapCaptureTask(CaptureGameTask):
         # for each handicap-key
         self.results = {0: [0, 0, 0, 0]}
             
-    def __call__(self, player):          
+    def f(self, player):          
         if not isinstance(player, CapturePlayer):
             player = ModuleDecidingPlayer(player, self.env, greedySelection=True)
         player.color = CaptureGame.WHITE

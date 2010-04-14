@@ -1,8 +1,10 @@
+from pybrain.structure.modules.linearlayer import LinearLayer
 __author__ = 'Tom Schaul, tom@idsia.ch'
 
 from pybrain.structure.parametercontainer import ParameterContainer
 from connection import Connection
 from full import FullConnection
+from subsampling import SubsamplingConnection
 
 
 class OwnershipViolation(Exception):
@@ -63,3 +65,18 @@ class SharedFullConnection(SharedConnection, FullConnection):
     
     def _backwardImplementation(self, outerr, inerr, inbuf):
         FullConnection._backwardImplementation(self, outerr, inerr, inbuf)
+        
+        
+class SharedSubsamplingConnection(SharedConnection, SubsamplingConnection):
+    """Shared version of SubsamplingConnection."""
+    
+    def __init__(self, mother, inmod, outmod, **kwargs):
+        SubsamplingConnection.__init__(self, inmod, outmod, **kwargs)
+        self._replaceParamsByMother(mother)
+    
+    def _forwardImplementation(self, inbuf, outbuf):
+        SubsamplingConnection._forwardImplementation(self, inbuf, outbuf)
+    
+    def _backwardImplementation(self, outerr, inerr, inbuf):
+        SubsamplingConnection._backwardImplementation(self, outerr, inerr, inbuf)
+        

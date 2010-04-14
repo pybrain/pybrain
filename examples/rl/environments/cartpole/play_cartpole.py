@@ -50,6 +50,7 @@ for n in range(agent.history.getNumSequences()):
 
 # print results
 print ret, "mean:",mean(ret)
-env.getRenderer().stop()
+#env.getRenderer().stop()
+
 
                          

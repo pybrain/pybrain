@@ -131,7 +131,7 @@ class CCRLEnvironment(ODEEnvironment):
 
     def reset(self):
         ODEEnvironment.reset(self)
-        self.pert = asarray([1.25, 0.0, 0.75])
+        self.pert = asarray([1.5, 0.0, 1.0])
 
 if __name__ == '__main__' :
     w = CCRLEnvironment() 

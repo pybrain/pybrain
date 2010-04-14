@@ -1,9 +1,4 @@
-#! /usr/bin/env python2.5
-# -*- coding: utf-8 -*-
-
-
 __author__ = 'Justin S Bayer, bayer.justin@googlemail.com'
-__version__ = '$Id$'
 
 
 from pybrain.structure.connections.connection import Connection
@@ -17,7 +12,7 @@ class LinearConnection(Connection, ParameterContainer):
     def __init__(self, inmod, outmod, name=None, 
                  inSliceFrom=0, inSliceTo=None, outSliceFrom=0, outSliceTo=None):
         if inSliceTo is None:
-            inSliceTo = outmod.indim
+            inSliceTo = inmod.outdim
         size = inSliceTo - inSliceFrom
         Connection.__init__(self, inmod, outmod, name,
                             inSliceFrom, inSliceTo, outSliceFrom, outSliceTo)
@@ -27,4 +22,5 @@ class LinearConnection(Connection, ParameterContainer):
         outbuf += inbuf * self.params
         
     def _backwardImplementation(self, outerr, inerr, inbuf):
+        #CHECKME: not setting derivatives
         inerr += outerr * self.params

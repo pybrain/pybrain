@@ -44,8 +44,18 @@ def plotVariations(datalist, titles, genFun, varyperplot=None, prePlotFun=None, 
                     lab = lab[:-1]  # remove trailing '-'
                 else:
                     lab = None
-                # the differentiator can slightly move the curves to be able to tell them apart if they overlap                
-                pylab.plot(genFun(x, **dict(odict, **figdict))+_differentiator*i, label=lab)
+                generated = genFun(x, **dict(odict, **figdict))
+                if generated is not None:
+                    if len(generated) == 2:
+                        xs, ys = generated
+                    else:
+                        ys = generated
+                        xs = range(len(ys))
+                    # the differentiator can slightly move the curves to be able to tell them apart if they overlap
+                    if _differentiator != 0.0:
+                        ys = generated+_differentiator*i                
+                    
+                    pylab.plot(xs, ys, label=lab)
             
             if postPlotFun is not None:
                 postPlotFun(tit)

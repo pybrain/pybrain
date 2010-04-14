@@ -74,7 +74,7 @@ class CCRLTask(EpisodicTask):
         #This makes most tasks much simpler to learn             
         self.oldAction = action
         #Grasping as reflex depending on the distance to target - comment in for more easy grasping
-        if abs(self.dist[2])<2.0: action[15]=1.0 #self.grepRew=action[15]*.01
+        if abs(abs(self.dist[:3]).sum())<2.0: action[15]=1.0 #self.grepRew=action[15]*.01
         else: action[15]=-1.0 #self.grepRew=action[15]*-.03
         isJoints=array(self.env.getSensorByName('JointSensor')) #The joint angles
         isSpeeds=array(self.env.getSensorByName('JointVelocitySensor')) #The joint angular velocitys
@@ -121,17 +121,18 @@ class CCRLGlasTask(CCRLTask):
             return False
 
     def getReward(self):
-        if self.env.glasSum >= 2: grip = 1.0 + float(self.env.glasSum - 2)
+        if self.env.glasSum >= 2: grip = 1000.0
         else: grip = 0.0
-        if self.env.tableSum > 0: self.tableFlag = 10.0
+        if self.env.tableSum > 0: self.tableFlag = -1.0
+        else: tableFlag = 0.0
         self.dist[3] = 0.0
         self.dist[8] = 0.0
-        dis = sqrt((self.dist ** 2).sum())
-        nig = (abs(self.dist[4]) + 1.0)
-        if self.env.stepCounter == self.epiLen:
-            return 25.0 + grip / nig - dis - self.tableFlag #-dis
-        else:
-            return (25.0 - dis) / float(self.epiLen) + (grip / nig - float(self.env.tableSum)) * 0.1 #+self.grepRew (10.0-dis)/float(self.epiLen)+
+        dis = 100.0/((self.dist[:3] ** 2).sum()+0.1)
+        nig = 10.0/((self.dist[3:] ** 2).sum()+0.1)
+        if self.env.stepCounter == self.epiLen: print "Grip:", grip, "Dis:", dis, "Nig:", nig, "Table:", self.tableFlag
+        return (10 + grip + nig + dis + self.tableFlag) / float(self.epiLen) #-dis
+        #else:
+        #    return (25.0 - dis) / float(self.epiLen) + (grip / nig - float(self.env.tableSum)) * 0.1 #+self.grepRew (10.0-dis)/float(self.epiLen)+
 
 #Learn to grasp a plate at a fixed location
 class CCRLPlateTask(CCRLTask):

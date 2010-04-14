@@ -17,7 +17,7 @@ from pybrain.tools.xml import NetworkWriter, NetworkReader
 def epsilonCheck(x, epsilon=1e-6):
     """Checks that x is in (-epsilon, epsilon)."""
     epsilon = abs(epsilon)
-    return - epsilon < x < epsilon
+    return -epsilon < x < epsilon
 
 
 def buildAppropriateDataset(module):
