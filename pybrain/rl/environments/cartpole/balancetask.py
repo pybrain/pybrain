@@ -22,14 +22,14 @@ class BalanceTask(EpisodicTask):
         self.t = 0
         
         # scale position and angle, don't scale velocities (unknown maximum)
-        self.sensor_limits = [(-3, 3)]#, None, (-pi, pi), None]
+        self.sensor_limits = [(-3, 3)]
         for i in range(1, self.outdim):
             if isinstance(self.env, NonMarkovPoleEnvironment) and i % 2 == 0:
                 self.sensor_limits.append(None)
             else:
                 self.sensor_limits.append((-pi, pi))
         
-        self.sensor_limits = [None] * 4
+        # self.sensor_limits = [None] * 4
         # actor between -10 and 10 Newton
         self.actor_limits = [(-50, 50)]
         
@@ -114,7 +114,7 @@ class DiscreteBalanceTask(BalanceTask):
         self.t = 0
         
         # no scaling of sensors
-        self.sensor_limits = [None] * 2
+        self.sensor_limits = [None] * self.env.outdim
         
         # scale actor
         self.actor_limits = [(-50, 50)]
@@ -122,7 +122,7 @@ class DiscreteBalanceTask(BalanceTask):
         
     def getObservation(self):
         """ a filtered mapping to getSample of the underlying environment. """
-        sensors = self.env.getSensors()[:2]   
+        sensors = self.env.getSensors()   
         if self.sensor_limits:
             sensors = self.normalize(sensors)
         return sensors
@@ -134,15 +134,13 @@ class DiscreteBalanceTask(BalanceTask):
     def getReward(self):
         angles = map(abs, self.env.getPoleAngles())
         s = abs(self.env.getCartPosition())
-        if min(angles) < 0.05:
+        if min(angles) < 0.05: # and abs(s) < 0.05:
             reward = 1.0
         elif max(angles) > 0.7 or abs(s) > 2.4:
             reward = -1. * (self.N - self.t)
         else: 
-            reward = 0.0
+            reward = 0
         return reward
-
-
 
 
 class DiscreteNoHelpTask(DiscreteBalanceTask):
