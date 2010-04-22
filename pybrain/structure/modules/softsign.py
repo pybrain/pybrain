@@ -1,4 +1,4 @@
-__author__ = 'Thomas Rückstieß, ruecksti@in.tum.de'
+__author__ = 'Thomas Rueckstiess, ruecksti@in.tum.de'
 
 from neuronlayer import NeuronLayer
 
