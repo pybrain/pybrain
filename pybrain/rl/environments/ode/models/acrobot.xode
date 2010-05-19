@@ -3,7 +3,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://tanksoftware.com/xode/1.0r23/xode.xsd">
 
     <world>
-        <space>         
+        <space>
 
             <body name="bar">
                 <transform>
@@ -16,8 +16,8 @@
                 </mass>
                 <geom>
                     <cappedCylinder length="5" radius="0.1"/>
-                </geom>  
-            </body> 
+                </geom>
+            </body>
 
 
             <body name="leg1">
@@ -32,7 +32,7 @@
                     />
                 </geom>
                 <mass>
-                    <mass_shape density="1"> 
+                    <mass_shape density="1">
                         <box
                             sizex="2"
                             sizey="0.2"
@@ -41,33 +41,33 @@
                     </mass_shape>
                 </mass>
             </body>
-            
+
             <joint name="bar_fix">
                 <link1 body="bar" />
                 <link2 body="leg1" />
                 <fixed>
-                </fixed>        
+                </fixed>
             </joint>
-            
-            
+
+
             <joint name="bar_joint">
                 <link1 body="bar" />
                 <link2 body="leg1" />
                 <hinge>
                     <anchor x="0" y="0" z="0" absolute="false" />
                     <axis x="0" y="0" z="1" FMax="0.05" />
-                </hinge>        
+                </hinge>
             </joint>
-                   
 
-            <geom name="floor">     
+
+            <geom name="floor">
                 <plane
                     a="0"
                     b="1"
                     c="0"
                     d="-10"
                 />
-            </geom>         
+            </geom>
         </space>
     </world>
 </xode>

@@ -7,7 +7,7 @@ import logging
 
 from pybrain.rl import EpisodicTask
 
-try: 
+try:
     import cartpolewrap as impl
 except ImportError, e:
     logging.error("FastCartPoleTask is wrapping C code that needs to be compiled - it's simple: run .../cartpolecompile.py")
@@ -16,20 +16,20 @@ except ImportError, e:
 
 
 class FastCartPoleTask(EpisodicTask):
-    """ A Python wrapper of the standard C implentation of the pole-balancing task, directly using the 
+    """ A Python wrapper of the standard C implentation of the pole-balancing task, directly using the
     reference code of Faustino Gomez. """
-    
+
     indim = 1
-    
+
     desiredValue = 100000
-    
+
     # additional random observations
     extraRandoms = 0
-    
+
     __single = None
     def __init__(self, numPoles=1, markov=True, verbose=False,
                  extraObservations=False, extraRandoms=0, maxSteps=100000):
-        """ @extraObservations: if this flag is true, the observations include the cartesian coordinates 
+        """ @extraObservations: if this flag is true, the observations include the cartesian coordinates
         of the pole(s).
         """
         if self.__single != None:
@@ -43,7 +43,7 @@ class FastCartPoleTask(EpisodicTask):
         self.extraRandoms = extraRandoms
         self.desiredValue = maxSteps
         self.reset()
-        
+
     def __str__(self):
         s = 'Cart-Pole-Balancing-Task, '
         if self.markov:
@@ -64,8 +64,8 @@ class FastCartPoleTask(EpisodicTask):
     def reset(self):
         if self.verbose:
             print '** reset **'
-        self.cumreward = 0     
-        impl.res()        
+        self.cumreward = 0
+        impl.res()
 
     @property
     def outdim(self):
@@ -82,12 +82,12 @@ class FastCartPoleTask(EpisodicTask):
         if self.verbose:
             print ' +r', r,
         return r
-        
+
     def isFinished(self):
         if self.verbose:
             print '  -finished?', impl.isFinished()
-        return impl.isFinished() 
-    
+        return impl.isFinished()
+
     def getObservation(self):
         obs = array(impl.getObs())
         if self.verbose:
@@ -100,7 +100,7 @@ class FastCartPoleTask(EpisodicTask):
             else:
                 angle1 = obs[0]
             obs[-1 + self.extraRandoms] = 0.1 * cos(angle1) + cartpos
-            obs[-2 + self.extraRandoms] = 0.1 * sin(angle1) + cartpos    
+            obs[-2 + self.extraRandoms] = 0.1 * sin(angle1) + cartpos
             if self.numPoles == 2:
                 if self.markov:
                     angle2 = obs[3]
@@ -108,20 +108,20 @@ class FastCartPoleTask(EpisodicTask):
                     angle2 = obs[1]
                 obs[-3 + self.extraRandoms] = 0.05 * cos(angle2) + cartpos
                 obs[-4 + self.extraRandoms] = 0.05 * sin(angle2) + cartpos
-        
+
         if self.extraRandoms > 0:
             obs[-self.extraRandoms:] = randn(self.extraRandoms)
-            
+
         if self.verbose:
             print 'obs', obs
         return obs
-        
+
     def performAction(self, action):
         if self.verbose:
             print 'act', action
         impl.performAction(action[0])
         self.addReward()
-        
+
 if __name__ == '__main__':
     from pybrain.rl import EpisodicExperiment
     from pybrain.rl.agents import FlatNetworkAgent
@@ -129,4 +129,4 @@ if __name__ == '__main__':
     a = FlatNetworkAgent(x.outdim, x.indim)
     e = EpisodicExperiment(x, a)
     e.doEpisodes(2)
-    
+

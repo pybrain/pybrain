@@ -28,7 +28,7 @@ class ExTools():
     def loadWeights(self, filename):
         filepointer = file(filename)
         self.agent.learner.current = load(filepointer)
-        filepointer.close()        
+        filepointer.close()
         self.agent.learner.gd.init(self.agent.learner.current)
         self.agent.learner.epsilon = 0.2
         self.agent.learner.initSigmas()
@@ -50,7 +50,7 @@ class ExTools():
             rLen = len(resList)
             avReward = array(resList).sum()/rLen
             print "Parameters:", self.agent.learner._bestFound()
-            print "Experiment:", runs, 
+            print "Experiment:", runs,
             print " Evaluation:", (updates+1)*self.batch*self.prnts,
             print " BestReward:", self.agent.learner.bestEvaluation, 
             print " AverageReward:", avReward

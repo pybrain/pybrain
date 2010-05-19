@@ -14,12 +14,12 @@ class CCRLEnvironment(ODEEnvironment):
         self.pert = asarray([0.0, 0.0, 0.0])
         self.loadXODE(imp.find_module('pybrain')[1] + "/rl/environments/ode/models/" + xodeFile)
 
-        # standard sensors and actuators    
+        # standard sensors and actuators
         self.addSensor(sensors.JointSensor())
-        self.addSensor(sensors.JointVelocitySensor()) 
+        self.addSensor(sensors.JointVelocitySensor())
         self.addActuator(actuators.JointActuator())
-            
-        #set act- and obsLength, the min/max angles and the relative max touques of the joints  
+
+        #set act- and obsLength, the min/max angles and the relative max touques of the joints
         self.actLen = self.indim
         self.obsLen = len(self.getSensors())
         #ArmLeft, ArmRight, Hip, PevelLeft, PevelRight, TibiaLeft, TibiaRight, KneeLeft, KneeRight, FootLeft, FootRight
@@ -56,17 +56,17 @@ class CCRLEnvironment(ODEEnvironment):
         contacts = ode.collide(geom1, geom2)
         tmpStr = geom2.name[:-2]
         handStr = geom1.name[:-1]
-        if geom1.name == 'plate' and tmpStr != 'objectP': 
+        if geom1.name == 'plate' and tmpStr != 'objectP':
             self.tableSum += len(contacts)
-        if tmpStr == 'objectP' and handStr == 'pressLeft': 
+        if tmpStr == 'objectP' and handStr == 'pressLeft':
             if len(contacts) > 0: self.glasSum += 1
         tmpStr = geom1.name[:-2]
         handStr = geom2.name[:-1]
-        if geom2.name == 'plate' and tmpStr != 'objectP': 
+        if geom2.name == 'plate' and tmpStr != 'objectP':
             self.tableSum += len(contacts)
-        if tmpStr == 'objectP' and handStr == 'pressLeft': 
+        if tmpStr == 'objectP' and handStr == 'pressLeft':
             if len(contacts) > 0: self.glasSum += 1
-        
+
         # Create contact joints
         world, contactgroup = args
         for c in contacts:
@@ -107,17 +107,17 @@ class CCRLEnvironment(ODEEnvironment):
             print "no <space> tag found in " + filename + ". quitting."
             sys.exit()
         self.space = space.getODEObject()
-                
+
         # load bodies and geoms for painting
-        self.body_geom = [] 
+        self.body_geom = []
         self._parseBodies(self.root)
 
         for (body, _) in self.body_geom:
-            if hasattr(body, 'name'):  
-                tmpStr = body.name[:-2]              
-                if tmpStr == "objectP": 
+            if hasattr(body, 'name'):
+                tmpStr = body.name[:-2]
+                if tmpStr == "objectP":
                     body.setPosition(body.getPosition() + self.pert)
-            
+
         if self.verbosity > 0:
             print "-------[body/mass list]-----"
             for (body, _) in self.body_geom:
@@ -134,8 +134,8 @@ class CCRLEnvironment(ODEEnvironment):
         self.pert = asarray([1.5, 0.0, 1.0])
 
 if __name__ == '__main__' :
-    w = CCRLEnvironment() 
+    w = CCRLEnvironment()
     while True:
         w.step()
-        if w.stepCounter == 1000: w.reset() 
+        if w.stepCounter == 1000: w.reset()
 

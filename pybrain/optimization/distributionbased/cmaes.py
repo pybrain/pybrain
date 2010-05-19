@@ -16,7 +16,7 @@ class CMAES(ContinuousOptimizer):
 
     mustMinimize = True
     stopPrecision = 1e-6
-        
+
     storeAllCenters = False
 
     def _additionalInit(self):
@@ -49,7 +49,7 @@ class CMAES(ContinuousOptimizer):
         self.C = dot(dot(self.B, self.D), dot(self.B, self.D).T)       # covariance matrix
         self.chiN = self.numParameters ** 0.5 * (1 - 1. / (4. * self.numParameters) + 1 / (21. * self.numParameters ** 2))
         # expectation of ||numParameters(0,I)|| == norm(randn(numParameters,1))
-        
+
     def _learnStep(self):
         # Generate and evaluate lambda offspring
         arz = randn(self.numParameters, self.batchSize)
@@ -58,7 +58,7 @@ class CMAES(ContinuousOptimizer):
         arfitness = zeros(self.batchSize)
         for k in xrange(self.batchSize):
             arfitness[k] = self._oneEvaluation(arx[:, k])
-        
+
         # Sort by fitness and compute weighted mean into center
         arfitness, arindex = sorti(arfitness)  # minimization
         arz = arz[:, arindex]
@@ -70,7 +70,7 @@ class CMAES(ContinuousOptimizer):
         zmean = dot(arzsel, self.weights)
         self.center = dot(arxsel, self.weights)
 
-        if self.storeAllCenters: 
+        if self.storeAllCenters:
             self._allCenters.append(self.center)
 
         # Cumulation: Update evolution paths
@@ -101,25 +101,25 @@ class CMAES(ContinuousOptimizer):
         Ev = real(Ev)       # enforce real value
         self.D = diag(sqrt(Ev))      #diag(ravel(sqrt(Ev))) # D contains standard deviations now
         self.B = real(self.B)
-                
+
         # convergence is reached
-        if arfitness[0] == arfitness[-1] or (abs(arfitness[0] - arfitness[-1]) / 
+        if arfitness[0] == arfitness[-1] or (abs(arfitness[0] - arfitness[-1]) /
                                              (abs(arfitness[0]) + abs(arfitness[-1]))) <= self.stopPrecision:
             if self.verbose:
                 print "Converged."
             self.maxLearningSteps = self.numLearningSteps
-        
+
         # or diverged, unfortunately
         if min(Ev) > 1e5:
             if self.verbose:
                 print "Diverged."
             self.maxLearningSteps = self.numLearningSteps
-                             
+
     @property
     def batchSize(self):
         return int(4 + floor(3 * log(self.numParameters)))
-    
-    
+
+
 def sorti(vect):
     """ sort, but also return the indices-changes """
     tmp = sorted(map(lambda (x, y): (y, x), enumerate(ravel(vect))))

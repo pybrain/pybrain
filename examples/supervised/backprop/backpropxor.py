@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# A simple feedforward neural network that learns XOR. 
+# A simple feedforward neural network that learns XOR.
 
 __author__ = 'Tom Schaul, tom@idsia.ch'
 
@@ -14,7 +14,7 @@ def testTraining():
     t = BackpropTrainer(n, learningrate = 0.01, momentum = 0.99, verbose = True)
     t.trainOnDataset(d, 1000)
     t.testOnData(verbose= True)
-    
-    
+
+
 if __name__ == '__main__':
     testTraining()

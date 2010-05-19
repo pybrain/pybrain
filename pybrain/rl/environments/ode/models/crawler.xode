@@ -17,7 +17,7 @@
 					/>
 				</geom>
 				<mass>
-					<mass_shape density="10"> 
+					<mass_shape density="10">
 						<box
 							sizex="2"
 							sizey="0.2"
@@ -38,7 +38,7 @@
 					/>
 				</geom>
 				<mass>
-					<mass_shape density="10"> 
+					<mass_shape density="10">
 						<box
 							sizex="2"
 							sizey="0.2"
@@ -59,7 +59,7 @@
 					/>
 				</geom>
 				<mass>
-					<mass_shape density="10"> 
+					<mass_shape density="10">
 						<box
 							sizex="2"
 							sizey="0.2"
@@ -80,7 +80,7 @@
 					/>
 				</geom>
 				<mass>
-					<mass_shape density="10"> 
+					<mass_shape density="10">
 						<box
 							sizex="2"
 							sizey="0.2"
@@ -103,7 +103,7 @@
 					/>
 				</geom>
 				<mass>
-					<mass_shape density="10"> 
+					<mass_shape density="10">
 						<box
 							sizex="2"
 							sizey="1"
@@ -118,7 +118,7 @@
 				<link2 body="leg1" />
 				<hinge>
 					<anchor x="1" y="0" z="0" absolute="false" />
-					<axis 
+					<axis
 						x="0" y="0" z="1"
 						FMax="400"
 					/>
@@ -130,7 +130,7 @@
 				<link2 body="leg2" />
 				<hinge>
 					<anchor x="3" y="0" z="0" absolute="false" />
-					<axis 
+					<axis
 						x="0" y="0" z="1"
 						FMax="400"
 					/>
@@ -142,7 +142,7 @@
 				<link2 body="leg3" />
 				<hinge>
 					<anchor x="-1" y="0" z="0" absolute="false" />
-					<axis 
+					<axis
 						x="0" y="0" z="1"
 						FMax="400"
 					/>
@@ -154,7 +154,7 @@
 				<link2 body="leg4" />
 				<hinge>
 					<anchor x="-3" y="0" z="0" absolute="false" />
-					<axis 
+					<axis
 						x="0" y="0" z="1"
 						FMax="400"
 					/>

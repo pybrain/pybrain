@@ -5,10 +5,10 @@ from coevolution import Coevolution
 
 class CompetitiveCoevolution(Coevolution):
     """ Coevolution with 2 independent populations, and competitive fitness sharing. """
-    
+
     def __str__(self):
         return 'Competitive' + Coevolution.__str__(self)
-    
+
     def _initPopulation(self, seeds):
         """ one half for each population """
         if self.parentChildAverage < 1:
@@ -18,20 +18,20 @@ class CompetitiveCoevolution(Coevolution):
             s1 = seeds[:len(seeds) / 2]
             s2 = seeds[len(seeds) / 2:]
         else:
-            # not enough seeds: randomize 
+            # not enough seeds: randomize
             s1 = seeds
             tmp = seeds[0].copy()
             tmp.randomize()
             s2 = [tmp]
         self.pop = self._extendPopulation(s1, self.populationSize)
         self.parasitePop = self._extendPopulation(s2, self.populationSize)
-        
+
     def _competitiveSharedFitness(self, hosts, parasites):
         """ determine the competitive shared fitness for the population of hosts, w.r. to
         the population of parasites. """
         if len(parasites) == 0:
             return [0] * len(hosts)
-        
+
         # determine beat-sum for parasites (nb of games lost)
         beatsums = {}
         for p in parasites:
@@ -39,7 +39,7 @@ class CompetitiveCoevolution(Coevolution):
             for h in hosts:
                 if self._beats(h, p) > 0:
                     beatsums[p] += 1
-        
+
         # determine fitnesses for hosts
         fitnesses = []
         for h in hosts:
@@ -55,12 +55,12 @@ class CompetitiveCoevolution(Coevolution):
             # biasing for old agents in the elitist case
             if len(parasites) > unplayed:
                 hsum /= float(len(parasites) - unplayed)
-            
+
             # this is purely for breaking ties in favor of globally better players:
             hsum += 1e-5 * self._globalScore(h)
-            fitnesses.append(hsum)        
+            fitnesses.append(hsum)
         return fitnesses
-    
+
     def _evaluatePopulation(self):
         hoFtournSize = min(self.generation, int(self.tournamentSize * self.hallOfFameEvaluation))
         tournSize = self.tournamentSize - hoFtournSize
@@ -73,25 +73,25 @@ class CompetitiveCoevolution(Coevolution):
         self._doTournament(self.pop, opponents, tournSize)
         if hoFtournSize > 0:
             self._doTournament(self.pop, self.hallOfFame, hoFtournSize)
-        
+
         fit = self._competitiveSharedFitness(self.pop, self.parasitePop)
         if hoFtournSize > 0:
             fitHof = self._competitiveSharedFitness(self.pop, self.hallOfFame)
             fit = map(lambda (f1, f2): tournSize * f1 + hoFtournSize * f2, zip(fit, fitHof))
         return fit
-    
+
     def _oneGeneration(self):
         Coevolution._oneGeneration(self)
         # change roles between parasites and hosts
         tmp = self.pop
         self.pop = self.parasitePop
         self.parasitePop = tmp
-        
-        
 
-        
 
-    
+
+
+
+
 if __name__ == '__main__':
     from pybrain.utilities import fListToString
     # TODO: convert to unittest
@@ -105,7 +105,7 @@ if __name__ == '__main__':
             C.allOpponents[y] = []
         C.allOpponents[x].append(y)
         C.allOpponents[y].append(x)
-        
+
     b(1, 6)
     b(1, 7)
     b(8, 1)
@@ -122,4 +122,4 @@ if __name__ == '__main__':
     print C.parasitePop
     print '          ', fListToString(C._competitiveSharedFitness(C.pop, C.parasitePop), 2)
     print 'should be:', fListToString([0.83, 0.00, 1.33, 0.83], 2)
-    
+

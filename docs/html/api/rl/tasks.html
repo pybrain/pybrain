@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
+
     <title>tasks – RL Components: Tasks &mdash; PyBrain v0.3 documentation</title>
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -21,7 +21,7 @@
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <link rel="top" title="PyBrain v0.3 documentation" href="../../index.html" />
     <link rel="next" title="optimization – Black-box Optimization Algorithms" href="../optimization/optimization.html" />
-    <link rel="prev" title="learners – RL Components: Learners" href="learners.html" /> 
+    <link rel="prev" title="learners – RL Components: Learners" href="learners.html" />
   </head>
   <body>
     <div class="related">
@@ -39,22 +39,22 @@
         <li class="right" >
           <a href="learners.html" title="learners – RL Components: Learners"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">PyBrain v0.3 documentation</a> &raquo;</li> 
+        <li><a href="../../index.html">PyBrain v0.3 documentation</a> &raquo;</li>
       </ul>
-    </div>  
+    </div>
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
           <div class="body">
-            
+
   <div class="section" id="module-pybrain.rl.environments.episodic">
 <h1><tt class="xref docutils literal"><span class="pre">tasks</span></tt> &#8211; RL Components: Tasks<a class="headerlink" href="#module-pybrain.rl.environments.episodic" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="pybrain.rl.environments.task.Task">
 <em class="property">class </em><tt class="descclassname">pybrain.rl.environments.task.</tt><tt class="descname">Task</tt><big>(</big><em>environment</em><big>)</big><a class="headerlink" href="#pybrain.rl.environments.task.Task" title="Permalink to this definition">¶</a></dt>
-<dd><p>A task is associating a purpose with an environment. It decides how to evaluate the 
-observations, potentially returning reinforcement rewards or fitness values. 
+<dd><p>A task is associating a purpose with an environment. It decides how to evaluate the
+observations, potentially returning reinforcement rewards or fitness values.
 Furthermore it is a filter for what should be visible to the agent.
 Also, it can potentially act as a filter on how actions are transmitted to the environment.</p>
 <dl class="method">
@@ -85,9 +85,9 @@ Also, it can potentially act as a filter on how actions are transmitted to the e
 <dl class="method">
 <dt id="pybrain.rl.environments.task.Task.setScaling">
 <tt class="descname">setScaling</tt><big>(</big><em>sensor_limits</em>, <em>actor_limits</em><big>)</big><a class="headerlink" href="#pybrain.rl.environments.task.Task.setScaling" title="Permalink to this definition">¶</a></dt>
-<dd>Expects scaling lists of 2-tuples - e.g. [(-3.14, 3.14), (0, 1), (-0.001, 0.001)] - 
-one tuple per parameter, giving min and max for that parameter. The functions 
-normalize and denormalize scale the parameters between -1 and 1 and vice versa. 
+<dd>Expects scaling lists of 2-tuples - e.g. [(-3.14, 3.14), (0, 1), (-0.001, 0.001)] -
+one tuple per parameter, giving min and max for that parameter. The functions
+normalize and denormalize scale the parameters between -1 and 1 and vice versa.
 To disable this feature, use &#8216;None&#8217;.</dd></dl>
 
 </dd></dl>
@@ -110,7 +110,7 @@ To disable this feature, use &#8216;None&#8217;.</dd></dl>
 <dl class="method">
 <dt id="pybrain.rl.environments.episodic.EpisodicTask.f">
 <tt class="descname">f</tt><big>(</big><em>x</em><big>)</big><a class="headerlink" href="#pybrain.rl.environments.episodic.EpisodicTask.f" title="Permalink to this definition">¶</a></dt>
-<dd>An episodic task can be used as an evaluation function of a module that produces actions 
+<dd>An episodic task can be used as an evaluation function of a module that produces actions
 from observations, or as an evaluator of an agent.</dd></dl>
 
 <dl class="method">
@@ -189,7 +189,7 @@ from observations, or as an evaluator of an agent.</dd></dl>
         <li class="right" >
           <a href="learners.html" title="learners – RL Components: Learners"
              >previous</a> |</li>
-        <li><a href="../../index.html">PyBrain v0.3 documentation</a> &raquo;</li> 
+        <li><a href="../../index.html">PyBrain v0.3 documentation</a> &raquo;</li>
       </ul>
     </div>
     <div class="footer">

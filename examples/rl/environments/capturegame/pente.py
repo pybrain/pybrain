@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-""" A little script illustrating how to use a (randomly initialized) 
+""" A little script illustrating how to use a (randomly initialized)
 convolutional network to play a game of Pente. """
 
 __author__ = 'Tom Schaul, tom@idsia.ch'
@@ -18,4 +18,3 @@ p2 = RandomGomokuPlayer(g)
 p2.color = g.WHITE
 g.playToTheEnd(p1, p2)
 print g
-    

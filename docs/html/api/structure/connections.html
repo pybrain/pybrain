@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
+
     <title>connections – Structural Components: Connections &mdash; PyBrain v0.3 documentation</title>
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -21,7 +21,7 @@
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <link rel="top" title="PyBrain v0.3 documentation" href="../../index.html" />
     <link rel="next" title="evolvable – Container Component: Evolvable" href="evolvables.html" />
-    <link rel="prev" title="Using ODE Environments" href="../../advanced/ode.html" /> 
+    <link rel="prev" title="Using ODE Environments" href="../../advanced/ode.html" />
   </head>
   <body>
     <div class="related">
@@ -39,22 +39,22 @@
         <li class="right" >
           <a href="../../advanced/ode.html" title="Using ODE Environments"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">PyBrain v0.3 documentation</a> &raquo;</li> 
+        <li><a href="../../index.html">PyBrain v0.3 documentation</a> &raquo;</li>
       </ul>
-    </div>  
+    </div>
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
           <div class="body">
-            
+
   <div class="section" id="module-pybrain.structure.connections">
 <h1><tt class="xref docutils literal"><span class="pre">connections</span></tt> &#8211; Structural Components: Connections<a class="headerlink" href="#module-pybrain.structure.connections" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="pybrain.structure.connections.connection.Connection">
 <em class="property">class </em><tt class="descclassname">pybrain.structure.connections.connection.</tt><tt class="descname">Connection</tt><big>(</big><em>inmod</em>, <em>outmod</em>, <em>name=None</em>, <em>inSliceFrom=0</em>, <em>inSliceTo=None</em>, <em>outSliceFrom=0</em>, <em>outSliceTo=None</em><big>)</big><a class="headerlink" href="#pybrain.structure.connections.connection.Connection" title="Permalink to this definition">¶</a></dt>
 <dd><p>A connection links 2 modules, more precisely: the output of the first module
-to the input of the second. It can potentially transform the information on the way. 
+to the input of the second. It can potentially transform the information on the way.
 It also transmits errors backwards between the same modules.</p>
 <dl class="method">
 <dt id="pybrain.structure.connections.connection.Connection.__init__">
@@ -91,7 +91,7 @@ It also transmits errors backwards between the same modules.</p>
 <dl class="method">
 <dt id="pybrain.structure.connections.connection.Connection.forward">
 <tt class="descname">forward</tt><big>(</big><em>inmodOffset=0</em>, <em>outmodOffset=0</em><big>)</big><a class="headerlink" href="#pybrain.structure.connections.connection.Connection.forward" title="Permalink to this definition">¶</a></dt>
-<dd><p>Propagate the information from the incoming module&#8217;s output buffer, 
+<dd><p>Propagate the information from the incoming module&#8217;s output buffer,
 adding it to the outgoing node&#8217;s input buffer, and possibly transforming
 it on the way.</p>
 <p>For this transformation use inmodOffset as an offset for the inmod and
@@ -101,8 +101,8 @@ outmodOffset as an offset for the outmodules offset.</p>
 <dl class="method">
 <dt id="pybrain.structure.connections.connection.Connection.backward">
 <tt class="descname">backward</tt><big>(</big><em>inmodOffset=0</em>, <em>outmodOffset=0</em><big>)</big><a class="headerlink" href="#pybrain.structure.connections.connection.Connection.backward" title="Permalink to this definition">¶</a></dt>
-<dd><p>Propagate the error found at the outgoing module, adding it to the 
-incoming module&#8217;s output-error buffer and doing the inverse 
+<dd><p>Propagate the error found at the outgoing module, adding it to the
+incoming module&#8217;s output-error buffer and doing the inverse
 transformation of forward propagation.</p>
 <p>For this transformation use inmodOffset as an offset for the inmod and
 outmodOffset as an offset for the outmodules offset.</p>
@@ -115,7 +115,7 @@ outmodOffset as an offset for the outmodules offset.</p>
 <dt id="pybrain.structure.connections.FullConnection">
 <em class="property">class </em><tt class="descclassname">pybrain.structure.connections.</tt><tt class="descname">FullConnection</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#pybrain.structure.connections.FullConnection" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a title="pybrain.structure.connections.connection.Connection" class="reference internal" href="#pybrain.structure.connections.connection.Connection"><tt class="xref docutils literal"><span class="pre">pybrain.structure.connections.connection.Connection</span></tt></a>, <tt class="xref docutils literal"><span class="pre">pybrain.structure.parametercontainer.ParameterContainer</span></tt></p>
-<p>Connection which fully connects every element from the first module&#8217;s 
+<p>Connection which fully connects every element from the first module&#8217;s
 output buffer to the second module&#8217;s input buffer in a matrix multiplicative
 manner.</p>
 <dl class="method">
@@ -216,7 +216,7 @@ set of parameters (encapsulated in a MotherConnection).</p>
         <li class="right" >
           <a href="../../advanced/ode.html" title="Using ODE Environments"
              >previous</a> |</li>
-        <li><a href="../../index.html">PyBrain v0.3 documentation</a> &raquo;</li> 
+        <li><a href="../../index.html">PyBrain v0.3 documentation</a> &raquo;</li>
       </ul>
     </div>
     <div class="footer">

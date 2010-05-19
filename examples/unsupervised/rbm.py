@@ -1,11 +1,11 @@
 #!/usr/bin/env python
-""" Miniscule restricted Boltzmann machine usage example """ 
+""" Miniscule restricted Boltzmann machine usage example """
 
 __author__ = 'Justin S Bayer, bayer.justin@googlemail.com'
 
 
 from pybrain.structure.networks.rbm import Rbm
-from pybrain.unsupervised.trainers.rbm import (RbmGibbsTrainerConfig, 
+from pybrain.unsupervised.trainers.rbm import (RbmGibbsTrainerConfig,
                                                RbmBernoulliTrainer)
 from pybrain.datasets import UnsupervisedDataSet
 
@@ -22,5 +22,5 @@ trainer = RbmBernoulliTrainer(rbm, ds, cfg)
 print rbm.params, rbm.biasParams
 for _ in xrange(50):
     trainer.train()
-    
+
 print rbm.params, rbm.biasParams

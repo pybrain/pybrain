@@ -22,7 +22,7 @@ class Validator(object):
     @classmethod
     def classificationPerformance(cls, output, target):
         """ Returns the hit rate of the outputs compared to the targets.
-        
+
             :arg output: array of output values
             :arg target: array of target values
         """
@@ -35,7 +35,7 @@ class Validator(object):
     @classmethod
     def ESS(cls, output, target):
         """ Returns the explained sum of squares (ESS).
-        
+
             :arg output: array of output values
             :arg target: array of target values
         """
@@ -45,7 +45,7 @@ class Validator(object):
     def MSE(cls, output, target, importance=None):
         """ Returns the mean squared error. The multidimensional arrays will get
             flattened in order to compare them.
-            
+
             :arg output: array of output values
             :arg target: array of target values
             :key importance: each squared error will be multiplied with its
@@ -90,7 +90,7 @@ class ClassificationHelper(object):
     def oneOfManyToClasses(cls, data):
         """ Converts data in one-of-many format to class indices format and
             and returns the result.
-            
+
             :arg data: array of vectors, that are in the one-of-many format.
                          Each vector will be converted to the index of the
                          component with the maximum value.
@@ -111,7 +111,7 @@ class SequenceHelper(object):
     def getSequenceEnds(cls, dataset):
         """ Returns the indices of the last elements of the sequences stored
             inside dataset.
-            
+
             :arg dataset: Must implement :class:`SequentialDataSet`
         """
         sequence_ends = delete(dataset.getField('sequence_index') - 1, 0)
@@ -124,7 +124,7 @@ class SequenceHelper(object):
     def getSequenceStarts(cls, dataset):
         """ Returns the indices of the first elements of the sequences stored
             inside dataset.
-            
+
             :arg dataset: Must implement :class:`SequentialDataSet`
         """
         return  list(dataset.getField('sequence_index'))
@@ -133,7 +133,7 @@ class SequenceHelper(object):
     def getSequenceEndsImportance(cls, dataset):
         """ Returns the importance values of the last elements of the sequences
             stored inside dataset.
-            
+
             :arg dataset: Must implement :class:`ImportanceDataSet`
         """
         importance = zeros(dataset.getLength())
@@ -157,7 +157,7 @@ class ModuleValidator(object):
     def classificationPerformance(cls, module, dataset):
         """ Returns the hit rate of the module's output compared to the targets
             stored inside dataset.
-            
+
             :arg module: Object of any subclass of pybrain's Module type
             :arg dataset: Dataset object at least containing the fields
                 'input' and 'target' (for example SupervisedDataSet)
@@ -170,7 +170,7 @@ class ModuleValidator(object):
     @classmethod
     def MSE(cls, module, dataset):
         """ Returns the mean squared error.
-        
+
             :arg module: Object of any subclass of pybrain's Module type
             :arg dataset: Dataset object at least containing the fields
                 'input' and 'target' (for example SupervisedDataSet)
@@ -209,7 +209,7 @@ class ModuleValidator(object):
         """ Calculates the module's output on the dataset. Especially designed
             for datasets storing sequences.
             After a sequence is fed to the module, it has to be resetted.
-            
+
             :arg dataset: Dataset object of type SequentialDataSet or subclass.
         """
         outputs = []
@@ -226,7 +226,7 @@ class ModuleValidator(object):
     def calculateModuleOutput(cls, module, dataset):
         """ Calculates the module's output on the dataset. Can be called with
             any type of dataset.
-            
+
             :arg dataset: Any Dataset object containing an 'input' field.
         """
         if isinstance(dataset, SequentialDataSet) or isinstance(dataset, ImportanceDataSet):
@@ -271,7 +271,7 @@ class CrossValidator(object):
 
     def setArgs(self, **kwargs):
         """ Set the specified member variables.
-        
+
         :key max_epochs: maximum number of epochs the trainer should train the module for.
         :key verbosity: set verbosity level
         """
@@ -354,10 +354,10 @@ class CrossValidator(object):
 
 
 
-def testOnSequenceData(module, dataset): 
+def testOnSequenceData(module, dataset):
     """ Fetch targets and calculate the modules output on dataset.
     Output and target are in one-of-many format. The class for each sequence is
-    determined by first summing the probabilities for each individual sample over 
+    determined by first summing the probabilities for each individual sample over
     the sequence, and then finding its maximum."""
     target = dataset.getField("target")
     output = ModuleValidator.calculateModuleOutput(module, dataset)
@@ -385,7 +385,7 @@ def testOnSequenceData(module, dataset):
 
     ##print format % tuple(class_output)
     ##print format % tuple(class_target)
-    
+
     class_output = array(class_output)
     class_target = array(class_target)
 #    print class_target

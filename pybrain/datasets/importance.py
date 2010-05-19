@@ -12,19 +12,19 @@ from pybrain.utilities import fListToString
 
 class ImportanceDataSet(SequentialDataSet):
     """ Allows setting an importance value for each of the targets of a sample. """
-    
+
     def __init__(self, indim, targetdim):
         SequentialDataSet.__init__(self, indim, targetdim)
         self.addField('importance', targetdim)
         self.link.append('importance')
-        
+
     def addSample(self, inp, target, importance=None):
         """ adds a new sample consisting of input, target and importance.
-        
+
             :arg inp: the input of the sample
             :arg target: the target of the sample
             :key importance: the importance of the sample. If left None, the
-                 importance will be set to 1.0 
+                 importance will be set to 1.0
         """
         if importance == None:
             importance = ones(len(target))
@@ -45,4 +45,4 @@ class ImportanceDataSet(SequentialDataSet):
                 print     'importance:', fListToString(importance)
                 print     'error: % .8f' % e
         return totalError, ponderation
-    
+

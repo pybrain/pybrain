@@ -38,7 +38,7 @@ class UDPServer(object):
         self.cIP = []
         self.addrList = []
         self.UDPOutSockList = []
-        print "listening on port", self.inPort    
+        print "listening on port", self.inPort
 
     # Adding a client to the list
     def addClient(self, cIP):
@@ -51,24 +51,24 @@ class UDPServer(object):
     # Listen for clients
     def listen(self):
         if self.clients < 1:
-            self.UDPInSock.settimeout(10)    
-            try: 
+            self.UDPInSock.settimeout(10)
+            try:
                 cIP = self.UDPInSock.recv(self.buf)
                 self.addClient(cIP)
-            except: 
+            except:
                 pass
-        else:  
+        else:
             # At least one client has to send a sign of life during 2 seconds
             self.UDPInSock.settimeout(2)
             try:
                 cIP = self.UDPInSock.recv(self.buf)
                 newClient = True
                 for i in self.cIP:
-                    if cIP == i: 
+                    if cIP == i:
                         newClient = False
                         break
                 #Adding new client
-                if newClient: 
+                if newClient:
                     self.addClient(cIP)
             except:
                 print "All clients disconnected"
@@ -76,11 +76,11 @@ class UDPServer(object):
                 self.cIP = []
                 self.addrList = []
                 self.UDPOutSockList = []
-                print "listening on port", self.inPort    
-            
-    
+                print "listening on port", self.inPort
+
+
     # Sending the actual data too all clients
-    def send(self, arrayList):         
+    def send(self, arrayList):
         sendString = repr(arrayList)
         count = 0
         for i in self.UDPOutSockList:
@@ -107,17 +107,17 @@ class UDPClient(object):
         # Send alive signal (own IP adress)
         self.UDPOutSock.sendto(self.ownIP, self.outAddr)
         # if there is no data from Server for 10 seconds server is propably down
-        self.UDPInSock.settimeout(10) 
+        self.UDPInSock.settimeout(10)
         try:
             data = self.UDPInSock.recv(self.buf)
 
-            try:              
+            try:
                 arrayList = eval(data)
                 return arrayList
             except:
                 print "Unsupported data format received from", self.outAddr, "!"
                 return None
-    
+
         except:
             print "Server has quit!"
             return None

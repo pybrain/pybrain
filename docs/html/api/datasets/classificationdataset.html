@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
+
     <title>classification – Datasets for Supervised Classification Training &mdash; PyBrain v0.3 documentation</title>
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -21,7 +21,7 @@
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <link rel="top" title="PyBrain v0.3 documentation" href="../../index.html" />
     <link rel="next" title="importance – Datasets for Weighted Supervised Training" href="importancedatasets.html" />
-    <link rel="prev" title="optimization – Black-box Optimization Algorithms" href="../optimization/optimization.html" /> 
+    <link rel="prev" title="optimization – Black-box Optimization Algorithms" href="../optimization/optimization.html" />
   </head>
   <body>
     <div class="related">
@@ -39,15 +39,15 @@
         <li class="right" >
           <a href="../optimization/optimization.html" title="optimization – Black-box Optimization Algorithms"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">PyBrain v0.3 documentation</a> &raquo;</li> 
+        <li><a href="../../index.html">PyBrain v0.3 documentation</a> &raquo;</li>
       </ul>
-    </div>  
+    </div>
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
           <div class="body">
-            
+
   <div class="section" id="module-pybrain.datasets.classification">
 <span id="classificationdataset"></span><h1><tt class="xref docutils literal"><span class="pre">classification</span></tt> &#8211; Datasets for Supervised Classification Training<a class="headerlink" href="#module-pybrain.datasets.classification" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
@@ -59,7 +59,7 @@
 <dt id="pybrain.datasets.classification.ClassificationDataSet.__init__">
 <tt class="descname">__init__</tt><big>(</big><em>inp</em>, <em>target=1</em>, <em>nb_classes=0</em>, <em>class_labels=None</em><big>)</big><a class="headerlink" href="#pybrain.datasets.classification.ClassificationDataSet.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize an empty dataset.</p>
-<p><cite>inp</cite> is used to specify the dimensionality of the input. While the 
+<p><cite>inp</cite> is used to specify the dimensionality of the input. While the
 number of targets is given by implicitly by the training samples, it can
 also be set explicity by <cite>nb_classes</cite>. To give the classes names, supply
 an iterable of strings as <cite>class_labels</cite>.</p>
@@ -78,8 +78,8 @@ an iterable of strings as <cite>class_labels</cite>.</p>
 <dl class="method">
 <dt id="pybrain.datasets.classification.ClassificationDataSet.splitByClass">
 <tt class="descname">splitByClass</tt><big>(</big><em>cls_select</em><big>)</big><a class="headerlink" href="#pybrain.datasets.classification.ClassificationDataSet.splitByClass" title="Permalink to this definition">¶</a></dt>
-<dd>Produce two new datasets, the first one comprising only the class 
-selected (0..nClasses-1), the second one containing the remaining 
+<dd>Produce two new datasets, the first one comprising only the class
+selected (0..nClasses-1), the second one containing the remaining
 samples.</dd></dl>
 
 <dl class="method">
@@ -108,13 +108,13 @@ target values for non-membership and membership.</p>
 <dt id="pybrain.datasets.classification.SequenceClassificationDataSet">
 <em class="property">class </em><tt class="descclassname">pybrain.datasets.classification.</tt><tt class="descname">SequenceClassificationDataSet</tt><big>(</big><em>inp</em>, <em>target</em>, <em>nb_classes=0</em>, <em>class_labels=None</em><big>)</big><a class="headerlink" href="#pybrain.datasets.classification.SequenceClassificationDataSet" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a title="pybrain.datasets.sequential.SequentialDataSet" class="reference external" href="sequentialdataset.html#pybrain.datasets.sequential.SequentialDataSet"><tt class="xref docutils literal"><span class="pre">pybrain.datasets.sequential.SequentialDataSet</span></tt></a>, <a title="pybrain.datasets.classification.ClassificationDataSet" class="reference internal" href="#pybrain.datasets.classification.ClassificationDataSet"><tt class="xref docutils literal"><span class="pre">pybrain.datasets.classification.ClassificationDataSet</span></tt></a></p>
-<p>Defines a dataset for sequence classification. Each sample in the 
+<p>Defines a dataset for sequence classification. Each sample in the
 sequence still needs its own target value.</p>
 <dl class="method">
 <dt id="pybrain.datasets.classification.SequenceClassificationDataSet.__init__">
 <tt class="descname">__init__</tt><big>(</big><em>inp</em>, <em>target</em>, <em>nb_classes=0</em>, <em>class_labels=None</em><big>)</big><a class="headerlink" href="#pybrain.datasets.classification.SequenceClassificationDataSet.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize an empty dataset.</p>
-<p><cite>inp</cite> is used to specify the dimensionality of the input. While the 
+<p><cite>inp</cite> is used to specify the dimensionality of the input. While the
 number of targets is given by implicitly by the training samples, it can
 also be set explicity by <cite>nb_classes</cite>. To give the classes names, supply
 an iterable of strings as <cite>class_labels</cite>.</p>
@@ -176,7 +176,7 @@ an iterable of strings as <cite>class_labels</cite>.</p>
         <li class="right" >
           <a href="../optimization/optimization.html" title="optimization – Black-box Optimization Algorithms"
              >previous</a> |</li>
-        <li><a href="../../index.html">PyBrain v0.3 documentation</a> &raquo;</li> 
+        <li><a href="../../index.html">PyBrain v0.3 documentation</a> &raquo;</li>
       </ul>
     </div>
     <div class="footer">

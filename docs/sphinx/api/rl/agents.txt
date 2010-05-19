@@ -9,16 +9,16 @@
 .. automodule:: pybrain.rl.agents.logging
 
 .. autoclass:: LoggingAgent
-   :members: 
+   :members:
    :show-inheritance:
 
 .. automodule:: pybrain.rl.agents
 
 .. autoclass:: LearningAgent
-   :members: 
+   :members:
    :show-inheritance:
-   
+
 .. autoclass:: OptimizationAgent
-   :members: 
+   :members:
    :show-inheritance:
-   
+

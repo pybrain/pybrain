@@ -8,14 +8,14 @@ Writing a neural networking framework in Python imposes certain speed
 restrictions upon it. Python is just not as fast as languages such as C++
 or Fortran.
 
-Due to this, PyBrain has its own spin-off called arac, which is a 
-re-implementation of its neural networking facilities that integrates 
+Due to this, PyBrain has its own spin-off called arac, which is a
+re-implementation of its neural networking facilities that integrates
 transparently with it.
 
 Depending on the configuration of your system, speedups of **5-10x faster** can
-be expected. This speedup might be even higher (ranging into the hundreds) if 
+be expected. This speedup might be even higher (ranging into the hundreds) if
 you use sophisticated topologies such as MDRNNs. If you want some numbers on
-your system, there is a comparison script shipped with PyBrain at 
+your system, there is a comparison script shipped with PyBrain at
 ``examples/arac/benchmark.py``.
 
 
@@ -50,13 +50,13 @@ As you can see by examining the network, it is a special class:
     >>> n
     <_FeedForwardNetwork '_FeedForwardNetwork-8'>
 
-which is prefixed with an underscore, the Python convention for naming C 
-implementations of already existing classes. We can import these classes 
+which is prefixed with an underscore, the Python convention for naming C
+implementations of already existing classes. We can import these classes
 directly from arac and use them in the same way as PyBrain classes:
 
     >>> from arac.pybrainbridge import _FeedForwardNetwork, _RecurrentNetwork
 
-The third method is to construct a network as a PyBrain network and call the 
+The third method is to construct a network as a PyBrain network and call the
 method ``convertToFastNetwork`` afterwards:
 
     >>> n = buildNetwork(2, 3, 1, fast=False)
@@ -70,10 +70,10 @@ are not reflected in the arac network.
 Limitations
 -----------
 
-Since arac is implemented in C++ and currently maintained by only a single 
+Since arac is implemented in C++ and currently maintained by only a single
 person, arac development is likely to be slower than PyBrain's. This might lead
-to certain features (e.g. layer types) to be implemented later than the pure 
-python versions. This also applies to custom layer types. As soon as you have 
-your layer type, you will not be able to use fast networks anymore -- except if 
+to certain features (e.g. layer types) to be implemented later than the pure
+python versions. This also applies to custom layer types. As soon as you have
+your layer type, you will not be able to use fast networks anymore -- except if
 you chose to also implement them for arac yourself.
 

@@ -150,5 +150,5 @@ class SimplePopulation(Population):
         return sum(self._fitness.values()) / float(len(self._fitness))
 
 
-                                                 
+
 

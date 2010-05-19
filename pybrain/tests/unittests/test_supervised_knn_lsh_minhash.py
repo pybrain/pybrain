@@ -24,7 +24,7 @@ Internal Tests:
     1.0
     >>> jacardCoefficient(a, d)
     0.75
-    
+
 
 Example Usage:
 
@@ -39,11 +39,11 @@ The permutation is initialized randomly
 
     >>> m.permutations
     array([...])
-    
+
 But for the tests, we will justify it to our means:
 
     >>> m.permutations = array([[0, 1, 2, 4, 3], [0, 1, 2, 3, 4]])
-    
+
 So let's put in some values that will hash to the same bucket
 
     >>> m.put(array([1, 1, 1, 1, 1]), 'red')
@@ -54,25 +54,25 @@ Some "introspection" to check if everything went right
     defaultdict(<function <lambda> at ...>, {(0, 0): [(array([...True], dtype=bool), 'red')]})
     >>> m._hash(array([1, 1, 0, 0, 0]))
     (0, 0)
-    
-Put another one in 
+
+Put another one in
 
     >>> m.put(array([1, 1, 1, 1, 0]), 'red')
 
 An check if this one is favored above the other
-    
+
     >>> m.knn(array([1, 1, 0, 0, 0]), 1)
     [(array([... True, False], dtype=bool), 'red')]
     >>> m.knn(array([1, 1, 0, 0, 0]), 1)
     [(array([... True, False], dtype=bool), 'red')]
 
 
-    
+
 Let's make a hash that returns nothing
 
     >>> m.knn(array([0, 0, 0, 0, 0]), 1)
     []
-    
+
 """
 
 from pybrain.tests import runModuleTestSuite

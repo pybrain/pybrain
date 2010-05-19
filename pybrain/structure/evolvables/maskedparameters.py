@@ -8,22 +8,22 @@ from topology import TopologyEvolvable
 
 class MaskedParameters(TopologyEvolvable):
     """ A module with a binary mask that can disable (=zero) parameters.
-    If no maximum is set, the mask can potentially have all parameters enabled. 
+    If no maximum is set, the mask can potentially have all parameters enabled.
     The maxComplexity represents the number of allowed enabled parameters. """
-    
+
     maskFlipProbability = 0.05
-    mutationStdev = 0.1    
-    
+    mutationStdev = 0.1
+
     # number of bits in the mask that can be maximally on at once (None = all)
     # Note: there must always be at least one on
     maxComplexity = None
-    
+
     # probability of mask bits being on in a random mask (subject to the constraint above)
     maskOnProbability = 0.5
-    
+
     # when accessed through .params, the masked values are included (and have value zero).
     returnZeros = False
-    
+
     def __init__(self, pcontainer, **args):
         TopologyEvolvable.__init__(self, pcontainer, **args)
         if self.maxComplexity == None:
@@ -31,21 +31,21 @@ class MaskedParameters(TopologyEvolvable):
         self.randomize()
         self.maskableParams = self.pcontainer.params.copy()
         self._applyMask()
-           
+
     def _applyMask(self):
         """ apply the mask to the module. """
         self.pcontainer._params[:] = self.mask*self.maskableParams
-        
+
     @property
     def paramdim(self):
         if self.returnZeros:
             return self.pcontainer.paramdim
         else:
             return sum(self.mask)
-    
+
     @property
     def params(self):
-        """ returns an array with (usually) only the unmasked parameters """    
+        """ returns an array with (usually) only the unmasked parameters """
         if self.returnZeros:
             return self.pcontainer.params
         else:
@@ -53,10 +53,10 @@ class MaskedParameters(TopologyEvolvable):
             paramcount = 0
             for i in range(len(self.maskableParams)):
                 if self.mask[i] == True:
-                    x[paramcount] = self.maskableParams[i] 
+                    x[paramcount] = self.maskableParams[i]
                     paramcount += 1
             return x
-    
+
     def _setParameters(self, x):
         """ sets only the unmasked parameters """
         paramcount = 0
@@ -65,9 +65,9 @@ class MaskedParameters(TopologyEvolvable):
                 self.maskableParams[i] = x[paramcount]
                 paramcount += 1
         self._applyMask()
-        
+
     def randomize(self, **args):
-        """ an initial, random mask (with random params) 
+        """ an initial, random mask (with random params)
         with as many parameters enabled as allowed"""
         self.mask = zeros(self.pcontainer.paramdim, dtype=bool)
         onbits = []
@@ -80,10 +80,10 @@ class MaskedParameters(TopologyEvolvable):
             for i in sample(onbits, over):
                 self.mask[i] = False
         self.maskableParams = randn(self.pcontainer.paramdim)*self.stdParams
-        self._applyMask()    
-    
+        self._applyMask()
+
     def topologyMutate(self):
-        """ flips some bits on the mask 
+        """ flips some bits on the mask
         (but do not exceed the maximum of enabled parameters). """
         for i in range(self.pcontainer.paramdim):
             if random() < self.maskFlipProbability:
@@ -96,16 +96,15 @@ class MaskedParameters(TopologyEvolvable):
                     self.mask[ind] = False
                     break
         if sum(self.mask) == 0:
-            # CHECKME: minimum of one needs to be on 
+            # CHECKME: minimum of one needs to be on
             ind = int(random()*self.pcontainer.paramdim)
             self.mask[ind] = True
-            
-        self._applyMask()                     
-    
+
+        self._applyMask()
+
     def mutate(self):
         """ add some gaussian noise to all parameters."""
         # CHECKME: could this be partly outsourced to the pcontainer directly?
         for i in range(self.pcontainer.paramdim):
             self.maskableParams[i] += gauss(0, self.mutationStdev)
         self._applyMask()
-            

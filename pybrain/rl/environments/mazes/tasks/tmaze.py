@@ -6,25 +6,25 @@ from random import choice
 from maze import MazeTask
 
 
-class TMaze(MazeTask):   
+class TMaze(MazeTask):
     """
     #############
     ###########*#
     #.          #
     ########### #
-    ############# 
-    
+    #############
+
     1-in-n encoding for observations.
     """
-    
+
     discount = 0.98
     observations = 4
-    
+
     finalReward = 4
     bangPenalty = -0.1
-    
+
     length = 10
-    
+
     def __init__(self, **args):
         self.initPos = [(2, 1)]
         self.setArgs(**args)
@@ -35,7 +35,7 @@ class TMaze(MazeTask):
         columns.append([1] * 5)
         self.topology = array(columns).T
         MazeTask.__init__(self, **args)
-        
+
     def reset(self):
         MazeTask.reset(self)
         goUp = choice([True, False])
@@ -44,7 +44,7 @@ class TMaze(MazeTask):
             self.env.goal = (3, self.length + 1)
         else:
             self.env.goal = (1, self.length + 1)
-    
+
     def getObservation(self):
         res = zeros(4)
         if self.env.perseus == self.env.initPos[0]:
@@ -57,7 +57,7 @@ class TMaze(MazeTask):
         else:
             res[3] = 1
         return res
-    
+
     def getReward(self):
         if self.env.perseus[1] == self.length + 1:
             if abs(self.env.perseus[0] - self.env.goal[0]) == 2:

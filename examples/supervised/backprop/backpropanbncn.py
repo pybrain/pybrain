@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# A simple recurrent neural network that learns a simple sequential data set. 
+# A simple recurrent neural network that learns a simple sequential data set.
 
 __author__ = 'Tom Schaul, tom@idsia.ch and Daan Wierstra'
 
@@ -11,7 +11,7 @@ from pybrain.structure import FullConnection, RecurrentNetwork, TanhLayer, Linea
 def testTraining():
     # the AnBnCn dataset (sequential)
     d = AnBnCnDataSet()
-    
+
     # build a recurrent network to be trained
     hsize = 2
     n = RecurrentNetwork()
@@ -26,7 +26,7 @@ def testTraining():
     # initialize the backprop trainer and train
     t = BackpropTrainer(n, learningrate = 0.1, momentum = 0.0, verbose = True)
     t.trainOnDataset(d, 200)
-    
+
     # the resulting weights are in the network:
     print 'Final weights:', n.params
 

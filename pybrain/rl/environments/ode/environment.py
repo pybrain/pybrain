@@ -20,7 +20,7 @@ class ODEEnvironment(Environment):
     an XML file in XODE format (see http://tanksoftware.com/xode/). This file can be loaded
     into the world with the "loadXODE(...)" function. Use performAction(...) or step() to advance
     the simulation by one step.
-    """  
+    """
     # objects with names within one tuple can pass each other
     passpairs = []
     # define a verbosity level for selective debug output (0=none)
@@ -29,7 +29,7 @@ class ODEEnvironment(Environment):
     def __init__(self, render=True, realtime=True, ip="127.0.0.1", port="21590", buf='16384'):
         """ initializes the virtual world, variables, the frame rate and the callback functions."""
         print "ODEEnvironment -- based on Open Dynamics Engine."
-        
+
         # initialize base class
         self.render = render
         if self.render:
@@ -37,7 +37,7 @@ class ODEEnvironment(Environment):
             self.updateLock = threading.Lock()
             self.server = UDPServer(ip, port)
         self.realtime = realtime
-        
+
         # initialize attributes
         self.resetAttributes()
 
@@ -50,10 +50,10 @@ class ODEEnvironment(Environment):
 
         #initialize actuators list
         self.actuators = []
-        
+
         # A joint group for the contact joints that are generated whenever two bodies collide
         self.contactgroup = ode.JointGroup()
-         
+
         self.dt = 0.01
         self.FricMu = 8.0
         self.stepsPerAction = 1
@@ -61,7 +61,7 @@ class ODEEnvironment(Environment):
 
     def closeSocket(self):
         self.server.UDPInSock.close()
-        time.sleep(10)        
+        time.sleep(10)
 
     def resetAttributes(self):
         """resets the class attributes to their default values"""
@@ -73,14 +73,14 @@ class ODEEnvironment(Environment):
 
     def reset(self):
         """resets the model and all its parameters to their original values"""
-        self.loadXODE(self._currentXODEfile, reload=True) 
+        self.loadXODE(self._currentXODEfile, reload=True)
         self.stepCounter = 0
 
     def setGravity(self, g):
         """set the world's gravity constant in negative y-direction"""
-        self.world.setGravity((0, -g, 0)) 
+        self.world.setGravity((0, -g, 0))
 
-        
+
     def _setWorldParameters(self):
         """ sets parameters for ODE world object: gravity, error correction (ERP, default=0.2),
         constraint force mixing (CFM, default=1e-5).  """
@@ -136,7 +136,7 @@ class ODEEnvironment(Environment):
         # rotate body and append to (body,geom) tuple list
         # body.setRotation([ct, 0., -st, 0., 1., 0., st, 0., ct])
         self.body_geom.append((body, geom))
-    
+
     # -- sensor and actuator functions
     def addSensor(self, sensor):
         """ adds a sensor object to the list of sensors """
@@ -145,8 +145,8 @@ class ODEEnvironment(Environment):
         # add sensor to sensors list
         self.sensors.append(sensor)
         # connect sensor and give it the virtual world object
-        sensor._connect(self)  
-        
+        sensor._connect(self)
+
     def addActuator(self, actuator):
         """ adds a sensor object to the list of sensors """
         if not isinstance(actuator, actuators.Actuator):
@@ -154,8 +154,8 @@ class ODEEnvironment(Environment):
         # add sensor to sensors list
         self.actuators.append(actuator)
         # connect actuator and give it the virtual world object
-        actuator._connect(self)   
-    
+        actuator._connect(self)
+
     def addTexture(self, name, texture):
         """ adds a texture to the given ODE object name """
         self.textures[name] = texture
@@ -194,9 +194,9 @@ class ODEEnvironment(Environment):
             print "no <space> tag found in " + filename + ". quitting."
             sys.exit()
         self.space = space.getODEObject()
-                
+
         # load bodies and geoms for painting
-        self.body_geom = [] 
+        self.body_geom = []
         self._parseBodies(self.root)
 
         if self.verbosity > 0:
@@ -210,7 +210,7 @@ class ODEEnvironment(Environment):
         # now parse the additional parameters at the end of the xode file
         self.loadConfig(filename, reload)
 
-    
+
     def loadConfig(self, filename, reload=False):
         # parameters are given in (our own brand of) config-file syntax
         self.config = ConfigGrabber(filename, sectionId="<!--odeenvironment parameters", delim=("<", ">"))
@@ -258,13 +258,13 @@ class ODEEnvironment(Environment):
                     if objname == body.name:
                         body.color = coldef
                         break
-                
-                
+
+
         if not reload:
             # add the JointSensor as default
-            self.sensors = [] 
+            self.sensors = []
             ## self.addSensor(self._jointSensor)
-            
+
             # <sensors>
             # expects a list of strings, each of which is the executable command to create a sensor object
             # example: DistToPointSensor('legSensor', (0.0, 0.0, 5.0))
@@ -283,7 +283,7 @@ class ODEEnvironment(Environment):
 
     def _parseBodies(self, node):
         """ parses through the xode tree recursively and finds all bodies and geoms for drawing. """
-        
+
         # body (with nested geom)
         if isinstance(node, xode.body.Body):
             body = node.getODEObject()
@@ -298,7 +298,7 @@ class ODEEnvironment(Environment):
             # if geom doesn't have own name, use the name of its body
             geom.name = node.getName()
             self.body_geom.append((body, geom))
-        
+
         # geom on its own without body
         elif isinstance(node, xode.geom.Geom):
             try:
@@ -308,11 +308,11 @@ class ODEEnvironment(Environment):
                 geom = node.getODEObject()
                 geom.name = node.getName()
                 self.body_geom.append((body, geom))
-        
+
         # special cases for joints: universal, fixed, amotor
         elif isinstance(node, xode.joint.Joint):
             joint = node.getODEObject()
-            
+
             if type(joint) == ode.UniversalJoint:
                 # insert an additional AMotor joint to read the angles from and to add torques
                 # amotor = ode.AMotor(self.world)
@@ -328,7 +328,7 @@ class ODEEnvironment(Environment):
             if type(joint) == ode.AMotor:
                 # do the euler angle calculations automatically (ref. ode manual)
                 joint.setMode(ode.AMotorEuler)
-                
+
             if type(joint) == ode.FixedJoint:
                 # prevent fixed joints from bouncing to center of first body
                 joint.setFixed()
@@ -339,7 +339,7 @@ class ODEEnvironment(Environment):
 
     def excludeSensors(self, exclist):
         self.excludesensors.extend(exclist)
-        
+
     def getSensors(self):
         """ returns combined sensor data """
         output = []
@@ -347,23 +347,23 @@ class ODEEnvironment(Environment):
             if not s.name in self.excludesensors:
                 output.extend(s.getValues())
         return asarray(output)
-    
+
     def getSensorNames(self):
         return [s.name for s in self.sensors]
 
     def getActuatorNames(self):
         return [a.name for a in self.actuators]
-    
+
     def getSensorByName(self, name):
         try:
             idx = self.getSensorNames().index(name)
         except ValueError:
             warnings.warn('sensor ' + name + ' is not in sensor list.')
             return []
-        
-        return self.sensors[idx].getValues()      
-        
-    @property    
+
+        return self.sensors[idx].getValues()
+
+    @property
     def indim(self):
         num = 0
         for a in self.actuators:
@@ -385,10 +385,10 @@ class ODEEnvironment(Environment):
             val = a.getNumValues()
             a._update(action[pointer:pointer + val])
             pointer += val
-        
+
         for _ in range(self.stepsPerAction):
             self.step()
-        
+
     def getXODERoot(self):
         return self.root
 
@@ -413,7 +413,7 @@ class ODEEnvironment(Environment):
 
         # Check if the objects do collide
         contacts = ode.collide(geom1, geom2)
-        
+
         # Create contact joints
         world, contactgroup = args
         for c in contacts:
@@ -432,13 +432,13 @@ class ODEEnvironment(Environment):
 
     def getCurrentStep(self):
         return self.stepCounter
-    
-    @threaded()  
+
+    @threaded()
     def updateClients(self):
-        self.updateDone = False      
-        if not self.updateLock.acquire(False): 
+        self.updateDone = False
+        if not self.updateLock.acquire(False):
             return
-        
+
         # build message to send
         message = []
         for (body, geom) in self.body_geom:
@@ -449,7 +449,7 @@ class ODEEnvironment(Environment):
                 item['position'] = body.getPosition()
                 item['rotation'] = body.getRotation()
                 if hasattr(body, 'color'): item['color'] = body.color
-                
+
                 # switch different geom objects
                 if type(geom) == ode.GeomBox:
                     # cube
@@ -470,7 +470,7 @@ class ODEEnvironment(Environment):
                     # solid cylinder
                     item['type'] = 'GeomCylinder'
                     item['radius'] = geom.getParams()[0]
-                    item['length'] = geom.getParams()[1]         
+                    item['length'] = geom.getParams()[1]
                 else:
                     # TODO: add other geoms here
                     pass
@@ -482,18 +482,18 @@ class ODEEnvironment(Environment):
                     item['type'] = 'GeomPlane'
                     item['normal'] = geom.getParams()[0] # the normal vector to the plane
                     item['distance'] = geom.getParams()[1] # the distance to the origin
-            
+
             message.append(item)
-        
+
         # Listen for clients
         self.server.listen()
-        if self.server.clients > 0: 
+        if self.server.clients > 0:
             # If there are clients send them the new data
             self.server.send(message)
         time.sleep(0.02)
         self.updateLock.release()
         self.updateDone = True
-            
+
     def step(self):
         """ Here the ode physics is calculated by one step. """
 
@@ -507,21 +507,21 @@ class ODEEnvironment(Environment):
         self.world.step(float(self.dt))
         # Remove all contact joints
         self.contactgroup.empty()
-            
+
         # update all sensors
         for s in self.sensors:
             s._update()
-        
+
         # update clients
-        if self.render and self.updateDone: 
-            self.updateClients()                    
+        if self.render and self.updateDone:
+            self.updateClients()
             if self.server.clients > 0 and self.realtime:
                 time.sleep(self.dt)
-        
+
         # increase step counter
         self.stepCounter += 1
         return self.stepCounter
-            
+
     def _printfunc (self):
         pass
         # print self.root.namedChild('palm').getODEObject().getPosition()
@@ -567,14 +567,14 @@ if __name__ == '__main__' :
         modelName = "johnnie"
 
     # initialize world and renderer and attach renderer to world
-    w = ODEEnvironment() 
+    w = ODEEnvironment()
     # load model file
     w.loadXODE("models/" + modelName + ".xode")             # load XML file that describes the world
-    
+
     w.addSensor(sensors.JointSensor())
     w.addActuator(actuators.JointActuator())
-    
+
     # start simulating the world
     while True:
-        w.step()     
+        w.step()
 

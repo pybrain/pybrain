@@ -78,7 +78,7 @@ class SVMTrainer(object):
     
     def setParams(self, **kwargs):
         """ Set parameters for SVM training. Apart from the ones below, you can use all parameters 
-        defined for the LIBSVM svm_model class, see their documentation. 
+        defined for the LIBSVM svm_model class, see their documentation.
 
         :key searchlog: Save a list of coordinates and the achieved CV accuracy to this file."""
         if kwargs.has_key('weight'):

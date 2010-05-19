@@ -3,7 +3,7 @@
     >>> from pybrain.supervised.trainers import BackpropTrainer, RPropMinusTrainer
     >>> from pybrain.datasets import SupervisedDataSet, ImportanceDataSet
     >>> from scipy import random, array
-    
+
 Initialize random number generator
 
     >>> random.seed(42)
@@ -16,7 +16,7 @@ Create an XOR-dataset and a recurrent network
     >>> ds.addSample([1,0],[1, -1],  [1,0])
     >>> ds.addSample([1,1],[0, 0],  [1,0])
     >>> n = buildNetwork(ds.indim, 4, ds.outdim, recurrent=True)
-    
+
 Create and test backprop trainer
 
     >>> t = BackpropTrainer(n, learningrate = 0.01, momentum = 0.99, verbose = True)
@@ -27,7 +27,7 @@ Create and test backprop trainer
     Total error: 0.546129967878
     >>> abs(n.params[10:15] - array([ -0.53868206, -0.54185834,  0.26726394, -1.90008234, -1.12114946])).round(5)
     array([ 0.,  0.,  0.,  0.,  0.])
-    
+
 Now the same for RPROP
 
     >>> t = RPropMinusTrainer(n, verbose = True)

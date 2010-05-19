@@ -47,7 +47,7 @@ while(True):
 	# one learning step after one episode of world-interaction
     experiment.doEpisodes(1)
     agent.learn(1)
-    
+
     # test performance (these real-world experiences are not used for training)
     if render:
         env.delay = True
@@ -56,13 +56,13 @@ while(True):
     env.delay = False
     testagent.reset()
     experiment.agent = agent
-    
+
     performance.append(r)
     if not render:
         plotPerformance(performance, pf_fig)
-    
+
     print "reward avg", r
     print "explorer epsilon", learner.explorer.epsilon
     print "num episodes", agent.history.getNumSequences()
     print "update step", len(performance)
-    
+

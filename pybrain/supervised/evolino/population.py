@@ -22,10 +22,10 @@ class EvolinoPopulation(Population):
 
         A subpopulation of size subPopulationSize is created for each of these
         chromosomes.
-        
+
         :key nCombinations: Denotes the number of times each subindividual should
                               be built into an individual. default=1
-        :key valueInitializer: 
+        :key valueInitializer:
     """
     def __init__(self, individual, subPopulationSize, nCombinations=1, valueInitializer=Randomization(-0.1, 0.1), **kwargs):
         """ :key individual: A prototype individual which is used to determine

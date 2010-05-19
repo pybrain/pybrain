@@ -186,7 +186,7 @@ class GridSearchDOE:
             settings by calling the abstract _validate() method.
         """
         self._n_params = len(self._min_params)
-        
+
         center = self._min_params + self._range / 2.
         for level in range(self._n_iterations):
             grid = self._calcGrid(center, level)
@@ -213,7 +213,7 @@ class GridSearchDOE:
 
     def _calcGrid(self, center, level):
         """ Calculate the next grid to validate.
-        
+
             :arg center: The central position of the grid
             :arg level:  The iteration number
         """
@@ -259,7 +259,7 @@ class GridSearchCostGamma(GridSearch2D):
     """
     def __init__(self, trainer, dataset, min_params=[-5, -15], max_params=[15, 3], n_steps=7, **kwargs):
         """ The parameter boundaries are specified in log2-space.
-        
+
             :arg trainer: The SVM trainer including the SVM module.
                             (Could be any kind of trainer and module)
             :arg dataset: Dataset used for crossvalidation

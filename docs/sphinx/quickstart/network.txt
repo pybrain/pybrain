@@ -7,26 +7,26 @@ To go through the quickstart interactively, just fire up Python and we will make
 the interpreter::
 
    $ python
-   Python 2.5.2 (r252:60911, Sep 17 2008, 11:21:23) 
+   Python 2.5.2 (r252:60911, Sep 17 2008, 11:21:23)
    [GCC 4.0.1 (Apple Inc. build 5465)] on darwin
    Type "help", "copyright", "credits" or "license" for more information.
    >>>
 
-In PyBrain, networks are composed of Modules which are connected with 
+In PyBrain, networks are composed of Modules which are connected with
 Connections. You can think of a network as a directed acyclic graph, where the
-nodes are Modules and the edges are Connections. This makes PyBrain very 
-flexible but it is also not necessary in all cases.  
+nodes are Modules and the edges are Connections. This makes PyBrain very
+flexible but it is also not necessary in all cases.
 
 
 The buildNetwork Shortcut
 -------------------------
 
-Thus, there is a simple way to create networks, which is the ``buildNetwork`` 
+Thus, there is a simple way to create networks, which is the ``buildNetwork``
 shortcut::
 
    >>> from pybrain.tools.shortcuts import buildNetwork
    >>> net = buildNetwork(2, 3, 1)
-   
+
 This call returns a network that has two inputs, three hidden and a single
 output neuron. In PyBrain, these layers are :class:`Module` objects and they are
 already connected with :class:`FullConnection` objects.
@@ -40,15 +40,15 @@ output::
 
    >>> net.activate([2, 1])
    array([-0.98646726])
-   
+
 For this we use the ``.activate()`` method, which expects a list, tuple or an
-array as input. 
+array as input.
 
 
 Examining the structure
 -----------------------
 
-How can we examine the structure of our network somewhat closer? In PyBrain, 
+How can we examine the structure of our network somewhat closer? In PyBrain,
 every part of a network has a name by which you can access it. When building
 networks with the ``buildNetwork`` shortcut, the parts are named automatically::
 
@@ -64,7 +64,7 @@ The hidden layers have numbers at the end in order to distinguish between those.
 
 More sophisticated Networks
 ---------------------------
-   
+
 Of course, we want more flexibility when building up networks. For instance, the
 hidden layer is constructed with the sigmoid squashing function per default:
 but in a lot of cases, this is not what we want. We can also supply different
@@ -74,22 +74,22 @@ types of layers::
    >>> net = buildNetwork(2, 3, 1, hiddenclass=TanhLayer)
    >>> net['hidden0']
    <TanhLayer 'hidden0'>
-   
-There is more we can do. For example, we can also set a different class for 
+
+There is more we can do. For example, we can also set a different class for
 the output layer::
 
    >>> from pybrain.structure import SoftmaxLayer
    >>> net = buildNetwork(2, 3, 2, hiddenclass=TanhLayer, outclass=SoftmaxLayer)
    >>> net.activate((2, 3))
    array([ 0.6656323,  0.3343677])
-   
+
 We can also tell the network to use a bias::
 
    >>> net = buildNetwork(2, 3, 1, bias=True)
    >>> net['bias']
    <BiasUnit 'bias'>
-   
-This approach has of course some restrictions: for example, we can only 
-construct a feedforward topology. But it is possible to create very 
+
+This approach has of course some restrictions: for example, we can only
+construct a feedforward topology. But it is possible to create very
 sophisticated architectures with PyBrain, and it is also one of the library's
 strength to do so.

@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 # generates some simple example data sets
 __author__ = "Martin Felder"
-__version__ = '$Id$' 
+__version__ = '$Id$'
 
 import numpy as np
 from numpy.random import multivariate_normal, rand
 from scipy import diag
-from pylab import show, hold, plot 
+from pylab import show, hold, plot
 
 from pybrain.datasets import ClassificationDataSet, SequenceClassificationDataSet
 
@@ -39,11 +39,11 @@ def generateGridData(x,y, return_ticks=False):
     ds.setField('input',  np.concatenate((X.reshape(X.size, 1),Y.reshape(X.size, 1)), 1))
     ds.setField('target', np.zeros([X.size,1]))
     ds._convertToOneOfMany()
-    if return_ticks:        
+    if return_ticks:
         return (ds, x, y)
     else:
         return (ds, X, Y)
-        
+
 
 def generateNoisySines( npoints, nseq, noise=0.3 ):
     """ construct a 2-class dataset out of noisy sines """
@@ -69,6 +69,6 @@ def plotData(ds):
         plot(ds['input'][here,0],ds['input'][here,1],'o')
 
 
-if __name__ == '__main__':    
+if __name__ == '__main__':
     plotData(generateClassificationData(150))
     show()

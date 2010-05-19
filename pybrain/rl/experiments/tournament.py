@@ -10,22 +10,22 @@ class Tournament(Named):
 
     # do all moves need to be checked for legality?
     forcedLegality = False
-    
+
     def __init__(self, env, agents):
         assert isinstance(env, TwoPlayerGame)
         self.startcolor = env.startcolor
         self.env = env
         self.agents = agents
         for a in agents:
-            a.game = self.env        
+            a.game = self.env
         self.reset()
-        
+
     def reset(self):
         # a dictionnary attaching a list of outcomes to a player-couple-key
         self.results = {}
         self.rounds = 0
         self.numGames = 0
-        
+
     def _produceAllPairs(self):
         """ produce a list of all pairs of agents (assuming ab <> ba)"""
         res = []
@@ -34,7 +34,7 @@ class Tournament(Named):
                 if a != b:
                     res.append((a, b))
         return res
-        
+
     def _oneGame(self, p1, p2):
         """ play one game between two agents p1 and p2."""
         self.numGames += 1
@@ -47,21 +47,21 @@ class Tournament(Named):
         i = 0
         while not self.env.gameOver():
             p = players[i]
-            i = (i + 1) % 2 # alternate      
+            i = (i + 1) % 2 # alternate
             act = p.getAction()
-            
+
             if self.forcedLegality:
                 tries = 0
                 while not self.env.isLegal(*act):
                     tries += 1
                     # CHECKME: maybe the legality check is too specific?
-                    act = p.getAction()                
+                    act = p.getAction()
                     if tries > 50:
                         raise Exception('No legal move produced!')
-                
-            self.env.performAction(act)            
-            
-        if players not in self.results: 
+
+            self.env.performAction(act)
+
+        if players not in self.results:
             self.results[players] = []
         wincolor = self.env.getWinner()
         if wincolor == p1.color:
@@ -69,7 +69,7 @@ class Tournament(Named):
         else:
             winner = p2
         self.results[players].append(winner)
-        
+
     def organize(self, repeat=1):
         """ have all agents play all others in all orders, and repeat. """
         for dummy in range(repeat):
@@ -77,9 +77,9 @@ class Tournament(Named):
             for p1, p2 in self._produceAllPairs():
                 self._oneGame(p1, p2)
         return self.results
-    
+
     def eloScore(self, startingscore=1500, k=32):
-        """ compute the elo score of all the agents, given the games played in the tournament. 
+        """ compute the elo score of all the agents, given the games played in the tournament.
         Also checking for potentially initial scores among the agents ('elo' variable). """
         # initialize
         elos = {}
@@ -98,20 +98,20 @@ class Tournament(Named):
                     if r == a1:
                         s += 1.
                     elif r == self.env.DRAW:
-                        s += 0.5                
+                        s += 0.5
                 # what score would have been estimated?
                 est = len(outcomes) / (1. + 10 ** ((elos[a2] - elos[a1]) / 400.))
                 delta = k * (s - est)
                 elos[a1] += delta
-                elos[a2] -= delta                
+                elos[a2] -= delta
         for a, e in elos.items():
-            a.elo = e            
+            a.elo = e
         return elos
-    
+
     def __str__(self):
         s = 'Tournament results (' + str(self.rounds) + ' rounds, ' + str(self.numGames) + ' games):\n'
         for p1, p2 in self._produceAllPairs():
             wins = len(filter(lambda x: x == p1, self.results[(p1, p2)]))
             losses = len(filter(lambda x: x == p2, self.results[(p1, p2)]))
-            s += ' ' * 3 + p1.name + ' won ' + str(wins) + ' times and lost ' + str(losses) + ' times against ' + p2.name + '\n'            
+            s += ' ' * 3 + p1.name + ' won ' + str(wins) + ' times and lost ' + str(losses) + ' times against ' + p2.name + '\n'
         return s

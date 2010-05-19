@@ -11,7 +11,7 @@ from inspect import isclass
 class PenteTask(GomokuTask):
     """ The task of winning the maximal number of Gomoku games against a fixed opponent. """
 
-    def __init__(self, size, opponent = None, **args):        
+    def __init__(self, size, opponent = None, **args):
         EpisodicTask.__init__(self, PenteGame((size, size)))
         self.setArgs(**args)
         if opponent == None:
@@ -25,5 +25,4 @@ class PenteTask(GomokuTask):
         self.minmoves = 9
         self.maxmoves = self.env.size[0] * self.env.size[1]
         self.reset()
-        
-                    
+

@@ -24,9 +24,9 @@ known_extensions = {
     'pkl': 'pickle',
     'nc' : 'netcdf' }
 
-    
+
 def abstractMethod():
-    """ This should be called when an abstract method is called that should have been 
+    """ This should be called when an abstract method is called that should have been
     implemented by a subclass. It should not be called in situations where no implementation
     (i.e. a 'pass' behavior) is acceptable. """
     raise NotImplementedError('Method not implemented!')
@@ -43,7 +43,7 @@ def combineLists(lsts):
 
 def drawIndex(probs, tolerant=False):
     """ Draws an index given an array of probabilities.
-    
+
     :key tolerant: if set to True, the array is normalized to sum to 1.  """
     if not sum(probs) < 1.00001 or not sum(probs) > 0.99999:
         if tolerant:
@@ -72,7 +72,7 @@ def drawGibbs(vals, temperature=1.):
         return choice(best)
     else:
         temp = vals / temperature
-        
+
         # make sure we keep the exponential bounded (between +20 and -20)
         temp += 20 - max(temp)
         if min(temp) < -20:
@@ -82,7 +82,7 @@ def drawGibbs(vals, temperature=1.):
         temp = exp(temp)
         temp /= sum(temp)
         return drawIndex(temp)
-    
+
 
 def iterCombinations(tup):
     """ all possible of integer tuples of the same dimension than tup, and each component being
@@ -95,26 +95,26 @@ def iterCombinations(tup):
             for i in range(tup[-1]):
                 yield tuple(list(prefix) + [i])
 
-    
+
 def setAllArgs(obj, argdict):
-    """ set all those internal variables which have the same name than an entry in the 
-    given object's dictionary. 
+    """ set all those internal variables which have the same name than an entry in the
+    given object's dictionary.
     This function can be useful for quick initializations. """
-    
+
     xmlstore = isinstance(obj, XMLBuildable)
     for n in argdict.keys():
         if hasattr(obj, n):
-            setattr(obj, n, argdict[n])    
+            setattr(obj, n, argdict[n])
             if xmlstore:
-                obj.argdict[n] = argdict[n]  
+                obj.argdict[n] = argdict[n]
         else:
-            print 'Warning: parameter name', n, 'not found!'  
+            print 'Warning: parameter name', n, 'not found!'
             if xmlstore:
                 if not hasattr(obj, '_unknown_argdict'):
                     obj._unknown_argdict = {}
                 obj._unknown_argdict[n] = argdict[n]
-                
-                
+
+
 def linscale(d, lim):
     """ utility function to linearly scale array d to the interval defined by lim """
     return (d - d.min())*(lim[1] - lim[0]) + lim[0]
@@ -130,7 +130,7 @@ def percentError(out, true):
 def formatFromExtension(fname):
     """Tries to infer a protocol from the file extension."""
     _base, ext = os.path.splitext(fname)
-    if not ext: 
+    if not ext:
         return None
     try:
         format = known_extensions[ext.replace('.', '')]
@@ -138,27 +138,27 @@ def formatFromExtension(fname):
         format = None
     return format
 
-    
+
 class XMLBuildable(object):
-    """ subclasses of this can be losslessly stored in XML, and 
-    automatically reconstructed on reading. For this they need to store 
+    """ subclasses of this can be losslessly stored in XML, and
+    automatically reconstructed on reading. For this they need to store
     their construction arguments in the variable <argdict>. """
-    
+
     argdict = None
-    
+
     def setArgs(self, **argdict):
         if not self.argdict:
             self.argdict = {}
         setAllArgs(self, argdict)
-        
-        
+
+
 class Serializable(object):
     """Class that implements shortcuts to serialize an object.
-    
+
     Serialization is done by various formats. At the moment, only 'pickle' is
     supported.
     """
-    
+
     def saveToFileLike(self, flo, format=None, **kwargs):
         """Save the object to a given file like object in the given format.
         """
@@ -167,7 +167,7 @@ class Serializable(object):
         if save is None:
             raise ValueError("Unknown format '%s'." % format)
         save(flo, **kwargs)
-        
+
     @classmethod
     def loadFromFileLike(cls, flo, format=None):
         """Load the object to a given file like object with the given protocol.
@@ -177,7 +177,7 @@ class Serializable(object):
         if load is None:
             raise ValueError("Unknown format '%s'." % format)
         return load(flo)
-        
+
     def saveToFile(self, filename, format=None, **kwargs):
         """Save the object to file given by filename."""
         if format is None:
@@ -185,7 +185,7 @@ class Serializable(object):
             format = formatFromExtension(filename)
         with file(filename, 'wb') as fp:
             self.saveToFileLike(fp, format, **kwargs)
-        
+
     @classmethod
     def loadFromFile(cls, filename, format=None):
         """Return an instance of the class that is saved in the file with the
@@ -197,14 +197,14 @@ class Serializable(object):
             obj = cls.loadFromFileLike(fp, format)
             obj.filename = filename
             return obj
-    
+
     def save_pickle(self, flo, protocol=0):
         pickle.dump(self, flo, protocol)
-        
+
     @classmethod
     def load_pickle(cls, flo):
         return pickle.load(flo)
-        
+
 
 class Named(XMLBuildable):
     """Class whose objects are guaranteed to have a unique name."""
@@ -214,7 +214,7 @@ class Named(XMLBuildable):
     def getName(self):
         logging.warning("Deprecated, use .name property instead.")
         return self.name
-        
+
     def setName(self, newname):
         logging.warning("Deprecated, use .name property instead.")
         self.name = newname
@@ -224,23 +224,23 @@ class Named(XMLBuildable):
         if self._name is None:
             self._name = self._generateName()
         return self._name
-    
+
     def _setName(self, newname):
         """Change name to newname. Uniqueness is not guaranteed anymore."""
         self._name = newname
 
     _name = None
     name = property(_getName, _setName)
-    
+
     def _generateName(self):
         """Return a unique name for this object."""
         return "%s-%i" % (self.__class__.__name__, self._nameIds.next())
-        
+
     def __repr__(self):
         """ The default representation of a named object is its name. """
         return "<%s '%s'>" % (self.__class__.__name__, self.name)
 
-    
+
 def fListToString(a_list, a_precision=3):
     """ returns a string representing a list of floats with a given precision """
     # CHECKME: please tell me if you know a more comfortable way.. (print format specifier?)
@@ -262,16 +262,16 @@ def confidenceIntervalSize(stdev, nbsamples):
     t-test-percentile: 97.5%, infinitely many degrees of freedom,
     therefore on the two-sided interval: 95% """
     # CHECKME: for better precision, maybe get the percentile dynamically, from the scipy library?
-    return 2 * 1.98 * stdev / sqrt(nbsamples)   
-    
-    
+    return 2 * 1.98 * stdev / sqrt(nbsamples)
+
+
 def trace(func):
     def inner(*args, **kwargs):
         print "%s: %s, %s" % (func.__name__, args, kwargs)
         return func(*args, **kwargs)
     return inner
-    
-    
+
+
 def threaded(callback=lambda * args, **kwargs: None, daemonic=False):
     """Decorate  a function to run in its own thread and report the result
     by calling callback with it."""
@@ -283,8 +283,8 @@ def threaded(callback=lambda * args, **kwargs: None, daemonic=False):
             t.start()
         return inner
     return innerDecorator
-    
-    
+
+
 def garbagecollect(func):
     """Decorate a function to invoke the garbage collector after each execution.
     """
@@ -293,8 +293,8 @@ def garbagecollect(func):
         gc.collect()
         return result
     return inner
-    
-    
+
+
 def memoize(func):
     """Decorate a function to 'memoize' results by holding it in a cache that
     maps call arguments to returns."""
@@ -302,7 +302,7 @@ def memoize(func):
     def inner(*args, **kwargs):
         # Dictionaries and lists are unhashable
         args = tuple(args)
-        # Make a set for checking in the cache, since the order of 
+        # Make a set for checking in the cache, since the order of
         # .iteritems() is undefined
         kwargs_set = frozenset(kwargs.iteritems())
         if (args, kwargs_set) in cache:
@@ -316,7 +316,7 @@ def memoize(func):
 
 def storeCallResults(obj, verbose=False):
     """Pseudo-decorate an object to store all evaluations of the function in the returned list."""
-    results = []    
+    results = []
     oldcall = obj.__class__.__call__
     def newcall(*args, **kwargs):
         result = oldcall(*args, **kwargs)
@@ -338,8 +338,8 @@ def multiEvaluate(repeat):
             return result / repeat
         return inner
     return decorator
-    
-            
+
+
 def _import(name):
     """Return module from a package.
 
@@ -347,7 +347,7 @@ def _import(name):
 
         > from package import module as bar
         > bar = _import('package.module')
-    
+
     """
     mod = __import__(name)
     components = name.split('.')
@@ -358,14 +358,14 @@ def _import(name):
             raise ImportError("No module named %s" % mod)
     return mod
 
-    
+
 # tools for binary Gray code manipulation:
 
 def int2gray(i):
     """ Returns the value of an integer in Gray encoding."""
     return i ^ (i >> 1)
 
-    
+
 def gray2int(g, size):
     """ Transforms a Gray code back into an integer. """
     res = 0
@@ -378,7 +378,7 @@ def gray2int(g, size):
         res += bi * 2 ** i
     return res
 
-    
+
 def asBinary(i):
     """ Produces a string from an integer's binary representation.
     (preceding zeros removed). """
@@ -388,9 +388,9 @@ def asBinary(i):
         else:
             return asBinary(i >> 1) + '0'
     else:
-        return str(i)    
-    
-    
+        return str(i)
+
+
 def one_to_n(val, maxval):
     """ Returns a 1-in-n binary encoding of a non-negative integer. """
     a = zeros(maxval, float)
@@ -401,7 +401,7 @@ def one_to_n(val, maxval):
 def n_to_one(arr):
     """ Returns the reverse of a 1-in-n binary encoding. """
     return where(arr == 1)[0][0]
-    
+
 
 def canonicClassString(x):
     """ the __class__ attribute changed from old-style to new-style classes... """
@@ -409,54 +409,54 @@ def canonicClassString(x):
         return split(repr(x.__class__), "'")[1]
     else:
         return repr(x.__class__)
-    
-    
+
+
 def decrementAny(tup):
-    """ the closest tuples to tup: decrementing by 1 along any dimension. 
+    """ the closest tuples to tup: decrementing by 1 along any dimension.
     Never go into negatives though. """
     res = []
     for i, x in enumerate(tup):
         if x > 0:
             res.append(tuple(list(tup[:i]) + [x - 1] + list(tup[i + 1:])))
     return res
-    
-    
+
+
 def reachable(stepFunction, start, destinations, _alreadyseen=None):
     """ Determines the subset of destinations that can be reached from a set of starting positions,
-    while using stepFunction (which produces a list of neighbor states) to navigate. 
-    Uses breadth-first search. 
-    Returns a dictionary with reachable destinations and their distances. 
+    while using stepFunction (which produces a list of neighbor states) to navigate.
+    Uses breadth-first search.
+    Returns a dictionary with reachable destinations and their distances.
     """
     if len(start) == 0 or len(destinations) == 0:
         return {}
     if _alreadyseen is None:
         _alreadyseen = []
     _alreadyseen.extend(start)
-    
+
     # dict with distances to destinations
     res = {}
     for s in start:
         if s in destinations:
             res[s] = 0
             start.remove(s)
-    
+
     # do one step
     new = set()
     for s in start:
-        new.update(stepFunction(s))    
+        new.update(stepFunction(s))
     new.difference_update(_alreadyseen)
     ndestinations = list(destinations)
-    
+
     for s in list(new):
         if s in destinations:
             res[s] = 1
             new.remove(s)
             ndestinations.remove(s)
             _alreadyseen.append(s)
-    
+
     # recursively do the rest
     deeper = reachable(stepFunction, new, ndestinations, _alreadyseen)
-    
+
     # adjust distances
     for k, val in deeper.items():
         res[k] = val + 1
@@ -466,29 +466,29 @@ def reachable(stepFunction, start, destinations, _alreadyseen=None):
 def flood(stepFunction, fullSet, initSet, relevant=None):
     """ Returns a list of elements of fullSet linked to some element of initSet
     through the neighborhood-setFunction (which must be defined on all elements of fullSet).
-    
-    :key relevant: (optional) list of relevant elements: stop once all relevant elements are found. 
+
+    :key relevant: (optional) list of relevant elements: stop once all relevant elements are found.
     """
     full = set(fullSet)
     flooded = full.intersection(set(initSet))
-                  
+
     if relevant is None:
         relevant = full.copy()
     else:
         relevant = set(relevant)
-    
+
     change = flooded.copy()
     while len(change)>0:
         new = set()
         for m in change:
             new.update(full.intersection(stepFunction(m)))
         change = new.difference(flooded)
-        flooded.update(change)            
+        flooded.update(change)
         if relevant.issubset(flooded):
             break
     return list(flooded)
-    
-    
+
+
 def crossproduct(ss, row=None, level=0):
     """Returns the cross-product of the sets given in `ss`."""
     if row is None:
@@ -502,26 +502,26 @@ def crossproduct(ss, row=None, level=0):
 
 def permute(arr, permutation):
     """Return an array like arr but with elements permuted.
-    
-    Only the first dimension is permuted, which makes it possible to permute 
+
+    Only the first dimension is permuted, which makes it possible to permute
     blocks of the input.
-    
+
     arr can be anything as long as it's indexable."""
     return array([arr[i] for i in permutation])
 
 
 def permuteToBlocks(arr, blockshape):
     """Permute an array so that it consists of linearized blocks.
-    
+
     Example: A two-dimensional array of the form
-    
-        0  1  2  3 
+
+        0  1  2  3
         4  5  6  7
         8  9  10 11
         12 13 14 15
-    
+
     would be turned into an array like this with (2, 2) blocks:
-    
+
         0 1 4 5 2 3 6 7 8 9 12 13 10 11 14 15
     """
     if len(blockshape) < 2:
@@ -534,16 +534,16 @@ def permuteToBlocks(arr, blockshape):
         return permuteToBlocks3d(arr, blockdepth, blockheight, blockwidth)
     else:
         raise NotImplementedError("Only for dimensions 2 and 3.")
-    
-    
+
+
 def permuteToBlocks3d(arr, blockdepth, blockheight, blockwidth):
     depth, height, width = arr.shape
     arr_ = arr.reshape(height * depth, width)
     arr_ = permuteToBlocks2d(arr_, blockheight, blockwidth)
     arr_.shape = depth, height * width
     return permuteToBlocks2d(arr_, blockdepth, blockwidth * blockheight)
-    
-    
+
+
 def permuteToBlocks2d(arr, blockheight, blockwidth):
     _height, width = arr.shape
     arr = arr.flatten()
@@ -558,10 +558,10 @@ def permuteToBlocks2d(arr, blockheight, blockwidth):
         j = blockoffset + inblocky * blockwidth + inblockx
         new[j] = arr[i]
     return new
-        
+
 
 def triu2flat(m):
-    """ Flattens an upper triangular matrix, returning a vector of the 
+    """ Flattens an upper triangular matrix, returning a vector of the
     non-zero elements. """
     dim = m.shape[0]
     res = zeros(dim * (dim + 1) / 2)
@@ -616,15 +616,15 @@ def blockCombine(l):
 
 def avgFoundAfter(decreasingTargetValues, listsOfActualValues, batchSize=1):
     """ Determine the average number of steps to reach a certain value (for the first time),
-    given a list of value sequences. 
+    given a list of value sequences.
     If a value is not always encountered, the length of the longest sequence is used.
-    Returns an array. """    
+    Returns an array. """
     from scipy import sum
     numLists = len(listsOfActualValues)
-    longest = max(map(len, listsOfActualValues))    
+    longest = max(map(len, listsOfActualValues))
     # gather a list of indices of first encounters
     res = [[0] for _ in range(numLists)]
-    for tval in decreasingTargetValues:        
+    for tval in decreasingTargetValues:
         for li, l in enumerate(listsOfActualValues):
             lres = res[li]
             found = False
@@ -642,11 +642,11 @@ def avgFoundAfter(decreasingTargetValues, listsOfActualValues, batchSize=1):
 
 class DivergenceError(Exception):
     """ Raised when an algorithm diverges. """
-    
+
 
 def matchingDict(d, selection):
     """ Determines if the dictionary d conforms to the specified selection,
-    i.e. if a (key, x) is in the selection, then if key is in d as well it must be x 
+    i.e. if a (key, x) is in the selection, then if key is in d as well it must be x
     or contained in x (if x is a list). """
     for k, v in selection.items():
         if k in d:
@@ -660,7 +660,7 @@ def matchingDict(d, selection):
 
 
 def subDict(d, allowedkeys, flip=False):
-    """ Returns a new dictionary with a subset of the entries of d 
+    """ Returns a new dictionary with a subset of the entries of d
     that have on of the (dis-)allowed keys."""
     res = {}
     for k, v in d.items():
@@ -670,15 +670,15 @@ def subDict(d, allowedkeys, flip=False):
 
 
 def dictCombinations(listdict):
-    """ Iterates over dictionaries that go through every possible combination 
+    """ Iterates over dictionaries that go through every possible combination
     of key-value pairs as specified in the lists of values for each key in listdict."""
     listdict = listdict.copy()
     if len(listdict) == 0:
-        return [{}]    
+        return [{}]
     k, vs = listdict.popitem()
-    res = dictCombinations(listdict)            
+    res = dictCombinations(listdict)
     if isinstance(vs, list):
-        res = [dict(d, **{k:v}) for d in res for v in sorted(set(vs))]        
+        res = [dict(d, **{k:v}) for d in res for v in sorted(set(vs))]
     else:
         res = [dict(d, **{k:vs}) for d in res]
     return res

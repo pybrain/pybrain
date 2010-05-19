@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-""" A little example script showing a Capture-Game tournament between 
+""" A little example script showing a Capture-Game tournament between
  - a random player
  - a kill-on-sight player
  - a small-network-player with random weights

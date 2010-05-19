@@ -84,7 +84,7 @@ def netCompare(net1, net2, forwardpasses=1, verbose=False):
             print net2
             print "-" * 80
             print net1
-        
+
     outN = zeros(net2.outdim)
     outEnd = zeros(net1.outdim)
     net2.reset()
@@ -93,7 +93,7 @@ def netCompare(net1, net2, forwardpasses=1, verbose=False):
         inp = randn(net2.indim)
         outN += net2.activate(inp)
         outEnd += net1.activate(inp)
-        
+
     if sum(map(abs, outN - outEnd)) < 1e-9:
         if verbose:
             print 'Same function'
@@ -106,7 +106,7 @@ def netCompare(net1, net2, forwardpasses=1, verbose=False):
     if net2.__class__ == net1.__class__:
         if verbose:
             print 'Same class'
-    else:        
+    else:
         identical = False
         if verbose:
             print net2.__class__
@@ -117,7 +117,7 @@ def netCompare(net1, net2, forwardpasses=1, verbose=False):
 
 def xmlInvariance(n, forwardpasses = 1):
     """ try writing a network to an xml file, reading it, rewrite it, reread it, and compare
-    if the result looks the same (compare string representation, and forward processing 
+    if the result looks the same (compare string representation, and forward processing
     of some random inputs) """
     # We only use this for file creation.
     tmpfile = tempfile.NamedTemporaryFile(dir=".")

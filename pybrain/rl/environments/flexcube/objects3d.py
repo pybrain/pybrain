@@ -14,7 +14,7 @@ class Objects3D:
 
     def drawCreature(self, cPoints, centerOfGrav):
         glBegin(GL_QUADS)
-        
+
         #unten
         point = []
         summe = [0.0, 0.0, 0.0]
@@ -29,7 +29,7 @@ class Objects3D:
         for i in range(2):
             for k in range(2):
                 glVertex3f(point[i * 2 + k][0], point[i * 2 + k][1], point[i * 2 + k][2]);
-            
+
         #links
         point = []
         summe = [0.0, 0.0, 0.0]
@@ -44,7 +44,7 @@ class Objects3D:
         for j in range(2):
             for k in range(2):
                 glVertex3f(point[j * 2 + k][0], point[j * 2 + k][1], point[j * 2 + k][2]);
-    
+
         #rechts
         point = []
         summe = [0.0, 0.0, 0.0]
@@ -59,7 +59,7 @@ class Objects3D:
         for j in range(2):
             for k in range(2):
                 glVertex3f(point[j * 2 + k][0], point[j * 2 + k][1], point[j * 2 + k][2]);
-        
+
         #oben
         point = []
         summe = [0.0, 0.0, 0.0]
@@ -74,7 +74,7 @@ class Objects3D:
         for i in range(2):
             for k in range(2):
                 glVertex3f(point[i * 2 + k][0], point[i * 2 + k][1], point[i * 2 + k][2]);
-        
+
         #vorne
         point = []
         summe = [0.0, 0.0, 0.0]
@@ -89,7 +89,7 @@ class Objects3D:
         for i in range(2):
             for j in range(2):
                 glVertex3f(point[i * 2 + j][0], point[i * 2 + j][1], point[i * 2 + j][2]);
-        
+
         #hinten
         point = []
         summe = [0.0, 0.0, 0.0]
@@ -105,10 +105,10 @@ class Objects3D:
             for j in range(2):
                 glVertex3f(point[i * 2 + j][0], point[i * 2 + j][1], point[i * 2 + j][2]);
         glEnd()
-    
+
     def drawMirCreat(self, cPoints, centerOfGrav):
         glBegin(GL_QUADS)
-        
+
         #unten
         point = []
         summe = [0.0, 0.0, 0.0]
@@ -123,7 +123,7 @@ class Objects3D:
         for i in range(2):
             for k in range(2):
                 glVertex3f(point[i * 2 + k][0], -point[i * 2 + k][1], point[i * 2 + k][2])
-            
+
         #links
         point = []
         summe = [0.0, 0.0, 0.0]
@@ -138,7 +138,7 @@ class Objects3D:
         for j in range(2):
             for k in range(2):
                 glVertex3f(point[j * 2 + k][0], -point[j * 2 + k][1], point[j * 2 + k][2])
-    
+
         #rechts
         point = []
         summe = [0.0, 0.0, 0.0]
@@ -153,7 +153,7 @@ class Objects3D:
         for j in range(2):
             for k in range(2):
                 glVertex3f(point[j * 2 + k][0], -point[j * 2 + k][1], point[j * 2 + k][2])
-        
+
         #oben
         point = []
         summe = [0.0, 0.0, 0.0]
@@ -168,7 +168,7 @@ class Objects3D:
         for i in range(2):
             for k in range(2):
                 glVertex3f(point[i * 2 + k][0], -point[i * 2 + k][1], point[i * 2 + k][2]);
-        
+
         #vorne
         point = []
         summe = [0.0, 0.0, 0.0]
@@ -183,7 +183,7 @@ class Objects3D:
         for i in range(2):
             for j in range(2):
                 glVertex3f(point[i * 2 + j][0], -point[i * 2 + j][1], point[i * 2 + j][2])
-        
+
         #hinten
         point = []
         summe = [0.0, 0.0, 0.0]
@@ -204,7 +204,7 @@ class Objects3D:
         glBegin(GL_QUADS)
         zPers = -0.5
         xPers = -0.33
-    
+
         #schatten
         #unten
         point = []
@@ -217,7 +217,7 @@ class Objects3D:
         for i in range(2):
             for k in range(2):
                 glVertex3f(point[i * 2 + k][0], point[i * 2 + k][1], point[i * 2 + k][2])
-            
+
         #links
         point = []
         summe = [0.0, 0.0, 0.0]
@@ -233,7 +233,7 @@ class Objects3D:
         for j in range(2):
             for k in range(2):
                 glVertex3f(point[j * 2 + k][0], -point[j * 2 + k][1], point[j * 2 + k][2])
-    
+
         #rechts
         point = []
         summe = [0.0, 0.0, 0.0]
@@ -249,7 +249,7 @@ class Objects3D:
         for j in range(2):
             for k in range(2):
                 glVertex3f(point[j * 2 + k][0], -point[j * 2 + k][1], point[j * 2 + k][2])
-        
+
         #oben
         point = []
         summe = [0.0, 0.0, 0.0]
@@ -265,7 +265,7 @@ class Objects3D:
         for i in range(2):
             for k in range(2):
                 glVertex3f(point[i * 2 + k][0], -point[i * 2 + k][1], point[i * 2 + k][2]);
-        
+
         #vorne
         point = []
         summe = [0.0, 0.0, 0.0]
@@ -281,7 +281,7 @@ class Objects3D:
         for i in range(2):
             for j in range(2):
                 glVertex3f(point[i * 2 + j][0], -point[i * 2 + j][1], point[i * 2 + j][2]);
-        
+
         #hinten
         point = []
         summe = [0.0, 0.0, 0.0]
@@ -298,39 +298,39 @@ class Objects3D:
             for j in range(2):
                 glVertex3f(point[i * 2 + j][0], -point[i * 2 + j][1], point[i * 2 + j][2])
         glEnd()
-        
+
     def difVect(self, point1, point2):
-        vect = [point1[0] - point2[0], point1[1] - point2[1], point1[2] - point2[2]]    
+        vect = [point1[0] - point2[0], point1[1] - point2[1], point1[2] - point2[2]]
         return vect
-    
+
     def addVect(self, point1, point2):
-        vect = [point1[0] + point2[0], point1[1] + point2[1], point1[2] + point2[2]]    
+        vect = [point1[0] + point2[0], point1[1] + point2[1], point1[2] + point2[2]]
         return vect
-    
+
     def velDif(self, vect, dif, soll):
         zug = self.d * (soll - dif)
         dif = [vect[0] / dif * zug, vect[1] / dif * zug, vect[2] / dif * zug]
         return dif
-    
+
     def dumpVect(self, vect, fakt):
         for i in range(3):
             vect[i] *= fakt
         return vect
-      
+
     def normVect(self, vect, norm):
         summe = 0.0
         for i in range(3):
             summe += vect[i] * vect[i]
         vect = self.dumpVect(vect, norm / math.sqrt(summe))
         return vect
-    
+
     def calcNormal(self, xVector, yVector):
         result = [0, 0, 0]
         result[0] = xVector[1] * yVector[2] - yVector[1] * xVector[2]
         result[1] = -xVector[0] * yVector[2] + yVector[0] * xVector[2]
         result[2] = xVector[0] * yVector[1] - yVector[0] * xVector[1]
         return [result[0], result[1], result[2]]
-        
+
     def points2Vector(self, startPoint, endPoint):
         result = [0, 0, 0]
         result[0] = endPoint[0] - startPoint[0]

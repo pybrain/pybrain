@@ -10,20 +10,20 @@ class AcrobotEnvironment(ODEEnvironment):
         # load model file
         self.loadXODE(imp.find_module('pybrain')[1] + "/rl/environments/ode/models/acrobot.xode")
 
-        # standard sensors and actuators    
+        # standard sensors and actuators
         self.addSensor(sensors.JointSensor())
-        self.addSensor(sensors.JointVelocitySensor()) 
+        self.addSensor(sensors.JointVelocitySensor())
         self.addActuator(actuators.JointActuator())
-            
-        #set act- and obsLength, the min/max angles and the relative max touques of the joints  
+
+        #set act- and obsLength, the min/max angles and the relative max touques of the joints
         self.actLen = self.indim
         self.obsLen = len(self.getSensors())
 
         self.stepsPerAction = 1
-                
+
 if __name__ == '__main__' :
-    w = AcrobotEnvironment() 
+    w = AcrobotEnvironment()
     while True:
         w.step()
-        if w.stepCounter == 1000: w.reset() 
+        if w.stepCounter == 1000: w.reset()
 

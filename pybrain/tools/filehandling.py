@@ -13,10 +13,10 @@ def getAllFilesIn(dir, tag='', extension='.pickle'):
         if f[-len(extension):] == extension and f[:len(tag)] == tag:
             res.append(f[:-len(extension)])
     return res
-    
-    
-def selectSome(strings, requiredsubstrings=[], requireAll=True):    
-    """ Filter the list of strings to only contain those that have at least 
+
+
+def selectSome(strings, requiredsubstrings=[], requireAll=True):
+    """ Filter the list of strings to only contain those that have at least
     one of the required substrings. """
     if len(requiredsubstrings) == 0:
         return strings
@@ -40,22 +40,22 @@ def selectSome(strings, requiredsubstrings=[], requireAll=True):
 
 def pickleDumpDict(name, d):
     """ pickle-dump a variable into a file """
-    try:        
+    try:
         f = open(name + '.pickle', 'w')
         pickle.dump(d, f)
-        f.close()        
+        f.close()
         return True
     except Exception, e:
         print 'Error writing into', name, ':', str(e)
         return False
 
-    
+
 def pickleReadDict(name):
     """ pickle-read a (default: dictionnary) variable from a file """
     try:
         f = open(name + '.pickle')
         val = pickle.load(f)
-        f.close()        
+        f.close()
     except Exception, e:
         print 'Nothing read from', name, ':', str(e)
         val = {}
@@ -72,5 +72,5 @@ def addToDictFile(name, key, data, verbose=False):
     pickleDumpDict(name, d)
     if verbose:
         print ':'
-   
+
 

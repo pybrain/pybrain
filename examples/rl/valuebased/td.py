@@ -56,7 +56,7 @@ pylab.gray()
 pylab.ion()
 
 for i in range(1000):
-    
+
     # interact with the environment (here in batch mode)
     experiment.doInteractions(100)
     agent.learn()

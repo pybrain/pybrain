@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
+
     <title>networks – Structural Components: Networks &mdash; PyBrain v0.3 documentation</title>
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -21,7 +21,7 @@
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <link rel="top" title="PyBrain v0.3 documentation" href="../../index.html" />
     <link rel="next" title="actionvalues – RL Components: ActionValues" href="../rl/actionvalues.html" />
-    <link rel="prev" title="modules – Structural Components: Modules" href="modules.html" /> 
+    <link rel="prev" title="modules – Structural Components: Modules" href="modules.html" />
   </head>
   <body>
     <div class="related">
@@ -39,15 +39,15 @@
         <li class="right" >
           <a href="modules.html" title="modules – Structural Components: Modules"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">PyBrain v0.3 documentation</a> &raquo;</li> 
+        <li><a href="../../index.html">PyBrain v0.3 documentation</a> &raquo;</li>
       </ul>
-    </div>  
+    </div>
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
           <div class="body">
-            
+
   <div class="section" id="module-pybrain.structure.networks">
 <h1><tt class="xref docutils literal"><span class="pre">networks</span></tt> &#8211; Structural Components: Networks<a class="headerlink" href="#module-pybrain.structure.networks" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
@@ -94,7 +94,7 @@ and return the output.</dd></dl>
 <dl class="method">
 <dt id="pybrain.structure.networks.Network.sortModules">
 <tt class="descname">sortModules</tt><big>(</big><big>)</big><a class="headerlink" href="#pybrain.structure.networks.Network.sortModules" title="Permalink to this definition">¶</a></dt>
-<dd><p>Prepare the network for activation by sorting the internal 
+<dd><p>Prepare the network for activation by sorting the internal
 datastructure.</p>
 <p>Needs to be called before activation.</p>
 </dd></dl>
@@ -105,7 +105,7 @@ datastructure.</p>
 <dt id="pybrain.structure.networks.FeedForwardNetwork">
 <em class="property">class </em><tt class="descclassname">pybrain.structure.networks.</tt><tt class="descname">FeedForwardNetwork</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#pybrain.structure.networks.FeedForwardNetwork" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <tt class="xref docutils literal"><span class="pre">pybrain.structure.networks.feedforward.FeedForwardNetworkComponent</span></tt>, <tt class="xref docutils literal"><span class="pre">pybrain.structure.networks.network.Network</span></tt></p>
-<p>FeedForwardNetworks are networks that do not work for sequential data. 
+<p>FeedForwardNetworks are networks that do not work for sequential data.
 Every input is treated as independent of any previous or following inputs.</p>
 </dd></dl>
 
@@ -115,7 +115,7 @@ Every input is treated as independent of any previous or following inputs.</p>
 <dd><p>Bases: <tt class="xref docutils literal"><span class="pre">pybrain.structure.networks.recurrent.RecurrentNetworkComponent</span></tt>, <tt class="xref docutils literal"><span class="pre">pybrain.structure.networks.network.Network</span></tt></p>
 <p>Class that implements networks which can work with sequential data.</p>
 <p>Until .reset() is called, the network keeps track of all previous inputs and
-thus allows the use of recurrent connections and layers that look back in 
+thus allows the use of recurrent connections and layers that look back in
 time.</p>
 <dl class="method">
 <dt id="pybrain.structure.networks.RecurrentNetwork.addRecurrentConnection">
@@ -178,7 +178,7 @@ time.</p>
         <li class="right" >
           <a href="modules.html" title="modules – Structural Components: Modules"
              >previous</a> |</li>
-        <li><a href="../../index.html">PyBrain v0.3 documentation</a> &raquo;</li> 
+        <li><a href="../../index.html">PyBrain v0.3 documentation</a> &raquo;</li>
       </ul>
     </div>
     <div class="footer">

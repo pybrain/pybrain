@@ -18,7 +18,7 @@
 # This library is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the files
-# LICENSE and LICENSE-BSD for more details. 
+# LICENSE and LICENSE-BSD for more details.
 ######################################################################
 
 # XODE Importer for PyODE
@@ -35,7 +35,7 @@ class Body(node.TreeNode):
     """
     Represents an ode.Body object and corresponds to the <body> tag.
     """
-    
+
     def __init__(self, name, parent, attrs):
         node.TreeNode.__init__(self, name, parent)
         world = parent.getFirstAncestor(ode.World)
@@ -61,7 +61,7 @@ class Body(node.TreeNode):
         Handle further parsing. It should be called immediately after the <body>
         tag has been encountered.
         """
-        
+
         self._parser = parser
         self._parser.push(startElement=self._startElement,
                           endElement=self._endElement)
@@ -85,7 +85,7 @@ class Body(node.TreeNode):
             t.takeParser(self._parser, self, attrs)
         else:
             self._applyTransform()
-        
+
         if (name == 'torque'):
             self.getODEObject().setTorque(self._parser.parseVector(attrs))
         elif (name == 'force'):
@@ -104,7 +104,7 @@ class Body(node.TreeNode):
             if (mode not in [0, 1]):
                 raise errors.InvalidError('finiteRotation mode attribute must' \
                                           ' be either 0 or 1.')
-            
+
             self.getODEObject().setFiniteRotationMode(mode)
             self.getODEObject().setFiniteRotationAxis(axis)
         elif (name == 'linearVel'):
@@ -131,7 +131,7 @@ class Body(node.TreeNode):
     def _endElement(self, name):
         if (name == 'body'):
             self._parser.pop()
-            
+
             self._applyTransform()
             if (self._mass is not None):
                 self.getODEObject().setMass(self._mass.getODEObject())
@@ -140,14 +140,14 @@ class Mass(node.TreeNode):
     """
     Represents an ode.Mass object and corresponds to the <mass> tag.
     """
-    
+
     def __init__(self, name, parent):
         node.TreeNode.__init__(self, name, parent)
 
         mass = ode.Mass()
         mass.setSphere(1.0, 1.0)
         self.setODEObject(mass)
-                
+
         body = self.getFirstAncestor(ode.Body)
         body.getODEObject().setMass(mass)
 
@@ -156,7 +156,7 @@ class Mass(node.TreeNode):
         Handle further parsing. It should be called immediately after the <mass>
         tag is encountered.
         """
-        
+
         self._parser = parser
         self._parser.push(startElement=self._startElement,
                           endElement=self._endElement)
@@ -193,7 +193,7 @@ class Mass(node.TreeNode):
     def _parseMassShape(self, attrs):
         density = attrs.get('density', None)
         mass = self.getODEObject()
-    
+
         def start(name, attrs):
             if (name == 'sphere'):
                 radius = float(attrs.get('radius', 1.0))
@@ -218,10 +218,10 @@ class Mass(node.TreeNode):
             else:
                 # FIXME: Implement remaining mass shapes.
                 raise NotImplementedError()
-    
+
         def end(name):
             if (name == 'mass_shape'):
                 self._parser.pop()
-    
+
         self._parser.push(startElement=start, endElement=end)
 

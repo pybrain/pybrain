@@ -10,9 +10,9 @@ from pybrain.rl.environments.twoplayergames import CaptureGame
 class ClientCapturePlayer(CapturePlayer):
     """ A wrapper class for using external code to play the capture game,
     interacting via a TCP socket. """
-    
+
     verbose = False
-    
+
     def __init__(self, game, color=CaptureGame.BLACK, player='AtariGreedy', **args):
         '''player: AtariGreedy, AtariMinMax, AtariAlphaBeta possible'''
         CapturePlayer.__init__(self, game, color, **args)
@@ -35,8 +35,8 @@ class ClientCapturePlayer(CapturePlayer):
         accept = ""
         while len (accept) < 2:
             accept = self.theSocket.recv(1000)
-        assert accept == 'OK'            
-        
+        assert accept == 'OK'
+
 
     def getAction(self):
         # build a java string
@@ -53,21 +53,21 @@ class ClientCapturePlayer(CapturePlayer):
                 js += '2'
             else:
                 js += '0'
-            
+
         # get the suggested move from the java player:
         if self.verbose:
             print 'Sending:', js
-        self.theSocket.send(js + '\n') 
+        self.theSocket.send(js + '\n')
         jr = ""
         if self.verbose:
             print 'Waiting for server',
-        while len (jr) < 2:    
+        while len (jr) < 2:
             jr = self.theSocket.recv(1000)
             if self.verbose:
                 print '.',
         if self.verbose:
             print " received.", jr
-        
+
         chosen = eval(jr)
         assert self.game.isLegal(self.color, chosen)
         return [self.color, chosen]

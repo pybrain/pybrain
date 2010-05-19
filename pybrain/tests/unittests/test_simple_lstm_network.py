@@ -11,14 +11,14 @@ Build a simple lstm network with peepholes:
         [<FullConnection 'f1': 'i' -> 'lstm'>, <FullConnection 'f2': 'bias' -> 'lstm'>, <FullConnection 'r1': 'lstm' -> 'o'>]
        Recurrent Connections:
         [<FullConnection 'r1': 'lstm' -> 'lstm'>]
-        
+
 Check its gradient:
 
     >>> from pybrain.tests import gradientCheck
     >>> gradientCheck(n)
     Perfect gradient
     True
-    
+
     >>> net = RecurrentNetwork()
     >>> l = LSTMLayer(1)
     >>> net.addRecurrentConnection(FullConnection(l, l))
@@ -28,19 +28,19 @@ Check its gradient:
     >>> gradientCheck(net)
     Perfect gradient
     True
-    
+
 
 Try writing it to an xml file, reread it and determine if it looks the same:
-    
+
     >>> from pybrain.tests import xmlInvariance
     >>> xmlInvariance(n)
     Same representation
     Same function
     Same class
-    
-    
-    
-    
+
+
+
+
 """
 
 
@@ -52,7 +52,7 @@ from pybrain.tests import runModuleTestSuite
 
 
 def buildSimpleLSTMNetwork(peepholes = False):
-    N = RecurrentNetwork('simpleLstmNet')  
+    N = RecurrentNetwork('simpleLstmNet')
     i = LinearLayer(1, name = 'i')
     h = LSTMLayer(1, peepholes = peepholes, name = 'lstm')
     o = LinearLayer(1, name = 'o')
@@ -67,7 +67,7 @@ def buildSimpleLSTMNetwork(peepholes = False):
     N.addConnection(FullConnection(h, o, name = 'r1'))
     N.sortModules()
     return N
-        
+
 
 if __name__ == "__main__":
     runModuleTestSuite(__import__('__main__'))

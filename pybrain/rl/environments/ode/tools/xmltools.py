@@ -32,8 +32,8 @@ class XMLstruct:
     def __iter__(self):
         """returns the top-level list of tags (including internal tags 'Icontain' and 'myName')"""
         return self.tag
-    
-    
+
+
     def insert(self, name, attr=None):
         """Insert a new tag into the current one. The name can be either the
         new tag name or an XMLstruct object (in which case attr is ignored).
@@ -146,8 +146,8 @@ class XMLstruct:
         if self.hasSubtag():
             nAttr -= 1
         return nAttr
-    
-    
+
+
     def scale(self, sc, scaleset=set([]), exclude=set([])):
         """for all tags not in the exclude set, scale all attributes whose names are in scaleset by the given factor"""
         if self.name not in exclude:
@@ -157,8 +157,8 @@ class XMLstruct:
         if self.hasSubtag():
             for subtag in self.tag['Icontain']:
                 subtag.scale(sc, scaleset, exclude)
-            
-            
+
+
     def write(self, file, depth=0):
         """parse XML structure recursively and append to the output fileID,
         increasing the offset (tabs) while descending into the tree"""

@@ -13,37 +13,37 @@ class POMDPTask(EpisodicTask, Named):
     """
     # number of observations
     observations = 4
-    
+
     # number of possible actions
     actions = 4
-    
+
     # maximal number of steps before the episode is stopped
     maxSteps = None
-    
+
     # the lower bound on the reward value
     minReward = 0
-    
+
     def __init__(self, **args):
         self.setArgs(**args)
         self.steps = 0
-        
+
     @property
     def indim(self):
         return self.actions
-    
+
     @property
     def outdim(self):
         return self.observations
-    
+
     def reset(self):
         self.steps = 0
         EpisodicTask.reset(self)
-        
+
     def isFinished(self):
         if self.maxSteps != None:
             return self.steps >= self.maxSteps
         return False
-    
+
     def performAction(self, action):
         """ POMDP tasks, as they have discrete actions, can me used by providing either an index,
         or an array with a 1-in-n coding (which can be stochastic). """

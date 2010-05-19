@@ -5,10 +5,10 @@ Trying to build a cyclic network (should fail):
     >>> buildCyclicNetwork(False)
     Traceback (most recent call last):
         ...
-    NetworkConstructionException: Loop in network graph.    
-    
+    NetworkConstructionException: Loop in network graph.
+
 If one connection is recurrent, it should work:
-    
+
     >>> buildCyclicNetwork(True)
     <RecurrentNetwork 'cyc'>
 
@@ -23,7 +23,7 @@ from pybrain.tests import runModuleTestSuite
 
 def buildCyclicNetwork(recurrent):
     """ build a cyclic network with 4 modules
-    
+
     :key recurrent: make one of the connections recurrent """
     Network = RecurrentNetwork if recurrent else FeedForwardNetwork
     N = Network('cyc')

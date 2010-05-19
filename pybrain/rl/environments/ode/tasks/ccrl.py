@@ -22,7 +22,7 @@ class CCRLTask(EpisodicTask):
         self.sensor_limits = []
         #Angle sensors
         for i in range(self.env.actLen):
-            self.sensor_limits.append((self.env.cLowList[i], self.env.cHighList[i]))            
+            self.sensor_limits.append((self.env.cLowList[i], self.env.cHighList[i]))
         # Joint velocity sensors
         for i in range(self.env.actLen):
             self.sensor_limits.append((-20, 20))
@@ -69,16 +69,16 @@ class CCRLTask(EpisodicTask):
         return sens
 
     def performAction(self, action):
-        #Filtered mapping towards performAction of the underlying environment   
+        #Filtered mapping towards performAction of the underlying environment
         #The standard CCRL task uses a PID controller to controll directly angles instead of forces
-        #This makes most tasks much simpler to learn             
+        #This makes most tasks much simpler to learn
         self.oldAction = action
         #Grasping as reflex depending on the distance to target - comment in for more easy grasping
         if abs(abs(self.dist[:3]).sum())<2.0: action[15]=1.0 #self.grepRew=action[15]*.01
         else: action[15]=-1.0 #self.grepRew=action[15]*-.03
         isJoints=array(self.env.getSensorByName('JointSensor')) #The joint angles
         isSpeeds=array(self.env.getSensorByName('JointVelocitySensor')) #The joint angular velocitys
-        act=(action+1.0)/2.0*(self.env.cHighList-self.env.cLowList)+self.env.cLowList #norm output to action intervall  
+        act=(action+1.0)/2.0*(self.env.cHighList-self.env.cLowList)+self.env.cLowList #norm output to action intervall
         action=tanh((act-isJoints-0.9*isSpeeds*self.env.tourqueList)*16.0)*self.maxPower*self.env.tourqueList #simple PID
         EpisodicTask.performAction(self, action)
         #self.env.performAction(action)
@@ -94,7 +94,7 @@ class CCRLTask(EpisodicTask):
 
     def res(self):
         #sets counter and history back, increases incremental counter
-        self.count = 0 
+        self.count = 0
         self.incLearn += 1
         self.reward_history.append(self.getTotalReward())
         self.tableFlag = 0.0
@@ -153,9 +153,9 @@ class CCRLPlateTask(CCRLTask):
 
     def pertGlasPos(self, num):
         if num == 0: self.env.pert = asarray([0.0, 0.0, 0.5])
-                
+
     def getReward(self):
-        if self.env.glasSum >= 2: grip = 1.0 
+        if self.env.glasSum >= 2: grip = 1.0
         else: grip = 0.0
         if self.env.tableSum > 0: self.tableFlag = 10.0
         #self.dist[4]=0.0
@@ -201,9 +201,9 @@ class CCRLGlasVarTask(CCRLGlasTask):
         if num == 2: self.env.pert = asarray([1.0, 0.0, 0.0])
         if num == 3: self.env.pert = asarray([-1.0, 0.0, 0.0])
         if num == 4: self.env.pert = asarray([0.0, 0.0, 0.25])
-                
+
     def getReward(self):
-        if self.env.glasSum >= 2: grip = 1.0 
+        if self.env.glasSum >= 2: grip = 1.0
         else: grip = 0.0
         if self.env.tableSum > 0: self.tableFlag = 10.0
         self.dist[3] = 0.0
@@ -236,7 +236,7 @@ class CCRLPointTask(CCRLGlasVarTask):
             if self.count == 1:
                 self.pertGlasPos(0)
             self.count += 1
-            return False    
+            return False
 
     def getObservation(self):
         """ a filtered mapping to getSample of the underlying environment. """
@@ -281,7 +281,7 @@ class CCRLPointTask(CCRLGlasVarTask):
         if num == 0: self.target = asarray([0.0, 0.0, 1.0])
         self.env.pert = self.target.copy()
         self.target = self.target.copy() + array([-6.5, 1.75, -10.5])
-                
+
     def getReward(self):
         dis = sqrt((self.dist ** 2).sum())
         return (25.0 - dis) / float(self.epiLen) - float(self.env.tableSum) * 0.1
@@ -352,7 +352,7 @@ class CCRLPointVarTask(CCRLPointTask):
         if num == 4: self.target = asarray([0.0, 0.0, 0.5])
         self.env.pert = self.target.copy()
         self.target = self.target.copy() + array([-6.5, 1.75, -10.5])
-                
+
     def getReward(self):
         dis = sqrt((self.dist ** 2).sum())
         subEpi = self.epiLen / 2

@@ -2,7 +2,7 @@ __author__ = 'Frank Sehnke, sehnke@in.tum.de'
 
 #@PydevCodeAnalysisIgnore
 #########################################################################
-# OpenGL viewer for the FlexCube Environment 
+# OpenGL viewer for the FlexCube Environment
 #
 # The FlexCube Environment is a Mass-Spring-System composed of 8 mass points.
 # These resemble a cube with flexible edges.
@@ -12,15 +12,15 @@ __author__ = 'Frank Sehnke, sehnke@in.tum.de'
 # The viewer recieves the position matrix of the 8 masspoints and the center of gravity.
 # With this information it renders a Glut based 3d visualization of teh FlexCube
 #
-# Options: 
+# Options:
 # - serverIP: The ip of the server to which the viewer should connect
 # - ownIP: The IP of the computer running the viewer
 # - port: The starting port (2 adjacent ports will be used)
 #
 # Saving the images is possible by setting self.savePics=True.
-# Changing the point and angle of view is possible by using the mouse 
+# Changing the point and angle of view is possible by using the mouse
 # while button 1 or 2 pressed.
-# 
+#
 # Requirements: OpenGL
 #
 #########################################################################
@@ -33,20 +33,20 @@ from time import sleep
 from scipy import ones, array, cos, sin
 from pybrain.tools.networking.udpconnection import UDPClient
 
-class FlexCubeRenderer(object): 
+class FlexCubeRenderer(object):
     #Options: ServerIP(default:localhost), OwnIP(default:localhost), Port(default:21560)
     def __init__(self, servIP="127.0.0.1", ownIP="127.0.0.1", port="21580"):
         self.oldScreenValues = None
         self.view = 0
         self.worldRadius = 400
-                  
-        # Start of mousepointer 
+
+        # Start of mousepointer
         self.lastx = 0
         self.lasty = 15
         self.lastz = 300
         self.zDis = 1
-        
-        # Start of cube 
+
+        # Start of cube
         self.cube = [0.0, 0.0, 0.0]
         self.bmpCount = 0
         self.actCount = 0
@@ -55,16 +55,16 @@ class FlexCubeRenderer(object):
         self.picCount = 0
         self.sensors = [0.0, 0.0, 0.0]
         self.centerOfGrav = array([0.0, 5.0, 0.0])
-        
+
         self.savePics = False
         self.drawCounter = 0
         self.fps = 50
         self.dt = 1.0 / float(self.fps)
         self.step = 0
-        
+
         self.client = UDPClient(servIP, ownIP, port)
-  
-    # If self.savePics=True this method saves the produced images      
+
+    # If self.savePics=True this method saves the produced images
     def saveTo(self, filename, format="JPEG"):
         import Image # get PIL's functionality...
         width, height = 800, 600
@@ -75,11 +75,11 @@ class FlexCubeRenderer(object):
         image.save(filename, format)
         print 'Saved image to ', filename
         return image
-    
+
     # the render method containing the Glut mainloop
     def _render(self):
         # Call init: Parameter(Window Position -> x, y, height, width)
-        self.init_GL(self, 300, 300, 800, 600)    
+        self.init_GL(self, 300, 300, 800, 600)
         self.quad = gluNewQuadric()
         glutMainLoop()
 
@@ -99,7 +99,7 @@ class FlexCubeRenderer(object):
             self.saveTo("./screenshots/image_jump" + repr(10000 + self.picCount) + ".jpg")
             self.picCount += 1
         else: sleep(self.dt)
-          
+
     def drawScene(self):
         ''' This methode describes the complete scene.'''
         # clear the buffer
@@ -107,19 +107,19 @@ class FlexCubeRenderer(object):
         if self.lastz > 100: self.lastz -= self.zDis
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
         glLoadIdentity()
-        
+
         # Point of view
         glRotatef(self.lastx, 0.0, 1.0, 0.0)
-        glRotatef(self.lasty, 1.0, 0.0, 0.0)      
-        #glRotatef(15, 0.0, 0.0, 1.0)      
+        glRotatef(self.lasty, 1.0, 0.0, 0.0)
+        #glRotatef(15, 0.0, 0.0, 1.0)
         # direction of view is aimed to the center of gravity of the cube
         glTranslatef(-self.centerOfGrav[0], -self.centerOfGrav[1] - 50.0, -self.centerOfGrav[2] - self.lastz)
-        
+
         #Objects
-       
+
         #Massstab
         for lk in range(41):
-            if float(lk - 20) / 10.0 == (lk - 20) / 10: 
+            if float(lk - 20) / 10.0 == (lk - 20) / 10:
                 glColor3f(0.75, 0.75, 0.75)
                 glPushMatrix()
                 glRotatef(90, 1, 0, 0)
@@ -127,8 +127,8 @@ class FlexCubeRenderer(object):
                 quad = gluNewQuadric()
                 gluCylinder(quad, 2, 2, 60, 4, 1)
                 glPopMatrix()
-            else: 
-                if float(lk - 20) / 5.0 == (lk - 20) / 5:       
+            else:
+                if float(lk - 20) / 5.0 == (lk - 20) / 5:
                     glColor3f(0.75, 0.75, 0.75)
                     glPushMatrix()
                     glRotatef(90, 1, 0, 0)
@@ -144,25 +144,25 @@ class FlexCubeRenderer(object):
                     quad = gluNewQuadric()
                     gluCylinder(quad, 0.5, 0.5, 15, 4, 1)
                     glPopMatrix()
-        
+
         # Floor
         tile = self.worldRadius / 40.0
         glEnable (GL_BLEND)
         glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
-        
+
         glColor3f(0.8, 0.8, 0.5)
         glPushMatrix()
         glTranslatef(0.0, -3.0, 0.0)
         glBegin(GL_QUADS)
-        glNormal(0.0, 1.0, 0.0)      
+        glNormal(0.0, 1.0, 0.0)
         glVertex3f(-self.worldRadius, 0.0, -self.worldRadius)
         glVertex3f(-self.worldRadius, 0.0, self.worldRadius)
         glVertex3f(self.worldRadius, 0.0, self.worldRadius)
         glVertex3f(self.worldRadius, 0.0, -self.worldRadius)
         glEnd()
         glPopMatrix()
-    
-        #Water            
+
+        #Water
         for xF in range(40):
             for yF in range(40):
                 if float(xF + yF) / 2.0 == (xF + yF) / 2: glColor4f(0.7, 0.7, 1.0, 0.5)
@@ -170,24 +170,24 @@ class FlexCubeRenderer(object):
                 glPushMatrix()
                 glTranslatef(0.0, -0.03, 0.0)
                 glBegin(GL_QUADS)
-                glNormal(0.5 + sin(float(xF) + float(self.step) / 4.0) * 0.5, 0.5 + cos(float(xF) + float(self.step) / 4.0) * 0.5, 0.0)      
+                glNormal(0.5 + sin(float(xF) + float(self.step) / 4.0) * 0.5, 0.5 + cos(float(xF) + float(self.step) / 4.0) * 0.5, 0.0)
                 for i in range(2):
                     for k in range(2):
                         glVertex3f((i + xF - 20) * tile, sin(float(xF + i) + float(self.step) / 4.0) * 3.0, ((k ^ i) + yF - 20) * tile)
                 glEnd()
                 glPopMatrix()
-    
+
         self.ship()
-                  	    
+                  	
         # swap the buffer
-        glutSwapBuffers()    
+        glutSwapBuffers()
 
     def ship(self):
         glColor3f(0.4, 0.1, 0.2)
         glPushMatrix()
         glTranslate(self.centerOfGrav[0] + 14, self.centerOfGrav[1], self.centerOfGrav[2])
         glRotatef(180 - self.sensors[0], 0.0, 1.0, 0.0)
-        
+
         self.cuboid(0, 0, 0, 20, 5, 5)
         #bow of ship
         glBegin(GL_TRIANGLES)
@@ -220,7 +220,7 @@ class FlexCubeRenderer(object):
         gluCylinder(self.quad, 1, 0.8, 5, 20, 1)
         glPopMatrix()
         glPopMatrix()
-    
+
     def cuboid(self, x0, y0, z0, x1, y1, z1):
         glBegin(GL_QUADS)
         glNormal(0, 0, 1)
@@ -236,32 +236,32 @@ class FlexCubeRenderer(object):
         glNormal(1, 0, 0)
         glVertex3f(x1, y0, z0); glVertex3f(x1, y0, z1); glVertex3f(x1, y1, z1); glVertex3f(x1, y1, z0) # right
         glEnd()
-    
+
     def calcNormal(self, xVector, yVector):
         result = [0, 0, 0]
         result[0] = xVector[1] * yVector[2] - yVector[1] * xVector[2]
         result[1] = -xVector[0] * yVector[2] + yVector[0] * xVector[2]
         result[2] = xVector[0] * yVector[1] - yVector[0] * xVector[1]
         return [result[0], result[1], result[2]]
-        
+
     def points2Vector(self, startPoint, endPoint):
         result = [0, 0, 0]
         result[0] = endPoint[0] - startPoint[0]
         result[1] = endPoint[1] - startPoint[1]
         result[2] = endPoint[2] - startPoint[2]
         return [result[0], result[1], result[2]]
-        
+
     def resizeScene(self, width, height):
         '''Needed if window size changes.'''
-        if height == 0: # Prevent A Divide By Zero If The Window Is Too Small 
+        if height == 0: # Prevent A Divide By Zero If The Window Is Too Small
             height = 1
-    
+
         glViewport(0, 0, width, height) # Reset The Current Viewport And Perspective Transformation
         glMatrixMode(GL_PROJECTION)
         glLoadIdentity()
         gluPerspective(45.0, float(width) / float(height), 0.1, 700.0)
         glMatrixMode(GL_MODELVIEW)
-    
+
     def activeMouse(self, x, y):
         #Returns mouse coordinates while any mouse button is pressed.
         # store the mouse coordinate
@@ -269,14 +269,14 @@ class FlexCubeRenderer(object):
             self.lastx = x - self.xOffset
             self.lasty = y - self.yOffset
         if self.mouseButton == GLUT_RIGHT_BUTTON:
-            self.lastz = y - self.zOffset 
+            self.lastz = y - self.zOffset
         # redisplay
         glutPostRedisplay()
-      
+
     def passiveMouse(self, x, y):
         '''Returns mouse coordinates while no mouse button is pressed.'''
         pass
-        
+
     def completeMouse(self, button, state, x, y):
         #Returns mouse coordinates and which button was pressed resp. released.
         self.mouseButton = button
@@ -286,12 +286,12 @@ class FlexCubeRenderer(object):
             self.zOffset = y - self.lastz
         # redisplay
         glutPostRedisplay()
-        
+
     #Initialise an OpenGL windows with the origin at x, y and size of height, width.
     def init_GL(self, pyWorld, x, y, height, width):
-        # initialize GLUT 
+        # initialize GLUT
         glutInit([])
-          
+
         glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH)
         glutInitWindowSize(height, width)
         glutInitWindowPosition(x, y)
@@ -306,12 +306,12 @@ class FlexCubeRenderer(object):
         glLightModelfv(GL_LIGHT_MODEL_AMBIENT, [1.0, 1.0, 1.0, 1.0])
         glEnable(GL_LIGHTING)
         glEnable(GL_LIGHT0)
-        # 
+        #
         glColorMaterial(GL_FRONT, GL_DIFFUSE)
         glEnable(GL_COLOR_MATERIAL)
         # Automatic vector normalise
         glEnable(GL_NORMALIZE)
-        
+
         ### Instantiate the virtual world ###
         glutDisplayFunc(pyWorld.drawScene)
         glutMotionFunc(pyWorld.activeMouse)

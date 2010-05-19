@@ -4,20 +4,20 @@ Build a mixed nested network:
 
     >>> n = buildMixedNestedNetwork()
     >>> inner = n['inner']
-    
+
 Some specific tests:
-The feed-forward part should have its buffers increased in size, and 
+The feed-forward part should have its buffers increased in size, and
 keep the correct offset.
-    
+
     >>> len(inner.outputbuffer)
     1
-    
+
     >>> o1 = n.activate([1])
     >>> o2 = n.activate([2])
     >>> o2 = n.activate([3])
     >>> (o1 == o2).any()
     False
-    
+
     >>> n.offset
     3
     >>> inner.offset
@@ -27,14 +27,14 @@ keep the correct offset.
 
 Verify everything is still fine after reset
     >>> n.reset()
-    
+
     >>> n.offset
     0
     >>> inner.offset
     0
-    
 
-    
+
+
 Check its gradient:
 
     >>> from pybrain.tests import gradientCheck
@@ -43,14 +43,14 @@ Check its gradient:
     True
 
 Try writing it to an xml file, reread it and determine if it looks the same:
-    
+
     >>> from pybrain.tests import xmlInvariance
     >>> xmlInvariance(n)
     Same representation
     Same function
     Same class
-    
-    
+
+
 """
 
 __author__ = 'Tom Schaul, tom@idsia.ch'
@@ -76,7 +76,7 @@ def buildMixedNestedNetwork():
     N.addRecurrentConnection(FullConnection(c, c))
     N.sortModules()
     return N
-        
+
 
 if __name__ == "__main__":
     runModuleTestSuite(__import__('__main__'))

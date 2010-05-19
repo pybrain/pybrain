@@ -87,10 +87,10 @@ class FlexCubeRenderer(object):
     # The Glut idle function
     def drawIdleScene(self):
         #recive data from server and update the points of the cube
-        try: 
+        try:
             self.points, self.centerOfGrav = eval(self.client.listen([self.points, self.centerOfGrav]))
         except: pass
-        if self.points == "r": 
+        if self.points == "r":
             self.target = array([80.0, 0.0, 0.0])
             self.centerOfGrav = array([0.0, -2.0, 0.0])
             self.points = ones((8, 3), float)

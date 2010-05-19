@@ -13,7 +13,7 @@ class ModuleDecidingPlayer(RandomGomokuPlayer):
     according to the output of a module that takes as input the current state of the board. """
 
     greedySelection = False
-    
+
     # if the selection is not greedy, use Gibbs-sampling with this temperature
     temperature = 1.
 
@@ -22,9 +22,9 @@ class ModuleDecidingPlayer(RandomGomokuPlayer):
         self.module = module
         if self.greedySelection:
             self.temperature = 0.
-        
+
     def getAction(self):
-        """ get suggested action, return them if they are legal, otherwise choose randomly. """ 
+        """ get suggested action, return them if they are legal, otherwise choose randomly. """
         ba = self.game.getBoardArray()
         # network is given inputs with self/other as input, not black/white
         if self.color != GomokuGame.BLACK:
@@ -35,7 +35,7 @@ class ModuleDecidingPlayer(RandomGomokuPlayer):
             ba = tmp
         self.module.reset()
         return [self.color, self._legalizeIt(self.module.activate(ba))]
-    
+
     def newEpisode(self):
         self.module.reset()
 
@@ -51,18 +51,18 @@ class ModuleDecidingPlayer(RandomGomokuPlayer):
         legals = self.game.getLegals(self.color)
         vals = ones(len(a))*(-100)*(1+self.temperature)
         for i in map(self._convertPosToIndex, legals):
-            vals[i] = a[i]        
+            vals[i] = a[i]
         drawn = self._convertIndexToPos(drawGibbs(vals, self.temperature))
         assert drawn in legals
         return drawn
-        
+
     def _convertIndexToPos(self, i):
         return (i/self.game.size[0], i%self.game.size[0])
-    
+
     def _convertPosToIndex(self, p):
         return p[0]*self.game.size[0]+p[1]
-        
+
     def integrateObservation(self, obs = None):
         pass
-    
+
 

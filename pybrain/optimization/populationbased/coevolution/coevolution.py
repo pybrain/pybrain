@@ -7,9 +7,9 @@ from pybrain.utilities import fListToString, Named
 
 
 class Coevolution(Named):
-    """ Population-based generational evolutionary algorithm 
+    """ Population-based generational evolutionary algorithm
     with fitness being based (paritally) on a relative measure. """
-        
+
     # algorithm parameters
     populationSize = 50
     selectionProportion = 0.5
@@ -18,18 +18,18 @@ class Coevolution(Named):
     tournamentSize = None
     hallOfFameEvaluation = 0. # proportion of HoF evaluations in relative fitness
     useSharedSampling = False
-    
+
     # an external absolute evaluator
     absEvaluator = None
     absEvalProportion = 0
-    
+
     # execution settings
     maxGenerations = None
     maxEvaluations = None
     verbose = False
-    
+
     def __init__(self, relEvaluator, seeds, **args):
-        """ 
+        """
         :arg relevaluator: an anti-symmetric function that can evaluate 2 elements
         :arg seeds: a list of initial guesses
         """
@@ -38,33 +38,33 @@ class Coevolution(Named):
         self.relEvaluator = relEvaluator
         if self.tournamentSize == None:
             self.tournamentSize = self.populationSize
-        
+
         # initialize algorithm variables
-        self.steps = 0        
+        self.steps = 0
         self.generation = 0
-        
+
         # the best host and the best parasite from each generation
         self.hallOfFame = []
-        
+
         # the relative fitnesses from each generation (of the selected individuals)
         self.hallOfFitnesses = []
-        
-        # this dictionary stores all the results between 2 players (first one starting): 
+
+        # this dictionary stores all the results between 2 players (first one starting):
         #  { (player1, player2): [games won, total games, cumulative score, list of scores] }
         self.allResults = {}
-        
+
         # this dictionary stores the opponents a player has played against.
         self.allOpponents = {}
-        
+
         # a list of all previous populations
         self.oldPops = []
-        
+
         # build initial populations
         self._initPopulation(seeds)
-        
+
     def learn(self, maxSteps=None):
         """ Toplevel function, can be called iteratively.
-        
+
         :return: best evaluable found in the last generation. """
         if maxSteps != None:
             maxSteps += self.steps
@@ -80,7 +80,7 @@ class Coevolution(Named):
 
     def _oneGeneration(self):
         self.oldPops.append(self.pop)
-        self.generation += 1        
+        self.generation += 1
         fitnesses = self._evaluatePopulation()
         # store best in hall of fame
         besti = argmax(array(fitnesses))
@@ -88,15 +88,15 @@ class Coevolution(Named):
         bestFits = sorted(fitnesses)[::-1][:self._numSelected()]
         self.hallOfFame.append(best)
         self.hallOfFitnesses.append(bestFits)
-                
+
         if self.verbose:
             print 'Generation', self.generation
             print '        relat. fits:', fListToString(sorted(fitnesses), 4)
             if len(best.params) < 20:
                 print '        best params:', fListToString(best.params, 4)
-                
+
         self.pop = self._selectAndReproduce(self.pop, fitnesses)
-                    
+
     def _averageWithParents(self, pop, childportion):
         for i, p in enumerate(pop[:]):
             if p.parent != None:
@@ -104,7 +104,7 @@ class Coevolution(Named):
                 tmp.parent = p.parent
                 tmp._setParameters(p.params * childportion + p.parent.params * (1 - childportion))
                 pop[i] = tmp
-                    
+
     def _evaluatePopulation(self):
         hoFtournSize = min(self.generation, int(self.tournamentSize * self.hallOfFameEvaluation))
         tournSize = self.tournamentSize - hoFtournSize
@@ -125,18 +125,18 @@ class Coevolution(Named):
                 fit += self._beats(p, opp)
             if hoFtournSize > 0:
                 for opp in hoF:
-                    fit += self._beats(p, opp)     
+                    fit += self._beats(p, opp)
             if self.absEvalProportion > 0 and self.absEvaluator != None:
-                fit = (1 - self.absEvalProportion) * fit + self.absEvalProportion * self.absEvaluator(p)           
+                fit = (1 - self.absEvalProportion) * fit + self.absEvalProportion * self.absEvaluator(p)
             fitnesses.append(fit)
         return fitnesses
-            
+
     def _initPopulation(self, seeds):
         if self.parentChildAverage < 1:
             for s in seeds:
                 s.parent = None
         self.pop = self._extendPopulation(seeds, self.populationSize)
-            
+
     def _extendPopulation(self, seeds, size):
         """ build a population, with mutated copies from the provided
         seed pool until it has the desired size. """
@@ -147,9 +147,9 @@ class Coevolution(Named):
             tmp.mutate()
             if self.parentChildAverage < 1:
                 tmp.parent = chosen
-            res.append(tmp)            
+            res.append(tmp)
         return res
-        
+
     def _selectAndReproduce(self, pop, fits):
         """ apply selection and reproduction to host population, according to their fitness."""
         # combine population with their fitness, then sort, only by fitness
@@ -169,35 +169,35 @@ class Coevolution(Named):
             if self.parentChildAverage < 1:
                 self._averageWithParents(newpop[self._numSelected():], self.parentChildAverage)
         return newpop
-            
+
     def _beats(self, h, p):
-        """ determine the empirically observed score of p playing opp (starting or not). 
+        """ determine the empirically observed score of p playing opp (starting or not).
         If they never played, assume 0. """
         if (h, p) not in self.allResults:
             return 0
         else:
             hpgames, hscore = self.allResults[(h, p)][1:3]
             phgames, pscore = self.allResults[(p, h)][1:3]
-            return (hscore - pscore) / float(hpgames + phgames)            
-                
+            return (hscore - pscore) / float(hpgames + phgames)
+
     def _doTournament(self, pop1, pop2, tournamentSize=None):
-        """ Play a tournament. 
-        
-        :key tournamentSize: If unspecified, play all-against-all 
+        """ Play a tournament.
+
+        :key tournamentSize: If unspecified, play all-against-all
         """
         # TODO: Preferably select high-performing opponents?
         for p in pop1:
             pop3 = pop2[:]
             while p in pop3:
                 pop3.remove(p)
-            if tournamentSize != None and tournamentSize < len(pop3):                
+            if tournamentSize != None and tournamentSize < len(pop3):
                 opps = sample(pop3, tournamentSize)
-            else:                
-                opps = pop3                    
+            else:
+                opps = pop3
             for opp in opps:
                 self._relEval(p, opp)
                 self._relEval(opp, p)
-                
+
     def _globalScore(self, p):
         """ The average score over all evaluations for a player. """
         if p not in self.allOpponents:
@@ -211,7 +211,7 @@ class Coevolution(Named):
         # slightly bias the global score in favor of players with more games (just for tie-breaking)
         played += 0.01
         return scoresum / played
-                
+
     def _sharedSampling(self, numSelect, selectFrom, relativeTo):
         """ Build a shared sampling set of opponents """
         if numSelect < 1:
@@ -232,7 +232,7 @@ class Coevolution(Named):
         otherSelect = selectFrom[:]
         otherSelect.remove(best)
         return [best] + self._sharedSampling(numSelect - 1, otherSelect, unBeaten)
-                
+
     def _relEval(self, p, opp):
         """ a single relative evaluation (in one direction) with the involved bookkeeping."""
         if p not in self.allOpponents:
@@ -247,7 +247,7 @@ class Coevolution(Named):
         self.allResults[(p, opp)][2] += res
         self.allResults[(p, opp)][3].append(res)
         self.steps += 1
-    
+
     def __str__(self):
         s = 'Coevolution ('
         s += str(self._numSelected())
@@ -259,18 +259,18 @@ class Coevolution(Named):
         if self.parentChildAverage < 1:
             s += ' p_c_avg=' + str(self.parentChildAverage)
         return s
-                                     
+
     def _numSelected(self):
         return int(self.populationSize * self.selectionProportion)
-    
+
     def _stepsPerGeneration(self):
         res = self.populationSize * self.tournamentSize * 2
         return res
-    
-    
-    
-    
-    
+
+
+
+
+
 if __name__ == '__main__':
     # TODO: convert to unittest
     x = Coevolution(None, [None], populationSize=1)

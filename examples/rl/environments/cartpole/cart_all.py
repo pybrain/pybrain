@@ -40,7 +40,7 @@ for e in expList:
         et.agent = agent
         # create the experiment
         experiment = EpisodicExperiment(task, agent)
-    
+
         #Do the experiment
         for updates in range(epis):
             for i in range(prnts):

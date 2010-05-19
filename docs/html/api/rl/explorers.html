@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
+
     <title>explorers – RL Components: Explorers &mdash; PyBrain v0.3 documentation</title>
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -21,7 +21,7 @@
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <link rel="top" title="PyBrain v0.3 documentation" href="../../index.html" />
     <link rel="next" title="learners – RL Components: Learners" href="learners.html" />
-    <link rel="prev" title="experiments – RL Components: Experiments" href="experiments.html" /> 
+    <link rel="prev" title="experiments – RL Components: Experiments" href="experiments.html" />
   </head>
   <body>
     <div class="related">
@@ -39,15 +39,15 @@
         <li class="right" >
           <a href="experiments.html" title="experiments – RL Components: Experiments"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">PyBrain v0.3 documentation</a> &raquo;</li> 
+        <li><a href="../../index.html">PyBrain v0.3 documentation</a> &raquo;</li>
       </ul>
-    </div>  
+    </div>
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
           <div class="body">
-            
+
   <div class="section" id="module-pybrain.rl.explorers.explorer">
 <h1><tt class="xref docutils literal"><span class="pre">explorers</span></tt> &#8211; RL Components: Explorers<a class="headerlink" href="#module-pybrain.rl.explorers.explorer" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
@@ -77,8 +77,8 @@ in subclasses.</dd></dl>
 <em class="property">class </em><tt class="descclassname">pybrain.rl.explorers.continuous.</tt><tt class="descname">NormalExplorer</tt><big>(</big><em>dim</em>, <em>sigma=0.0</em><big>)</big><a class="headerlink" href="#pybrain.rl.explorers.continuous.NormalExplorer" title="Permalink to this definition">¶</a></dt>
 <dd>A continuous explorer, that perturbs the resulting action with
 additive, normally distributed random noise. The exploration
-has parameter(s) sigma, which are related to the distribution&#8217;s 
-standard deviation. In order to allow for negative values of sigma, 
+has parameter(s) sigma, which are related to the distribution&#8217;s
+standard deviation. In order to allow for negative values of sigma,
 the real std. derivation is a transformation of sigma according
 to the expln() function (see pybrain.tools.functions).</dd></dl>
 
@@ -87,8 +87,8 @@ to the expln() function (see pybrain.tools.functions).</dd></dl>
 <em class="property">class </em><tt class="descclassname">pybrain.rl.explorers.continuous.sde.</tt><tt class="descname">StateDependentExplorer</tt><big>(</big><em>statedim</em>, <em>actiondim</em>, <em>sigma=-2.0</em><big>)</big><a class="headerlink" href="#pybrain.rl.explorers.continuous.sde.StateDependentExplorer" title="Permalink to this definition">¶</a></dt>
 <dd><p>A continuous explorer, that perturbs the resulting action with
 additive, normally distributed random noise. The exploration
-has parameter(s) sigma, which are related to the distribution&#8217;s 
-standard deviation. In order to allow for negative values of sigma, 
+has parameter(s) sigma, which are related to the distribution&#8217;s
+standard deviation. In order to allow for negative values of sigma,
 the real std. derivation is a transformation of sigma according
 to the expln() function (see pybrain.tools.functions).</p>
 <dl class="method">
@@ -114,7 +114,7 @@ in subclasses.</dd></dl>
 <dd><p>Bases: <a title="pybrain.rl.explorers.explorer.Explorer" class="reference internal" href="#pybrain.rl.explorers.explorer.Explorer"><tt class="xref docutils literal"><span class="pre">pybrain.rl.explorers.explorer.Explorer</span></tt></a></p>
 <p>Discrete explorers choose one of the available actions from the
 set of actions. In order to know which actions are available and
-which action to choose, discrete explorers need access to the 
+which action to choose, discrete explorers need access to the
 module (which has to of class ActionValueTable).</p>
 <dl class="method">
 <dt id="pybrain.rl.explorers.discrete.discrete.DiscreteExplorer._setModule">
@@ -127,7 +127,7 @@ module (which has to of class ActionValueTable).</p>
 <dt id="pybrain.rl.explorers.discrete.EpsilonGreedyExplorer">
 <em class="property">class </em><tt class="descclassname">pybrain.rl.explorers.discrete.</tt><tt class="descname">EpsilonGreedyExplorer</tt><big>(</big><em>epsilon=0.29999999999999999</em>, <em>decay=0.99990000000000001</em><big>)</big><a class="headerlink" href="#pybrain.rl.explorers.discrete.EpsilonGreedyExplorer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a title="pybrain.rl.explorers.discrete.discrete.DiscreteExplorer" class="reference internal" href="#pybrain.rl.explorers.discrete.discrete.DiscreteExplorer"><tt class="xref docutils literal"><span class="pre">pybrain.rl.explorers.discrete.discrete.DiscreteExplorer</span></tt></a></p>
-<p>A discrete explorer, that executes the original policy in most cases, 
+<p>A discrete explorer, that executes the original policy in most cases,
 but sometimes returns a random action (uniformly drawn) instead. The
 randomness is controlled by a parameter 0 &lt;= epsilon &lt;= 1. The closer
 epsilon gets to 0, the more greedy (and less explorative) the agent
@@ -145,9 +145,9 @@ larger than epsilon, the greedy action is returned.</dd></dl>
 <dt id="pybrain.rl.explorers.discrete.BoltzmannExplorer">
 <em class="property">class </em><tt class="descclassname">pybrain.rl.explorers.discrete.</tt><tt class="descname">BoltzmannExplorer</tt><big>(</big><em>tau=2.0</em>, <em>decay=0.99950000000000006</em><big>)</big><a class="headerlink" href="#pybrain.rl.explorers.discrete.BoltzmannExplorer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a title="pybrain.rl.explorers.discrete.discrete.DiscreteExplorer" class="reference internal" href="#pybrain.rl.explorers.discrete.discrete.DiscreteExplorer"><tt class="xref docutils literal"><span class="pre">pybrain.rl.explorers.discrete.discrete.DiscreteExplorer</span></tt></a></p>
-<p>A discrete explorer, that executes the actions with probability 
-that depends on their action values. The boltzmann explorer has 
-a parameter tau (the temperature). for high tau, the actions are 
+<p>A discrete explorer, that executes the actions with probability
+that depends on their action values. The boltzmann explorer has
+a parameter tau (the temperature). for high tau, the actions are
 nearly equiprobable. for tau close to 0, this action selection
 becomes greedy.</p>
 <dl class="method">
@@ -251,7 +251,7 @@ feed it with the current state.</dd></dl>
         <li class="right" >
           <a href="experiments.html" title="experiments – RL Components: Experiments"
              >previous</a> |</li>
-        <li><a href="../../index.html">PyBrain v0.3 documentation</a> &raquo;</li> 
+        <li><a href="../../index.html">PyBrain v0.3 documentation</a> &raquo;</li>
       </ul>
     </div>
     <div class="footer">

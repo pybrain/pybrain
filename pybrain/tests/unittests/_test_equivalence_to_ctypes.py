@@ -17,16 +17,16 @@ whether the Python implementation is used, or CTYPES.
 
 Use the network construction scripts in other test files to build a number of networks,
 and then test the equivalence of each.
-    
+
 Simple net
     >>> testEquivalence(buildNetwork(2,2))
     True
 
-A lot of layers 
+A lot of layers
     >>> net = buildNetwork(2,3,4,3,2,3,4,3,2)
     >>> testEquivalence(net)
     True
-    
+
 Nonstandard components
     >>> from pybrain.structure import TanhLayer
     >>> net = buildNetwork(2,3,2, bias = True, outclass = TanhLayer)
@@ -37,24 +37,24 @@ Shared connections
     >>> net = buildSharedCrossedNetwork()
     >>> testEquivalence(net)
     True
-    
+
 Sliced connections
     >>> net = buildSlicedNetwork()
     >>> testEquivalence(net)
     True
-    
+
 Nested networks (not supposed to work yet!)
     >>> net = buildNestedNetwork()
     >>> testEquivalence(net)
-    Network cannot be converted.    
-    
+    Network cannot be converted.
+
 Recurrent networks
     >>> net = buildRecurrentNetwork()
     >>> net.name = '22'
     >>> net.params[:] = [1,1,0.5]
     >>> testEquivalence(net)
     True
-    
+
 Swiping networks
     >>> net = buildSwipingNetwork()
     >>> testEquivalence(net)
@@ -64,29 +64,29 @@ Border-swiping networks
     >>> net = buildSimpleBorderSwipingNet()
     >>> testEquivalence(net)
     True
-    
+
 Lstm
     >>> net = buildSimpleLSTMNetwork()
     >>> testEquivalence(net)
     True
-    
+
 Mdlstm
     >>> net = buildSimpleMDLSTMNetwork()
     >>> testEquivalence(net)
     True
-    
+
 Lstm with peepholes
     >>> net = buildMinimalLSTMNetwork(True)
     >>> testEquivalence(net)
     True
-    
+
 Mdlstm with peepholes
     >>> net = buildMinimalMDLSTMNetwork(True)
     >>> testEquivalence(net)
     True
-    
-    
-TODO: 
+
+
+TODO:
 - heavily nested
 - exotic module use
 
@@ -121,7 +121,7 @@ def testEquivalence(net):
                     print 'hnout', h.outputbuffer.T[0]
                     print 'hcout', ch.outputbuffer.T[0]
                     print
-                    
+
     else:
         for input, _ in ds:
             res = net.activate(input)
@@ -134,8 +134,8 @@ def testEquivalence(net):
         print 'out-net', net.outputbuffer.T
         print 'out-arac', cnet.outputbuffer.T
         return (res, cres)
-    
-        
+
+
 if __name__ == "__main__":
     runModuleTestSuite(__import__('__main__'))
 

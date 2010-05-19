@@ -6,11 +6,11 @@
 .. automodule:: pybrain.datasets.sequential
 
 .. autoclass:: SequentialDataSet
-   :members: 
+   :members:
    :show-inheritance:
 
-   
+
 .. note::
 
-   This documentation comprises just a subjective excerpt of available methods. 
+   This documentation comprises just a subjective excerpt of available methods.
    See the source code for additional functionality.

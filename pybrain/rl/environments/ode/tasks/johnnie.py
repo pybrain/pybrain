@@ -20,7 +20,7 @@ class JohnnieTask(EpisodicTask):
         self.sensor_limits = []
         #Angle sensors
         for i in range(self.env.actLen):
-            self.sensor_limits.append((self.env.cLowList[i], self.env.cHighList[i]))            
+            self.sensor_limits.append((self.env.cLowList[i], self.env.cHighList[i]))
         # Joint velocity sensors
         for i in range(self.env.actLen):
             self.sensor_limits.append((-20, 20))
@@ -29,12 +29,12 @@ class JohnnieTask(EpisodicTask):
         self.actor_limits = None
 
     def performAction(self, action):
-        #Filtered mapping towards performAction of the underlying environment   
+        #Filtered mapping towards performAction of the underlying environment
         #The standard Johnnie task uses a PID controller to controll directly angles instead of forces
-        #This makes most tasks much simpler to learn             
+        #This makes most tasks much simpler to learn
         isJoints=self.env.getSensorByName('JointSensor') #The joint angles
         isSpeeds=self.env.getSensorByName('JointVelocitySensor') #The joint angular velocitys
-        act=(action+1.0)/2.0*(self.env.cHighList-self.env.cLowList)+self.env.cLowList #norm output to action intervall  
+        act=(action+1.0)/2.0*(self.env.cHighList-self.env.cLowList)+self.env.cLowList #norm output to action intervall
         action=tanh((act-isJoints-isSpeeds)*16.0)*self.maxPower*self.env.tourqueList #simple PID
         EpisodicTask.performAction(self, action)
         #self.env.performAction(action)
@@ -50,10 +50,10 @@ class JohnnieTask(EpisodicTask):
 
     def res(self):
         #sets counter and history back, increases incremental counter
-        self.count = 0 
+        self.count = 0
         self.incLearn += 1
         self.reward_history.append(self.getTotalReward())
-            
+
 #The standing tasks, just not falling on its own is the goal
 class StandingTask(JohnnieTask):
     def __init__(self, env):
@@ -70,44 +70,44 @@ class StandingTask(JohnnieTask):
         #normalization for the task spezific sensors
         for _ in range(self.env.obsLen - 2 * self.env.actLen):
             self.sensor_limits.append((-20, 20))
-        self.epiLen = 1000 #suggested episode length for this task        
-        
+        self.epiLen = 1000 #suggested episode length for this task
+
     def getReward(self):
         # calculate reward and return reward
         reward = self.env.getSensorByName('headPos')[1] / float(self.epiLen) #reward is hight of head
         #to prevent jumping reward can't get bigger than head position while standing absolut upright
-        reward = clip(reward, -14.0, 4.0) 
+        reward = clip(reward, -14.0, 4.0)
         return reward
 
 #Robust standing task suited for complete learning with already standable controller
 class RStandingTask(StandingTask):
     def __init__(self, env):
         StandingTask.__init__(self, env)
-        self.epiLen = 4000 #suggested episode length for this task 
+        self.epiLen = 4000 #suggested episode length for this task
         self.h1 = self.epiLen / 4 #timestep of first perturbation
         self.h2 = self.epiLen / 2 #timestep of environment reset
-        self.h3 = 3 * self.epiLen / 4 #timestep of second perturbation       
+        self.h3 = 3 * self.epiLen / 4 #timestep of second perturbation
         self.pVect1 = (0, -9.81, -9.81) #gravity vector for first perturbation
         self.pVect2 = (0, -9.81, 0) #gravity vector standard
         self.pVect3 = (0, -9.81, 9.81) #gravity vector for second perturbation
-        
+
     def isFinished(self):
         if self.count > self.epiLen:
             self.res()
             return True
         else:
             self.count += 1
-            self.disturb() 
+            self.disturb()
             return False
 
     #changes gravity vector for perturbation
     def disturb(self):
         disturb = self.getDisturb()
-        if self.count == self.h1: self.env.world.setGravity(self.pVect1) 
-        if self.count == self.h1 + disturb: self.env.world.setGravity(self.pVect2) 
+        if self.count == self.h1: self.env.world.setGravity(self.pVect1)
+        if self.count == self.h1 + disturb: self.env.world.setGravity(self.pVect2)
         if self.count == self.h2: self.env.reset()
-        if self.count == self.h3: self.env.world.setGravity(self.pVect3) 
-        if self.count == self.h3 + disturb: self.env.world.setGravity(self.pVect2) 
+        if self.count == self.h3: self.env.world.setGravity(self.pVect3)
+        if self.count == self.h3 + disturb: self.env.world.setGravity(self.pVect2)
 
     def getDisturb(self):
         return 50
@@ -140,23 +140,23 @@ class JumpingTask(JohnnieTask):
         #normalization for the task spezific sensors
         for _ in range(self.env.obsLen - 2 * self.env.actLen):
             self.sensor_limits.append((-20, 20))
-        self.epiLen = 400 #suggested episode length for this task 
+        self.epiLen = 400 #suggested episode length for this task
         self.maxHight = 4.0 #maximum hight reached during episode
         self.maxPower = 400.0 #jumping needs more power
-        
+
     def getReward(self):
         # calculate reward and return reward
         reward = self.env.getSensorByName('SpecificBodyPositionSensor8')[1] #reward is hight of head
-        if reward > self.maxHight: 
+        if reward > self.maxHight:
             self.maxHight = reward
-        if self.count == self.epiLen: 
+        if self.count == self.epiLen:
             reward = self.maxHight
-        else: 
+        else:
             reward = 0.0
         return reward
 
     def res(self):
-        self.count = 0 
+        self.count = 0
         self.reward_history.append(self.getTotalReward())
         self.maxHight = 4.0
 
@@ -165,10 +165,10 @@ class JumpingTask(JohnnieTask):
 class StandingUpTask(StandingTask):
     def __init__(self, env):
         StandingTask.__init__(self, env)
-        self.epiLen = 2000 #suggested episode length for this task 
+        self.epiLen = 2000 #suggested episode length for this task
         self.env.tourqueList[0] = 2.5
         self.env.tourqueList[1] = 2.5
-        
+
     def getReward(self):
         # calculate reward and return reward
         if self.count < 800:
@@ -176,14 +176,14 @@ class StandingUpTask(StandingTask):
         else:
             reward = self.env.getSensorByName('SpecificBodyPositionSensor8')[1] / float(self.epiLen - 800) #reward is hight of head
             #to prevent jumping reward can't get bigger than head position while standing absolut upright
-            reward = clip(reward, -14.0, 4.0) 
+            reward = clip(reward, -14.0, 4.0)
             return reward
 
     def performAction(self, action):
-        if self.count < 800: 
+        if self.count < 800:
             #provoke falling
             a = ones(self.env.actLen, int) * self.maxPower * self.env.tourqueList * -1
-            StandingTask.performAction(self, a)            
-        else: 
-            StandingTask.performAction(self, action)        
+            StandingTask.performAction(self, a)
+        else:
+            StandingTask.performAction(self, action)
 

@@ -5,7 +5,7 @@ Build a CaptureGameNetwork with LSTM cells
     >>> from pybrain import MDLSTMLayer
     >>> size = 2
     >>> n = CaptureGameNetwork(size = size, componentclass = MDLSTMLayer, hsize = 1, peepholes = False)
-    
+
 Check it's string representation
     >>> print n
     CaptureGameNetwork-s2-h1-MDLSTMLayer--...
@@ -23,10 +23,10 @@ Check some of the connections dimensionalities
     >>> print c2.indim, c2.outdim
     1 1
     >>> n.paramdim
-    21        
+    21
 
 Try writing it to an xml file, reread it and determine if it looks the same:
-    
+
     >>> from pybrain.tests import xmlInvariance
     >>> xmlInvariance(n)
     Same representation
@@ -45,6 +45,6 @@ Check its gradient:
 __author__ = 'Tom Schaul, tom@idsia.ch'
 
 from pybrain.tests import runModuleTestSuite
-      
+
 if __name__ == '__main__':
     runModuleTestSuite(__import__('__main__'))

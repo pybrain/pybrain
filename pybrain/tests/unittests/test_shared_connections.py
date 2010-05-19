@@ -3,17 +3,17 @@ Trying to build a network with shared connections:
 
     >>> from random import random
     >>> n = buildSharedCrossedNetwork()
-    
-Check if the parameters are the same:    
+
+Check if the parameters are the same:
 
     >>> (n.connections[n['a']][0].params == n.connections[n['a']][1].params).all()
     True
-    
+
     >>> (n.connections[n['b']][0].params == n.connections[n['c']][0].params).all()
     True
-    
+
     >>> from pybrain.tools.xml.networkwriter import NetworkWriter
-    
+
 The transformation of the first input to the second output is identical to the transformation of the
 second towards the first:
 
@@ -27,7 +27,7 @@ second towards the first:
     True
     >>> v2 == v3
     True
-    
+
 Check its gradient:
 
     >>> from pybrain.tests import gradientCheck
@@ -36,7 +36,7 @@ Check its gradient:
     True
 
 Try writing it to an xml file, reread it and determine if it looks the same:
-    
+
     >>> from pybrain.tests import xmlInvariance
     >>> xmlInvariance(n)
     Same representation
@@ -55,8 +55,8 @@ from pybrain.tests import runModuleTestSuite
 
 
 def buildSharedCrossedNetwork():
-    """ build a network with shared connections. Two hidden modules are 
-    symmetrically linked, but to a different input neuron than the 
+    """ build a network with shared connections. Two hidden modules are
+    symmetrically linked, but to a different input neuron than the
     output neuron. The weights are random. """
     N = FeedForwardNetwork('shared-crossed')
     h = 1
@@ -68,13 +68,13 @@ def buildSharedCrossedNetwork():
     N.addModule(b)
     N.addModule(c)
     N.addOutputModule(d)
-    
+
     m1 = MotherConnection(h)
     m1.params[:] = scipy.array((1,))
-    
+
     m2 = MotherConnection(h)
     m2.params[:] = scipy.array((2,))
-    
+
     N.addConnection(SharedFullConnection(m1, a, b, inSliceTo = 1))
     N.addConnection(SharedFullConnection(m1, a, c, inSliceFrom = 1))
     N.addConnection(SharedFullConnection(m2, b, d, outSliceFrom = 1))

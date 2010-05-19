@@ -36,7 +36,7 @@ class MixtureOfGaussians:
         self.best = 0.000001
 
     def getStND(self, x, mue=0.0, sig=1.0):
-        x = (x - mue) / sig           
+        x = (x - mue) / sig
         if abs(x) >= 4.0: return 0.000000001
         x = int((x + 4.0) / 8.0 * 1000)
         return stND[x] / sig
@@ -101,7 +101,7 @@ class MixtureOfGaussians:
         if y > self.best: self.best = y
         fakt = (y - self.baseline) / (self.best - self.baseline)
         if fakt < -1.0: fakt = -1.0
-        
+
 
         #alpha learning
         sigmoA = self.sigmo(self.alpha)
@@ -109,18 +109,18 @@ class MixtureOfGaussians:
         sigmoA = self.sigmo(self.alpha)
         sigmoA /= sum(sigmoA)
         self.alpha = self.invSigmo(sigmoA)
-            
+
         #mue learning
         sigmoA = self.sigmo(self.alpha)
-        self.mue += self.alphaM * fakt * (x - self.mue) * sigmoA * norm  
+        self.mue += self.alphaM * fakt * (x - self.mue) * sigmoA * norm
 
         #sigma learning
         if fakt > 0.0:
-            self.sigma += self.alphaS * fakt * ((x - self.mue) ** 2 - self.sigma ** 2) / self.sigma * sigmoA * norm 
+            self.sigma += self.alphaS * fakt * ((x - self.mue) ** 2 - self.sigma ** 2) / self.sigma * sigmoA * norm
 
     def sigmo(self, a):
         return 1.0 / (1.0 + exp(-1.0 * a))
-            
+
     def invSigmo(self, a):
         return - log(1.0 / a - 1.0)
 
@@ -142,7 +142,7 @@ class MixtureOfGaussians:
     def sample(self, wi, dm, learning="logLiklihood", noise=0.2, plt=True):
         if plt:
             self.plotGaussian('r', dm)
-            self.plotReward('y') 
+            self.plotReward('y')
         xList = []
         yList = []
         for i in range(wi):
@@ -153,7 +153,7 @@ class MixtureOfGaussians:
             if plt:
                 if i / 1 == float(i) / 1.0:
                     xList.append(sampleX)
-                    yList.append(sampleY)  
+                    yList.append(sampleY)
                 if i == wi / 4:
                     self.plotGaussian('g', dm)
                 if i == wi / 2:
@@ -164,7 +164,7 @@ class MixtureOfGaussians:
             self.plotGaussian('k', dm)
             scatter(xList, yList, 1)
             v = [-30.5, 30.5, -0.5, 1.5]
-            axis(v) 
+            axis(v)
             s4 = repr(wi / 4) + 'Sample'
             s2 = repr(wi / 2) + 'Sample'
             s1 = repr(wi) + 'Sample'

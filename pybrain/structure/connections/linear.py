@@ -6,10 +6,10 @@ from pybrain.structure.parametercontainer import ParameterContainer
 
 
 class LinearConnection(Connection, ParameterContainer):
-    """Connection that just forwards by multiplying the output of the inmodule 
+    """Connection that just forwards by multiplying the output of the inmodule
     with a parameter and adds it to the input of the outmodule."""
-    
-    def __init__(self, inmod, outmod, name=None, 
+
+    def __init__(self, inmod, outmod, name=None,
                  inSliceFrom=0, inSliceTo=None, outSliceFrom=0, outSliceTo=None):
         if inSliceTo is None:
             inSliceTo = inmod.outdim
@@ -17,10 +17,10 @@ class LinearConnection(Connection, ParameterContainer):
         Connection.__init__(self, inmod, outmod, name,
                             inSliceFrom, inSliceTo, outSliceFrom, outSliceTo)
         ParameterContainer.__init__(self, size)
-        
+
     def _forwardImplementation(self, inbuf, outbuf):
         outbuf += inbuf * self.params
-        
+
     def _backwardImplementation(self, outerr, inerr, inbuf):
         #CHECKME: not setting derivatives
         inerr += outerr * self.params

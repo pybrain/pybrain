@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
+
     <title>nearoptimal – Near Optimal Locality Sensitive Hashing &mdash; PyBrain v0.3 documentation</title>
     <link rel="stylesheet" href="../../../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
@@ -20,7 +20,7 @@
     <script type="text/javascript" src="../../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../../_static/doctools.js"></script>
     <link rel="top" title="PyBrain v0.3 documentation" href="../../../../index.html" />
-    <link rel="prev" title="utilities – Simple but useful Utility Functions" href="../../../utilities.html" /> 
+    <link rel="prev" title="utilities – Simple but useful Utility Functions" href="../../../utilities.html" />
   </head>
   <body>
     <div class="related">
@@ -35,21 +35,21 @@
         <li class="right" >
           <a href="../../../utilities.html" title="utilities – Simple but useful Utility Functions"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../../../index.html">PyBrain v0.3 documentation</a> &raquo;</li> 
+        <li><a href="../../../../index.html">PyBrain v0.3 documentation</a> &raquo;</li>
       </ul>
-    </div>  
+    </div>
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
           <div class="body">
-            
+
   <div class="section" id="module-pybrain.supervised.knn.lsh.nearoptimal">
 <h1><tt class="xref docutils literal"><span class="pre">nearoptimal</span></tt> &#8211; Near Optimal Locality Sensitive Hashing<a class="headerlink" href="#module-pybrain.supervised.knn.lsh.nearoptimal" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="pybrain.supervised.knn.lsh.nearoptimal.MultiDimHash">
 <em class="property">class </em><tt class="descclassname">pybrain.supervised.knn.lsh.nearoptimal.</tt><tt class="descname">MultiDimHash</tt><big>(</big><em>dim</em>, <em>omega=4</em>, <em>prob=0.80000000000000004</em><big>)</big><a class="headerlink" href="#pybrain.supervised.knn.lsh.nearoptimal.MultiDimHash" title="Permalink to this definition">¶</a></dt>
-<dd><p>Class that represents a datastructure that enables nearest neighbours 
+<dd><p>Class that represents a datastructure that enables nearest neighbours
 search and methods to do so.</p>
 <dl class="method">
 <dt id="pybrain.supervised.knn.lsh.nearoptimal.MultiDimHash.__init__">
@@ -57,7 +57,7 @@ search and methods to do so.</p>
 <dd><p>Create a hash for arrays of dimension dim.</p>
 <p>The hyperspace will be split into hypercubes with a sidelength of
 omega * sqrt(sqrt(dim)), that is omega * radius.</p>
-<p>Every point in the dim-dimensional euclidean space will be hashed to 
+<p>Every point in the dim-dimensional euclidean space will be hashed to
 its correct bucket with a probability of prob.</p>
 </dd></dl>
 
@@ -69,7 +69,7 @@ its correct bucket with a probability of prob.</p>
 <dl class="method">
 <dt id="pybrain.supervised.knn.lsh.nearoptimal.MultiDimHash.knn">
 <tt class="descname">knn</tt><big>(</big><em>point</em>, <em>k</em><big>)</big><a class="headerlink" href="#pybrain.supervised.knn.lsh.nearoptimal.MultiDimHash.knn" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the k approximate nearest neighbours of the item in the 
+<dd><p>Return the k approximate nearest neighbours of the item in the
 current hash.</p>
 <p>Mind that the probabilistic nature of the data structure might not
 return a nearest neighbor at all and not the nearest neighbour.</p>
@@ -133,7 +133,7 @@ and Piotr Indyk.</dd>
         <li class="right" >
           <a href="../../../utilities.html" title="utilities – Simple but useful Utility Functions"
              >previous</a> |</li>
-        <li><a href="../../../../index.html">PyBrain v0.3 documentation</a> &raquo;</li> 
+        <li><a href="../../../../index.html">PyBrain v0.3 documentation</a> &raquo;</li>
       </ul>
     </div>
     <div class="footer">

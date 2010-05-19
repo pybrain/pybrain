@@ -453,7 +453,7 @@ class NetworkWrapper(object):
         """ Injects a vector into the recurrent connection.
             This will be used in the evolino trainingsphase, where the target
             values need to be backprojected instead of the real output of the net.
-            
+
             :key injection: vector of length self.network.outdim
         """
         outlayer = self.getOutputLayer()

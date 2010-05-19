@@ -55,7 +55,7 @@ static const double TAU         = 0.01;	  //seconds between state updates
 
 char modelfile[100];
 
-extern void initCartPole(int markov_, int numPoles_, int maxsteps_)	       
+extern void initCartPole(int markov_, int numPoles_, int maxsteps_)	
 {
   poleangle = 4.0156035;
   longPoleAngle = poleangle * one_degree;
@@ -66,12 +66,12 @@ extern void initCartPole(int markov_, int numPoles_, int maxsteps_)
   markov = markov_;
   numPoles = numPoles_;
   maxsteps = maxsteps_;
-  
+
   reset();
 
   episodes = 0;
   totalIterations = 0;
-  
+
 
   //echoParams();
 }
@@ -237,7 +237,7 @@ void rk4(double f, double y[], double dydx[], double yout[])
 extern void getObservation(double * input)
 {
   // first is always bias, last is always cart position (state[0])
-  // pole angles are preceded by their dreivative in the markov case 
+  // pole angles are preceded by their dreivative in the markov case
   switch(numPoles){
     case 1:
       if(markov){
@@ -349,7 +349,7 @@ extern int trialFinished()
   if(outsideBounds())
     return 1;
   if(steps > maxsteps) {
-    //cout << "SUCCESS in episode " << episodes << endl; 
+    //cout << "SUCCESS in episode " << episodes << endl;
     return 1;
   }
   return 0;

@@ -11,7 +11,7 @@ class ConfigGrabber:
         self.filename = filename
         self.sectionId = string.strip(sectionId)
         self.delim = delim
-    
+
     def getValue(self, name):
         file = open(self.filename, "r")
         flag = -1
@@ -20,7 +20,7 @@ class ConfigGrabber:
         if self.sectionId == "":
             self.sectionId = string.strip(file.readline())
             file.seek(0)
-    
+
         for line in file:
             if flag == -1 and string.strip(line) == self.sectionId:
                 flag = 0

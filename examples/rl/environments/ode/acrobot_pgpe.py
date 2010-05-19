@@ -38,13 +38,13 @@ for runs in range(numbExp):
     # create environment
     #Options: Bool(OpenGL), Bool(Realtime simu. while client is connected), ServerIP(default:localhost), Port(default:21560)
     if env != None: env.closeSocket()
-    env = AcrobotEnvironment() 
+    env = AcrobotEnvironment()
     # create task
     task = GradualRewardTask(env)
     # create controller network
     net = buildNetwork(len(task.getObservation()), env.actLen, outclass=TanhLayer)    
     # create agent with controller and learner (and its options)
-    agent = OptimizationAgent(net, PGPE(storeAllEvaluations = True, 
+    agent = OptimizationAgent(net, PGPE(storeAllEvaluations = True,
                                     learningRate = 0.05,
                                     sigmaLearningRate = 0.025,
                                     momentum = 0.0,
