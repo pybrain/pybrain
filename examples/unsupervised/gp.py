@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 """ A simple example on how to use the GaussianProcess class
 in pybrain, for one and two dimensions. """
 

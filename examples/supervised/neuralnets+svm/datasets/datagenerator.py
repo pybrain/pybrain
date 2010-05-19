@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # generates some simple example data sets
 __author__ = "Martin Felder"
 __version__ = '$Id$' 

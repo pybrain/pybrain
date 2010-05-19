@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 __author__ = 'Thomas Rueckstiess, ruecksti@in.tum.de'
 
 """ This example demonstrates how to use the discrete Temporal Difference

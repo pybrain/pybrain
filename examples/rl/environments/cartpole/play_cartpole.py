@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 ###########################################################################
 # This program takes 4 parameters at the command line and runs the
 # (single) cartpole environment with it, visualizing the cart and the pole.

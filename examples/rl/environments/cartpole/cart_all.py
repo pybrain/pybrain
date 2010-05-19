@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 #########################################################################
 # Reinforcement Learning with several optimization algorithms
 # on the CartPoleEnvironment 

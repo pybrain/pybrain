@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 """ A little script to do contour-plots of a couple of the widely used optimization benchmarks. """
 
 __author__ = 'Tom Schaul, tom@idsia.ch'

@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 """ Miniscule restricted Boltzmann machine usage example """ 
 
 __author__ = 'Justin S Bayer, bayer.justin@googlemail.com'

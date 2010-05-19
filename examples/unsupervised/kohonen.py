@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 ##################################################
 # Example for Kohonen Map 
 # 

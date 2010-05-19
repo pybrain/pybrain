@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 # Example script for recurrent network usage in PyBrain.
 __author__ = "Martin Felder"
-__version__ = '$Id$' 
+__version__ = '$Id$'
 
-from pylab import plot, hold, show 
+from pylab import plot, hold, show
 from scipy import sin, rand, arange
 from pybrain.datasets            import SequenceClassificationDataSet
 from pybrain.structure.modules   import LSTMLayer, SoftmaxLayer
@@ -24,7 +24,7 @@ rnn = buildNetwork( trndata.indim, 5, trndata.outdim, hiddenclass=LSTMLayer, out
 
 # define a training method
 trainer = RPropMinusTrainer( rnn, dataset=trndata, verbose=True )
-# instead, you may also try 
+# instead, you may also try
 ##trainer = BackpropTrainer( rnn, dataset=trndata, verbose=True, momentum=0.9, learningrate=0.00001 )
 
 # carry out the training

@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 __author__ = 'Tom Schaul (tom@idsia.ch)'
 
 from pybrain.datasets import SequentialDataSet

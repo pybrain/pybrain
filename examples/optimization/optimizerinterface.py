@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 """ 
 Illustrating the interface of black-box optimizers on a few simple problems:
 - how to initialize when:

@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 """ 
 Illustrating how to use optimization algorithms in a reinforcement learning framework.
 """

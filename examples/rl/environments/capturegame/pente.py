@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 """ A little script illustrating how to use a (randomly initialized) 
 convolutional network to play a game of Pente. """
 

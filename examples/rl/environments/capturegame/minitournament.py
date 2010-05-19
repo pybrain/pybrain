@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 """ A little example script showing a Capture-Game tournament between 
  - a random player
  - a kill-on-sight player

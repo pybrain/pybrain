@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 """ A script illustrating how to evolve a simple Capture-Game Player
 which uses a MDRNN as network, with a simple ES algorithm."""
 

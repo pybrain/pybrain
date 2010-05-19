@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 """ A simple recurrent neural network that detects parity for arbitrary sequences. """
 
 __author__ = 'Tom Schaul (tom@idsia.ch)'

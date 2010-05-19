@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 """ An illustration of using the NSGA-II multi-objective optimization algorithm 
 on a simple standard benchmark function. """
 
