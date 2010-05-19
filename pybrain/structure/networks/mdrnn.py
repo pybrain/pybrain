@@ -1,4 +1,3 @@
-#! /usr/bin/env python2.5
 # -*- coding: utf-8 -*-
 
 """ WARNING: this file is a construction site. The classes are currently placeholders for stuff to come. """
