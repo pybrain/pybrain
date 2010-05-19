@@ -3,7 +3,7 @@
 Building a DataSet
 ==================
 
-In order for our networks to learn anything, we need a dataset that contains 
+In order for our networks to learn anything, we need a dataset that contains
 inputs and targets. PyBrain has the ``pybrain.dataset`` package for this, and we
 will use the ``SupervisedDataSet`` class for our needs.
 
@@ -11,15 +11,15 @@ will use the ``SupervisedDataSet`` class for our needs.
 A customized DataSet
 --------------------
 
-The ``SupervisedDataSet`` class is used for standard supervised learning. It 
-supports input and target values, whose size we have to specify on object 
+The ``SupervisedDataSet`` class is used for standard supervised learning. It
+supports input and target values, whose size we have to specify on object
 creation::
 
    >>> from pybrain.datasets import SupervisedDataSet
    >>> ds = SupervisedDataSet(2, 1)
-   
-Here we have generated a dataset that supports two dimensional inputs and one 
-dimensional targets. 
+
+Here we have generated a dataset that supports two dimensional inputs and one
+dimensional targets.
 
 
 Adding samples
@@ -32,22 +32,22 @@ build a dataset for this. We can do this by just adding samples to the dataset:
    >>> ds.addSample((0, 1), (1,))
    >>> ds.addSample((1, 0), (1,))
    >>> ds.addSample((1, 1), (0,))
-   
+
 
 Examining the dataset
 ---------------------
-   
+
 We now have a dataset that has 4 samples in it. We can check that with python's
 idiomatic way of checking the size of something::
 
    >>> len(ds)
    4
-   
+
 We can also iterate over it in the standard way::
 
    >>> for inpt, target in ds:
    ...   print inpt, target
-   ... 
+   ...
    [ 0.  0.] [ 0.]
    [ 0.  1.] [ 1.]
    [ 1.  0.] [ 1.]
@@ -65,7 +65,7 @@ We can access the input and target field directly as arrays::
           [ 1.],
           [ 1.],
           [ 0.]])
-          
+
 It is also possible to clear a dataset again, and delete all the values from it:
 
    >>> ds.clear()

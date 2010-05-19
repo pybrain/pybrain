@@ -11,7 +11,7 @@ def prepare_docstring(s):
     if not s or s.isspace():
         return ['']
     s = s.expandtabs()
-    
+
     # [MF] begin pydoc hack **************
     idxpar = s.find('@param')
     if idxpar > 0:

@@ -9,21 +9,21 @@
 .. automodule:: pybrain.structure.connections
 
 .. autoclass:: FullConnection
-   :members: 
+   :members:
    :show-inheritance:
-   
+
 .. autoclass:: IdentityConnection
-   :members: 
+   :members:
    :show-inheritance:
-   
+
 .. autoclass:: MotherConnection
    :members:
    :show-inheritance:
-       
+
 .. autoclass:: SharedConnection
    :members: mother
-   :show-inheritance:   
-    
+   :show-inheritance:
+
 .. autoclass:: SharedFullConnection
    :show-inheritance:
-   
+
