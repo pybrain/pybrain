@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-
+    
     <title>sequential – Dataset for Supervised Sequences Regression Training &mdash; PyBrain v0.3 documentation</title>
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -21,7 +21,7 @@
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <link rel="top" title="PyBrain v0.3 documentation" href="../../index.html" />
     <link rel="next" title="supervised – Dataset for Supervised Regression Training" href="superviseddataset.html" />
-    <link rel="prev" title="importance – Datasets for Weighted Supervised Training" href="importancedatasets.html" />
+    <link rel="prev" title="importance – Datasets for Weighted Supervised Training" href="importancedatasets.html" /> 
   </head>
   <body>
     <div class="related">
@@ -39,15 +39,15 @@
         <li class="right" >
           <a href="importancedatasets.html" title="importance – Datasets for Weighted Supervised Training"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">PyBrain v0.3 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">PyBrain v0.3 documentation</a> &raquo;</li> 
       </ul>
-    </div>
+    </div>  
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
           <div class="body">
-
+            
   <div class="section" id="module-pybrain.datasets.sequential">
 <span id="sequentialdataset"></span><h1><tt class="xref docutils literal"><span class="pre">sequential</span></tt> &#8211; Dataset for Supervised Sequences Regression Training<a class="headerlink" href="#module-pybrain.datasets.sequential" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
@@ -62,7 +62,7 @@ marker.</p>
 <dl class="method">
 <dt id="pybrain.datasets.sequential.SequentialDataSet.endOfSequence">
 <tt class="descname">endOfSequence</tt><big>(</big><em>index</em><big>)</big><a class="headerlink" href="#pybrain.datasets.sequential.SequentialDataSet.endOfSequence" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return True if the marker was moved over the last element of
+<dd><p>Return True if the marker was moved over the last element of 
 sequence <cite>index</cite>, False otherwise.</p>
 <p>Mostly used like .endOfData() with while loops.</p>
 </dd></dl>
@@ -81,21 +81,21 @@ and return the MSE (potentially average over a number of epochs).</dd></dl>
 <dl class="method">
 <dt id="pybrain.datasets.sequential.SequentialDataSet.getNumSequences">
 <tt class="descname">getNumSequences</tt><big>(</big><big>)</big><a class="headerlink" href="#pybrain.datasets.sequential.SequentialDataSet.getNumSequences" title="Permalink to this definition">¶</a></dt>
-<dd>Return the number of sequences. The last (open) sequence is also
+<dd>Return the number of sequences. The last (open) sequence is also 
 counted in, even though there is no additional &#8216;newSequence&#8217; marker.</dd></dl>
 
 <dl class="method">
 <dt id="pybrain.datasets.sequential.SequentialDataSet.getSequence">
 <tt class="descname">getSequence</tt><big>(</big><em>index</em><big>)</big><a class="headerlink" href="#pybrain.datasets.sequential.SequentialDataSet.getSequence" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the sequence given by <cite>index</cite>.</p>
-<p>A list of arrays is returned for the linked arrays. It is assumed that
+<p>A list of arrays is returned for the linked arrays. It is assumed that 
 the last sequence goes until the end of the dataset.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pybrain.datasets.sequential.SequentialDataSet.getSequenceIterator">
 <tt class="descname">getSequenceIterator</tt><big>(</big><em>index</em><big>)</big><a class="headerlink" href="#pybrain.datasets.sequential.SequentialDataSet.getSequenceIterator" title="Permalink to this definition">¶</a></dt>
-<dd>Return an iterator over the samples of the sequence specified by
+<dd>Return an iterator over the samples of the sequence specified by 
 <cite>index</cite>.</dd></dl>
 
 <dl class="method">
@@ -128,7 +128,7 @@ marker to the sample following the removed sequence.</dd></dl>
 <dt id="pybrain.datasets.sequential.SequentialDataSet.splitWithProportion">
 <tt class="descname">splitWithProportion</tt><big>(</big><em>proportion=0.5</em><big>)</big><a class="headerlink" href="#pybrain.datasets.sequential.SequentialDataSet.splitWithProportion" title="Permalink to this definition">¶</a></dt>
 <dd><p>Produce two new datasets, each containing a part of the sequences.</p>
-<p>The first dataset will have a fraction given by <cite>proportion</cite> of the
+<p>The first dataset will have a fraction given by <cite>proportion</cite> of the 
 dataset.</p>
 </dd></dl>
 
@@ -193,7 +193,7 @@ See the source code for additional functionality.</p>
         <li class="right" >
           <a href="importancedatasets.html" title="importance – Datasets for Weighted Supervised Training"
              >previous</a> |</li>
-        <li><a href="../../index.html">PyBrain v0.3 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">PyBrain v0.3 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

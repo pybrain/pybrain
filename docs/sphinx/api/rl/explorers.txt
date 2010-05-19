@@ -12,13 +12,13 @@ Continuous Explorers
 .. automodule:: pybrain.rl.explorers.continuous
 
 .. autoclass:: NormalExplorer
-   :members:
+   :members:   
 
 .. automodule:: pybrain.rl.explorers.continuous.sde
 
 .. autoclass:: StateDependentExplorer
    :members:
-
+   
 Discrete Explorers
 --------------------
 
@@ -27,7 +27,7 @@ Discrete Explorers
 .. autoclass:: DiscreteExplorer
    :members: _setModule
    :show-inheritance:
-
+   
 .. automodule:: pybrain.rl.explorers.discrete
 
 .. autoclass:: EpsilonGreedyExplorer
@@ -41,3 +41,4 @@ Discrete Explorers
 .. autoclass:: DiscreteStateDependentExplorer
    :members: activate, _forwardImplementation
    :show-inheritance:
+   

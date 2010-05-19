@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-
+    
     <title>agents – RL Components: Agents &mdash; PyBrain v0.3 documentation</title>
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -21,7 +21,7 @@
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <link rel="top" title="PyBrain v0.3 documentation" href="../../index.html" />
     <link rel="next" title="experiments – RL Components: Experiments" href="experiments.html" />
-    <link rel="prev" title="actionvalues – RL Components: ActionValues" href="actionvalues.html" />
+    <link rel="prev" title="actionvalues – RL Components: ActionValues" href="actionvalues.html" /> 
   </head>
   <body>
     <div class="related">
@@ -39,15 +39,15 @@
         <li class="right" >
           <a href="actionvalues.html" title="actionvalues – RL Components: ActionValues"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">PyBrain v0.3 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">PyBrain v0.3 documentation</a> &raquo;</li> 
       </ul>
-    </div>
+    </div>  
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
           <div class="body">
-
+            
   <div class="section" id="module-pybrain.rl.agents">
 <h1><tt class="xref docutils literal"><span class="pre">agents</span></tt> &#8211; RL Components: Agents<a class="headerlink" href="#module-pybrain.rl.agents" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
@@ -88,7 +88,7 @@ Generally it will also learn from experience. It can interact directly with a Ta
 <em class="property">class </em><tt class="descclassname">pybrain.rl.agents.logging.</tt><tt class="descname">LoggingAgent</tt><big>(</big><em>indim</em>, <em>outdim</em><big>)</big><a class="headerlink" href="#pybrain.rl.agents.logging.LoggingAgent" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a title="pybrain.rl.agents.agent.Agent" class="reference internal" href="#pybrain.rl.agents.agent.Agent"><tt class="xref docutils literal"><span class="pre">pybrain.rl.agents.agent.Agent</span></tt></a></p>
 <p>This agent stores actions, states, and rewards encountered during
-interaction with an environment in a ReinforcementDataSet (which is
+interaction with an environment in a ReinforcementDataSet (which is 
 a variation of SequentialDataSet).
 The stored history can be used for learning and is erased by resetting
 the agent. It also makes sure that integrateObservation, getAction and
@@ -126,7 +126,7 @@ reward is given.</dd></dl>
 <em class="property">class </em><tt class="descclassname">pybrain.rl.agents.</tt><tt class="descname">LearningAgent</tt><big>(</big><em>module</em>, <em>learner=None</em><big>)</big><a class="headerlink" href="#pybrain.rl.agents.LearningAgent" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a title="pybrain.rl.agents.logging.LoggingAgent" class="reference internal" href="#pybrain.rl.agents.logging.LoggingAgent"><tt class="xref docutils literal"><span class="pre">pybrain.rl.agents.logging.LoggingAgent</span></tt></a></p>
 <p>LearningAgent has a module, a learner, that modifies the module, and an explorer,
-which perturbs the actions. It can have learning enabled or disabled and can be
+which perturbs the actions. It can have learning enabled or disabled and can be 
 used continuously or with episodes.</p>
 <dl class="method">
 <dt id="pybrain.rl.agents.LearningAgent.getAction">
@@ -218,7 +218,7 @@ Works only in conjunction with EpisodicExperiment.</p>
         <li class="right" >
           <a href="actionvalues.html" title="actionvalues – RL Components: ActionValues"
              >previous</a> |</li>
-        <li><a href="../../index.html">PyBrain v0.3 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">PyBrain v0.3 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

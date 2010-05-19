@@ -18,7 +18,7 @@
 					/>
 				</geom>
 				<mass>
-					<mass_shape density="1">
+					<mass_shape density="1"> 
 						<box
 							sizex="0.5"
 							sizey="0.5"
@@ -39,7 +39,7 @@
 					/>
 				</geom>
 				<mass>
-					<mass_shape density="1">
+					<mass_shape density="1"> 
 						<sphere
 							radius="0.2"
 						/>
@@ -47,7 +47,7 @@
 				</mass>
 			</body>
 
-
+  
 			
 			
 			<geom name="planeGeom">

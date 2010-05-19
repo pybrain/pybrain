@@ -17,7 +17,7 @@
 					/>
 				</geom>
 				<mass>
-					<mass_shape density="100">
+					<mass_shape density="100"> 
 						<box
 							sizex="0.2"
 							sizey="0.8"
@@ -38,7 +38,7 @@
 					/>
 				</geom>
 				<mass>
-					<mass_shape density="100">
+					<mass_shape density="100"> 
 						<box
 							sizex="0.2"
 							sizey="0.8"
@@ -61,7 +61,7 @@
 					/>
 				</geom>
 				<mass>
-					<mass_shape density="10">
+					<mass_shape density="10"> 
 						<box
 							sizex="0.9"
 							sizey="0.5"

@@ -5,8 +5,8 @@
 
 .. autoclass:: MultiDimHash
    :members: __init__, findBall, insert, knn
-
-
+   
+   
 .. seealso::
 
    `Near-Optimal Hashing Algorithms for Approximate Nearest Neighbor in High Dimensions <http://web.mit.edu/andoni/www/papers/cSquared.pdf>`_

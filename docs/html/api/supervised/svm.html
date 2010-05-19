@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-
+    
     <title>svmunit – LIBSVM Support Vector Machine Unit &mdash; PyBrain v0.3 documentation</title>
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -21,7 +21,7 @@
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <link rel="top" title="PyBrain v0.3 documentation" href="../../index.html" />
     <link rel="next" title="trainers – Supervised Training for Networks and other Modules" href="trainers.html" />
-    <link rel="prev" title="supervised – Dataset for Supervised Regression Training" href="../datasets/superviseddataset.html" />
+    <link rel="prev" title="supervised – Dataset for Supervised Regression Training" href="../datasets/superviseddataset.html" /> 
   </head>
   <body>
     <div class="related">
@@ -39,25 +39,25 @@
         <li class="right" >
           <a href="../datasets/superviseddataset.html" title="supervised – Dataset for Supervised Regression Training"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">PyBrain v0.3 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">PyBrain v0.3 documentation</a> &raquo;</li> 
       </ul>
-    </div>
+    </div>  
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
           <div class="body">
-
+            
   <div class="section" id="module-pybrain.structure.modules.svmunit">
 <span id="svm"></span><h1><tt class="xref docutils literal"><span class="pre">svmunit</span></tt> &#8211; LIBSVM Support Vector Machine Unit<a class="headerlink" href="#module-pybrain.structure.modules.svmunit" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="pybrain.structure.modules.svmunit.SVMUnit">
 <em class="property">class </em><tt class="descclassname">pybrain.structure.modules.svmunit.</tt><tt class="descname">SVMUnit</tt><big>(</big><em>indim=0</em>, <em>outdim=0</em>, <em>model=None</em><big>)</big><a class="headerlink" href="#pybrain.structure.modules.svmunit.SVMUnit" title="Permalink to this definition">¶</a></dt>
-<dd><p>This unit represents an Support Vector Machine and is implemented through the
+<dd><p>This unit represents an Support Vector Machine and is implemented through the 
 LIBSVM Python interface. It functions somewhat like a Model or a Network, but combining
-it with other PyBrain Models is currently discouraged. Its main function is to compare
-against feed-forward network classifications. You cannot get or set model parameters, but
-you can load and save the entire model in LIBSVM format. Sequential data and backward
+it with other PyBrain Models is currently discouraged. Its main function is to compare 
+against feed-forward network classifications. You cannot get or set model parameters, but 
+you can load and save the entire model in LIBSVM format. Sequential data and backward 
 passes are not supported. See the corresponding example code for usage.</p>
 <dl class="method">
 <dt id="pybrain.structure.modules.svmunit.SVMUnit.__init__">
@@ -70,10 +70,10 @@ and <cite>outdim</cite> are for compatibility only, and ignored.</p>
 <dl class="method">
 <dt id="pybrain.structure.modules.svmunit.SVMUnit.forwardPass">
 <tt class="descname">forwardPass</tt><big>(</big><em>values=False</em><big>)</big><a class="headerlink" href="#pybrain.structure.modules.svmunit.SVMUnit.forwardPass" title="Permalink to this definition">¶</a></dt>
-<dd><p>Produce the output from the current input vector, or process a
+<dd><p>Produce the output from the current input vector, or process a 
 dataset.</p>
-<p>If <cite>values</cite> is False or &#8216;class&#8217;, output is set to the number of the
-predicted class. If True or &#8216;raw&#8217;, produces decision values instead.
+<p>If <cite>values</cite> is False or &#8216;class&#8217;, output is set to the number of the 
+predicted class. If True or &#8216;raw&#8217;, produces decision values instead. 
 These are stored in a dictionary for multi-class SVM. If <cite>prob</cite>, class
 probabilities are produced. This works only if probability option was
 set for SVM training.</p>
@@ -129,18 +129,18 @@ and return the output as a list.</p>
 <dl class="class">
 <dt id="pybrain.supervised.trainers.svmtrainer.SVMTrainer">
 <em class="property">class </em><tt class="descclassname">pybrain.supervised.trainers.svmtrainer.</tt><tt class="descname">SVMTrainer</tt><big>(</big><em>svmunit</em>, <em>dataset</em>, <em>modelfile=None</em>, <em>plot=False</em><big>)</big><a class="headerlink" href="#pybrain.supervised.trainers.svmtrainer.SVMTrainer" title="Permalink to this definition">¶</a></dt>
-<dd><p>A class performing supervised learning of a DataSet by an SVM unit. See
+<dd><p>A class performing supervised learning of a DataSet by an SVM unit. See 
 the remarks on <tt class="xref docutils literal"><span class="pre">SVMUnit</span></tt> above. This whole class is a bit of a hack,
 and provided mostly for convenience of comparisons.</p>
 <dl class="method">
 <dt id="pybrain.supervised.trainers.svmtrainer.SVMTrainer.__init__">
 <tt class="descname">__init__</tt><big>(</big><em>svmunit</em>, <em>dataset</em>, <em>modelfile=None</em>, <em>plot=False</em><big>)</big><a class="headerlink" href="#pybrain.supervised.trainers.svmtrainer.SVMTrainer.__init__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initialize data and unit to be trained, and load the model, if
+<dd><p>Initialize data and unit to be trained, and load the model, if 
 provided.</p>
-<p>The passed <cite>svmunit</cite> has to be an object of class <tt class="xref docutils literal"><span class="pre">SVMUnit</span></tt>
+<p>The passed <cite>svmunit</cite> has to be an object of class <tt class="xref docutils literal"><span class="pre">SVMUnit</span></tt> 
 that is going to be trained on the <tt class="xref docutils literal"><span class="pre">ClassificationDataSet</span></tt> object
-dataset.
-Compared to FNN training we do not use a test data set, instead 5-fold
+dataset. 
+Compared to FNN training we do not use a test data set, instead 5-fold 
 cross-validation is performed if needed.</p>
 <p>If <cite>modelfile</cite> is provided, this model is loaded instead of training.
 If <cite>plot</cite> is True, a grid search is performed and the resulting pattern
@@ -172,7 +172,7 @@ is plotted.</p>
 <dl class="method">
 <dt id="pybrain.supervised.trainers.svmtrainer.SVMTrainer.setParams">
 <tt class="descname">setParams</tt><big>(</big><em>**kwargs</em><big>)</big><a class="headerlink" href="#pybrain.supervised.trainers.svmtrainer.SVMTrainer.setParams" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set parameters for SVM training. Apart from the ones below, you can use all parameters
+<dd><p>Set parameters for SVM training. Apart from the ones below, you can use all parameters 
 defined for the LIBSVM svm_model class, see their documentation.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -323,7 +323,7 @@ described by C. Staelin, <a class="reference external" href="http://www.hpl.hp.c
         <li class="right" >
           <a href="../datasets/superviseddataset.html" title="supervised – Dataset for Supervised Regression Training"
              >previous</a> |</li>
-        <li><a href="../../index.html">PyBrain v0.3 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">PyBrain v0.3 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

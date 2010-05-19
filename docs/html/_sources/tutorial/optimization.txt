@@ -6,74 +6,74 @@ Black-box Optimization
 
 This tutorial will illustrate how to use the optimization algorithms in PyBrain.
 
-Very many practical problems can be framed as optimization problems: finding the best settings for a controller,
+Very many practical problems can be framed as optimization problems: finding the best settings for a controller, 
 minimizing the risk of an investment portfolio, finding a good strategy in a game, etc.
 It always involves determining a certain number of *variables* (the *problem dimension*),
-each of them chosen from a set,
+each of them chosen from a set, 
 that maximizing (or minimize) a given *objective function*.
 
-The main categories of optimization problems are based
+The main categories of optimization problems are based 
 on the kinds of sets the variables are chosen from:
 
 	* all real numbers: continuous optimization
-	* real numbers with bounds: constrained optimization
+	* real numbers with bounds: constrained optimization  
 	* integers: integer programming
 	* combinations of the above
 	* others, e.g. graphs
 
-These can be further classified according to properties of the objective function
-(e.g. continuity, explicit access to partial derivatives, quadratic form, etc.).
-In black-box optimization the objective function is a black box,
-i.e. there are no conditions about it.
+These can be further classified according to properties of the objective function 
+(e.g. continuity, explicit access to partial derivatives, quadratic form, etc.). 
+In black-box optimization the objective function is a black box, 
+i.e. there are no conditions about it.   
 The optimization tools that PyBrain provides are all for the most general, black-box case.
 They fall into 2 groups:
 
-	* :class:`~pybrain.optimization.optimizer.BlackBoxOptimizer` are applicable to all kinds of variable sets
+	* :class:`~pybrain.optimization.optimizer.BlackBoxOptimizer` are applicable to all kinds of variable sets   
 	* :class:`~pybrain.optimization.optimizer.ContinuousOptimizer` can only be used for continuous optimization
 
-We will introduce the optimization framework for the more restrictive kind first,
+We will introduce the optimization framework for the more restrictive kind first, 
 because that case is simpler.
 
 Continuous optimization
-------------------------
+------------------------  
 
-Let's start by defining a simple objective function for (:mod:`numpy` arrays of) continuous variables,
+Let's start by defining a simple objective function for (:mod:`numpy` arrays of) continuous variables, 
 e.g. the sum of squares:
 
-	>>> def objF(x): return sum(x**2)	
+	>>> def objF(x): return sum(x**2)	 
 	
 and an initial guess for where to start looking:
 
 	>>> x0 = array([2.1, -1])
 	
-Now we can initialize one of the optimization algorithms,
+Now we can initialize one of the optimization algorithms, 
 e.g. :class:`~pybrain.optimization.distributionbased.cmaes.CMAES`:
 
 	>>> from pybrain.optimization import CMAES
 	>>> l = CMAES(objF, x0)
 	
-By default, all optimization algorithms *maximize* the objective function,
+By default, all optimization algorithms *maximize* the objective function, 
 but you can change this by setting the :attr:`minimize` attribute:
 
 	>>> l.minimize = True
 
-.. note::
+.. note:: 
 	We could also have done that upon construction:
 	``CMAES(objF, x0, minimize = True)``
 
 Stopping criteria can be algorithm-specific, but in addition,
 it is always possible to define the following ones:
 	
-	* maximal number of evaluations
+	* maximal number of evaluations 
 	* maximal number of learning steps
-	* reaching a desired value
+	* reaching a desired value 
 
 ..
 
 	>>> l.maxEvaluations = 200
 	
-Now that the optimizer is set up, all we need to use is the :meth:`learn` method, which will
-attempt to optimize the variables until a stopping criterion is reached. It returns
+Now that the optimizer is set up, all we need to use is the :meth:`learn` method, which will 
+attempt to optimize the variables until a stopping criterion is reached. It returns 
 a tuple with the best evaluable (= array of variables) found, and the corresponding fitness:
 
 	>>> l.learn()
@@ -85,29 +85,29 @@ a tuple with the best evaluable (= array of variables) found, and the correspond
 General optimization: using :class:`Evolvable`
 ------------------------------------------------
 
-Our approach to doing optimization in the most general setting (no assumptions about the variables) is
+Our approach to doing optimization in the most general setting (no assumptions about the variables) is 
 to let the user define a subclass of :class:`Evolvable` that implements:
 
 	* a :meth:`copy` operator,
 	* a method for generating random other points: :meth:`randomize`,
 	* :meth:`mutate`, an operator that does a small step in search space, according to *some* distance metric,
-	* (optionally) a :meth:`crossover` operator that produces *some* combination with other evolvables of the same class.
+	* (optionally) a :meth:`crossover` operator that produces *some* combination with other evolvables of the same class.  
 
-The optimization algorithm is then initialized with an instance of this class
+The optimization algorithm is then initialized with an instance of this class 
 and an objective function that can evaluate such instances.
 
-Here's a minimalistic example of such a subclass with a single constrained variable
+Here's a minimalistic example of such a subclass with a single constrained variable 
 (and a bias to do mutation steps toward larger values):
 	
 	>>> from random import random
 	>>> from pybrain.structure.evolvables.evolvable import Evolvable
 	>>> class SimpleEvo(Evolvable):
-	...    	def __init__(self, x): self.x = max(0, min(x, 10))
-	...    	def mutate(self):      self.x = max(0, min(self.x + random() - 0.3, 10))
+	...    	def __init__(self, x): self.x = max(0, min(x, 10))    
+	...    	def mutate(self):      self.x = max(0, min(self.x + random() - 0.3, 10))    
 	...    	def copy(self):        return SimpleEvo(self.x)
 	...    	def randomize(self):   self.x = 10*random()
 	...    	def __repr__(self):    return '<-%.2f->'+str(self.x)
-	   	
+	   	    
 
 which can be optimized using, for example, :class:`~pybrain.optimization.hillclimber.HillClimber`:
 
@@ -116,7 +116,7 @@ which can be optimized using, for example, :class:`~pybrain.optimization.hillcli
 	>>> x0 = SimpleEvo(1.2)
 	>>> l = HillClimber(lambda x: x.x, x0, maxEvaluations = 50)
 	>>> l.learn()
-	(<-10.00->, 10)	
+	(<-10.00->, 10)	    
 	
 	
 Optimization in Reinforcement Learning
@@ -129,7 +129,7 @@ As our objective function we use any episodic task, e.g:
 	>>> from pybrain.rl.environments.cartpole.balancetask import BalanceTask
 	>>> task = BalanceTask()
 
-Then we construct a module that can interact with the task,
+Then we construct a module that can interact with the task, 
 for example a neural network controller,
 
 	>>> from pybrain.tools.shortcuts import buildNetwork
@@ -137,7 +137,7 @@ for example a neural network controller,
 	
 and we choose any optimization algorithm, e.g. a simple :class:`HillClimber`.
 	
-Now, we have 2 (equivalent) ways for connecting those:
+Now, we have 2 (equivalent) ways for connecting those: 
 
 	1) using the same syntax as before, where the task plays the role of the objective function directly:
 		>>> HillClimber(task, net, maxEvaluations = 100).learn()

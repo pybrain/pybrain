@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-
+    
     <title>tools – Some Useful Tools and Macros &mdash; PyBrain v0.3 documentation</title>
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -21,7 +21,7 @@
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="top" title="PyBrain v0.3 documentation" href="../index.html" />
     <link rel="next" title="utilities – Simple but useful Utility Functions" href="utilities.html" />
-    <link rel="prev" title="trainers – Supervised Training for Networks and other Modules" href="supervised/trainers.html" />
+    <link rel="prev" title="trainers – Supervised Training for Networks and other Modules" href="supervised/trainers.html" /> 
   </head>
   <body>
     <div class="related">
@@ -39,15 +39,15 @@
         <li class="right" >
           <a href="supervised/trainers.html" title="trainers – Supervised Training for Networks and other Modules"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">PyBrain v0.3 documentation</a> &raquo;</li>
+        <li><a href="../index.html">PyBrain v0.3 documentation</a> &raquo;</li> 
       </ul>
-    </div>
+    </div>  
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
           <div class="body">
-
+            
   <div class="section" id="module-pybrain.tools.functions">
 <h1><tt class="xref docutils literal"><span class="pre">tools</span></tt> &#8211; Some Useful Tools and Macros<a class="headerlink" href="#module-pybrain.tools.functions" title="Permalink to this headline">¶</a></h1>
 <p class="rubric">Neural network tools</p>
@@ -55,15 +55,15 @@
 <dt id="pybrain.tools.shortcuts.buildNetwork">
 <tt class="descclassname">pybrain.tools.shortcuts.</tt><tt class="descname">buildNetwork</tt><big>(</big><em>*layers</em>, <em>**options</em><big>)</big><a class="headerlink" href="#pybrain.tools.shortcuts.buildNetwork" title="Permalink to this definition">¶</a></dt>
 <dd><p>Build arbitrarily deep networks.</p>
-<p><cite>layers</cite> should be a list or tuple of integers, that indicate how many
-neurons the layers should have. <cite>bias</cite> and <cite>outputbias</cite> are flags to
+<p><cite>layers</cite> should be a list or tuple of integers, that indicate how many 
+neurons the layers should have. <cite>bias</cite> and <cite>outputbias</cite> are flags to 
 indicate whether the network should have the corresponding biases; both
 default to True.</p>
 <p>To adjust the classes for the layers use the <cite>hiddenclass</cite> and  <cite>outclass</cite>
 parameters, which expect a subclass of <tt class="xref docutils literal"><span class="pre">NeuronLayer</span></tt>.</p>
-<p>If the <cite>recurrent</cite> flag is set, a <tt class="xref docutils literal"><span class="pre">RecurrentNetwork</span></tt> will be created,
+<p>If the <cite>recurrent</cite> flag is set, a <tt class="xref docutils literal"><span class="pre">RecurrentNetwork</span></tt> will be created, 
 otherwise a <tt class="xref docutils literal"><span class="pre">FeedForwardNetwork</span></tt>.</p>
-<p>If the <cite>fast</cite> flag is set, faster arac networks will be used instead of the
+<p>If the <cite>fast</cite> flag is set, faster arac networks will be used instead of the 
 pybrain implementations.</p>
 </dd></dl>
 
@@ -74,7 +74,7 @@ pybrain implementations.</p>
 <dl class="method">
 <dt id="pybrain.tools.neuralnets.NNregression.__init__">
 <tt class="descname">__init__</tt><big>(</big><em>DS</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#pybrain.tools.neuralnets.NNregression.__init__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initialize with the training data set DS. All keywords given are set as member variables.
+<dd><p>Initialize with the training data set DS. All keywords given are set as member variables. 
 The following are particularly important:</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -106,7 +106,7 @@ The following are particularly important:</p>
 <dt id="pybrain.tools.neuralnets.NNregression.runTraining">
 <tt class="descname">runTraining</tt><big>(</big><em>convergence=0</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#pybrain.tools.neuralnets.NNregression.runTraining" title="Permalink to this definition">¶</a></dt>
 <dd>Trains the network on the stored dataset. If convergence is &gt;0, check after that many epoch increments
-whether test error is going down again, and stop training accordingly.
+whether test error is going down again, and stop training accordingly. 
 CAVEAT: No support for Sequential datasets!</dd></dl>
 
 <dl class="method">
@@ -167,8 +167,8 @@ whether test error is going down again, and stop training accordingly.</dd></dl>
 <dl class="function">
 <dt id="pybrain.tools.datasettools.convertSequenceToTimeWindows">
 <tt class="descclassname">pybrain.tools.datasettools.</tt><tt class="descname">convertSequenceToTimeWindows</tt><big>(</big><em>DSseq</em>, <em>NewClass</em>, <em>winsize</em><big>)</big><a class="headerlink" href="#pybrain.tools.datasettools.convertSequenceToTimeWindows" title="Permalink to this definition">¶</a></dt>
-<dd><p>Converts a sequential classification dataset into time windows of fixed length.
-Assumes the correct class is given at the last timestep of each sequence. Incomplete windows at the
+<dd><p>Converts a sequential classification dataset into time windows of fixed length. 
+Assumes the correct class is given at the last timestep of each sequence. Incomplete windows at the 
 sequence end are pruned. No overlap between windows.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -389,14 +389,14 @@ and returns the validation result (e.g. performance).</dd></dl>
 <tt class="descclassname">pybrain.tools.validation.</tt><tt class="descname">testOnSequenceData</tt><big>(</big><em>module</em>, <em>dataset</em><big>)</big><a class="headerlink" href="#pybrain.tools.validation.testOnSequenceData" title="Permalink to this definition">¶</a></dt>
 <dd>Fetch targets and calculate the modules output on dataset.
 Output and target are in one-of-many format. The class for each sequence is
-determined by first summing the probabilities for each individual sample over
+determined by first summing the probabilities for each individual sample over 
 the sequence, and then finding its maximum.</dd></dl>
 
 <p class="rubric">Auxiliary functions</p>
 <dl class="function">
 <dt id="pybrain.tools.functions.semilinear">
 <tt class="descclassname">pybrain.tools.functions.</tt><tt class="descname">semilinear</tt><big>(</big><em>x</em><big>)</big><a class="headerlink" href="#pybrain.tools.functions.semilinear" title="Permalink to this definition">¶</a></dt>
-<dd>This function ensures that the values of the array are always positive. It is
+<dd>This function ensures that the values of the array are always positive. It is 
 x+1 for x=&gt;0 and exp(x) for x&lt;0.</dd></dl>
 
 <dl class="function">
@@ -439,7 +439,7 @@ The sample z and the mean x should be 1-dim-arrays, and sigma a square 2-dim-arr
 <dl class="function">
 <dt id="pybrain.tools.functions.simpleMultivariateNormalPdf">
 <tt class="descclassname">pybrain.tools.functions.</tt><tt class="descname">simpleMultivariateNormalPdf</tt><big>(</big><em>z</em>, <em>detFactorSigma</em><big>)</big><a class="headerlink" href="#pybrain.tools.functions.simpleMultivariateNormalPdf" title="Permalink to this definition">¶</a></dt>
-<dd>Assuming z has been transformed to a mean of zero and an identity matrix of covariances.
+<dd>Assuming z has been transformed to a mean of zero and an identity matrix of covariances. 
 Needs to provide the determinant of the factorized (real) covariance matrix.</dd></dl>
 
 <dl class="function">
@@ -501,7 +501,7 @@ Needs to provide the determinant of the factorized (real) covariance matrix.</dd
         <li class="right" >
           <a href="supervised/trainers.html" title="trainers – Supervised Training for Networks and other Modules"
              >previous</a> |</li>
-        <li><a href="../index.html">PyBrain v0.3 documentation</a> &raquo;</li>
+        <li><a href="../index.html">PyBrain v0.3 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-
+    
     <title>trainers – Supervised Training for Networks and other Modules &mdash; PyBrain v0.3 documentation</title>
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -21,7 +21,7 @@
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <link rel="top" title="PyBrain v0.3 documentation" href="../../index.html" />
     <link rel="next" title="tools – Some Useful Tools and Macros" href="../tools.html" />
-    <link rel="prev" title="svmunit – LIBSVM Support Vector Machine Unit" href="svm.html" />
+    <link rel="prev" title="svmunit – LIBSVM Support Vector Machine Unit" href="svm.html" /> 
   </head>
   <body>
     <div class="related">
@@ -39,32 +39,32 @@
         <li class="right" >
           <a href="svm.html" title="svmunit – LIBSVM Support Vector Machine Unit"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">PyBrain v0.3 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">PyBrain v0.3 documentation</a> &raquo;</li> 
       </ul>
-    </div>
+    </div>  
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
           <div class="body">
-
+            
   <div class="section" id="module-pybrain.supervised.trainers">
 <h1><tt class="xref docutils literal"><span class="pre">trainers</span></tt> &#8211; Supervised Training for Networks and other Modules<a class="headerlink" href="#module-pybrain.supervised.trainers" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="pybrain.supervised.trainers.BackpropTrainer">
 <em class="property">class </em><tt class="descclassname">pybrain.supervised.trainers.</tt><tt class="descname">BackpropTrainer</tt><big>(</big><em>module</em>, <em>dataset=None</em>, <em>learningrate=0.01</em>, <em>lrdecay=1.0</em>, <em>momentum=0.0</em>, <em>verbose=False</em>, <em>batchlearning=False</em>, <em>weightdecay=0.0</em><big>)</big><a class="headerlink" href="#pybrain.supervised.trainers.BackpropTrainer" title="Permalink to this definition">¶</a></dt>
-<dd><p>Trainer that trains the parameters of a module according to a
+<dd><p>Trainer that trains the parameters of a module according to a 
 supervised dataset (potentially sequential) by backpropagating the errors
 (through time).</p>
 <dl class="method">
 <dt id="pybrain.supervised.trainers.BackpropTrainer.__init__">
 <tt class="descname">__init__</tt><big>(</big><em>module</em>, <em>dataset=None</em>, <em>learningrate=0.01</em>, <em>lrdecay=1.0</em>, <em>momentum=0.0</em>, <em>verbose=False</em>, <em>batchlearning=False</em>, <em>weightdecay=0.0</em><big>)</big><a class="headerlink" href="#pybrain.supervised.trainers.BackpropTrainer.__init__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create a BackpropTrainer to train the specified <cite>module</cite> on the
+<dd><p>Create a BackpropTrainer to train the specified <cite>module</cite> on the 
 specified <cite>dataset</cite>.</p>
-<p>The learning rate gives the ratio of which parameters are changed into
-the direction of the gradient. The learning rate decreases by <cite>lrdecay</cite>,
-which is used to to multiply the learning rate after each training
-step. The parameters are also adjusted with respect to <cite>momentum</cite>, which
+<p>The learning rate gives the ratio of which parameters are changed into 
+the direction of the gradient. The learning rate decreases by <cite>lrdecay</cite>, 
+which is used to to multiply the learning rate after each training 
+step. The parameters are also adjusted with respect to <cite>momentum</cite>, which 
 is the ratio by which the gradient of the last timestep is used.</p>
 <p>If <cite>batchlearning</cite> is set, the parameters are updated only at the end of
 each epoch. Default is False.</p>
@@ -81,8 +81,8 @@ decay at all.</p>
 <dt id="pybrain.supervised.trainers.BackpropTrainer.testOnClassData">
 <tt class="descname">testOnClassData</tt><big>(</big><em>dataset=None</em>, <em>verbose=False</em>, <em>return_targets=False</em><big>)</big><a class="headerlink" href="#pybrain.supervised.trainers.BackpropTrainer.testOnClassData" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return winner-takes-all classification output on a given dataset.</p>
-<p>If no dataset is given, the dataset passed during Trainer
-initialization is used. If return_targets is set, also return
+<p>If no dataset is given, the dataset passed during Trainer 
+initialization is used. If return_targets is set, also return 
 corresponding target classes.</p>
 </dd></dl>
 
@@ -109,13 +109,13 @@ corresponding target classes.</p>
 <dt id="pybrain.supervised.trainers.BackpropTrainer.trainUntilConvergence">
 <tt class="descname">trainUntilConvergence</tt><big>(</big><em>dataset=None</em>, <em>maxEpochs=None</em>, <em>verbose=None</em>, <em>continueEpochs=10</em>, <em>validationProportion=0.25</em><big>)</big><a class="headerlink" href="#pybrain.supervised.trainers.BackpropTrainer.trainUntilConvergence" title="Permalink to this definition">¶</a></dt>
 <dd><p>Train the module on the dataset until it converges.</p>
-<p>Return the module with the parameters that gave the minimal validation
+<p>Return the module with the parameters that gave the minimal validation 
 error.</p>
-<p>If no dataset is given, the dataset passed during Trainer
+<p>If no dataset is given, the dataset passed during Trainer 
 initialization is used. validationProportion is the ratio of the dataset
 that is used for the validation dataset.</p>
 <p>If maxEpochs is given, at most that many epochs
-are trained. Each time validation error hits a minimum, try for
+are trained. Each time validation error hits a minimum, try for 
 continueEpochs epochs to find a better one.</p>
 </dd></dl>
 
@@ -129,7 +129,7 @@ continueEpochs epochs to find a better one.</p>
 <dt id="pybrain.supervised.trainers.RPropMinusTrainer">
 <em class="property">class </em><tt class="descclassname">pybrain.supervised.trainers.</tt><tt class="descname">RPropMinusTrainer</tt><big>(</big><em>module</em>, <em>etaminus=0.5</em>, <em>etaplus=1.2</em>, <em>deltamin=9.9999999999999995e-07</em>, <em>deltamax=5.0</em>, <em>delta0=0.10000000000000001</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#pybrain.supervised.trainers.RPropMinusTrainer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Train the parameters of a module according to a supervised dataset (possibly sequential)
-by RProp without weight backtracking (aka RProp-, cf. [Igel&amp;Huesken, Neurocomputing 50, 2003])
+by RProp without weight backtracking (aka RProp-, cf. [Igel&amp;Huesken, Neurocomputing 50, 2003]) 
 and without ponderation, ie. all training samples have the same weight.</p>
 <dl class="method">
 <dt id="pybrain.supervised.trainers.RPropMinusTrainer.__init__">
@@ -217,7 +217,7 @@ and without ponderation, ie. all training samples have the same weight.</p>
         <li class="right" >
           <a href="svm.html" title="svmunit – LIBSVM Support Vector Machine Unit"
              >previous</a> |</li>
-        <li><a href="../../index.html">PyBrain v0.3 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">PyBrain v0.3 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

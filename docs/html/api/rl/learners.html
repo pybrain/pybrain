@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-
+    
     <title>learners – RL Components: Learners &mdash; PyBrain v0.3 documentation</title>
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -21,7 +21,7 @@
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <link rel="top" title="PyBrain v0.3 documentation" href="../../index.html" />
     <link rel="next" title="tasks – RL Components: Tasks" href="tasks.html" />
-    <link rel="prev" title="explorers – RL Components: Explorers" href="explorers.html" />
+    <link rel="prev" title="explorers – RL Components: Explorers" href="explorers.html" /> 
   </head>
   <body>
     <div class="related">
@@ -39,27 +39,27 @@
         <li class="right" >
           <a href="explorers.html" title="explorers – RL Components: Explorers"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">PyBrain v0.3 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">PyBrain v0.3 documentation</a> &raquo;</li> 
       </ul>
-    </div>
+    </div>  
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
           <div class="body">
-
+            
   <div class="section" id="learners-rl-components-learners">
 <h1><tt class="xref docutils literal"><span class="pre">learners</span></tt> &#8211; RL Components: Learners<a class="headerlink" href="#learners-rl-components-learners" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="module-pybrain.rl.learners.directsearch.directsearch">
 <h2>Abstract classes<a class="headerlink" href="#module-pybrain.rl.learners.directsearch.directsearch" title="Permalink to this headline">¶</a></h2>
-<p>The top of the learner hierarchy is more conceptual than functional.
-The different classes distinguish algorithms in such a way that we can automatically
+<p>The top of the learner hierarchy is more conceptual than functional. 
+The different classes distinguish algorithms in such a way that we can automatically 
 determine when an algorithm is not applicable for a problem.</p>
 <dl class="class">
 <dt id="pybrain.rl.learners.learner.Learner">
 <em class="property">class </em><tt class="descclassname">pybrain.rl.learners.learner.</tt><tt class="descname">Learner</tt><a class="headerlink" href="#pybrain.rl.learners.learner.Learner" title="Permalink to this definition">¶</a></dt>
 <dd><p>Top-level class for all reinforcement learning algorithms.
-Any learning algorithm changes a policy (in some way) in order
+Any learning algorithm changes a policy (in some way) in order 
 to increase the expected reward/fitness.</p>
 <dl class="method">
 <dt id="pybrain.rl.learners.learner.Learner.learn">
@@ -80,8 +80,8 @@ and therefore does a learning step only after the end of each episode.</p>
 <dt id="pybrain.rl.learners.learner.DataSetLearner">
 <em class="property">class </em><tt class="descclassname">pybrain.rl.learners.learner.</tt><tt class="descname">DataSetLearner</tt><a class="headerlink" href="#pybrain.rl.learners.learner.DataSetLearner" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a title="pybrain.rl.learners.learner.EpisodicLearner" class="reference internal" href="#pybrain.rl.learners.learner.EpisodicLearner"><tt class="xref docutils literal"><span class="pre">pybrain.rl.learners.learner.EpisodicLearner</span></tt></a></p>
-<p>A class for learners that learn from a dataset, which has no target output but
-only a reinforcement signal for each sample. It requires a
+<p>A class for learners that learn from a dataset, which has no target output but 
+only a reinforcement signal for each sample. It requires a 
 ReinforcementDataSet object (which provides state-action-reward tuples).</p>
 </dd></dl>
 
@@ -96,7 +96,7 @@ ReinforcementDataSet object (which provides state-action-reward tuples).</p>
 <dt id="pybrain.rl.learners.directsearch.directsearch.DirectSearchLearner">
 <em class="property">class </em><tt class="descclassname">pybrain.rl.learners.directsearch.directsearch.</tt><tt class="descname">DirectSearchLearner</tt><a class="headerlink" href="#pybrain.rl.learners.directsearch.directsearch.DirectSearchLearner" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a title="pybrain.rl.learners.learner.Learner" class="reference internal" href="#pybrain.rl.learners.learner.Learner"><tt class="xref docutils literal"><span class="pre">pybrain.rl.learners.learner.Learner</span></tt></a></p>
-<p>The class of learners that (in contrast to value-based learners)
+<p>The class of learners that (in contrast to value-based learners) 
 searches directly in policy space.</p>
 </dd></dl>
 
@@ -138,13 +138,13 @@ searches directly in policy space.</p>
 <dt id="pybrain.rl.learners.valuebased.Q.learn">
 <tt class="descname">learn</tt><big>(</big><big>)</big><a class="headerlink" href="#pybrain.rl.learners.valuebased.Q.learn" title="Permalink to this definition">¶</a></dt>
 <dd><p>Learn on the current dataset, either for many timesteps and
-even episodes (batchMode = True) or for a single timestep
-(batchMode = False). Batch mode is possible, because Q-Learning
+even episodes (batchMode = True) or for a single timestep 
+(batchMode = False). Batch mode is possible, because Q-Learning 
 is an off-policy method.</p>
 <p>In batchMode, the algorithm goes through all the samples in the
 history and performs an update on each of them. if batchMode is
 False, only the last data sample is considered. The user himself
-has to make sure to keep the dataset consistent with the agent&#8217;s
+has to make sure to keep the dataset consistent with the agent&#8217;s 
 history.</p>
 </dd></dl>
 
@@ -165,7 +165,7 @@ history.</p>
 <p>In batchMode, the algorithm goes through all the samples in the
 history and performs an update on each of them. if batchMode is
 False, only the last data sample is considered. The user himself
-has to make sure to keep the dataset consistent with the agent&#8217;s
+has to make sure to keep the dataset consistent with the agent&#8217;s 
 history.</p>
 </dd></dl>
 
@@ -282,7 +282,7 @@ Estimates natural gradient with regression of log likelihoods to rewards.</p>
         <li class="right" >
           <a href="explorers.html" title="explorers – RL Components: Explorers"
              >previous</a> |</li>
-        <li><a href="../../index.html">PyBrain v0.3 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">PyBrain v0.3 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

@@ -9,7 +9,8 @@
 .. autoclass:: ActionValueTable
    :members:
    :show-inheritance:
-
+   
 .. autoclass:: ActionValueNetwork
    :members:
    :show-inheritance:
+   

@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-
+    
     <title>optimization – Black-box Optimization Algorithms &mdash; PyBrain v0.3 documentation</title>
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -21,7 +21,7 @@
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <link rel="top" title="PyBrain v0.3 documentation" href="../../index.html" />
     <link rel="next" title="classification – Datasets for Supervised Classification Training" href="../datasets/classificationdataset.html" />
-    <link rel="prev" title="tasks – RL Components: Tasks" href="../rl/tasks.html" />
+    <link rel="prev" title="tasks – RL Components: Tasks" href="../rl/tasks.html" /> 
   </head>
   <body>
     <div class="related">
@@ -39,15 +39,15 @@
         <li class="right" >
           <a href="../rl/tasks.html" title="tasks – RL Components: Tasks"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">PyBrain v0.3 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">PyBrain v0.3 documentation</a> &raquo;</li> 
       </ul>
-    </div>
+    </div>  
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
           <div class="body">
-
+            
   <div class="section" id="optimization-black-box-optimization-algorithms">
 <h1><tt class="xref docutils literal"><span class="pre">optimization</span></tt> &#8211; Black-box Optimization Algorithms<a class="headerlink" href="#optimization-black-box-optimization-algorithms" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="module-pybrain.optimization.optimizer">
@@ -55,15 +55,15 @@
 <dl class="class">
 <dt id="pybrain.optimization.optimizer.BlackBoxOptimizer">
 <em class="property">class </em><tt class="descclassname">pybrain.optimization.optimizer.</tt><tt class="descname">BlackBoxOptimizer</tt><big>(</big><em>evaluator=None</em>, <em>initEvaluable=None</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#pybrain.optimization.optimizer.BlackBoxOptimizer" title="Permalink to this definition">¶</a></dt>
-<dd><p>The super-class for learning algorithms that treat the problem as a black box.
-At each step they change the policy, and get a fitness value by invoking
+<dd><p>The super-class for learning algorithms that treat the problem as a black box. 
+At each step they change the policy, and get a fitness value by invoking 
 the FitnessEvaluator (provided as first argument upon initialization).</p>
-<p>Evaluable objects can be lists or arrays of continuous values (also wrapped in ParameterContainer)
+<p>Evaluable objects can be lists or arrays of continuous values (also wrapped in ParameterContainer) 
 or subclasses of Evolvable (that define its methods).</p>
 <dl class="method">
 <dt id="pybrain.optimization.optimizer.BlackBoxOptimizer.__init__">
 <tt class="descname">__init__</tt><big>(</big><em>evaluator=None</em>, <em>initEvaluable=None</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#pybrain.optimization.optimizer.BlackBoxOptimizer.__init__" title="Permalink to this definition">¶</a></dt>
-<dd>The evaluator is any callable object (e.g. a lambda function).
+<dd>The evaluator is any callable object (e.g. a lambda function). 
 Algorithm parameters can be set here if provided as keyword arguments.</dd></dl>
 
 <dl class="method">
@@ -124,12 +124,12 @@ If necessary, also provide an initial evaluable.</dd></dl>
 <em class="property">class </em><tt class="descclassname">pybrain.optimization.optimizer.</tt><tt class="descname">ContinuousOptimizer</tt><big>(</big><em>evaluator=None</em>, <em>initEvaluable=None</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#pybrain.optimization.optimizer.ContinuousOptimizer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a title="pybrain.optimization.optimizer.BlackBoxOptimizer" class="reference internal" href="#pybrain.optimization.optimizer.BlackBoxOptimizer"><tt class="xref docutils literal"><span class="pre">pybrain.optimization.optimizer.BlackBoxOptimizer</span></tt></a></p>
 <p>A more restricted class of black-box optimization algorithms
-that assume the parameters to be necessarily an array of continuous values
+that assume the parameters to be necessarily an array of continuous values 
 (which can be wrapped in a ParameterContainer).</p>
 <dl class="method">
 <dt id="pybrain.optimization.optimizer.ContinuousOptimizer.__init__">
 <tt class="descname">__init__</tt><big>(</big><em>evaluator=None</em>, <em>initEvaluable=None</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#pybrain.optimization.optimizer.ContinuousOptimizer.__init__" title="Permalink to this definition">¶</a></dt>
-<dd>The evaluator is any callable object (e.g. a lambda function).
+<dd>The evaluator is any callable object (e.g. a lambda function). 
 Algorithm parameters can be set here if provided as keyword arguments.</dd></dl>
 
 </dd></dl>
@@ -150,7 +150,7 @@ Algorithm parameters can be set here if provided as keyword arguments.</dd></dl>
 <dl class="class">
 <dt id="pybrain.optimization.StochasticHillClimber">
 <em class="property">class </em><tt class="descclassname">pybrain.optimization.</tt><tt class="descname">StochasticHillClimber</tt><big>(</big><em>evaluator=None</em>, <em>initEvaluable=None</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#pybrain.optimization.StochasticHillClimber" title="Permalink to this definition">¶</a></dt>
-<dd><p>Stochastic hill-climbing always moves to a better point, but may also
+<dd><p>Stochastic hill-climbing always moves to a better point, but may also 
 go to a worse point with a probability that decreases with increasing drop in fitness
 (and depends on a temperature parameter).</p>
 <dl class="attribute">
@@ -424,7 +424,7 @@ By default we use NSGA-II selection.</dd></dl>
         <li class="right" >
           <a href="../rl/tasks.html" title="tasks – RL Components: Tasks"
              >previous</a> |</li>
-        <li><a href="../../index.html">PyBrain v0.3 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">PyBrain v0.3 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

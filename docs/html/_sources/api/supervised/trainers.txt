@@ -5,14 +5,15 @@
 
 .. autoclass:: BackpropTrainer
    :members: __init__, ds, module, setArgs, setData, testOnClassData, train, trainEpochs, trainOnDataset, trainUntilConvergence
-
+   
 .. note::
 
-   This documentation comprises just a subjective excerpt of available methods. See the source code for additional functionality.
+   This documentation comprises just a subjective excerpt of available methods. See the source code for additional functionality. 
 
 .. autoclass:: RPropMinusTrainer
    :members: __init__
-
+   
 .. note::
 
    See the documentation of :class:`BackpropTrainer` for inherited methods.
+   

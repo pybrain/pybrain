@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-
+    
     <title>supervised – Dataset for Supervised Regression Training &mdash; PyBrain v0.3 documentation</title>
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -21,7 +21,7 @@
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <link rel="top" title="PyBrain v0.3 documentation" href="../../index.html" />
     <link rel="next" title="svmunit – LIBSVM Support Vector Machine Unit" href="../supervised/svm.html" />
-    <link rel="prev" title="sequential – Dataset for Supervised Sequences Regression Training" href="sequentialdataset.html" />
+    <link rel="prev" title="sequential – Dataset for Supervised Sequences Regression Training" href="sequentialdataset.html" /> 
   </head>
   <body>
     <div class="related">
@@ -39,15 +39,15 @@
         <li class="right" >
           <a href="sequentialdataset.html" title="sequential – Dataset for Supervised Sequences Regression Training"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">PyBrain v0.3 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">PyBrain v0.3 documentation</a> &raquo;</li> 
       </ul>
-    </div>
+    </div>  
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
           <div class="body">
-
+            
   <div class="section" id="module-pybrain.datasets.supervised">
 <span id="superviseddataset"></span><h1><tt class="xref docutils literal"><span class="pre">supervised</span></tt> &#8211; Dataset for Supervised Regression Training<a class="headerlink" href="#module-pybrain.datasets.supervised" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
@@ -59,14 +59,14 @@
 <dt id="pybrain.datasets.supervised.SupervisedDataSet.__init__">
 <tt class="descname">__init__</tt><big>(</big><em>inp</em>, <em>target</em><big>)</big><a class="headerlink" href="#pybrain.datasets.supervised.SupervisedDataSet.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize an empty supervised dataset.</p>
-<p>Pass <cite>inp</cite> and <cite>target</cite> to specify the dimensions of the input and
+<p>Pass <cite>inp</cite> and <cite>target</cite> to specify the dimensions of the input and 
 target vectors.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pybrain.datasets.supervised.SupervisedDataSet.__len__">
 <tt class="descname">__len__</tt><big>(</big><big>)</big><a class="headerlink" href="#pybrain.datasets.supervised.SupervisedDataSet.__len__" title="Permalink to this definition">¶</a></dt>
-<dd>Return the length of the linked data fields. If no linked fields exist,
+<dd>Return the length of the linked data fields. If no linked fields exist, 
 return the length of the longest field.</dd></dl>
 
 <dl class="method">
@@ -78,9 +78,9 @@ return the length of the longest field.</dd></dl>
 <dt id="pybrain.datasets.supervised.SupervisedDataSet.batches">
 <tt class="descname">batches</tt><big>(</big><em>label</em>, <em>n</em>, <em>permutation=None</em><big>)</big><a class="headerlink" href="#pybrain.datasets.supervised.SupervisedDataSet.batches" title="Permalink to this definition">¶</a></dt>
 <dd><p>Yield batches of the size of n from the dataset.</p>
-<p>A single batch is an array of with dim columns and n rows. The last
+<p>A single batch is an array of with dim columns and n rows. The last 
 batch is possibly smaller.</p>
-<p>If permutation is given, batches are yielded in the corresponding
+<p>If permutation is given, batches are yielded in the corresponding 
 order.</p>
 </dd></dl>
 
@@ -89,7 +89,7 @@ order.</p>
 <tt class="descname">clear</tt><big>(</big><em>unlinked=False</em><big>)</big><a class="headerlink" href="#pybrain.datasets.supervised.SupervisedDataSet.clear" title="Permalink to this definition">¶</a></dt>
 <dd><p>Clear the dataset.</p>
 <p>If linked fields exist, only the linked fields will be deleted unless
-<cite>unlinked</cite> is set to True. If no fields are linked, all data will be
+<cite>unlinked</cite> is set to True. If no fields are linked, all data will be 
 deleted.</p>
 </dd></dl>
 
@@ -181,7 +181,7 @@ by <cite>proportion</cite> of the samples.</dd></dl>
         <li class="right" >
           <a href="sequentialdataset.html" title="sequential – Dataset for Supervised Sequences Regression Training"
              >previous</a> |</li>
-        <li><a href="../../index.html">PyBrain v0.3 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">PyBrain v0.3 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
