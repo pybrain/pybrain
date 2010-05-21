@@ -75,6 +75,6 @@ Direct-search Learners
 
 
 .. note::
-	..
-	Black-box optimization algorithms can also be seen as direct-search RL algorithms, but are not included here.
+        Black-box optimization algorithms can also be seen as direct-search
+        RL algorithms, but are not included here.
 

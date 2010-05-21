@@ -27,9 +27,8 @@ components from PyBrain:
   from pybrain.rl.experiments import Experiment
   from pybrain.rl.environments import Task
 
-		
+
 .. note::
-	..
 	You can directly run the code in this tutorial by running the script ``docs/tutorials/rl.py``.
 
 For later visualization purposes, we also need to initialize the
