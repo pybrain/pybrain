@@ -4,12 +4,13 @@ from __future__ import with_statement
 __author__ = 'Daan Wierstra and Tom Schaul'
 
 import scipy
+
 import logging
+from itertools import chain
 
 from pybrain.structure.moduleslice import ModuleSlice
 from pybrain.structure.modules.module import Module
 from pybrain.structure.parametercontainer import ParameterContainer
-from pybrain.utilities import combineLists
 from pybrain.structure.connections.shared import SharedConnection
 from pybrain.structure.evolvables.evolvable import Evolvable
 
@@ -60,8 +61,8 @@ class Network(Module, ParameterContainer):
             'name': self.name,
             'modules': self.modulesSorted,
             'connections':
-                sortedByName(combineLists(
-                    [sortedByName(self.connections[m]) for m in self.modulesSorted])),
+                sortedByName(chain(*(sortedByName(self.connections[m])
+                                     for m in self.modulesSorted))),
         }
 
         s = ("%(name)s\n" +
@@ -183,7 +184,7 @@ class Network(Module, ParameterContainer):
             if not graph.has_key(node):
                 # Zero incoming connections.
                 graph[node] = [0]
-        for c in combineLists(self.connections.values()):
+        for c in chain(*self.connections.values()):
             graph[c.inmod].append(c.outmod)
             # Update the count of incoming arcs in outnode.
             graph[c.outmod][0] += 1

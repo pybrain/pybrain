@@ -1,12 +1,13 @@
 __author__ = 'Daan Wierstra and Tom Schaul'
 
+from itertools import chain
+
 from scipy import zeros
 
 from pybrain.structure.networks.feedforward import FeedForwardNetwork
 from pybrain.structure.networks.recurrent import RecurrentNetwork
 from pybrain.structure.modules.neuronlayer import NeuronLayer
 from pybrain.structure.connections import FullConnection
-from pybrain.utilities import combineLists
 
 # CHECKME: allow modules that do not inherit from NeuronLayer? and treat them as single neurons?
 
@@ -100,7 +101,7 @@ class NeuronDecomposableNetwork(object):
             res.addOutputModule(m)
         for m in n.modules:
             res.addModule(m)
-        for c in combineLists(n.connections.values()):
+        for c in chain(*n.connections.values()):
             res.addConnection(c)
         res.name = n.name
         res.sortModules()

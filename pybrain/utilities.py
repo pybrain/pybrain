@@ -32,15 +32,6 @@ def abstractMethod():
     raise NotImplementedError('Method not implemented!')
 
 
-def combineLists(lsts):
-    """ combine a list of lists into a single list """
-    new = []
-    for lst in lsts:
-        for i in lst:
-            new.append(i)
-    return new
-
-
 def drawIndex(probs, tolerant=False):
     """ Draws an index given an array of probabilities.
 
