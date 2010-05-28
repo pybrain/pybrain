@@ -1,3 +1,4 @@
+#! /usr/bin/env python
 """ This test script will test the set of optimization algorithms.
 
 It tests
