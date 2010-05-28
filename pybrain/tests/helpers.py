@@ -1,12 +1,13 @@
 __author__ = 'Tom Schaul, tom@idsia.ch'
 
-import os
+from os import unlink, getcwd
+import os.path
 import profile
 import pstats
 import tempfile
 
 from scipy import randn, zeros
-    
+
 from pybrain.structure.networks.network import Network
 from pybrain.datasets import SequentialDataSet, SupervisedDataSet
 from pybrain.supervised import BackpropTrainer
@@ -37,7 +38,7 @@ def buildAppropriateDataset(module):
 
 
 def gradientCheck(module, tolerance=0.0001, dataset=None):
-    """ check the gradient of a module with a randomly generated dataset, 
+    """ check the gradient of a module with a randomly generated dataset,
     (and, in the case of a network, determine which modules contain incorrect derivatives). """
     if module.paramdim == 0:
         print 'Module has no parameters'
@@ -62,7 +63,7 @@ def gradientCheck(module, tolerance=0.0001, dataset=None):
         return True
     else:
         print 'Incorrect gradient', precision
-        if isinstance(module, Network):            
+        if isinstance(module, Network):
             index = 0
             for m in module._containerIterator():
                 if max(precision[index:index + m.paramdim]) > tolerance:
@@ -71,8 +72,8 @@ def gradientCheck(module, tolerance=0.0001, dataset=None):
         else:
             print res
         return False
-    
-    
+
+
 def netCompare(net1, net2, forwardpasses=1, verbose=False):
     identical = True
     if str(net2) == str(net1):
@@ -138,9 +139,8 @@ def xmlInvariance(n, forwardpasses = 1):
 
 
 def sortedProfiling(code, maxfunctions=50):
-    import os.path
     f = 'temp/profilingInfo.tmp'
-    if os.path.split(os.path.abspath(os.path.curdir))[1] != 'tests':        
+    if os.path.split(getcwd())[1] != 'tests':
         f = '../' + f
     profile.run(code, f)
     p = pstats.Stats(f)
