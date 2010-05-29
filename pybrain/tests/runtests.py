@@ -52,18 +52,21 @@ def missingDependencies(target_module):
 
 
 def make_test_suite():
-    # The directory where the tests reside relative to the directory of this
-    # file.
-    test_path_list = list(os.path.split(__file__)[:-1]) + ['unittests/']
-    testdir = os.path.join(*test_path_list)
+    """Load unittests placed in pybrain/tests/unittests, then return a
+    TestSuite object of those."""
+    # [...]/pyrain/pybrain [cut] /tests/runtests.py
+    path = os.path.abspath(__file__).rsplit(os.sep+'tests', 1)[0]
 
+    sys.path.append(path.rstrip('pybrain'))
+
+    testdir = os.path.join(path, 'tests', 'unittests')
     # All unittest modules have to start with 'test_' and have to be, of
     # course, python files
     module_names = [f[:-3] for f in os.listdir(testdir)
                     if f.startswith('test_') and f.endswith('.py')]
 
     if not module_names:
-        logging.info("No tests found in %s" % testdir)
+        logging.info('No tests found in %s' % testdir)
         sys.exit()
 
     # "Magically" import the tests package and its test-modules that we've
@@ -74,17 +77,17 @@ def make_test_suite():
     # Put the test modules in a list that can be passed to the testsuite
     modules = (getattr(test_package, n) for n in module_names)
     modules = [(m, missingDependencies(m)) for m in modules]
-    untests = [(m, md) for (m, md) in modules if md]
-    modules = [m for (m, md) in modules if not md]
+    untests = [(m, md) for m, md in modules if md]
+    modules = [m for m, md in modules if not md]
 
     # Print out modules that are missing dependencies
     for module, miss_dep in untests:    # Mr Dep is not around, though
-        logging.warning("Module %s is missing dependencies: %s" % (
+        logging.warning('Module %s is missing dependencies: %s' % (
                         module.__name__, ', '.join(miss_dep)))
 
     # Print out a list of tests that are found
     for m in modules:
-        logging.info("Tests found: %s" % m.__name__)
+        logging.info('Tests found: %s' % m.__name__)
 
     # Build up the testsuite
     suite = TestSuite([TestLoader().loadTestsFromModule(m) for m in modules])
@@ -101,7 +104,7 @@ def make_test_suite():
     return suite
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     setUpLogging()
     runner = TextTestRunner()
     runner.run(make_test_suite())
