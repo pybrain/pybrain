@@ -83,7 +83,7 @@ def netCompare(net1, net2, forwardpasses=1, verbose=False):
         identical = False
         if verbose:
             print net2
-            print "-" * 80
+            print '-' * 80
             print net1
 
     outN = zeros(net2.outdim)
@@ -121,7 +121,7 @@ def xmlInvariance(n, forwardpasses = 1):
     if the result looks the same (compare string representation, and forward processing
     of some random inputs) """
     # We only use this for file creation.
-    tmpfile = tempfile.NamedTemporaryFile(dir=".")
+    tmpfile = tempfile.NamedTemporaryFile(dir='.')
     f = tmpfile.name
     tmpfile.close()
 
@@ -140,7 +140,7 @@ def xmlInvariance(n, forwardpasses = 1):
 
 def sortedProfiling(code, maxfunctions=50):
     f = 'temp/profilingInfo.tmp'
-    if os.path.split(getcwd())[1] != 'tests':
+    if os.path.split(os.path.abspath(''))[1] != 'tests':
         f = '../' + f
     profile.run(code, f)
     p = pstats.Stats(f)
