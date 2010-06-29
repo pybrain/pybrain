@@ -233,14 +233,10 @@ class Named(XMLBuildable):
 
 
 def fListToString(a_list, a_precision=3):
-    """ returns a string representing a list of floats with a given precision """
-    # CHECKME: please tell me if you know a more comfortable way.. (print format specifier?)
-    l_out = "["
-    for i in a_list:
-        l_out += " %% .%df" % a_precision % i
-    l_out += "]"
-    return l_out
-
+    """ Returns a string representing a list of floats with a given precision """
+    s_list = ", ".join(("%g" % round(x, a_precision)).ljust(a_precision+3)
+                      for x in a_list)
+    return "[%s]" % s_list
 
 def tupleRemoveItem(tup, index):
     """ remove the item at position index of the tuple and return a new tuple. """
