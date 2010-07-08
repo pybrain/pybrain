@@ -644,7 +644,7 @@ class DivergenceError(Exception):
     """ Raised when an algorithm diverges. """
     
 
-def matchingDict(d, selection):
+def matchingDict(d, selection, require_existence=False):
     """ Determines if the dictionary d conforms to the specified selection,
     i.e. if a (key, x) is in the selection, then if key is in d as well it must be x 
     or contained in x (if x is a list). """
@@ -656,6 +656,8 @@ def matchingDict(d, selection):
             else:
                 if d[k] != v:
                     return False
+        elif require_existence:
+            return False
     return True
 
 

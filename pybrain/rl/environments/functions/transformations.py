@@ -31,15 +31,17 @@ class TranslateFunction(FunctionEnvironment):
         """ by default the offset is random, with a distance of 0.1 to the old one """
         FunctionEnvironment.__init__(self, basef.xdim, basef.xopt)
         if offset == None:
-            offset = rand(basef.xdim)
-            offset *= distance / norm(offset)
-        self.xopt += offset
+            self._offset = rand(basef.xdim)
+            self._offset *= distance / norm(self._offset)
+        else:
+            self._offset = offset
+        self.xopt += self._offset
         self.desiredValue = basef.desiredValue            
         self.toBeMinimized = basef.toBeMinimized
         def tf(x):
             if isinstance(x, ParameterContainer):
                 x = x.params
-            return basef.f(x - offset)
+            return basef.f(x - self._offset)
         self.f = tf
     
 
@@ -52,16 +54,16 @@ class RotateFunction(FunctionEnvironment):
         FunctionEnvironment.__init__(self, basef.xdim, basef.xopt)
         if rotMat == None:
             # make a random orthogonal rotation matrix
-            self.M = orth(rand(basef.xdim, basef.xdim))
+            self._M = orth(rand(basef.xdim, basef.xdim))
         else:
-            self.M = rotMat
+            self._M = rotMat
         self.desiredValue = basef.desiredValue            
         self.toBeMinimized = basef.toBeMinimized   
-        self.xopt = dot(inv(self.M), self.xopt)
+        self.xopt = dot(inv(self._M), self.xopt)
         def rf(x):
             if isinstance(x, ParameterContainer):
                 x = x.params
-            return basef.f(dot(x, self.M))    
+            return basef.f(dot(x, self._M))    
         self.f = rf
         
     
