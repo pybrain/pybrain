@@ -32,7 +32,8 @@ class ExploringLearner(Learner):
         if self.explorer is not None:
             return self.explorer.activate(state, action)
         else:
-            logging.warning("No explorer found: no exploration could be done.")
+            # logging.warning("No explorer found: no exploration could be done.")
+            return action
                     
     
 class EpisodicLearner(Learner):
