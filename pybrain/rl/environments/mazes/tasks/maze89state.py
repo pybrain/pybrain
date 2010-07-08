@@ -14,9 +14,9 @@ class EightyNineStateMaze(MazeTask):
     ## # # ##
     #  # # *#
     ##     ##
-    #########    
-    """    
-    
+    #########
+    """
+
     mazeclass = PolarMaze
     topology = array([[1]*9,
                       [1, 1, 0, 0, 0, 0, 0, 1, 1],
@@ -28,4 +28,3 @@ class EightyNineStateMaze(MazeTask):
     goal = (2, 7)
     stochAction = 0.1
     stochObs = 0.1
-    

@@ -1,4 +1,5 @@
-""" An illustration of using the NSGA-II multi-objective optimization algorithm 
+#!/usr/bin/env python
+""" An illustration of using the NSGA-II multi-objective optimization algorithm
 on a simple standard benchmark function. """
 
 __author__ = 'Tom Schaul, tom@idsia.ch'
@@ -7,7 +8,7 @@ from pybrain.optimization import MultiObjectiveGA
 from pybrain.rl.environments.functions.multiobjective import KurBenchmark
 import pylab
 from scipy import zeros
-       
+
 # The benchmark function
 f = KurBenchmark()
 

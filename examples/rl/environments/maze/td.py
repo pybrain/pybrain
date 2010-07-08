@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 __author__ = 'Thomas Rueckstiess, ruecksti@in.tum.de'
 
 """ This example demonstrates how to use the discrete Temporal Difference
@@ -55,7 +56,7 @@ pylab.gray()
 pylab.ion()
 
 for i in range(1000):
-    
+
     # interact with the environment (here in batch mode)
     experiment.doInteractions(100)
     agent.learn()

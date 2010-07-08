@@ -14,12 +14,12 @@ if platform.system() == 'Darwin':
     baseversion = version[0].rsplit('.', 1)[0]
     os.environ["MACOSX_DEPLOYMENT_TARGET"] = baseversion
 
-sys.argv.append('build_ext') 
-sys.argv.append('--inplace') 
+sys.argv.append('build_ext')
+sys.argv.append('--inplace')
 
 if platform.system() == 'Windows':
-    sys.argv.append('-c') 
-    sys.argv.append('mingw32') 
+    sys.argv.append('-c')
+    sys.argv.append('mingw32')
 
 setup(ext_modules=[Extension('cartpolewrap', ['cartpolewrap.pyx', 'cartpole.cpp'],
                                 pyrex_cplus=[True],

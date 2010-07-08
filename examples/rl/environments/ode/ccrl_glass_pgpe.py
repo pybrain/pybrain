@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 #########################################################################
 # Reinforcement Learning with PGPE on the CCRL ODE Environment 
 #

@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 #########################################################################
 # Reinforcement Learning with PGPE on the Johnnie Environment 
 #
@@ -11,7 +12,7 @@
 # - 11 angles of joints
 # - 11 angle velocitys of joints
 # - Number of foot parts that have contact to floor
-# - Height sensor in head for reward calculation 
+# - Height sensor in head for reward calculation
 # - Rotation sensor in 3 dimesnions
 #
 # Task available are:
@@ -63,5 +64,5 @@ for runs in range(numbExp):
         state, action, reward = agent.learner.dataset.getSequence(agent.learner.dataset.getNumSequences()-1)
         et.printResults(reward.sum(), runs, updates)
     et.addExps()
-et.showExps()    
+et.showExps()
 #To view what the simulation is doing at the moment, go to pybrain/rl/environments/ode/ and start viewer.py (python-openGL musst be installed, see PyBrain documentation)

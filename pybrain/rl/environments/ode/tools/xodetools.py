@@ -676,7 +676,7 @@ class XODELSRPlate(XODELSRTable): #XODESLR
         self.insertBody('objectP00', 'box', [bX, bY, bZ], 30, pos=[pX, pY, pZ], passSet=['object'], mass=m, color=c)
         self.insertBody('objectP01', 'box', [sX, sY, sZ], 30, pos=[pX - bX * 0.5 - 2.0 * dif, pY + dif, pZ], passSet=['object'], mass=m, euler=[0, 0, 22.5], color=c)
         self.insertJoint('objectP00', 'objectP01', 'fixed', axis={'x':0, 'y':0, 'z':0}, anchor=(pX - bX * 0.5, pY, pZ))
-        
+
         self.insertBody('objectP02', 'box', [sX, sY, sZ], 30, pos=[pX + bX * 0.5 + 2.0 * dif, pY + dif, pZ], passSet=['object'], mass=m, euler=[0, 0, -22.5], color=c)
         self.insertJoint('objectP00', 'objectP02', 'fixed', axis={'x':0, 'y':0, 'z':0}, anchor=(pX + bX * 0.5, pY, pZ))
 

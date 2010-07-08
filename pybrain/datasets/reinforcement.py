@@ -7,7 +7,7 @@ from scipy import zeros
 
 class ReinforcementDataSet(SequentialDataSet):
     def __init__(self, statedim, actiondim):
-        """ initialize the reinforcement dataset, add the 3 fields state, action and 
+        """ initialize the reinforcement dataset, add the 3 fields state, action and
             reward, and create an index marker. This class is basically a wrapper function
             that renames the fields of SupervisedDataSet into the more common reinforcement
             learning names. Instead of 'episodes' though, we deal with 'sequences' here. """
@@ -26,28 +26,28 @@ class ReinforcementDataSet(SequentialDataSet):
         self.currentSeq = 0
         self.statedim = statedim
         self.actiondim = actiondim
-    
+
         # the input and target dimensions (for compatibility)
         self.indim = self.statedim
         self.outdim = self.actiondim
-    
+
     def addSample(self, state, action, reward):
         """ adds a new sample consisting of state, action, reward.
-        
+
             :key state: the current state of the world
             :key action: the executed action by the agent
             :key reward: the reward received for action in state """
         self.appendLinked(state, action, reward)
- 
+
     def getSumOverSequences(self, field):
         sums = zeros((self.getNumSequences(), self.getDimension(field)))
         for n in range(self.getNumSequences()):
-            sums[n, :] = sum(self._getSequenceField(n, field), 0)       
+            sums[n, :] = sum(self._getSequenceField(n, field), 0)
         return sums
-        
+
     def __reduce__(self):
         # FIXME: This does actually not feel right: We have to use the DataSet
-        # method here, although we inherit from sequential dataset. 
+        # method here, although we inherit from sequential dataset.
         _, _, state, _, _ = DataSet.__reduce__(self)
         creator = self.__class__
         args = self.statedim, self.actiondim

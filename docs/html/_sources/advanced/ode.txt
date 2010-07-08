@@ -36,16 +36,16 @@ You can test if all your settings are ok by starting following example:
 	python viewer.py
 
 
-.. note:: 
+.. note::
 	On Linux, if that gives rise to a segmentation fault, try installing ``xorg-driver-fglrx``
 	
 	
 Existing ODE Environments that are tested are:
-	* Johnnie (a biped humanoid robot modeled after the real 
+	* Johnnie (a biped humanoid robot modeled after the real
 	  robot Johnnie (http://www.amm.mw.tum.de)
-	* CCRL (a robot with two 7 DoF Arms and simple grippers, modeled 
+	* CCRL (a robot with two 7 DoF Arms and simple grippers, modeled
 	  after the real robot at the CCRL of TU Munich. (http://www.lsr.ei.tum.de/)
-	* PencilBalancer (a robot that balances pencils in a 2D way, modeled 
+	* PencilBalancer (a robot that balances pencils in a 2D way, modeled
 	  after the real robot from Jörg Conradt. (http://www.ini.uzh.ch/~conradt/Projects/PencilBalancer/)
 
 .. ToDo: check the rest of the environments.
@@ -56,42 +56,42 @@ Existing ODE Environments that are tested are:
 Creating your own learning task in an existing ODE environment
 -----------------------------------------------------------------------
 
-This tutorial walks you through the process of setting up a 
+This tutorial walks you through the process of setting up a
 new task within an existing ODE Environment.
 It assumes that you have taken the steps described in the section :ref:`existingode`.
 
 For all ODE environments there can be found a standard task in
 ``pybrain/rl/environments/ode/tasks``
 
-We take as an example again the Johnnie environment. You will find 
+We take as an example again the Johnnie environment. You will find
 that the first class in the johnnie.py file in the above described location is named
 JohnnieTask and inherits from EpisodicTask.
 
 The necessary methods that you need to define your own task are described already in that basic class:
 	* ``__init__(self, env)`` - the constructor
-	* ``performAction(self, action)`` - processes and filters the output from the controller 
+	* ``performAction(self, action)`` - processes and filters the output from the controller
 	  and communicates it to the environment.
-	* ``isFinished(self)`` - checks if the maximum number of timesteps has been reached 
+	* ``isFinished(self)`` - checks if the maximum number of timesteps has been reached
 	  or if other break condition has been met.
 	* ``res(self)`` - resets counters rewards and similar.
 
-If we take a look at the StandingTask (the next class in the file) we see 
+If we take a look at the StandingTask (the next class in the file) we see
 that only little has to be done to create an own task.
 First of all the class must inherit from JohnnieTask.
-Then, the constructor has to be overwritten to declare some variables and 
-constants for the specific task. In this case there were some additional 
+Then, the constructor has to be overwritten to declare some variables and
+constants for the specific task. In this case there were some additional
 position sensors added and normalized for reward calculation.
-As normally last step the getReward Method has to be overwritten, because 
-the reward definition is normally what defines the task. In this case just 
-the vertical head position is returned (with some clipping to prevent the 
-robot from jumping to get more reward). That is already enough to create a 
-task that is sufficiently defined to make a proper learning method (like 
-PGPE in the above mentioned and testable example johnnie_pgpe.py) learn a 
+As normally last step the getReward Method has to be overwritten, because
+the reward definition is normally what defines the task. In this case just
+the vertical head position is returned (with some clipping to prevent the
+robot from jumping to get more reward). That is already enough to create a
+task that is sufficiently defined to make a proper learning method (like
+PGPE in the above mentioned and testable example johnnie_pgpe.py) learn a
 controller that let the robot stand complete upright without falling.
 
-For some special cases you maybe are forced to rewrite the performAction 
+For some special cases you maybe are forced to rewrite the performAction
 method and the isFinished method, but that special cases are out of scope of this HowTo.
-If you need to make such changes and encounter problems please feel 
+If you need to make such changes and encounter problems please feel
 free to contact the PyBrain mailing list.
 
 
@@ -107,46 +107,46 @@ and have taken the necessary steps explained there.
 If you want to your own environment you need the following:
 	
 	* Environment that inherits from ODEEnvironment
-	* Agent that inherits from OptimizationAgent 
+	* Agent that inherits from OptimizationAgent
 	* Tasks that inherit from EpisodicTask
 
 For all ODE environments, an instance can be found  in ``pybrain/rl/environments/ode/instances/``
 
-We take as an example again the Johnnie environment. You will find 
+We take as an example again the Johnnie environment. You will find
 that the first class in the ``johnnie.py`` file in the location described above is named
 :class:`JohnnieEnvironment` and inherits from :class:`ODEEnvironment`.
 
 You will see that were is not much to do on the PyBrain side to generate the environment class.
-First loading the corresponding XODE file is necessary to 
+First loading the corresponding XODE file is necessary to
 provide PyBrain with the specification of the simulation.
 How to generate the corresponding XODE file will be shown later in this HowTo.
-Then the standard sensors are added like the JointSensors, the corresponding 
+Then the standard sensors are added like the JointSensors, the corresponding
 JointVelocitySensors and also the actuators for every joint.
-Because this kind of sensors and actuators are needed in every simulation 
+Because this kind of sensors and actuators are needed in every simulation
 they are already added in the environment and assumed to exist by later stages of PyBrain.
 
 The next part is a bit more involved.
-First, member variables that state the number 
+First, member variables that state the number
 of action dimensions and number of sensors have to be set.
 
 ::
 
      self.actLen = self.getActionLength()
      self.obsLen = len(self.getSensors())
-      
-      
-Next, 3 lists are generated for every action dimension. The first list 
-is called :attr:`torqueList` and states the fraction of 
+
+
+Next, 3 lists are generated for every action dimension. The first list
+is called :attr:`torqueList` and states the fraction of
 the global maximal force that can bee applied to the joints.
-The second list states the maximum angle, the third list states the 
+The second list states the maximum angle, the third list states the
 minimum angle for every joint. (:attr:`cHighList` and :attr:`cLowList`) For example:
 ::
 
       self.tourqueList = array([0.2, 0.2, 0.2, 0.5, 0.5, 2.0, 2.0,2.0,2.0,0.5,0.5],)
       self.cHighList = array([1.0, 1.0, 0.5, 0.5, 0.5, 1.5, 1.5,1.5,1.5,0.25,0.25],)
-      self.cLowList = array([-0.5, -0.5, -0.5, 0.0, 0.0, 0.0, 0.0,0.0,0.0,-0.25,-0.25],)      
+      self.cLowList = array([-0.5, -0.5, -0.5, 0.0, 0.0, 0.0, 0.0,0.0,0.0,-0.25,-0.25],)
 
-The last thing to do is how much simulation steps ODE should make 
+The last thing to do is how much simulation steps ODE should make
 before getting an update from the controller and sending new sensor values back, called stepsPerAction.
 
 .. _createinstance:
@@ -155,34 +155,34 @@ Creating your own XODE instance
 -----------------------------------------
 
 Now we want to specify a instantiation in a XODE file.
-If you do not know ODE very well, 
+If you do not know ODE very well,
 you can use a script that is shipped with PyBrain and can be found in
 ``pybrain/rl/environments/ode/tools/xodetools.py``
 
-The first part of the file is responsible for parsing the simplified XODE 
+The first part of the file is responsible for parsing the simplified XODE
 code to a regular XODE file, that can be ignored.
 For an example, look at the Johnnie definition by searching for ``class XODEJohnnie(XODEfile)``
 
-The instantiation of what you want to simulate in ODE is defined in this 
+The instantiation of what you want to simulate in ODE is defined in this
 tool as a class that inherits from :class:`XODEfile`.
 The class consists only of a constructor. Here all parts of the simulated object are defined.
 The parts are defined in an global coordinate system. For examples the row
 ::
 
-	self.insertBody('arm_left','cappedCylinder',[0.25,7.5],5,pos=[2.06,-2.89,0], 
+	self.insertBody('arm_left','cappedCylinder',[0.25,7.5],5,pos=[2.06,-2.89,0],
 					euler=[90,0,0], passSet=['total'], mass=2.473)
 
-creates the left arm (identifier 'arm_left') of Johnnie as an cylinder with round 
-endings ('cappedCylinder') with a diameter of 0.25 and a length of 7.5 ([0.25,7.5]) 
-with a density of 5 (that will be overwritten if the optional value mass is given 
-at the end of the command), an initial position of ``pos = [2.06,-2.89,0]``, turned 
-by 90 degrees around the x-Axis (``euler = [90,0,0]``, all capped cylinders are by 
-default aligned with the y-Axis) the passSet named 'total' (will be explained 
+creates the left arm (identifier 'arm_left') of Johnnie as an cylinder with round
+endings ('cappedCylinder') with a diameter of 0.25 and a length of 7.5 ([0.25,7.5])
+with a density of 5 (that will be overwritten if the optional value mass is given
+at the end of the command), an initial position of ``pos = [2.06,-2.89,0]``, turned
+by 90 degrees around the x-Axis (``euler = [90,0,0]``, all capped cylinders are by
+default aligned with the y-Axis) the passSet named 'total' (will be explained
 soon) and the optional mass of the part.
 
-"passSet" is used to define parts that can penetrate each other. 
-That is especially necessary for parts that have a joint together, 
-but can also be usable in other cases. All parts that are part of 
+"passSet" is used to define parts that can penetrate each other.
+That is especially necessary for parts that have a joint together,
+but can also be usable in other cases. All parts that are part of
 the same passSet can penetrate each other. Multiple passSet names can be given delimited by a ",".
 Types that are understood by this tool are:
 
@@ -201,14 +201,14 @@ Types of joints that are understood by this tool are:
 
 .. - ToDo, are there more?
 
-A joint between two parts is inserted in the model by insertJoint, 
+A joint between two parts is inserted in the model by insertJoint,
 giving the identifier of the first part, then the identifier of the second part.
-Next the type of joint is stated (e.g. 'hinge'). The axis around the joint will 
-rotate is stated like ``axis={'x':1,'y':0,'z':0}`` and the anchor point in global 
+Next the type of joint is stated (e.g. 'hinge'). The axis around the joint will
+rotate is stated like ``axis={'x':1,'y':0,'z':0}`` and the anchor point in global
 coordinates is defined by something like ``anchor=(2.06,0.86,0)``.
 Add all parts and joints for your model.
 
-Finally with ``centerOn(identifier)`` the camera position is fixed to that part and 
+Finally with ``centerOn(identifier)`` the camera position is fixed to that part and
 with ``insertFloor(y=??)`` a floor can be added.
 
 Now go to the end of the file and state:
@@ -224,16 +224,16 @@ and execute the file with
 
 And you have created an instantiation of your model that can be read in in the above environment.
 
-What is missing is a default task for the new environment. In the previous 
-"HowTo create your own learning task in an existing ODE environment" 
+What is missing is a default task for the new environment. In the previous
+"HowTo create your own learning task in an existing ODE environment"
 we saw how such a standard task looks for the Johnnie environment.
-To create our own task we have to create a file with the name of our environment in 
+To create our own task we have to create a file with the name of our environment in
 ``pybrain/rl/environments/ode/tasks/``
 
 The new task has to import the following packages:
 
     from pybrain.rl.environments import EpisodicTask
-    from pybrain.rl.environments.ode.sensors import * 
+    from pybrain.rl.environments.ode.sensors import *
 	
 And whatever is needed from scipy and similar.
 
@@ -249,7 +249,7 @@ It is important that the constructor of EpisodicTask is called.
 The following member variables are mandatory:
 ::
 	
-    self.maxPower = 100.0   #Overall maximal torque - is multiplied with relative max 
+    self.maxPower = 100.0   #Overall maximal torque - is multiplied with relative max
                             #torque for individual joint to get individual max torque
     self.reward_history = []
     self.count = 0          #timestep counter
@@ -268,7 +268,7 @@ Next the sensor and actuator limits must be set, usually between -1 and 1:
     #Angle sensors
     for i in range(self.env.actLen):
         # Joint velocity sensors
-        self.sensor_limits.append((self.env.cLowList[i], self.env.cHighList[i]))                 
+        self.sensor_limits.append((self.env.cLowList[i], self.env.cHighList[i]))
     for i in range(self.env.actLen):
         self.sensor_limits.append((-20, 20))
     #Normalize all actor dimensions to (-1, 1)
@@ -278,20 +278,20 @@ The next method that is needed is the performAction method, the standard setting
 ::
 
     def performAction(self, action):
-        """ Filtered mapping towards performAction of the underlying environment """         
+        """ Filtered mapping towards performAction of the underlying environment """
         EpisodicTask.performAction(self, action)
 
 If you want to control the wanted angels instead of the forces you may include this simple PD mechanism:
 ::
 
     #The joint angles
-    isJoints = self.env.getSensorByName('JointSensor') 
+    isJoints = self.env.getSensorByName('JointSensor')
     #The joint angular velocities
-    isSpeeds = self.env.getSensorByName('JointVelocitySensor') 
+    isSpeeds = self.env.getSensorByName('JointVelocitySensor')
     #norm output to action interval
     act = (action+1.0)/2.0*(self.env.cHighList-self.env.cLowList)+self.env.cLowList
-    #simple PID       
-    action = tanh((act - isJoints - isSpeeds) * 16.0) * self.maxPower * self.env.tourqueList 
+    #simple PID
+    action = tanh((act - isJoints - isSpeeds) * 16.0) * self.maxPower * self.env.tourqueList
 
 Now we have to define the :meth:`isFinished` method:
 ::
@@ -316,12 +316,12 @@ Finally we define a :meth:`reset` method:
        self.count = 0
        self.reward_history.append(self.getTotalReward())
 
-We don't need a :meth:`getReward` function here, because the method from :class:`EpisodicTask` 
+We don't need a :meth:`getReward` function here, because the method from :class:`EpisodicTask`
 that returns always 0.0 is taken over. This is the default task that is used to create specific tasks.
 Please take a look at :ref:`existinglearning` for how to create a task that gives actual reward.
 
-If you have done all steps right you now have a new ODE environment with a 
+If you have done all steps right you now have a new ODE environment with a
 corresponding task that you can test by creating an experiment.
-Or you can try to copy an existing example like the ``johnnie_pgpe.py`` and 
+Or you can try to copy an existing example like the ``johnnie_pgpe.py`` and
 replace the environment and the task definition with your new environment and task.
 

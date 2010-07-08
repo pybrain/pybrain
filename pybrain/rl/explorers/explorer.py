@@ -16,8 +16,8 @@ class Explorer(Module):
             in subclasses.
         """
         return Module.activate(self, action)
-    
-        
+
+
     def newEpisode(self):
         """ Inform the explorer about the start of a new episode. """
         pass

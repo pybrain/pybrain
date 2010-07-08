@@ -43,7 +43,7 @@ class EvolinoEvaluation(Filter):
     def _evaluateNet(self, net, dataset, wtRatio):
         """ Evaluates the performance of net on the given dataset.
             Returns the fitness value.
-            
+
             :key net: Instance of EvolinoNetwork to evaluate
             :key dataset: Sequences to test the net on
             :key wtRatio: See __init__
@@ -97,7 +97,7 @@ class EvolinoEvaluation(Filter):
     def apply(self, population):
         """ Evaluate each individual, and store fitness inside population.
             Also calculate and set the weight matrix W of the linear output layer.
-            
+
             :arg population: Instance of EvolinoPopulation
         """
         net = self.network
@@ -151,7 +151,7 @@ class EvolinoSelection(Filter):
     def apply(self, population):
         """ The subpopulations of the EvolinoPopulation are iterated and forwarded
             to the EvolinoSubSelection() operator.
-            
+
             :arg population: object of type EvolinoPopulation
         """
         self.sub_selection.nParents = self.nParents
@@ -173,7 +173,7 @@ class EvolinoReproduction(Filter):
     def apply(self, population):
         """ The subpopulations of the EvolinoPopulation are iterated and forwarded
             to the EvolinoSubReproduction() operator.
-            
+
             :arg population: object of type EvolinoPopulation
         """
         sps = population.getSubPopulations()

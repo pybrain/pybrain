@@ -14,7 +14,7 @@ from copy import copy, deepcopy
 
 class EvolinoNetwork(Module):
     """ Model class to be trained by the EvolinoTrainer."""
-    
+
     def __init__(self, outdim, hiddim=15):
         """ Create an EvolinoNetwork with for sequences of dimension outdim and
         hiddim dimension of the RNN Layer."""
@@ -57,8 +57,8 @@ class EvolinoNetwork(Module):
         self._network.reset()
 
     def washout(self, sequence):
-        """ Force the network to process the sequence instead of the 
-        backprojection values. Used for adjusting the RNN's state. Returns the 
+        """ Force the network to process the sequence instead of the
+        backprojection values. Used for adjusting the RNN's state. Returns the
         outputs of the RNN that are needed for linear regression."""
         assert len(sequence) != 0
         assert self.outdim == len(sequence[0])
@@ -86,9 +86,9 @@ class EvolinoNetwork(Module):
             '.activate() is not supported, use .extrapolate()')
 
     def extrapolate(self, sequence, length):
-        """ Extrapolate 'sequence' for 'length' steps and return the 
+        """ Extrapolate 'sequence' for 'length' steps and return the
         extrapolated sequence as array.
-            
+
         Extrapolating is realized by reseting the network, then washing it out
         with the supplied  sequence, and then generating a sequence."""
         self.reset()
@@ -96,8 +96,8 @@ class EvolinoNetwork(Module):
         return self.generate(length)
 
     def generate(self, length):
-        """ Generate a sequence of specified length. 
-        
+        """ Generate a sequence of specified length.
+
         Use .reset() and .washout() before."""
         generated_sequence = [] #empty(length)
         for _ in xrange(length):
@@ -120,7 +120,7 @@ class EvolinoNetwork(Module):
         self._out_layer.outputbuffer[self.offset - 1][:] = output
 
     #
-    # Genome related 
+    # Genome related
     #
 
     def _validateGenomeLayer(self, layer):
@@ -197,7 +197,7 @@ class EvolinoNetwork(Module):
 
     def _getRawOutput(self):
         """Return the current output of the RNN. This is needed for linear
-        regression, which calculates the weight matrix of the linear output 
+        regression, which calculates the weight matrix of the linear output
         layer."""
         return copy(self._hid_layer.outputbuffer[self.offset - 1])
 

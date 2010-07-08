@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 #########################################################################
 # Reinforcement Learning with REINFORCE on the CartPoleEnvironment 
 #

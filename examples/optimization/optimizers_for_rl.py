@@ -1,4 +1,5 @@
-""" 
+#!/usr/bin/env python
+"""
 Illustrating how to use optimization algorithms in a reinforcement learning framework.
 """
 
@@ -39,6 +40,6 @@ print 'Episodes learned from:', len(learner._allEvaluations)
 n, fit = learner._bestFound()
 print 'Best fitness found:', fit
 print 'with this network:'
-print n 
+print n
 print 'containing these parameters:'
 print fListToString(n.params, 4)

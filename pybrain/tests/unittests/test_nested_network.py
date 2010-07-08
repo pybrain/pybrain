@@ -3,7 +3,7 @@
 Build a nested network:
 
     >>> n = buildNestedNetwork()
-    
+
 Check its gradient:
 
     >>> from pybrain.tests import gradientCheck
@@ -12,13 +12,13 @@ Check its gradient:
     True
 
 Try writing it to an xml file, reread it and determine if it looks the same:
-    
+
     >>> from pybrain.tests import xmlInvariance
     >>> xmlInvariance(n)
     Same representation
     Same function
     Same class
-    
+
 """
 
 __author__ = 'Tom Schaul, tom@idsia.ch'
@@ -43,7 +43,7 @@ def buildNestedNetwork():
     N.addConnection(FullConnection(b, c))
     N.sortModules()
     return N
-        
+
 
 if __name__ == "__main__":
     runModuleTestSuite(__import__('__main__'))

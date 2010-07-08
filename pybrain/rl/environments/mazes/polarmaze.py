@@ -10,7 +10,7 @@ class PolarMaze(Maze):
     """ Mazes with the emphasis on Perseus: allow him to turn, go forward or backward.
     Thus there are 4 states per position.
     """
-    
+
     actions = 5
 
     Stay = 0
@@ -18,13 +18,13 @@ class PolarMaze(Maze):
     TurnAround = 2
     TurnLeft = 3
     TurnRight = 4
-    
+
     allActions = [Stay, Forward, TurnAround, TurnLeft, TurnRight]
-    
+
     def reset(self):
         Maze.reset(self)
         self.perseusDir = choice(range(4))
-        
+
     def performAction(self, action):
         if self.stochAction > 0:
             if random() < self.stochAction:
@@ -43,13 +43,13 @@ class PolarMaze(Maze):
             self.perseusDir = (self.perseusDir - 1) % 4
         elif act == self.TurnAround:
             self.perseusDir = (self.perseusDir + 2) % 4
-        
+
     def getSensors(self):
         obs = Maze.getSensors(self)
         res = zeros(4)
         res[:4 - self.perseusDir] = obs[self.perseusDir:]
         res[4 - self.perseusDir:] = obs[:self.perseusDir]
-        return res    
-    
+        return res
+
     def __str__(self):
         return Maze.__str__(self) + '(dir:' + str(self.perseusDir) + ')'

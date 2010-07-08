@@ -15,47 +15,47 @@ class EpisodicTask(Task, FitnessEvaluator):
 
     # tracking cumulative reward
     cumreward = 0
-    
+
     # tracking the number of samples
     samples = 0
-    
-    #: Discount factor 
+
+    #: Discount factor
     discount = None
-    
+
     batchSize = 1
-    
+
     def reset(self):
         """ Re-initialize the environment """
-        # Note: if a task needs to be reset at the start, the subclass constructor 
+        # Note: if a task needs to be reset at the start, the subclass constructor
         # should take care of that.
         self.env.reset()
         self.cumreward = 0
-        self.samples = 0        
-        
-    def isFinished(self): 
+        self.samples = 0
+
+    def isFinished(self):
         """ Is the current episode over? """
         abstractMethod()
-        
+
     def performAction(self, action):
         """ Execute one action. """
         Task.performAction(self, action)
         self.addReward()
         self.samples += 1
-    
+
     def addReward(self):
-        """ A filtered mapping towards performAction of the underlying environment. """                
-        # by default, the cumulative reward is just the sum over the episode    
+        """ A filtered mapping towards performAction of the underlying environment. """
+        # by default, the cumulative reward is just the sum over the episode
         if self.discount:
             self.cumreward += power(self.discount, self.samples) * self.getReward()
         else:
             self.cumreward += self.getReward()
-    
+
     def getTotalReward(self):
         """ Return the accumulated reward since the start of the episode """
         return self.cumreward
-        
+
     def f(self, x):
-        """ An episodic task can be used as an evaluation function of a module that produces actions 
+        """ An episodic task can be used as an evaluation function of a module that produces actions
         from observations, or as an evaluator of an agent. """
         r = 0.
         for _ in range(self.batchSize):
@@ -69,4 +69,4 @@ class EpisodicTask(Task, FitnessEvaluator):
             else:
                 raise ValueError(self.__class__.__name__+' cannot evaluate the fitness of '+str(type(x)))
             r += self.getTotalReward()
-        return r / float(self.batchSize) 
+        return r / float(self.batchSize)

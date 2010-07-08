@@ -1,11 +1,10 @@
-#! /usr/bin/env python2.5
 # -*- coding: utf-8 -*-
 
 __author__ = 'Justin S Bayer, bayer.justin@googlemail.com'
 __version__ = '$Id$'
 
 
-from pybrain.structure import (LinearLayer, SigmoidLayer, FullConnection, 
+from pybrain.structure import (LinearLayer, SigmoidLayer, FullConnection,
                                BiasUnit, FeedForwardNetwork)
 
 
@@ -16,15 +15,15 @@ class Rbm(object):
     def params(self):
         return self.con.params
         pass
-        
+
     @property
     def biasParams(self):
         return self.biascon.params
-        
-    @property 
+
+    @property
     def visibleDim(self):
         return self.net.indim
-        
+
     @property
     def hiddenDim(self):
         return self.net.outdim
@@ -37,7 +36,7 @@ class Rbm(object):
         self.visible = net['visible']
         self.hidden = ['hidden']
         self.con = self.net.connections[self.visible][0]
-    
+
     @classmethod
     def fromDims(cls, visibledim, hiddendim, params=None, biasParams=None):
         """Return a restricted Boltzmann machine of the given dimensions with the
@@ -60,7 +59,7 @@ class Rbm(object):
         net.addConnection(con2)
         net.sortModules()
         return cls(net)
-        
+
     @classmethod
     def fromModules(cls, visible, hidden, bias, con, biascon):
         net = FeedForwardNetwork()
@@ -71,12 +70,12 @@ class Rbm(object):
         net.addConnection(biascon)
         net.sortModules()
         return cls(net)
-        
+
     def invert(self):
         """Return the inverse rbm."""
         # TODO: check if shape is correct
         return self.__class__.fromDims(self.hiddenDim, self.visibleDim,
                                        params=self.params)
-        
+
     def activate(self, inpt):
         return self.net.activate(inpt)

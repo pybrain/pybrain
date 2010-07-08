@@ -13,7 +13,7 @@ so they should produce the same outputs.
     True
     >>> epsilonCheck(x1 - x3)
     True
-    
+
 
 """
 

@@ -6,15 +6,15 @@ from scipy import isscalar
 from dataset import DataSet
 from pybrain.utilities import fListToString
 
-    
-class SupervisedDataSet(DataSet): 
+
+class SupervisedDataSet(DataSet):
     """SupervisedDataSets have two fields, one for input and one for the target.
     """
-    
+
     def __init__(self, inp, target):
-        """Initialize an empty supervised dataset. 
-        
-        Pass `inp` and `target` to specify the dimensions of the input and 
+        """Initialize an empty supervised dataset.
+
+        Pass `inp` and `target` to specify the dimensions of the input and
         target vectors."""
         DataSet.__init__(self)
         if isscalar(inp):
@@ -24,31 +24,31 @@ class SupervisedDataSet(DataSet):
         else:
             self.setField('input', inp)
             self.setField('target', target)
-        
-        self.linkFields(['input', 'target'])    
-        
+
+        self.linkFields(['input', 'target'])
+
         # reset the index marker
         self.index = 0
-        
+
         # the input and target dimensions
         self.indim = self.getDimension('input')
         self.outdim = self.getDimension('target')
-         
+
     def __reduce__(self):
         _, _, state, _, _ = super(SupervisedDataSet, self).__reduce__()
         creator = self.__class__
         args = self.indim, self.outdim
         return creator, args, state, iter([]), iter({})
-        
+
     def addSample(self, inp, target):
         """Add a new sample consisting of `input` and `target`."""
         self.appendLinked(inp, target)
-    
+
     def getSample(self, index=None):
         """Return a sample at `index` or the current sample."""
         return self.getLinked(index)
-        
-    def setField(self, label, arr, **kwargs): 
+
+    def setField(self, label, arr, **kwargs):
         """Set the given array `arr` as the new array of the field specfied by
         `label`."""
         DataSet.setField(self, label, arr, **kwargs)
@@ -57,12 +57,12 @@ class SupervisedDataSet(DataSet):
             self.indim = self.getDimension('input')
         elif label == 'target':
             self.outdim = self.getDimension('target')
-    
+
     def _provideSequences(self):
         """Return an iterator over sequence lists, although the dataset contains
         only single samples."""
         return iter(map(lambda x: [x], iter(self)))
-    
+
     def evaluateMSE(self, f, **args):
         """Evaluate the predictions of a function on the dataset and return the
         Mean Squared Error, incorporating importance."""
@@ -71,10 +71,10 @@ class SupervisedDataSet(DataSet):
         for seq in self._provideSequences():
             e, p = self._evaluateSequence(f, seq, **args)
             totalError += e
-            ponderation += p  
-        assert ponderation > 0          
-        return totalError/ponderation        
-        
+            ponderation += p
+        assert ponderation > 0
+        return totalError/ponderation
+
     def _evaluateSequence(self, f, seq, verbose = False):
         """Return the ponderated MSE over one sequence."""
         totalError = 0.
@@ -88,8 +88,8 @@ class SupervisedDataSet(DataSet):
                 print     'out:    ', fListToString( list( res ) )
                 print     'correct:', fListToString( target )
                 print     'error: % .8f' % e
-        return totalError, ponderation                
-        
+        return totalError, ponderation
+
     def evaluateModuleMSE(self, module, averageOver = 1, **args):
         """Evaluate the predictions of a module on a dataset and return the MSE
         (potentially average over a number of epochs)."""
@@ -98,7 +98,7 @@ class SupervisedDataSet(DataSet):
             module.reset()
             res += self.evaluateMSE(module.activate, **args)
         return res/averageOver
-        
+
     def splitWithProportion(self, proportion = 0.5):
         """Produce two new datasets, the first one containing the fraction given
         by `proportion` of the samples."""
@@ -114,5 +114,4 @@ class SupervisedDataSet(DataSet):
                 rightDs.addSample(*sp)
             index += 1
         return leftDs, rightDs
-        
-        
+

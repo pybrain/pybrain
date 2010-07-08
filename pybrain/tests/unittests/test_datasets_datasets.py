@@ -1,8 +1,7 @@
-#! /usr/bin/env python
 # -*- coding: utf-8 -*-
 
 """
-    
+
     >>> from scipy import array
     >>> from pybrain import datasets
     >>> from copy import deepcopy
@@ -12,7 +11,7 @@
     array([], shape=(0, 2), dtype=...)
 
 Build up a DataSet for testing:
-    
+
     >>> d.append('input', (array((0, 0))))
     >>> d.append('input', (array((1, 1))))
     >>> d.append('input', (array((2, 2))))
@@ -21,7 +20,7 @@ Build up a DataSet for testing:
     >>> d.append('input', (array((5, 5))))
     >>> d.append('input', (array((6, 6))))
     >>> d.append('input', (array((7, 7))))
-    
+
     >>> list(d.batches('input', 3))
     [array([[ 0.,  0.],
                [ 1.,  1.],
@@ -29,14 +28,14 @@ Build up a DataSet for testing:
                [ 4.,  4.],
                [ 5.,  5.]]), array([[ 6.,  6.],
                [ 7.,  7.]])]
-    
+
     >>> list(d.batches('input', 2))
     [array([[ 0.,  0.],
                [ 1.,  1.]]), array([[ 2.,  2.],
                [ 3.,  3.]]), array([[ 4.,  4.],
                [ 5.,  5.]]), array([[ 6.,  6.],
                [ 7.,  7.]])]
-    
+
     >>> p = reversed(range(4))
     >>> print '\\n'.join(repr(b) for b in d.batches('input', 2, p))
     array([[ 6.,  6.],
@@ -47,17 +46,17 @@ Build up a DataSet for testing:
            [ 3.,  3.]])
     array([[ 0.,  0.],
            [ 1.,  1.]])
-           
+
 
 Serialization
 =============
-    
+
     >>> from cStringIO import StringIO
 
 
 UnsupervisedDataSet
 -----------------
-    
+
     >>> d = datasets.UnsupervisedDataSet(2)
     >>> d.addSample([0,0])
     >>> d.addSample([0,1])
@@ -69,16 +68,16 @@ UnsupervisedDataSet
     [array([ 0.,  0.])]
     [array([ 0.,  1.])]
     [array([ 1.,  0.])]
-    [array([ 1.,  1.])]    
-    
+    [array([ 1.,  1.])]
 
 
-    
+
+
 
 
 ClassificationDataSet
 ---------------------
-    
+
     >>> class_labels = 'Urd', 'Verdandi', 'Skuld'
     >>> d = datasets.ClassificationDataSet(2,1, class_labels=class_labels)
     >>> d.appendLinked( [ 0.1, 0.5 ]   , [0] )
@@ -87,7 +86,7 @@ ClassificationDataSet
     >>> d.appendLinked( [ 1.6, 1.8 ]   , [1] )
     >>> d.appendLinked( [ 0.10, 0.80 ] , [2] )
     >>> d.appendLinked( [ 0.20, 0.90 ] , [2] )
-    
+
     >>> saveInvariant(d)
     True
 
@@ -98,7 +97,7 @@ ImportanceDataSet
 
 SequentialDataSet
 -----------------
-      
+
       >>> d = datasets.SequentialDataSet(0, 1)
       >>> d.addSample([],[0])
       >>> d.addSample([],[1])
@@ -113,22 +112,22 @@ SequentialDataSet
       >>> d.addSample([],[1])
       >>> d.addSample([],[0])
       >>> d.addSample([],[1])
-      
+
       >>> saveInvariant(d)
       True
 
 
 ReinforcementDataSet
 --------------------
-    
+
     >>> d = datasets.ReinforcementDataSet(1, 1)
     >>> d.addSample([1,], [1,], [1,])
     >>> d.addSample([1,], [1,], [1,])
     >>> d.addSample([1,], [1,], [1,])
     >>> saveInvariant(d)
     True
-    
-      
+
+
 
 """
 
@@ -152,7 +151,7 @@ def saveInvariant(dataset):
     rec_array_data = sorted(reconstructed.data.items())
     equal = True
     for (k, v), (k_, v_) in zip(orig_array_data, rec_array_data):
-        if k != k_: 
+        if k != k_:
             print "Differing keys: %s <=> %s" % (dataset.dataset.keys(),
                                                  rec_array_data.dataset.keys())
             equal = False
@@ -163,13 +162,13 @@ def saveInvariant(dataset):
             print v_
             equal = False
             break
-            
+
     if not equal:
         return False
-        
+
     rec_dict = reconstructed.__dict__
     orig_dict = dataset.__dict__
-    
+
     del rec_dict['_convert']
     del orig_dict['_convert']
     del rec_dict['data']

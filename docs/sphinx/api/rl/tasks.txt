@@ -9,5 +9,5 @@
 .. automodule:: pybrain.rl.environments.episodic
 
 .. autoclass:: EpisodicTask
-   :members: 
+   :members:
    :show-inheritance:

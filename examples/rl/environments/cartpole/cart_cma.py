@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 #########################################################################
 # Reinforcement Learning with CMA-ES on the CartPoleEnvironment 
 #

@@ -12,25 +12,25 @@ from pybrain.tools.nondominated import non_dominated_front, crowding_distance, n
 class MultiObjectiveGA(GA):
     """ Multi-objective Genetic Algorithm: the fitness is a vector with one entry per objective.
     By default we use NSGA-II selection. """
-    
+
     topProportion = 0.5
     elitism = True
-    
+
     populationSize = 100
     mutationStdDev = 1.
-    
+
     allowEquality = True
 
     mustMaximize = True
-    
+
     def _learnStep(self):
         """ do one generation step """
         # evaluate fitness
         self.fitnesses = dict([(tuple(indiv), self._oneEvaluation(indiv)) for indiv in self.currentpop])
         if self.storeAllPopulations:
             self._allGenerations.append((self.currentpop, self.fitnesses))
-        
-        if self.elitism:    
+
+        if self.elitism:
             self.bestEvaluable = list(non_dominated_front(map(tuple, self.currentpop),
                                                           key=lambda x: self.fitnesses[x],
                                                           allowequality = self.allowEquality))
@@ -38,14 +38,14 @@ class MultiObjectiveGA(GA):
             self.bestEvaluable = list(non_dominated_front(map(tuple, self.currentpop)+self.bestEvaluable,
                                                           key=lambda x: self.fitnesses[x],
                                                           allowequality = self.allowEquality))
-        self.bestEvaluation = [self.fitnesses[indiv] for indiv in self.bestEvaluable]        
+        self.bestEvaluation = [self.fitnesses[indiv] for indiv in self.bestEvaluable]
         self.produceOffspring()
-    
-    def select(self):        
-        return map(array, nsga2select(map(tuple, self.currentpop), self.fitnesses, 
-                                      self.selectionSize, self.allowEquality))    
-                
-    
+
+    def select(self):
+        return map(array, nsga2select(map(tuple, self.currentpop), self.fitnesses,
+                                      self.selectionSize, self.allowEquality))
+
+
 
 def nsga2select(population, fitnesses, survivors, allowequality = True):
     """The NSGA-II selection strategy (Deb et al., 2002).
@@ -65,5 +65,5 @@ def nsga2select(population, fitnesses, survivors, allowequality = True):
             front = sorted(front, key=lambda x: crowd_dist[x], reverse=True)
             front = set(front[:remaining])
         individuals |= front
-    
+
     return list(individuals)

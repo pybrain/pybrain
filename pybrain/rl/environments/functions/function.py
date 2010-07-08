@@ -9,19 +9,19 @@ from pybrain.rl.environments.fitnessevaluator import FitnessEvaluator
 
 class FunctionEnvironment(Environment, FitnessEvaluator):
     """ A n-to-1 mapping function to be with a single minimum of value zero, at xopt. """
-    
+
     # what input dimensions can the function have?
     xdimMin = 1
     xdimMax = None
     xdim = None
-    
+
     # the (single) point where f = 0
     xopt = None
-    
+
     # what would be the desired performance? by default: something close to zero
     desiredValue = 1e-10
     toBeMinimized = True
-    
+
     def __init__(self, xdim = None, xopt = None):
         if xdim is None:
             xdim = self.xdim
@@ -40,27 +40,26 @@ class FunctionEnvironment(Environment, FitnessEvaluator):
             x = x.params
         assert type(x) == ndarray, 'FunctionEnvironment: Input not understood: '+str(type(x))
         return self.f(x)
-    
+
     # methods for conforming to the Environment interface:
     def reset(self):
         self.result = None
-        
+
     def getSensors(self):
         """ the one sensor is the function result. """
         tmp = self.result
         assert tmp is not None
         self.result = None
         return array([tmp])
-                    
+
     def performAction(self, action):
         """ the action is an array of values for the function """
         self.result = self(action)
-    
+
     @property
     def indim(self):
         return self.xdim
-    
+
     # does not provide any observations
     outdim = 0
-    
-    
+

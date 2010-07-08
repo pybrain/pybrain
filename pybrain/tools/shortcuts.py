@@ -2,7 +2,7 @@ __author__ = 'Tom Schaul and Thomas Rueckstiess'
 
 
 from itertools import chain
-import logging 
+import logging
 from sys import exit as errorexit
 from pybrain.structure.networks.feedforward import FeedForwardNetwork
 from pybrain.structure.networks.recurrent import RecurrentNetwork
@@ -20,19 +20,19 @@ class NetworkError(Exception): pass
 
 def buildNetwork(*layers, **options):
     """Build arbitrarily deep networks.
-    
-    `layers` should be a list or tuple of integers, that indicate how many 
-    neurons the layers should have. `bias` and `outputbias` are flags to 
+
+    `layers` should be a list or tuple of integers, that indicate how many
+    neurons the layers should have. `bias` and `outputbias` are flags to
     indicate whether the network should have the corresponding biases; both
     default to True.
-        
+
     To adjust the classes for the layers use the `hiddenclass` and  `outclass`
     parameters, which expect a subclass of :class:`NeuronLayer`.
-    
-    If the `recurrent` flag is set, a :class:`RecurrentNetwork` will be created, 
+
+    If the `recurrent` flag is set, a :class:`RecurrentNetwork` will be created,
     otherwise a :class:`FeedForwardNetwork`.
-    
-    If the `fast` flag is set, faster arac networks will be used instead of the 
+
+    If the `fast` flag is set, faster arac networks will be used instead of the
     pybrain implementations."""
     # options
     opt = {'bias': True,
@@ -47,10 +47,10 @@ def buildNetwork(*layers, **options):
         if key not in opt.keys():
             raise NetworkError('buildNetwork unknown option: %s' % key)
         opt[key] = options[key]
-    
+
     if len(layers) < 2:
         raise NetworkError('buildNetwork needs 2 arguments for input and output layers at least.')
-        
+
     # Bind the right class to the Network name
     network_map = {
         (False, False): FeedForwardNetwork,
@@ -95,7 +95,7 @@ def buildNetwork(*layers, **options):
         # network with hidden layer(s), connections from in to first hidden and last hidden to out
         n.addConnection(FullConnection(n['in'], n['hidden0']))
         n.addConnection(FullConnection(n['hidden%i' % (len(layers) - 3)], n['out']))
-    
+
     # recurrent connections
     if issubclass(opt['hiddenclass'], LSTMLayer):
         if len(layers) > 3:
@@ -104,24 +104,24 @@ def buildNetwork(*layers, **options):
 
     n.sortModules()
     return n
-    
+
 
 def _buildNetwork(*layers, **options):
     """This is a helper function to create different kinds of networks.
 
     `layers` is a list of tuples. Each tuple can contain an arbitrary number of
-    layers, each being connected to the next one with IdentityConnections. Due 
+    layers, each being connected to the next one with IdentityConnections. Due
     to this, all layers have to have the same dimension. We call these tuples
     'parts.'
-    
-    Afterwards, the last layer of one tuple is connected to the first layer of 
+
+    Afterwards, the last layer of one tuple is connected to the first layer of
     the following tuple by a FullConnection.
-    
+
     If the keyword argument bias is given, BiasUnits are added additionally with
-    every FullConnection. 
+    every FullConnection.
 
     Example:
-    
+
         _buildNetwork(
             (LinearLayer(3),),
             (SigmoidLayer(4), GaussianLayer(4)),
@@ -129,15 +129,15 @@ def _buildNetwork(*layers, **options):
         )
     """
     bias = options['bias'] if 'bias' in options else False
-    
+
     net = FeedForwardNetwork()
     layerParts = iter(layers)
     firstPart = iter(layerParts.next())
     firstLayer = firstPart.next()
     net.addInputModule(firstLayer)
-    
+
     prevLayer = firstLayer
-    
+
     for part in chain(firstPart, layerParts):
         new_part = True
         for layer in part:
@@ -158,5 +158,5 @@ def _buildNetwork(*layers, **options):
     net.addOutputModule(layer)
     net.sortModules()
     return net
-    
+
 

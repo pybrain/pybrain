@@ -13,7 +13,7 @@ def labels(filename):
     for _ in xrange(length):
         label, = struct.unpack('B', fp.read(1))
         yield label
-        
+
 
 def images(filename):
     fp = file(filename)
@@ -25,14 +25,14 @@ def images(filename):
         imagestring = fp.read(imagesize)
         image = struct.unpack('B' * imagesize, imagestring)
         yield scipy.array(image)
-        
+
 
 def flaggedArrayByIndex(idx, length):
     arr = scipy.zeros(length)
     arr[idx] = 1.
     return arr
-    
-    
+
+
 def makeMnistDataSets(path):
     """Return a pair consisting of two datasets, the first being the training
     and the second being the test dataset."""
@@ -41,7 +41,7 @@ def makeMnistDataSets(path):
     test_label_file = os.path.join(path, 't10k-labels-idx1-ubyte')
     test_images = images(test_image_file)
     test_labels = (flaggedArrayByIndex(l, 10) for l in labels(test_label_file))
-    
+
     for image, label in itertools.izip(test_images, test_labels):
         test.addSample(image, label)
 
@@ -52,5 +52,5 @@ def makeMnistDataSets(path):
     train_labels = (flaggedArrayByIndex(l, 10) for l in labels(train_label_file))
     for image, label in itertools.izip(train_images, train_labels):
         train.addSample(image, label)
-        
+
     return train, test

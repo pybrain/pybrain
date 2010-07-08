@@ -1,4 +1,5 @@
-""" 
+#!/usr/bin/env python
+"""
 Illustrating the interface of black-box optimizers on a few simple problems:
 - how to initialize when:
     * optimizing the parameters for a function
@@ -43,7 +44,7 @@ l = algo(f, x0)
 # f can also be a simple lambda function
 l = algo(lambda x: sum(x)**2, x0)
 
-# in the case of continuous optimization, the initial point 
+# in the case of continuous optimization, the initial point
 # can be provided as a list (above), an array...
 l = algo(f, array(x0))
 
@@ -58,14 +59,14 @@ l = algo(f, numParameters = 2)
 
 # b) the function is a FunctionEnvironment that specifies the problem dimension itself
 l = algo(f)
-        
+
 # but if none is the case this leads to an error:
 try:
     l = algo(lambda x: sum(x)**2)
 except ValueError, e:
     print 'Error caught:', e
-    
-# Initialization can also take place in 2 steps, first with the settings and then with the 
+
+# Initialization can also take place in 2 steps, first with the settings and then with the
 # evaluator function:
 l = algo()
 l.setEvaluator(f)
@@ -79,7 +80,7 @@ except AssertionError, e:
 l.setEvaluator(f)
 # no error anymore
 l.learn(0)
-    
+
 # a very similar interface can be used to optimize the parameters of a Module
 # (here a neural network controller) on an EpisodicTask
 task = GoNorthwardTask()
@@ -92,7 +93,7 @@ l = algo(task, nnet)
 l = ES(f, mu = 10, lambada = 20)
 l = OriginalNES(f, batchSize = 25, importanceMixing = False)
 
-# if you mistype a keyword, or specify one that is not applicable, 
+# if you mistype a keyword, or specify one that is not applicable,
 # you will see a warning (but the initialization still takes place, ignoring those).
 l = algo(f, batchSise = 10, theMiddleOfTheTutorial = 'here')
 
@@ -104,35 +105,35 @@ l = algo(f, batchSise = 10, theMiddleOfTheTutorial = 'here')
 # Learning is even simpler:
 print l.learn(5)
 
-# The return values are the best point found, and its fitness 
+# The return values are the best point found, and its fitness
 # (the argument indicates the number of learning steps/generations).
 
-# The argument is not mandatory, in that case it will run until 
+# The argument is not mandatory, in that case it will run until
 # one of the stopping criteria is reached. For example:
 # a) maximal number of evaluations (accessible in .numEvaluations)
 l = algo(f, maxEvaluations = 20)
 l.learn()
-print l.learn(), 'in', l.numEvaluations, 'evaluations.' 
+print l.learn(), 'in', l.numEvaluations, 'evaluations.'
 
 # b) desiredValue
 l = algo(f, desiredEvaluation = 10)
-print l.learn(), ': fitness below 10 (we minimize the function).' 
+print l.learn(), ': fitness below 10 (we minimize the function).'
 
 # c) maximal number of learning steps
 l = algo(f, maxLearningSteps = 25)
 l.learn()
-print l.learn(), 'in', l.numLearningSteps, 'learning steps.' 
+print l.learn(), 'in', l.numLearningSteps, 'learning steps.'
 
-# it is possible to continue learning from where we left off, for a 
+# it is possible to continue learning from where we left off, for a
 # specific number of additional learning steps:
-print l.learn(75), 'in', l.numLearningSteps, 'total learning steps.' 
+print l.learn(75), 'in', l.numLearningSteps, 'total learning steps.'
 
 # Finally you can set storage settings and then access all evaluations made
 # during learning, e.g. for plotting:
 l = algo(f, x0, storeAllEvaluations = True, storeAllEvaluated = True, maxEvaluations = 150)
 l.learn()
 try:
-    import pylab 
+    import pylab
     pylab.plot(map(abs,l._allEvaluations))
     pylab.semilogy()
     pylab.show()

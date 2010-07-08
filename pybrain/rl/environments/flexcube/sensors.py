@@ -1,7 +1,7 @@
 __author__ = 'Frank Sehnke, sehnke@in.tum.de'
 
 #########################################################################
-# The sensors that are available for the FlexCube Environment 
+# The sensors that are available for the FlexCube Environment
 #
 # The FlexCube Environment is a Mass-Spring-System composed of 8 mass points.
 # These resemble a cube with flexible edges.
@@ -25,7 +25,7 @@ class Sensors:
         self.sensors = []
         for i in sensorList:
             self.sensors.append(eval(i + "()"))
-    
+
     def updateSensor(self, pos, vel, dist, center, step, wEdges):
         for i in self.sensors:
             i.updateSensor(pos, vel, dist, center, step, wEdges)
@@ -34,7 +34,7 @@ class Sensors:
         output = []
         for i in self.sensors:
             output.append(i.getSensor()[:])
-        return output  
+        return output
 
 #Sensor basis class
 class defaultSensor:
@@ -72,7 +72,7 @@ class EdgesSumReal(defaultSensor):
 class EdgesTarget(defaultSensor):
     def getSensor(self):
         self.sensorOutput = ["EdgesTarget", 12]
-        self.sensorOutput.append(self.wantedEdges.reshape(12) / 30.0) 
+        self.sensorOutput.append(self.wantedEdges.reshape(12) / 30.0)
         return self.sensorOutput
 
 #Returns how close vertices are to the floor up to 1 pixel distance (contact sensor)
@@ -93,14 +93,14 @@ class VerticesMinHight(defaultSensor):
 class DistToOrigin(defaultSensor):
     def getSensor(self):
         self.sensorOutput = ["DistToOrigin", 1]
-        self.sensorOutput.append(array([sqrt((self.centerOfGrav ** 2).sum(axis=0)) * 0.00125])) 
+        self.sensorOutput.append(array([sqrt((self.centerOfGrav ** 2).sum(axis=0)) * 0.00125]))
         return self.sensorOutput
 
 #Returns the distance and angle to a target point (distance is reward for target task)
 class Target(defaultSensor):
     def getSensor(self):
         self.sensorOutput = ["Target", 5]
-    
+
         t = self.targetList[0] - self.centerOfGrav
         dist = sqrt((t ** 2).sum(axis=0))
         out = zeros(5, float)
@@ -115,7 +115,7 @@ class Target(defaultSensor):
             norm = dist * sen
             cosA = (d[0] * t[0] + d[2] * t[2]) / norm
             sinA = (d[0] * t[2] - d[2] * t[0]) / norm
-            if cosA < 0.0: 
+            if cosA < 0.0:
                 if sinA > 0.0: sinA = 1.0
                 else: sinA = -1.0
             out[i + 1] = sinA
@@ -126,6 +126,6 @@ class Target(defaultSensor):
 class Time(defaultSensor):
     def getSensor(self):
         self.sensorOutput = ["Time", 3]
-        self.sensorOutput.append(array([sin(float(self.step) / 4.0), sin(float(self.step) / 8.0), sin(float(self.step) / 16.0)])) 
+        self.sensorOutput.append(array([sin(float(self.step) / 4.0), sin(float(self.step) / 8.0), sin(float(self.step) / 16.0)]))
         return self.sensorOutput
 

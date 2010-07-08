@@ -2,16 +2,16 @@
 #########################################################################
 # Reinforcement Learning with SPE on the ShipSteering Environment
 #
-# Requirements: 
+# Requirements:
 #   pybrain (tested on rev. 1195, ship env rev. 1202)
 # Synopsis:
 #   shipbenchm.py [<True|False> [logfile]]
 #       (first argument is graphics flag)
 #########################################################################
 __author__ = "Martin Felder, Thomas Rueckstiess"
-__version__ = '$Id$' 
+__version__ = '$Id$'
 
-#--- 
+#---
 # default backend GtkAgg does not plot properly on Ubuntu 8.04
 import matplotlib
 matplotlib.use('TkAgg')
@@ -26,7 +26,7 @@ from pybrain.rl.experiments.episodic import EpisodicExperiment
 from pybrain.tools.shortcuts import buildNetwork
 from pybrain.tools.plotting import MultilinePlotter
 
-from pylab import figure, ion 
+from pylab import figure, ion
 from scipy import mean
 import sys
 
@@ -34,7 +34,7 @@ if len(sys.argv) > 1:
     useGraphics = eval(sys.argv[1])
 else:
     useGraphics = False
-    
+
 # create task
 env=ShipSteeringEnvironment()
 maxsteps = 500
@@ -78,7 +78,7 @@ if useGraphics:
 # while True:
 #     experiment._stepQueueLoop()
 #     # rewards.append(mean(agent.history.getSumOverSequences('reward')))
-#     print agent.module.getParameters(), 
+#     print agent.module.getParameters(),
 #     print mean(agent.history.getSumOverSequences('reward'))
 #     clf()
 #     plot(rewards)
@@ -101,7 +101,7 @@ while x<5000:
     agent.reset()
     if useGraphics:
         pl.update()
-    
+
 
 if len(sys.argv) > 2:
     agent.history.saveToFile(sys.argv[1], protocol=-1, arraysonly=True)
@@ -111,11 +111,11 @@ if useGraphics:
 #To view what the simulation is doing at the moment set the environment with True, go to pybrain/rl/environments/ode/ and start viewer.py (python-openGL musst be installed, see PyBrain documentation)
 
 ## performance:
-## experiment.doEpisodes(5) * 100 without weave: 
+## experiment.doEpisodes(5) * 100 without weave:
 ##    real    2m39.683s
 ##    user    2m33.358s
 ##    sys     0m5.960s
-## experiment.doEpisodes(5) * 100 with weave: 
+## experiment.doEpisodes(5) * 100 with weave:
 ##real    2m41.275s
 ##user    2m35.310s
 ##sys     0m5.192s

@@ -20,13 +20,13 @@ Check its gradient:
     True
 
 Try writing it to an xml file, reread it and determine if it looks the same:
-    
+
     >>> from pybrain.tests import xmlInvariance
     >>> xmlInvariance(n)
     Same representation
     Same function
     Same class
-    
+
 """
 
 __author__ = 'Tom Schaul, tom@idsia.ch'
@@ -37,7 +37,7 @@ from pybrain.tests import runModuleTestSuite
 
 
 def buildSimpleMDLSTMNetwork(peepholes = False):
-    N = RecurrentNetwork('simpleMDLstmNet')  
+    N = RecurrentNetwork('simpleMDLstmNet')
     i = LinearLayer(1, name = 'i')
     dim = 1
     h = MDLSTMLayer(dim, peepholes = peepholes, name = 'MDlstm')
@@ -54,8 +54,8 @@ def buildSimpleMDLSTMNetwork(peepholes = False):
     N.addConnection(FullConnection(h, o, inSliceTo = dim, name = 'f3'))
     N.sortModules()
     return N
-        
-        
+
+
 if __name__ == "__main__":
     runModuleTestSuite(__import__('__main__'))
 

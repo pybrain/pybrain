@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 #########################################################################
 # Reinforcement Learning with PGPE on the ShipSteering Environment
 #
@@ -43,7 +44,7 @@ for runs in range(numbExp):
     et.agent = agent
     #create experiment
     experiment = EpisodicExperiment(task, agent)
- 
+
     #Do the experiment
     for updates in range(epis):
         for i in range(prnts):

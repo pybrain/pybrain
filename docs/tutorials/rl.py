@@ -1,6 +1,6 @@
 ############################################################################
 # PyBrain Tutorial "Reinforcement Learning"
-# 
+#
 # Author: Thomas Rueckstiess, ruecksti@in.tum.de
 ############################################################################
 
@@ -9,12 +9,12 @@ __author__ = 'Thomas Rueckstiess, ruecksti@in.tum.de'
 """
 A reinforcement learning (RL) task in pybrain always consists of a few
 components that interact with each other: Environment, Agent, Task, and
-Experiment. In this tutorial we will go through each of them, create 
+Experiment. In this tutorial we will go through each of them, create
 the instances and explain what they do.
 
 But first of all, we need to import some general packages and the RL
 components from PyBrain:
-""" 
+"""
 
 from scipy import *
 import sys, time
@@ -94,7 +94,7 @@ The table needs the number of states and actions as parameters. The standard
 maze environment comes with the following 4 actions: north, south, east, west.
 
 Then, we initialize the table with 1 everywhere. This is not always necessary
-but will help converge faster, because unvisited state-action pairs have a 
+but will help converge faster, because unvisited state-action pairs have a
 promising positive value and will be preferred over visited ones that didn't
 lead to the goal.
 
@@ -116,7 +116,7 @@ task. A task also specifies what the goal is in an environment and how the
 agent is rewarded for its actions. For episodic experiments, the Task also
 decides when an episode is over. Environments usually bring along their own
 tasks. The Maze environment for example has a MDPMazeTask, that we will use.
-MDP stands for "markov decision process" and means here, that the agent knows 
+MDP stands for "markov decision process" and means here, that the agent knows
 its exact location in the maze. The task receives the environment as parameter.
 """
 

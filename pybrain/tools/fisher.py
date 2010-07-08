@@ -7,8 +7,8 @@ from scipy.linalg import inv, cholesky
 
 
 def calcFisherInformation(sigma, invSigma=None, factorSigma=None):
-    """ Compute the exact Fisher Information Matrix of a Gaussian distribution, 
-    given its covariance matrix. 
+    """ Compute the exact Fisher Information Matrix of a Gaussian distribution,
+    given its covariance matrix.
     Returns a list of the diagonal blocks. """
     if invSigma == None:
         invSigma = inv(sigma)
@@ -21,7 +21,7 @@ def calcFisherInformation(sigma, invSigma=None, factorSigma=None):
         D[0, 0] += factorSigma[k, k] ** -2
         fim.append(D)
     return fim
-    
+
 
 
 def calcInvFisher(sigma, invSigma=None, factorSigma=None):
@@ -32,7 +32,7 @@ def calcInvFisher(sigma, invSigma=None, factorSigma=None):
     if factorSigma == None:
         factorSigma = cholesky(sigma)
     dim = sigma.shape[0]
-    
+
     invF = [mat(1 / (invSigma[-1, -1] + factorSigma[-1, -1] ** -2))]
     invD = 1 / invSigma[-1, -1]
     for k in reversed(range(dim - 1)):
@@ -47,7 +47,7 @@ def calcInvFisher(sigma, invSigma=None, factorSigma=None):
         tr = -(1 + qr * s) / wr
         invF.append(blockCombine([[qr, tr * u], [mat(tr * u).T, invD + qr * outer(u, u)]]))
         invD = blockCombine([[q , t * u], [mat(t * u).T, invD + q * outer(u, u)]])
-        
+
     invF.append(sigma)
     invF.reverse()
     return invF

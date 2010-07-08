@@ -1,19 +1,20 @@
+#! /usr/bin/env python
 """ This test script will test the set of optimization algorithms.
 
 It tests
- - the conformity of interface 
+ - the conformity of interface
  - the behavior on simple functions
  - the behavior on FitnessEvaluators
  - the behavior when optimizing a list or an array
  - the behavior when optimizing an Evolvable
  - the behavior when optimizing a ParameterContainer
  - consistency w.r.t. minimization/maximization
- 
+
 Tests to be added:
  - tolerance of problems that have a constant fitness
  - tolerance of problems that have adversarial (strictly decreasing) fitness
  - handling one-dimensional and high-dimensional spaces
- - reasonable results on the linear function 
+ - reasonable results on the linear function
 """
 
 __author__ = 'Tom Schaul, tom@idsia.ch'
@@ -32,7 +33,7 @@ from pybrain.structure.evolvables.evolvable import Evolvable
 from pybrain.rl.environments.cartpole.balancetask import BalanceTask
 from pybrain.tools.shortcuts import buildNetwork
 from pybrain.structure.modules.module import Module
-    
+
 
 # Tasks to be optimized:
 # ----------------------
@@ -71,25 +72,25 @@ pc100._setParameters(xa100)
 
 # for the task object, we need a module
 nnet = buildNetwork(task.outdim, 2, task.indim)
-    
+
 # a mimimalistic Evolvable subclass that is not (like usual) a ParameterContainer
 class SimpleEvo(Evolvable):
-    def __init__(self, x): self.x = x    
-    def mutate(self):      self.x += random() - 0.3    
+    def __init__(self, x): self.x = x
+    def mutate(self):      self.x += random() - 0.3
     def copy(self):        return SimpleEvo(self.x)
-    def randomize(self):   self.x = 10 * random() - 2   
-    def __repr__(self):     return '--%.3f--' % self.x   
-    
-evo1 = SimpleEvo(-3.) 
+    def randomize(self):   self.x = 10 * random() - 2
+    def __repr__(self):     return '--%.3f--' % self.x
+
+evo1 = SimpleEvo(-3.)
 
 
 # the test functions
 # ----------------------
 
 def testInterface(algo):
-    """ Tests whether the algorithm is properly implementing the 
+    """ Tests whether the algorithm is properly implementing the
     correct Blackbox-optimization interface."""
-    # without any arguments, initialization has to work 
+    # without any arguments, initialization has to work
     emptyalgo = algo()
     try:
         # but not learning
@@ -97,33 +98,33 @@ def testInterface(algo):
         return "Failed to throw missing evaluator error?"
     except AssertionError:
         pass
-    
+
     emptyalgo.setEvaluator(sf, xa1)
     # not it can run
     emptyalgo.learn(0)
-            
+
     # simple functions don't check for dimension mismatch
     algo(sf, xa1)
     algo(sf, xa100)
-    
+
     # for these, either an initial point or a dimension parameter is required
     algo(sf, numParameters=2)
-    
+
     try:
         algo(sf)
         return "Failed to throw unknown dimension error"
     except ValueError:
-        pass 
-    
+        pass
+
     # FitnessEvaluators do not require that
-    algo(ife1)        
-    
+    algo(ife1)
+
     # parameter containers can be used too
     algo(ife2, pc2)
-            
+
     return True
 
-        
+
 def testContinuousInterface(algo):
     """ Test the specifics for the interface for ContinuousOptimizers """
     if not issubclass(algo, bbo.ContinuousOptimizer):
@@ -131,16 +132,16 @@ def testContinuousInterface(algo):
     # list starting points are internally converted to arrays
     x = algo(sf, xlist2)
     assert isinstance(x.bestEvaluable, ndarray), 'not converted to array'
-    
+
     # check for dimension mismatch
     try:
         algo(ife1, xa2)
         return "Failed to throw dimension mismatch error"
     except ValueError:
         pass
-    
+
     return True
-    
+
 
 def testMinMax(algo):
     """ Verify that the algorithm is doing the minimization/maximization consistently. """
@@ -148,10 +149,10 @@ def testMinMax(algo):
         or algo == allopts.StochasticHillClimber):
         # TODO
         return True
-    
+
     xa1[0] = 2
-    evalx = sf(xa1)    
-    
+    evalx = sf(xa1)
+
     amax1 = algo(sf, xa1, minimize=False)
     amax2 = algo(sf, xa1)
     amax2.minimize = False
@@ -167,7 +168,7 @@ def testMinMax(algo):
         x, xv = amax.learn(1)
         assert sf(x) == xv, 'Evaluation does not fit: ' + str((sf(x), xv))
         assert xv >= evalx, 'Evaluation did not increase: ' + str(xv) + ' (init: ' + str(evalx) + ')'
-    
+
     xa1[0] = 2
     amin1 = algo(sf, xa1, minimize=True)
     amin2 = algo(sf, xa1)
@@ -184,12 +185,12 @@ def testMinMax(algo):
         x, xv = amin.learn(1)
         assert sf(x) == xv, 'Evaluation does not fit: ' + str((sf(x), xv)) + str(i)
         assert xv <= evalx, 'Evaluation did not decrease: ' + str(xv) + ' (init: ' + str(evalx) + ')' + str(i)
-        assert ((amin.minimize is not amax.minimize) 
-                or not (amin._wasOpposed is amax._wasOpposed)), 'Inconsistent flags.' 
-        
+        assert ((amin.minimize is not amax.minimize)
+                or not (amin._wasOpposed is amax._wasOpposed)), 'Inconsistent flags.'
+
     return True
-    
-    
+
+
 
 
 def testOnModuleAndTask(algo):
@@ -224,13 +225,13 @@ def testAll(tests, allalgos, tolerant=True):
         good = True
         messages = []
         for t in tests:
-            try:    
+            try:
                 res = t(algo)
             except Exception, e:
                 if not tolerant:
                     raise e
                 res = e
-                
+
             if res is True:
                 print '.',
             else:
@@ -245,7 +246,7 @@ def testAll(tests, allalgos, tolerant=True):
             for m in messages:
                 if m is not None:
                     print ' ' * int(log10(i + 1) + 2), '->', m
-    print 
+    print
     print 'Summary:', countgood, '/', len(allalgos), 'of test were passed.'
 
 
@@ -253,23 +254,23 @@ def testAll(tests, allalgos, tolerant=True):
 if __name__ == '__main__':
     from pybrain.optimization import *  #@UnusedWildImport
     #from pybrain.optimization import CMAES #@UnusedImport
-    allalgos = filter(lambda c: (isclass(c) 
+    allalgos = filter(lambda c: (isclass(c)
                                  and issubclass(c, bbo.BlackBoxOptimizer)
-                                 and not issubclass(c, mobj.MultiObjectiveGA) 
+                                 and not issubclass(c, mobj.MultiObjectiveGA)
                                  ),
                       globals().values())
-    
+
     print 'Optimization algorithms to be tested:', len(allalgos)
-    print    
+    print
     print 'Note: this collection of tests may take quite some time.'
-    print 
-    
+    print
+
     tests = [testInterface,
              testContinuousInterface,
              testOnModuleAndTask,
              testOnEvolvable,
              testMinMax,
              ]
-    
+
     testAll(tests, allalgos, tolerant=True)
 

@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 """ A little script to do contour-plots of a couple of the widely used optimization benchmarks. """
 
 __author__ = 'Tom Schaul, tom@idsia.ch'
@@ -22,4 +23,4 @@ pylab.title('Rosenbrock')
 FitnessPlotter(GlasmachersFunction(2), -2., 2., -2., 2.).plotAll(popup = False)
 pylab.title('Glasmachers')
 
-pylab.show()    
+pylab.show()

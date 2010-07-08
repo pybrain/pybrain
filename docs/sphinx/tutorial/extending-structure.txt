@@ -3,7 +3,7 @@
 Extending PyBrain's structure
 =============================
 
-In :ref:`netmodcon` we have learned that networks can be constructed as a 
+In :ref:`netmodcon` we have learned that networks can be constructed as a
 directed acyclic graph, with :class:`Module` instances taking the role of
 nodes and :class:`Connection` instances being the edges between those nodes.
 
@@ -29,18 +29,18 @@ and implement a specific new type afterwards::
 
     class LinearLayer(NeuronLayer):
         """ The simplest kind of module, not doing any transformation. """
-        
+
         def _forwardImplementation(self, inbuf, outbuf):
             outbuf[:] = inbuf
-        
+
         def _backwardImplementation(self, outerr, inerr, outbuf, inbuf):
             inerr[:] = outerr
 
 
 As we can see, Layer class relies on two methods:
-:meth:`_forwardImplementation` and :meth:`_backwardImplementation`. 
+:meth:`_forwardImplementation` and :meth:`_backwardImplementation`.
 (Note the leading underscores which are a Python convention to indicate
-pseudo-private methods.) 
+pseudo-private methods.)
 
 The first method takes two arguments, ``inbuf`` and ``outbuf``. Both are Scipy
 arrays of the size of the layer's input and output dimension respectively. The
@@ -48,15 +48,15 @@ arrays have already been created for us. The pybrain structure framework now
 expects us to produce an output from the input and put it into ``outbuf`` in
 place.
 
-.. note:: Manipulating an array in place with SciPy works via the ``[:]`` 
-          operator. Given an array ``a``, the line ``a[:] = b`` will overwrite 
+.. note:: Manipulating an array in place with SciPy works via the ``[:]``
+          operator. Given an array ``a``, the line ``a[:] = b`` will overwrite
           ``a``'s memory with the contents of ``b``.
 
 The second method is used to calculate the derivative of the output error with
 respect to the input. From standard texts on neural networks, we know that the
 error of a unit (which is a field in a layer in our case) can be calculated
 as the derivative of the unit's transfer function's applied to the units input
-multiplied with the error. In the case of the identity, the derivative is a 
+multiplied with the error. In the case of the identity, the derivative is a
 constant 1 and thus backpropagating the error is nothing but just copying it.
 
 Thus, any :meth:`_backwardImplementation` implementation must fill ``inerror``
@@ -71,25 +71,25 @@ as a transfer function. The derivative is then given by :math:`f'(x) = 2x`.
 
 Let's start out with the pure skeleton of the class::
 
-  
+
     from pybrain.structure.modules.neuronlayer import NeuronLayer
 
     class QuadraticPolynomialLayer(NeuronLayer):
 
         def _forwardImplementation(self, inbuf, outbuf):
           pass
-        
+
         def _backwardImplementation(self, outerr, inerr, outbuf, inbuf):
           pass
 
 The current methods don't do anything, so let's implement one after the other.
 
 Using SciPy, we can use most of Python's arithmetic syntax directly on the array
-and it is applied component wise to it. Thus, to get the square of an array 
+and it is applied component wise to it. Thus, to get the square of an array
 ``a`` we can just call ``a**2``. Thus::
 
         def _forwardImplementation(self, inbuf, outbuf):
-          outbuf[:] = inbuf**2 
+          outbuf[:] = inbuf**2
 
 .. ** <--- making up for broken VIM syntax highlighting.
 
@@ -107,21 +107,21 @@ list for further help.
 Connections
 -----------
 
-A :class:`~pybrain.structure.connections.connection.Connection` works similarly to a Layer in many ways. 
+A :class:`~pybrain.structure.connections.connection.Connection` works similarly to a Layer in many ways.
 The key difference is that a Connection
 processes data it does not "own", meaning that their primary task is to shift data
-from one node of the network graph to another. 
+from one node of the network graph to another.
 
 The API is similar to that of Layers, having :meth:`_forwardImplementation`
 and :meth:`_backwardImplementation` methods. However, sanity checks are
-performed in the constructors mostly to assure that the modules connected 
+performed in the constructors mostly to assure that the modules connected
 can actually be connected.
 
 As an example, we will now have a look at the :class:`IdentityConnection` and
 afterwards implement a trivial example.
 
 
-IdentityConnections are just pushing the output of one module into the input of 
+IdentityConnections are just pushing the output of one module into the input of
 another. They do not transform it in any way.
 
 .. code-block:: python
@@ -132,7 +132,7 @@ another. They do not transform it in any way.
     class IdentityConnection(Connection):
         """Connection which connects the i'th element from the first module's output
         buffer to the i'th element of the second module's input buffer."""
-        
+
         def __init__(self, *args, **kwargs):
             Connection.__init__(self, *args, **kwargs)
             assert self.indim == self.outdim, \
@@ -141,7 +141,7 @@ another. They do not transform it in any way.
 
         def _forwardImplementation(self, inbuf, outbuf):
             outbuf += inbuf
-            
+
         def _backwardImplementation(self, outerr, inerr, inbuf):
             inerr += outerr
 
@@ -152,8 +152,8 @@ connection) are actually compatible, which means that the input dimension of the
 outgoing module equals the output dimension of the incoming module.
 
 The :meth:`_forwardImplementation` is called with the output buffer of the
-incoming module, depicted as ``inbuf``, and the input buffer of the outgoing 
-module, called ``outbuf``. You can think of the two as a source and a sink. 
+incoming module, depicted as ``inbuf``, and the input buffer of the outgoing
+module, called ``outbuf``. You can think of the two as a source and a sink.
 Mind that in line #14, we actually do not overwrite the buffer but instead
 perform an addition. This is because there might be other modules connected to
 the outgoing module. The buffers will be overwritten with by the
@@ -186,19 +186,19 @@ most common in neural networks.
    from connection import Connection
    from pybrain.structure.parametercontainer import ParameterContainer
 
-           
+
    class FullConnection(Connection, ParameterContainer):
-       
+
        def __init__(self, *args, **kwargs):
            Connection.__init__(self, *args, **kwargs)
            ParameterContainer.__init__(self, self.indim*self.outdim)
-       
+
        def _forwardImplementation(self, inbuf, outbuf):
            outbuf += dot(reshape(self.params, (self.outdim, self.indim)), inbuf)
-       
+
        def _backwardImplementation(self, outerr, inerr, inbuf):
            inerr += dot(reshape(self.params, (self.outdim, self.indim)).T, outerr)
-           self.derivs += outer(inbuf, outerr).T.flatten()                
+           self.derivs += outer(inbuf, outerr).T.flatten()
 
 In line 10 and 11 we can see how the superclasses' constructors are called.
 :class:`ParameterContainer` expects an integer argument *N*, which depicts the
@@ -209,9 +209,9 @@ Due this, the constructor of ParameterContainer gives the object two fields:
 :attr:`params` and :attr:`derivs` which are two arrays of size *N*. These are used
 to hold parameters and possibly derivatives.
 
-In the case of backpropagation, learning happens during calls to 
+In the case of backpropagation, learning happens during calls to
 :meth:`_backwardImplementation`. In line 18, we can see how the field
-:attr:`derivs` is modified. 
+:attr:`derivs` is modified.
 
 
 Checking for correctness
@@ -239,5 +239,5 @@ So let's check our new QuadraticPolynomialLayer.
 First we do the necessary imports in line 1 and 2. Then we build a network with
 our special class in line 4. To initialize the weights of the network, we
 randomize its parameters in line 5 and call our gradient check in line 6. If we
-have done everything right, we will be rewarded with the output 
+have done everything right, we will be rewarded with the output
 ``Perfect gradient``.

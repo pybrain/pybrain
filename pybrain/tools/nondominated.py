@@ -22,8 +22,8 @@ def crowding_distance(individuals, fitnesses):
         for pre, ind, post in tripled:
             distances[ind] += (fitnesses[pre][i] - fitnesses[post][i]) / normalization
     return distances
- 
- 
+
+
 def _non_dominated_front_old(iterable, key=lambda x: x, allowequality=True):
     """Return a subset of items from iterable which are not dominated by any
     other item in iterable."""
@@ -32,7 +32,7 @@ def _non_dominated_front_old(iterable, key=lambda x: x, allowequality=True):
     dim = len(keys.values()[0])
     if any(dim != len(k) for k in keys.values()):
         raise ValueError("Wrong tuple size.")
- 
+
     # Make a dictionary that holds the items another item dominates.
     dominations = collections.defaultdict(lambda: [])
     for i in items:
@@ -43,9 +43,9 @@ def _non_dominated_front_old(iterable, key=lambda x: x, allowequality=True):
             else:
                 if all(keys[i][k] <= keys[j][k] for k in xrange(dim)):
                     dominations[i].append(j)
- 
+
     dominates = lambda i, j: j in dominations[i]
- 
+
     res = set()
     items = set(items)
     for i in items:
@@ -59,12 +59,12 @@ def _non_dominated_front_old(iterable, key=lambda x: x, allowequality=True):
             elif dominates(i, j):
                 res.remove(j)
     return res
- 
- 
+
+
 def _non_dominated_front_fast(iterable, key=lambda x: x, allowequality=True):
     """Return a subset of items from iterable which are not dominated by any
-    other item in iterable. 
-    
+    other item in iterable.
+
     Faster version.
     """
     items = list(iterable)
@@ -93,7 +93,7 @@ def _non_dominated_front_fast(iterable, key=lambda x: x, allowequality=True):
         for j in list(res):
             if i is j:
                 continue
-            if (j, i) in dominations: 
+            if (j, i) in dominations:
                 res.remove(i)
                 break
             elif (i, j) in dominations:
@@ -114,11 +114,11 @@ def _non_dominated_front_merge(iterable, key=lambda x: x, allowequality=True):
     else:
         return _non_dominated_front_fast(items, key, allowequality)
 
-    
+
 def _non_dominated_front_arr(iterable, key=lambda x: x, allowequality=True):
     """Return a subset of items from iterable which are not dominated by any
-    other item in iterable. 
-    
+    other item in iterable.
+
     Faster version, based on boolean matrix manipulations.
     """
     items = list(iterable)
@@ -131,19 +131,19 @@ def _non_dominated_front_arr(iterable, key=lambda x: x, allowequality=True):
         ndom = sum(a <= b, axis=2)
     else:
         ndom = sum(a < b, axis=2)
-    ndom = array(ndom, dtype=bool)    
+    ndom = array(ndom, dtype=bool)
     res = set()
     for ii in range(l):
         res.add(ii)
         for ij in list(res):
             if ii == ij:
                 continue
-            if not ndom[ij, ii]: 
+            if not ndom[ij, ii]:
                 res.remove(ii)
                 break
             elif not ndom[ii, ij]:
-                res.remove(ij)    
-    return set(map(lambda i: items[i], res))  
+                res.remove(ij)
+    return set(map(lambda i: items[i], res))
 
 
 def _non_dominated_front_merge_arr(iterable, key=lambda x: x, allowequality=True):

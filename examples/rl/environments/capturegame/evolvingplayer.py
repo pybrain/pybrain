@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 """ A script illustrating how to evolve a simple Capture-Game Player
 which uses a MDRNN as network, with a simple ES algorithm."""
 
@@ -26,11 +27,11 @@ else:
     # specialized mdrnn variation
     from pybrain.structure.networks.custom.capturegame import CaptureGameNetwork
     net = CaptureGameNetwork(size = size, hsize = 2, simpleborders = True)
-    
+
 net = CheaplyCopiable(net)
 print net.name, 'has', net.paramdim, 'trainable parameters.'
 
-learner = ES(task, net, mu = 5, lambada = 5, 
+learner = ES(task, net, mu = 5, lambada = 5,
              verbose = True, evaluatorIsNoisy = True,
              maxEvaluations = 50)
 newnet, f = learner.learn()

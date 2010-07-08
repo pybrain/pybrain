@@ -25,13 +25,13 @@ class RbmGibbsTrainerConfig:
         self.finMm = 0.9		# final momentum
         self.mmSwitchIter = 5	# at which iteration we switch the momentum
         self.maxIter = 9		# how many iterations
-        
+
         self.visibleDistribution = 'bernoulli'
 
 
 class RbmGibbsTrainer(Trainer):
     """Class for training rbms with contrastive divergence."""
-    
+
     def __init__(self, rbm, dataset, cfg=None):
         self.rbm = rbm
         self.invRbm = rbm.invert()
@@ -134,13 +134,13 @@ class RbmGibbsTrainer(Trainer):
         # compute the raw delta
         # !!! note that this delta is only the 'theoretical' delta
         return self.updater(pos, neg, poshb, neghb, posvb, negvb)
-        
+
     def sampler(self, probabilities):
         abstractMethod()
-        
+
     def updater(self, pos, neg, poshb, neghb, posvb, negvb):
         abstractMethod()
-        
+
     def calcUpdateByRows(self, rows):
         """Return a 3-tuple constisting of update for (weightmatrix,
         hidden bias weights, visible bias weights)."""
@@ -161,32 +161,32 @@ class RbmGibbsTrainer(Trainer):
 
         # !!! note that this delta is only the 'theoretical' delta
         return delta_w, delta_hb, delta_vb
-        
-        
+
+
 class RbmBernoulliTrainer(RbmGibbsTrainer):
-    
+
     def sampler(self, probabilities):
         result = probabilities > random.rand(1, self.rbm.hiddenDim)
         return result.astype('int32')
-        
+
     def updater(self, pos, neg, poshb, neghb, posvb, negvb):
         return pos - neg, poshb - neghb, posvb - negvb
-        
-        
+
+
 class RbmGaussTrainer(RbmGibbsTrainer):
-    
+
     def __init__(self, rbm, dataset, cfg=None):
         super(RbmGaussTrainer, self).__init__(rbm, dataset, cfg)
         #samples = self.dataset[self.datasetField]
         # self.visibleVariances = samples.var(axis=0)
         self.visibleVariances = ones(rbm.net.outdim)
-    
+
     def sampler(self, probabilities):
         return random.normal(probabilities, self.visibleVariances)
 
     def updater(self, pos, neg, poshb, neghb, posvb, negvb):
         pos = pos / self.visibleVariances
         return pos - neg, poshb - neghb, posvb - negvb
-        
-        
-        
+
+
+

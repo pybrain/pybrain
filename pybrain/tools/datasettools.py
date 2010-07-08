@@ -1,4 +1,4 @@
-# This tool converts a sequential data set into a number of equally sized windows, 
+# This tool converts a sequential data set into a number of equally sized windows,
 # to be used for supervised training.
 __author__ = "Martin Felder"
 
@@ -8,16 +8,16 @@ from pybrain.datasets import SequentialDataSet
 
 
 def convertSequenceToTimeWindows(DSseq, NewClass, winsize):
-    """ Converts a sequential classification dataset into time windows of fixed length. 
-    Assumes the correct class is given at the last timestep of each sequence. Incomplete windows at the 
+    """ Converts a sequential classification dataset into time windows of fixed length.
+    Assumes the correct class is given at the last timestep of each sequence. Incomplete windows at the
     sequence end are pruned. No overlap between windows.
-    
+
     :arg DSseq: the sequential data set to cut up
     :arg winsize: size of the data window
     :arg NewClass: class of the windowed data set to be returned (gets initialised with indim*winsize, outdim)"""
     assert isinstance(DSseq, SequentialDataSet)
     #assert isinstance(DSwin, SupervisedDataSet)
-    
+
     DSwin = NewClass(DSseq.indim * winsize, DSseq.outdim)
     nsamples = 0
     nseqs = 0
@@ -30,7 +30,7 @@ def convertSequenceToTimeWindows(DSseq, NewClass, winsize):
         # cut this sequence into windows, assuming class is given at the last step of each sequence
         for k in range(winsize, input.shape[0], winsize):
             inp_win = input[k - winsize:k, :]
-            tar_win = target[k - 1, :]   
+            tar_win = target[k - 1, :]
             DSwin.addSample(inp_win.flatten(), tar_win.flatten())
             nsamples += 1
             ##print "added sample %d from sequence %d: %d - %d" %( nsamples, nseqs, k-winsize, k-1)
@@ -41,10 +41,10 @@ def convertSequenceToTimeWindows(DSseq, NewClass, winsize):
     return DSwin
 
 def windowSequenceEval(DS, winsz, result):
-    """ take results of a window-based classification and assess/plot them on the sequence 
+    """ take results of a window-based classification and assess/plot them on the sequence
     WARNING: NOT TESTED!"""
     si_old = 0
-    idx = 0 
+    idx = 0
     x = []
     y = []
     seq_res = []
@@ -53,7 +53,7 @@ def windowSequenceEval(DS, winsz, result):
         curr_x = si_old
         correct = 0.
         wrong = 0.
-        while curr_x < si:    
+        while curr_x < si:
             x.append(curr_x)
             if result[idx] == tar:
                 correct += 1.
@@ -65,14 +65,14 @@ def windowSequenceEval(DS, winsz, result):
             #print "winidx: ", idx
             curr_x += winsz
             x.append(curr_x)
-        
+
         seq_res.append(100. * correct / (correct + wrong))
         print "sequence %d correct: %g12.2%%" % (i, seq_res[-1])
-        
+
     seq_res = array(seq_res)
     print "total fraction of correct sequences: ", 100. * float((seq_res >= 0.5).sum()) / seq_res.size
-        
-    
+
+
 class DataSetNormalizer(object):
     """ normalize a dataset according to a stored LIBSVM normalization file """
     def __init__(self, fname=None, meanstd=False):
@@ -80,16 +80,16 @@ class DataSetNormalizer(object):
         self.meanstd = meanstd
         if fname is not None:
             self.load(fname)
-            
+
     def load(self, fname):
         f = file(fname)
         c = []
-        # the first line determines whether we interpret the file as 
+        # the first line determines whether we interpret the file as
         # giving min/max of features or mean/std
         x = f.readline()
         self.meanstd = False if x == 'x' else True
-        
-        # the next line gives the normalization bounds 
+
+        # the next line gives the normalization bounds
         bounds = array(f.readline().split()).astype(float)
         for line in f:
             c.append(array(line.split()).astype(float)[1:])
@@ -100,7 +100,7 @@ class DataSetNormalizer(object):
         self.scale = (bounds[1] - bounds[0]) / (c[:, 1] - c[:, 0])
         self.newmin = bounds[0]
         self.newmax = bounds[1]
-      
+
     def save(self, fname):
         f = file(fname, "w+")
         f.write('x\n')
@@ -108,10 +108,10 @@ class DataSetNormalizer(object):
         for i in range(self.dim):
             f.write('%d %g %g' % (i + 1, self.par1[i], self.par2[i]))
         f.close()
-        
+
     def normalizePattern(self, y):
         return (y - self.par1) * self.scale + self.newmin
-    
+
     def normalize(self, ds, field='input'):
         """ normalize dataset or vector wrt. to stored min and max """
         if self.dim <= 0:
@@ -129,7 +129,7 @@ class DataSetNormalizer(object):
                 scale = self.scale[i] if isfinite(self.scale[i]) else 1.0
                 newfeat[:, i] = (newfeat[:, i] - self.par1[i]) * scale + self.newmin
         ds.setField(field, newfeat)
-        
+
     def calculate(self, ds, bounds=[-1, 1], field='input'):
         self.dim = ds[field].shape[1]
         if self.meanstd:
@@ -141,5 +141,5 @@ class DataSetNormalizer(object):
             self.scale = (bounds[1] - bounds[0]) / (self.par2 - self.par1)
         self.newmin = bounds[0]
         self.newmax = bounds[1]
-        
+
 

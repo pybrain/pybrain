@@ -1,5 +1,5 @@
-# The code for all black-box optimization algorithms is located in  
-# the pybrain/optimization directory (to avoid duplicating files). 
+# The code for all black-box optimization algorithms is located in
+# the pybrain/optimization directory (to avoid duplicating files).
 # Those algorithms can perfectly be used on (episodic) RL tasks anyway.
 #
 # See also examples/optimization/optimizers_for_rl.py
@@ -10,6 +10,6 @@ from pybrain.rl.learners.learner import Learner, EpisodicLearner
 
 
 class DirectSearchLearner(Learner):
-    """ The class of learners that (in contrast to value-based learners) 
+    """ The class of learners that (in contrast to value-based learners)
     searches directly in policy space.
     """

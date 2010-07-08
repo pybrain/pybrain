@@ -1,21 +1,21 @@
-""" 
+"""
 The library should be able to handle networks without any weight:
 
     >>> n1= buildNonGravityNet(False)
     >>> n1.paramdim
     0
-    
+
     >>> n1.activate([0.2,0.4])[0]
     1.289...
     >>> n1.activate([0.2,0.4])[0]
     1.289...
-    
+
 Now let's verify the recurrent one as well:
-    
+
     >>> n2= buildNonGravityNet(True)
     >>> n2.paramdim
     0
-    
+
     >>> n2.activate([0.2,0.4])[0]
     1.289...
     >>> n2.activate([0.2,0.4])[0]

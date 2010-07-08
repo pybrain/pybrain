@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 """ A simple example on how to use the GaussianProcess class
 in pybrain, for one and two dimensions. """
 
@@ -9,7 +10,7 @@ from scipy import mgrid, sin, cos, array, ravel
 from pylab import show, figure
 
 ds = SupervisedDataSet(1, 1)
-gp = GaussianProcess(indim=1, start=-3, stop=3, step=0.05)    
+gp = GaussianProcess(indim=1, start=-3, stop=3, step=0.05)
 figure()
 
 x = mgrid[-3:3:0.2]
@@ -25,17 +26,17 @@ gp.mean = 0
 # gp.autonoise = True
 
 gp.trainOnDataset(ds)
-gp.plotCurves(showSamples=True) 
+gp.plotCurves(showSamples=True)
 
 # you can also test the gp on single points, but this deletes the
 # original testing grid. it can be restored with a call to _buildGrid()
-print gp.testOnArray(array([[0.4]])) 
+print gp.testOnArray(array([[0.4]]))
 
-        
+
 # --- example on how to use the GP in 2 dimensions
 
 ds = SupervisedDataSet(2,1)
-gp = GaussianProcess(indim=2, start=0, stop=5, step=0.25)    
+gp = GaussianProcess(indim=2, start=0, stop=5, step=0.25)
 figure()
 
 x,y = mgrid[0:5:4j, 0:5:4j]
@@ -47,6 +48,6 @@ for i,j,k in zip(x, y, z):
 
 print "preparing plots. this can take a few seconds..."
 gp.trainOnDataset(ds)
-gp.plotCurves() 
+gp.plotCurves()
 
 show()

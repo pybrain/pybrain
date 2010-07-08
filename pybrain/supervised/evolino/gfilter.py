@@ -30,7 +30,7 @@ class SimpleGenomeManipulation(Filter):
     def _manipulateGenome(self, genome, manfunc=None):
         """ Manipulates the genome inplace by calling the abstract _manipulateValue()
             method on each float found.
-            
+
             :key genome: Arbitrary netsted iterateable container whose leaf
                            elements may be floats or empty containers.
                            E.g. [ [1.] , [1. , 2. , 2 , [3. , 4.] ] , [] ]
@@ -71,7 +71,7 @@ class SimpleMutation(SimpleGenomeManipulation):
 
     def apply(self, population):
         """ Apply the mutation to the population
-        
+
             :key population: must implement the getIndividuals() method
         """
         for individual in population.getIndividuals():
@@ -79,7 +79,7 @@ class SimpleMutation(SimpleGenomeManipulation):
 
     def _mutateIndividual(self, individual):
         """ Mutate a single individual
-        
+
             :key individual: must implement the getGenome() method
         """
         genome = individual.getGenome()

@@ -1,8 +1,9 @@
-""" Example script for SVM classification using PyBrain and LIBSVM 
+#!/usr/bin/env python
+""" Example script for SVM classification using PyBrain and LIBSVM
 CAVEAT: Needs the libsvm Python file svm.py and the corresponding (compiled) library to reside in the Python path! """
 
 __author__ = "Martin Felder"
-__version__ = '$Id$' 
+__version__ = '$Id$'
 
 import pylab as p
 import logging
@@ -34,7 +35,7 @@ trainer = SVMTrainer( svm, trndata )
 # train the with fixed meta-parameters
 log2C=0.   # degree of slack
 log2g=1.1  # width of RBF kernels
-trainer.train( log2C=log2C, log2g=log2g ) 
+trainer.train( log2C=log2C, log2g=log2g )
 # alternatively, could train the SVM using design-of-experiments grid search
 ##trainer.train( search="GridSearchDOE" )
 
@@ -46,7 +47,7 @@ print "sigma: %7g,  C: %7g,  train error: %5.2f%%,  test error: %5.2f%%" % (2.0*
 # generate a grid dataset
 griddat, X, Y = generateGridData(x=[-4,8,0.1],y=[-2,3,0.1])
 
-# pass the grid through the SVM, but this time get the raw distance 
+# pass the grid through the SVM, but this time get the raw distance
 # from the boundary, not the class
 Z = svm.activateOnDataset(griddat, values=True)
 

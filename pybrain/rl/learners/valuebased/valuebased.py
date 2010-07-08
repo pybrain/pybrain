@@ -6,10 +6,10 @@ from pybrain.rl.explorers.discrete.egreedy import EpsilonGreedyExplorer
 
 class ValueBasedLearner(ExploringLearner, DataSetLearner, EpisodicLearner):
     """ An RL algorithm based on estimating a value-function."""
-    
-    #: Does the algorithm work on-policy or off-policy?        
+
+    #: Does the algorithm work on-policy or off-policy?
     offPolicy = False
-    
+
     #: Does the algorithm run in batch mode or online?
     batchMode = True
 
@@ -29,7 +29,7 @@ class ValueBasedLearner(ExploringLearner, DataSetLearner, EpisodicLearner):
     def _getModule(self):
         """ Return the internal module. """
         return self._module
-        
+
     module = property(_getModule, _setModule)
 
     def _setExplorer(self, explorer):
@@ -41,7 +41,7 @@ class ValueBasedLearner(ExploringLearner, DataSetLearner, EpisodicLearner):
     def _getExplorer(self):
         """ Return the internal explorer. """
         return self._explorer
-        
+
     explorer = property(_getExplorer, _setExplorer)
-    
-    
+
+

@@ -3,7 +3,7 @@
 Reinforcement Learning
 ======================
 
-  
+
 A reinforcement learning (RL) task in PyBrain always consists of a few
 components that interact with each other: :class:`Environment`, :class:`Agent`, :class:`Task`, and
 :class:`Experiment`. In this tutorial we will go through each of them, create
@@ -16,32 +16,31 @@ But first of all, we need to import some general packages and the RL
 components from PyBrain:
 ::
 
-  
+
   from scipy import *
   import sys, time
-  
+
   from pybrain.rl.environments.mazes import Maze, MDPMazeTask
   from pybrain.rl.learners.valuebased import ActionValueTable
   from pybrain.rl.agents import LearningAgent
   from pybrain.rl.learners import Q, SARSA
   from pybrain.rl.experiments import Experiment
   from pybrain.rl.environments import Task
-  
-		
+
+
 .. note::
-	..
 	You can directly run the code in this tutorial by running the script ``docs/tutorials/rl.py``.
 
 For later visualization purposes, we also need to initialize the
 plotting engine (interactive mode).
 ::
 
-  
+
   import pylab
   pylab.gray()
   pylab.ion()
-  
-  
+
+
 
 The :class:`Environment` is the world, in which the agent acts. It receives input
 with the :meth:`performAction` method and returns an output with
@@ -64,14 +63,14 @@ goal point. Let's define the maze structure, a simple 2D numpy array, where
                      [1, 1, 1, 1, 1, 1, 1, 0, 1],
                      [1, 0, 0, 0, 0, 0, 0, 0, 1],
                      [1, 1, 1, 1, 1, 1, 1, 1, 1]])
-  
+
 
 Then we create the environment with the structure as first parameter
 and the goal field tuple as second parameter:
 ::
 
   environment = Maze(structure, (7, 7))
-  
+
 
 Next, we need an agent. The agent is where the learning happens. It can
 interact with the environment with its :meth:`getAction` and
@@ -93,10 +92,10 @@ that do this: The :class:`ActionValueTable` for discrete actions and the
 actions, so we need a table:
 ::
 
-  
+
   controller = ActionValueTable(81, 4)
   controller.initialize(1.)
-  
+
 
 The table needs the number of states and actions as parameters. The standard
 maze environment comes with the following 4 actions: north, south, east, west.
@@ -114,10 +113,10 @@ well-known algorithms is the Q-Learning algorithm. Let's now create
 the agent and give it the controller and learner as parameters.
 ::
 
-  
+
   learner = Q()
   agent = LearningAgent(controller, learner)
-  
+
 
 So far, there is no connection between the agent and the environment. In fact,
 in PyBrain, there is a special component that connects environment and agent: the
@@ -129,27 +128,27 @@ MDP stands for "markov decision process" and means here, that the agent knows
 its exact location in the maze. The task receives the environment as parameter.
 ::
 
-  
+
   task = MDPMazeTask(environment)
-  
+
 
 Finally, in order to learn something, we create an experiment, tell it both
 task and agent (it knows the environment through the task) and let it run
 for some number of steps or infinitely, like here:
 ::
 
-  
+
   experiment = Experiment(task, agent)
-  
+
   while True:
       experiment.doInteractions(100)
       agent.learn()
       agent.reset()
-  
+
       pylab.pcolor(controller.params.reshape(81,4).max(1).reshape(9,9))
       pylab.draw()
-  
-  
+
+
 
 Above, the experiment executes 100 interactions between agent and
 environment, or, to be exact, between the agent and the task. The task

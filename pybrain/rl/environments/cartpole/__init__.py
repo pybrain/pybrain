@@ -1,6 +1,6 @@
 # try importing the external dependencies
 try:
-    from matplotlib.mlab import rk4 
+    from matplotlib.mlab import rk4
 except ImportError:
     raise ImportError('This environment needs the matplotlib library installed.')
 

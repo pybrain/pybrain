@@ -32,25 +32,25 @@ Value-based Learners
 .. autoclass:: ValueBasedLearner
    :members:
    :show-inheritance:
-   
+
 .. automodule:: pybrain.rl.learners.valuebased
 
 .. autoclass:: Q
    :members:
    :show-inheritance:
-   
+
 .. autoclass:: QLambda
    :members:
-   :show-inheritance: 
+   :show-inheritance:
 
 .. autoclass:: SARSA
    :members:
-   :show-inheritance: 
+   :show-inheritance:
 
 .. autoclass:: NFQ
    :members:
-   :show-inheritance: 
-   
+   :show-inheritance:
+
 
 Direct-search Learners
 ------------------------
@@ -59,22 +59,22 @@ Direct-search Learners
 
 .. autoclass:: PolicyGradientLearner
    :members:
-   :show-inheritance: 
+   :show-inheritance:
 
 .. automodule:: pybrain.rl.learners.directsearch.reinforce
 
 .. autoclass:: Reinforce
    :members:
-   :show-inheritance: 
+   :show-inheritance:
 
 .. automodule:: pybrain.rl.learners.directsearch.enac
 
 .. autoclass:: ENAC
    :members:
-   :show-inheritance: 
-   
-   
-.. note:: 
+   :show-inheritance:
+
+
+.. note::
 	..
-	Black-box optimization algorithms can also be seen as direct-search RL algorithms, but are not included here.   
-   
+	Black-box optimization algorithms can also be seen as direct-search RL algorithms, but are not included here.
+

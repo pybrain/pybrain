@@ -1,12 +1,13 @@
 __author__ = 'Tom Schaul, tom@idsia.ch'
 
-import os
+from os import unlink, getcwd
+import os.path
 import profile
 import pstats
 import tempfile
 
 from scipy import randn, zeros
-    
+
 from pybrain.structure.networks.network import Network
 from pybrain.datasets import SequentialDataSet, SupervisedDataSet
 from pybrain.supervised import BackpropTrainer
@@ -37,7 +38,7 @@ def buildAppropriateDataset(module):
 
 
 def gradientCheck(module, tolerance=0.0001, dataset=None):
-    """ check the gradient of a module with a randomly generated dataset, 
+    """ check the gradient of a module with a randomly generated dataset,
     (and, in the case of a network, determine which modules contain incorrect derivatives). """
     if module.paramdim == 0:
         print 'Module has no parameters'
@@ -62,7 +63,7 @@ def gradientCheck(module, tolerance=0.0001, dataset=None):
         return True
     else:
         print 'Incorrect gradient', precision
-        if isinstance(module, Network):            
+        if isinstance(module, Network):
             index = 0
             for m in module._containerIterator():
                 if max(precision[index:index + m.paramdim]) > tolerance:
@@ -71,8 +72,8 @@ def gradientCheck(module, tolerance=0.0001, dataset=None):
         else:
             print res
         return False
-    
-    
+
+
 def netCompare(net1, net2, forwardpasses=1, verbose=False):
     identical = True
     if str(net2) == str(net1):
@@ -82,9 +83,9 @@ def netCompare(net1, net2, forwardpasses=1, verbose=False):
         identical = False
         if verbose:
             print net2
-            print "-" * 80
+            print '-' * 80
             print net1
-        
+
     outN = zeros(net2.outdim)
     outEnd = zeros(net1.outdim)
     net2.reset()
@@ -93,7 +94,7 @@ def netCompare(net1, net2, forwardpasses=1, verbose=False):
         inp = randn(net2.indim)
         outN += net2.activate(inp)
         outEnd += net1.activate(inp)
-        
+
     if sum(map(abs, outN - outEnd)) < 1e-9:
         if verbose:
             print 'Same function'
@@ -106,7 +107,7 @@ def netCompare(net1, net2, forwardpasses=1, verbose=False):
     if net2.__class__ == net1.__class__:
         if verbose:
             print 'Same class'
-    else:        
+    else:
         identical = False
         if verbose:
             print net2.__class__
@@ -117,10 +118,10 @@ def netCompare(net1, net2, forwardpasses=1, verbose=False):
 
 def xmlInvariance(n, forwardpasses = 1):
     """ try writing a network to an xml file, reading it, rewrite it, reread it, and compare
-    if the result looks the same (compare string representation, and forward processing 
+    if the result looks the same (compare string representation, and forward processing
     of some random inputs) """
     # We only use this for file creation.
-    tmpfile = tempfile.NamedTemporaryFile(dir=".")
+    tmpfile = tempfile.NamedTemporaryFile(dir='.')
     f = tmpfile.name
     tmpfile.close()
 
@@ -138,9 +139,8 @@ def xmlInvariance(n, forwardpasses = 1):
 
 
 def sortedProfiling(code, maxfunctions=50):
-    import os.path
     f = 'temp/profilingInfo.tmp'
-    if os.path.split(os.path.abspath(os.path.curdir))[1] != 'tests':        
+    if os.path.split(os.path.abspath(''))[1] != 'tests':
         f = '../' + f
     profile.run(code, f)
     p = pstats.Stats(f)

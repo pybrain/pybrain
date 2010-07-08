@@ -4,5 +4,5 @@
 .. automodule:: pybrain.structure.evolvables.evolvable
 
 .. autoclass:: Evolvable
-   :members: 
+   :members:
 

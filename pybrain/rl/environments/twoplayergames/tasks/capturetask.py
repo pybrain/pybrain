@@ -11,25 +11,25 @@ from pybrain.structure.modules.module import Module
 
 class CaptureGameTask(EpisodicTask, Named):
     """ The task of winning the maximal number of capture games against a fixed opponent. """
-    
+
     # first game, opponent is black
     opponentStart = True
-    
+
     # on subsequent games, starting players are alternating
-    alternateStarting = False    
-    
+    alternateStarting = False
+
     # numerical reward value attributed to winning
     winnerReward = 1.
-    
+
     # coefficient determining the importance of long vs. short games w.r. to winning/losing
-    numMovesCoeff = 0.  
-    
+    numMovesCoeff = 0.
+
     # average over some games for evaluations
     averageOverGames = 10
-    
+
     noisy = True
-    
-    def __init__(self, size, opponent = None, **args):        
+
+    def __init__(self, size, opponent = None, **args):
         EpisodicTask.__init__(self, CaptureGame(size))
         self.setArgs(**args)
         if opponent == None:
@@ -45,22 +45,22 @@ class CaptureGameTask(EpisodicTask, Named):
         self.maxmoves = self.env.size * self.env.size
         self.minmoves = 3
         self.reset()
-                    
+
     def reset(self):
         self.switched = False
-        EpisodicTask.reset(self)   
-        if self.opponent.color == CaptureGame.BLACK:     
+        EpisodicTask.reset(self)
+        if self.opponent.color == CaptureGame.BLACK:
             # first move by opponent
             EpisodicTask.performAction(self, self.opponent.getAction())
-    
+
     def isFinished(self):
         res = self.env.gameOver()
         if res and self.alternateStarting and not self.switched:
             # alternate starting player
-            self.opponent.color *= -1       
-            self.switched = True     
+            self.opponent.color *= -1
+            self.switched = True
         return res
-    
+
     def getReward(self):
         """ Final positive reward for winner, negative for loser. """
         if self.isFinished():
@@ -68,21 +68,21 @@ class CaptureGameTask(EpisodicTask, Named):
             moves = self.env.movesDone
             res = self.winnerReward - self.numMovesCoeff * (moves -self.minmoves)/(self.maxmoves-self.minmoves)
             if not win:
-                res *= -1                
+                res *= -1
             if self.alternateStarting and self.switched:
                 # opponent color has been inverted after the game!
                 res *= -1
             return res
         else:
             return 0
-        
+
     def performAction(self, action):
         EpisodicTask.performAction(self, action)
         if not self.isFinished():
-            EpisodicTask.performAction(self, self.opponent.getAction())            
-            
+            EpisodicTask.performAction(self, self.opponent.getAction())
+
     def f(self, x):
-        """ If a module is given, wrap it into a ModuleDecidingAgent before evaluating it. 
+        """ If a module is given, wrap it into a ModuleDecidingAgent before evaluating it.
         Also, if applicable, average the result over multiple games. """
         if isinstance(x, Module):
             agent = ModuleDecidingPlayer(x, self.env, greedySelection = True)
@@ -95,9 +95,9 @@ class CaptureGameTask(EpisodicTask, Named):
         self.opponent.game = self.env
         for _ in range(self.averageOverGames):
             agent.color = -self.opponent.color
-            x = EpisodicTask.f(self, agent)           
+            x = EpisodicTask.f(self, agent)
             res += x
         return res / float(self.averageOverGames)
-    
-    
-    
+
+
+

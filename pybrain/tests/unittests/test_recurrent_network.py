@@ -10,7 +10,7 @@ Build a simple recurrent network:
        ...
        Recurrent Connections:
         [<FullConnection ...: 'hidden0' -> 'hidden0'>]
-             
+
 Check its gradient:
 
     >>> from pybrain.tests import gradientCheck
@@ -19,13 +19,13 @@ Check its gradient:
     True
 
 Try writing it to an xml file, reread it and determine if it looks the same:
-    
+
     >>> from pybrain.tests import xmlInvariance
     >>> xmlInvariance(n)
     Same representation
     Same function
     Same class
-    
+
 Set all the weights to one, and the recurrent one to 0.5, and then do some checks.
     >>> n.params[:] = [1,1,0.5]
     >>> n.reset()
@@ -38,7 +38,7 @@ Set all the weights to one, and the recurrent one to 0.5, and then do some check
     >>> n.reset()
     >>> n.activate(0)[0]
     0.0
-    
+
 """
 __author__ = 'Tom Schaul, tom@idsia.ch'
 
@@ -50,13 +50,13 @@ from pybrain.tests import runModuleTestSuite
 
 
 def buildRecurrentNetwork():
-    N = buildNetwork(1, 1, 1, recurrent=True, bias=False, hiddenclass=LinearLayer, outputbias=False) 
+    N = buildNetwork(1, 1, 1, recurrent=True, bias=False, hiddenclass=LinearLayer, outputbias=False)
     h = N['hidden0']
     N.addRecurrentConnection(FullConnection(h, h))
     N.sortModules()
     N.name = 'RecurrentNetwork'
     return N
-        
+
 if __name__ == "__main__":
     runModuleTestSuite(__import__('__main__'))
 

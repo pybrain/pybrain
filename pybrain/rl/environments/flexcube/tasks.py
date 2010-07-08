@@ -1,7 +1,7 @@
 __author__ = 'Frank Sehnke, sehnke@in.tum.de'
 
 #########################################################################
-# The tasks availabele in the FlexCube Environment 
+# The tasks availabele in the FlexCube Environment
 #
 # The FlexCube Environment is a Mass-Spring-System composed of 8 mass points.
 # These resemble a cube with flexible edges.
@@ -20,7 +20,7 @@ from pybrain.rl.environments import EpisodicTask
 from scipy import array, r_, clip
 import sensors
 
-#Task basis class        
+#Task basis class
 class NoRewardTask(EpisodicTask):
     ''' just a basic task, that doesn't return a reward '''
     def __init__(self, env):
@@ -32,14 +32,14 @@ class NoRewardTask(EpisodicTask):
         self.obsSensors = ["EdgesReal"]
         self.rewardSensor = [""]
         self.oldReward = 0.0
-        self.plotString = ["World Interactions", "Reward", "Reward on NoReward Task"]    
+        self.plotString = ["World Interactions", "Reward", "Reward on NoReward Task"]
         self.inDim = len(self.getObservation())
-        self.outDim = self.env.actLen        
+        self.outDim = self.env.actLen
         self.dif = (self.env.fraktMax - self.env.fraktMin) * self.env.dists[0]
-        self.maxSpeed = self.dif / 30.0 
+        self.maxSpeed = self.dif / 30.0
         self.picCount = 0
         self.epiLen = 1
-        
+
     def incStep(self):
         self.step += 1
         self.epiStep += 1
@@ -51,7 +51,7 @@ class NoRewardTask(EpisodicTask):
 
     def getObservation(self):
         # do something with self.sensors and return observation
-        self.oldReward = self.rawReward            
+        self.oldReward = self.rawReward
         aktSensors = self.env.getSensors()
         output = array([])
         for i in aktSensors:
@@ -63,7 +63,7 @@ class NoRewardTask(EpisodicTask):
                 self.rawReward = i[2][0]
             if i[0] == "EdgesReal":
                 self.EdgeL = momSense.copy()
-        return output[:]  
+        return output[:]
 
     #An agent can find easily the resonance frequency of the cube
     #Most tasks can be tricked by realising a resonance catastrophy
@@ -73,7 +73,7 @@ class NoRewardTask(EpisodicTask):
         return ((self.EdgeL - 1.0) ** 2).sum(axis=0)
 
     def performAction(self, action):
-        """ a filtered mapping towards performAction of the underlying environment. """                
+        """ a filtered mapping towards performAction of the underlying environment. """
         # scaling
         self.incStep()
         action = (action + 1.0) / 2.0 * self.dif + self.env.fraktMin * self.env.dists[0]
@@ -83,8 +83,8 @@ class NoRewardTask(EpisodicTask):
         self.action = action.copy()
 
     def reset(self):
-        self.reward[0] = 0.0   
-        self.rawReward = 0.0         
+        self.reward[0] = 0.0
+        self.rawReward = 0.0
         self.env.reset()
         self.action = [self.env.dists[0]] * self.outDim
         self.epiStep = 0
@@ -93,28 +93,28 @@ class NoRewardTask(EpisodicTask):
     def isFinished(self):
         return (self.epiStep >= self.epiLen)
 
-#Aim is to maximize the edge lengths (best reward: 3096.167, PGPE)      
+#Aim is to maximize the edge lengths (best reward: 3096.167, PGPE)
 class GrowTask(NoRewardTask):
     def __init__(self, env):
         NoRewardTask.__init__(self, env)
         self.rewardSensor = ["EdgesSumReal"]
-        self.obsSensors = ["EdgesReal", "EdgesTarget"]    
-        self.inDim = len(self.getObservation())     
-        self.plotString = ["World Interactions", "Size", "Reward on Growing Task"]  
-        self.env.mySensors = sensors.Sensors(self.obsSensors + self.rewardSensor)  
+        self.obsSensors = ["EdgesReal", "EdgesTarget"]
+        self.inDim = len(self.getObservation())
+        self.plotString = ["World Interactions", "Size", "Reward on Growing Task"]
+        self.env.mySensors = sensors.Sensors(self.obsSensors + self.rewardSensor)
         self.epiLen = 200 #suggested episode length
-        
+
 #Aim is to maximize the distance to the starting point  (best reward: 406.43, PGPE)
 class WalkTask(NoRewardTask):
     def __init__(self, env):
         NoRewardTask.__init__(self, env)
         self.rewardSensor = ["DistToOrigin"]
-        self.obsSensors = ["EdgesTarget", "EdgesReal", "VerticesContact", "Time"]    
-        self.inDim = len(self.getObservation())     
+        self.obsSensors = ["EdgesTarget", "EdgesReal", "VerticesContact", "Time"]
+        self.inDim = len(self.getObservation())
         self.plotString = ["World Interactions", "Distance", "Reward on Walking Task"]
-        self.env.mySensors = sensors.Sensors(self.obsSensors + self.rewardSensor)  
+        self.env.mySensors = sensors.Sensors(self.obsSensors + self.rewardSensor)
         self.epiLen = 2000  #suggested episode length
-        
+
     def getReward(self):
         if self.epiStep < self.epiLen: self.reward[0] = -self.getPain()
         else: self.reward[0] = self.rawReward * 800.0 - self.getPain()
@@ -133,8 +133,8 @@ class WalkDirectionTask(WalkTask):
     def __init__(self, env):
         WalkTask.__init__(self, env)
         self.rewardSensor = ["Target"]
-        self.obsSensors.append("Target")    
-        self.inDim = len(self.getObservation())     
+        self.obsSensors.append("Target")
+        self.inDim = len(self.getObservation())
         self.plotString = ["World Interactions", "Distance", "Reward on Target Approach Task"]
         self.env.mySensors = sensors.Sensors(self.obsSensors)
         self.env.mySensors.sensors[4].targetList = [array([160.0, 0.0, 0.0])]
@@ -143,7 +143,7 @@ class WalkDirectionTask(WalkTask):
         #self.epiFakt=1.0/float(self.epiLen)
 
     def getReward(self):
-        if self.epiStep < self.epiLen: 
+        if self.epiStep < self.epiLen:
             if self.rawReward < 0.5: self.reward[0] = (0.5 - self.rawReward) * 1.0 - self.getPain()
             else: self.reward[0] = -self.getPain()
         else: self.reward[0] = clip(160.0 * (1.0 - self.rawReward), 0.0, 160.0) - self.getPain()
@@ -162,7 +162,7 @@ class TargetTask(WalkDirectionTask):
         self.epiFakt = 1.0 / self.epiLen
 
     def getReward(self):
-        if self.epiStep == self.epiLen / 3 or self.epiStep == 2 * self.epiLen / 3 or self.epiStep == self.epiLen: 
+        if self.epiStep == self.epiLen / 3 or self.epiStep == 2 * self.epiLen / 3 or self.epiStep == self.epiLen:
             self.reward[0] = clip(160.0 * (1.0 - self.rawReward), 0.0, 160.0) - self.getPain()
         else: self.reward[0] = -self.getPain()
         return self.reward[0]
@@ -183,16 +183,16 @@ class JumpTask(NoRewardTask):
     def __init__(self, env):
         NoRewardTask.__init__(self, env)
         self.rewardSensor = ["VerticesMinHight"]
-        self.obsSensors = ["EdgesTarget", "EdgesReal", "VerticesContact"]    
-        self.inDim = len(self.getObservation())     
+        self.obsSensors = ["EdgesTarget", "EdgesReal", "VerticesContact"]
+        self.inDim = len(self.getObservation())
         self.plotString = ["World Interactions", "Distance", "Reward on Walking Task"]
-        self.env.mySensors = sensors.Sensors(self.obsSensors + self.rewardSensor)  
+        self.env.mySensors = sensors.Sensors(self.obsSensors + self.rewardSensor)
         self.epiLen = 500
         self.maxReward = 0.0
         self.maxSpeed = self.dif / 10.0
 
     def getReward(self):
-        if self.epiStep < self.epiLen: 
+        if self.epiStep < self.epiLen:
             if self.rawReward > self.maxReward: self.maxReward = self.rawReward
             self.reward[0] = -self.getPain()
         else: self.reward[0] = self.maxReward - self.getPain()

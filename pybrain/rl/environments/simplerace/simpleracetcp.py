@@ -7,15 +7,15 @@ import string
 from scipy import zeros
 
 class SimpleraceEnvironment(Environment):
-    
+
     firstCarScore = 0
     secondCarScore = 0
     lastStepCurrentWp = [0, 0]
     lastStepNextWp = [0, 0]
-    
+
     indim = 2
     outdim = 7
-    
+
     def __init__(self, host="127.0.0.1", port=6524):
         self.theSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.theSocket.connect((host, port))
@@ -23,10 +23,10 @@ class SimpleraceEnvironment(Environment):
         print "Connected to a simplerace server"
         self.reset()
         self.serverIsReady = False
-        
+
     def getSensors(self):
         return self.sensors
-    
+
     def performAction(self, action):
         # there is a nicer way of doing the following, but i'll wait with that until
         # i'm a bit more fluent in Python
@@ -55,12 +55,12 @@ class SimpleraceEnvironment(Environment):
             print 'Waiting one step'
             self.waitOne = False
         elif self.serverIsReady:
-            self.theSocket.send (str(command) + "\n") 
+            self.theSocket.send (str(command) + "\n")
         else:
-            print "not sending" 
-        # get and process the answer 
+            print "not sending"
+        # get and process the answer
         data = ""
-        while len (data) < 2:    
+        while len (data) < 2:
             data = self.theSocket.recv(1000)
         #print "received", data
         inputs = string.split(str(data), " ")
@@ -88,7 +88,7 @@ class SimpleraceEnvironment(Environment):
                         if (self.euclideanDistance(ownPosition, self.lastStepCurrentWp) < self.euclideanDistance(otherPosition, self.lastStepCurrentWp)):
                             self.firstCarScore += 1
                         else:
-                            self.secondCarScore += 1                 
+                            self.secondCarScore += 1
             # store old way point positions
             self.lastStepCurrentWp = currentWp
             self.step += 1
@@ -96,7 +96,7 @@ class SimpleraceEnvironment(Environment):
             print "impossible!"
         else:
             print "incomprehensible and thus roundly ignored", data
-    
+
     def reset(self):
         self.step = 0
         self.firstCarScore = 0
@@ -104,7 +104,7 @@ class SimpleraceEnvironment(Environment):
         self.lastStepCurrentWp = [0, 0]
         self.lastStepNextWp = [0, 0]
         self.sensors = zeros(self.outdim)
-        self.waitOne = False  
-    
+        self.waitOne = False
+
     def euclideanDistance(self, firstPoint, secondPoint):
         return sqrt ((firstPoint[0] - secondPoint[0]) ** 2 + (firstPoint[1] - secondPoint[1]) ** 2)

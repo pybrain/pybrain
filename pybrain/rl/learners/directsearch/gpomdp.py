@@ -8,9 +8,9 @@ from scipy import zeros, mean
 class GPOMDP(PolicyGradientLearner):
     def __init__(self):
         PolicyGradientLearner.__init__(self)
-        
+
     def calculateGradient(self):
-        
+
         # normalize rewards
         # self.ds.data['reward'] /= max(ravel(abs(self.ds.data['reward'])))
 
@@ -25,9 +25,9 @@ class GPOMDP(PolicyGradientLearner):
         for seq in range(self.ds.getNumSequences()):
             _, _, rewards, loglhs = self.ds.getSequence(seq)
             for t in range(len(rewards)):
-                baselines[t, :] += mean(sum(loglhs[:t + 1, :], 0) ** 2 * rewards[t, :], 0) / mean(sum(loglhs[:t + 1, :], 0) ** 2, 0) 
+                baselines[t, :] += mean(sum(loglhs[:t + 1, :], 0) ** 2 * rewards[t, :], 0) / mean(sum(loglhs[:t + 1, :], 0) ** 2, 0)
                 seqcount[t, :] += 1
-        
+
         baselines = baselines / seqcount
         # print baselines
         for seq in range(self.ds.getNumSequences()):
@@ -36,4 +36,4 @@ class GPOMDP(PolicyGradientLearner):
                 g[seq, :] += sum(loglhs[:t + 1, :], 0) * (rewards[t, :] - baselines[t])
 
         gradient = mean(g, 0)
-        return gradient    
+        return gradient

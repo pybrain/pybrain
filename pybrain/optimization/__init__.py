@@ -1,5 +1,5 @@
 from hillclimber import HillClimber, StochasticHillClimber
-from randomsearch import RandomSearch, WeightGuessing, WeightMaskGuessing 
+from randomsearch import RandomSearch, WeightGuessing, WeightMaskGuessing
 from neldermead import NelderMead
 from populationbased.__init__ import *
 from finitedifference.__init__ import *

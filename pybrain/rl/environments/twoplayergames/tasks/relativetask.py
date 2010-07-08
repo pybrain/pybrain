@@ -10,30 +10,30 @@ from pybrain.structure.networks.custom.capturegame import CaptureGameNetwork
 class RelativeCaptureTask(CaptureGameTask):
     """ returns the (anti-symmetric) relative score of p1 with respect to p2.
     (p1 and p2 are CaptureGameNetworks)
-    The score depends on: 
+    The score depends on:
     - greedy play
     - play with fixed starting positions (only first stone)
     - moves-until-win or moves-until-defeat (winning faster is better)
     - play with noisy moves (e.g. adjusting softmax temperature)
-        
+
     """
-    
+
     # are networks provided?
     useNetworks = False
-    
+
     # maximal number of games per evaluation
     maxGames = 3
-    
+
     presetGamesProportion = 0.5
-    
+
     minTemperature = 0
     maxTemperature = 0.2
-    
+
     verbose = False
-    
+
     # coefficient determining the importance of long vs. short games w.r. to winning/losing
     numMovesCoeff = 0.5
-    
+
     def __init__(self, size, **args):
         self.setArgs(**args)
         self.size = size
@@ -41,7 +41,7 @@ class RelativeCaptureTask(CaptureGameTask):
         self.env = self.task.env
         if self.presetGamesProportion > 0:
             self.sPos = self._fixedStartingPos()
-            self.cases = int(len(self.sPos) / self.presetGamesProportion)            
+            self.cases = int(len(self.sPos) / self.presetGamesProportion)
         else:
             self.cases = 1
         self.maxmoves = self.size * self.size
@@ -61,7 +61,7 @@ class RelativeCaptureTask(CaptureGameTask):
         p2.color = -p1.color
         self.player = p1
         self.opponent = p2
-        
+
         # the games with increasing temperatures and lower coefficients
         coeffSum = 0.
         score = 0.
@@ -83,14 +83,14 @@ class RelativeCaptureTask(CaptureGameTask):
             coeffSum += coeff
             if self.cases == 1 or (i % self.cases == 0 and i > 0):
                 self._globalWarming()
-            
+
         return score / coeffSum
-    
+
     def _globalWarming(self):
         """ increase temperature """
         if self.temp == 0:
             self.temp = 0.02
-        else: 
+        else:
             self.temp *= 1.5
         if self.temp > self.maxTemperature:
             return False
@@ -99,7 +99,7 @@ class RelativeCaptureTask(CaptureGameTask):
             self.temp = self.minTemperature
             return False
         return True
-                
+
     def _setTemperature(self):
         if self.useNetworks:
             self.opponent.temperature = self.temp
@@ -112,8 +112,8 @@ class RelativeCaptureTask(CaptureGameTask):
             self.player.randomPartMoves = randPart
             return True
         else:
-            return False            
-    
+            return False
+
     def _fixedStartingPos(self):
         """ a list of starting positions, not along the border, and respecting symmetry. """
         res = []
@@ -123,14 +123,14 @@ class RelativeCaptureTask(CaptureGameTask):
             for y in range(x, (self.size + 1) / 2):
                 res.append((x, y))
         return res
-            
+
     def _oneGame(self, preset=None):
         """ a single black stone can be set as the first move. """
         self.env.reset()
         if preset != None:
             self.env._setStone(CaptureGame.BLACK, preset)
             self.env.movesDone += 1
-            self.env.playToTheEnd(self.opponent, self.player)            
+            self.env.playToTheEnd(self.opponent, self.player)
         else:
             self.env.playToTheEnd(self.player, self.opponent)
         moves = self.env.movesDone
@@ -142,25 +142,25 @@ class RelativeCaptureTask(CaptureGameTask):
             return res
         else:
             return - res
-        
-    
+
+
 if __name__ == '__main__':
     assert RelativeCaptureTask(5)._fixedStartingPos() == [(1, 1), (1, 2), (2, 2)]
     assert RelativeCaptureTask(8)._fixedStartingPos() == [(1, 1), (1, 2), (1, 3), (2, 2), (2, 3), (3, 3)]
-    
+
     net1 = CaptureGameNetwork(hsize=1)
     net2 = CaptureGameNetwork(hsize=1)
     #print net1.params
     #print net2.params
-    
+
     r = RelativeCaptureTask(5, maxGames=40, useNetworks=True,
                             presetGamesProportion=0.5)
-    
+
     print r(net1, net2)
     print r(net2, net1)
     r.maxGames = 200
     print r(net1, net2)
     print r(net2, net1)
-    
-    
+
+
 

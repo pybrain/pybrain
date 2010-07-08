@@ -1,11 +1,11 @@
 #######################################################################
-# k-means++ 
+# k-means++
 #
 # this is a k-means clustering algorithm that selects its
-# initial cluster centers in a smart way to speed up convergence. 
+# initial cluster centers in a smart way to speed up convergence.
 # see: Arthur, D. and Vassilvitskii, S. "k-means++: the advantages
 # of careful seeding". ACM-SIAM symposium on Discrete algorithms. 2007
-# 
+#
 # Implementation from Yong Sun's website
 # http://blogs.sun.com/yongsun/entry/k_means_and_k_means
 #######################################################################

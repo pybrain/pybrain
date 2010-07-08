@@ -1,12 +1,12 @@
 """
     >>> from pybrain.tools.ibp import leftordered
     >>> from scipy import rand, array
-    
+
 Build a random binary matrix
-    
+
     >>> M = array(rand(10,20)<0.4, dtype=bool)
     >>> L = leftordered(M)
-    
+
 Reordering rows gives the same result
 
     >>> M2 = M[:, ::-1]
@@ -14,7 +14,7 @@ Reordering rows gives the same result
     True
 
 Reordering columns does not
-    >>> M3 = M[::-1, :]    
+    >>> M3 = M[::-1, :]
     >>> sum(sum(L == leftordered(M3))) < 200
     True
 

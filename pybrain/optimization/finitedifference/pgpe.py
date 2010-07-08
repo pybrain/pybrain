@@ -62,7 +62,7 @@ class PGPE(FiniteDifferences):
             #normalized sigma gradient with moving average baseline
             norm = (self.bestEvaluation-self.baseline)
             if norm != 0.0:
-                fakt2=(self.mreward-self.baseline)/(self.bestEvaluation-self.baseline)             
+                fakt2=(self.mreward-self.baseline)/(self.bestEvaluation-self.baseline)
             else:
                 fakt2 = 0.0
         #update baseline        

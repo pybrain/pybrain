@@ -13,7 +13,7 @@ class QueuedExperiment(EpisodicExperiment):
     def run(self, queuelength, learningcycles=-1):
         # fill the queue with given number of episodes
         self._fillQueue(queuelength)
-        
+
         # start the queue loop
         if learningcycles == -1:
             while True:
@@ -23,15 +23,15 @@ class QueuedExperiment(EpisodicExperiment):
             for _ in arange(learningcycles):
                 # learn the given number of times
                 self._stepQueueLoop()
-        
+
 
     def _fillQueue(self, queuelength):
-        # reset agent (empty queue)        
+        # reset agent (empty queue)
         self.agent.reset()
         # fill queue with first n episodes
         self.doEpisodes(queuelength)
- 
-           
+
+
     def _stepQueueLoop(self):
         # let agent learn with full queue
         self.agent.learn()
@@ -39,5 +39,4 @@ class QueuedExperiment(EpisodicExperiment):
         self.agent.history.removeSequence(0)
         # execute one new episode
         self.doEpisodes(1)
-        
-        
+

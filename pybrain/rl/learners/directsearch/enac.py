@@ -10,11 +10,11 @@ class ENAC(PolicyGradientLearner):
     """ Episodic Natural Actor-Critic. See J. Peters "Natural Actor-Critic", 2005.
         Estimates natural gradient with regression of log likelihoods to rewards.
     """
-        
+
     def calculateGradient(self):
         # normalize rewards
         # self.dataset.data['reward'] /= max(ravel(abs(self.dataset.data['reward'])))
-        
+
         # initialize variables
         R = ones((self.dataset.getNumSequences(), 1), float)
         X = ones((self.dataset.getNumSequences(), self.loglh.getDimension('loglh') + 1), float)
@@ -29,11 +29,11 @@ class ENAC(PolicyGradientLearner):
                 loglh = self.loglh['loglh'][seqidx[n]:, :]
             else:
                 loglh = self.loglh['loglh'][seqidx[n]:seqidx[n + 1], :]
-            
+
             X[n, :-1] = sum(loglh, 0)
             R[n, 0] = sum(reward, 0)
-        
+
         # linear regression
         beta = dot(pinv(X), R)
         return beta[:-1]
-        
+

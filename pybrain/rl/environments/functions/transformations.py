@@ -1,11 +1,12 @@
-from pybrain.rl.environments.fitnessevaluator import FitnessEvaluator
 __author__ = 'Tom Schaul, tom@idsia.ch'
+
 
 from scipy import rand, dot
 from scipy.linalg import orth, norm, inv
 
 from function import FunctionEnvironment
 from pybrain.structure.parametercontainer import ParameterContainer
+from pybrain.rl.environments.fitnessevaluator import FitnessEvaluator
 
 
 def oppositeFunction(basef):
@@ -22,7 +23,7 @@ def oppositeFunction(basef):
         return res
     else:    
         return lambda x:-basef(x)
-            
+                
 
 class TranslateFunction(FunctionEnvironment):
     """ change the position of the optimum """        
@@ -70,5 +71,3 @@ class RotateFunction(FunctionEnvironment):
 class CompositionFunction(FunctionEnvironment):
     """ composition of functions """
     # TODO
-
-    

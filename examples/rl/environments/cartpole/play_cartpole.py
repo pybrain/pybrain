@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 ###########################################################################
 # This program takes 4 parameters at the command line and runs the
 # (single) cartpole environment with it, visualizing the cart and the pole.
@@ -20,9 +21,9 @@ epilen = 200
 
 if len(sys.argv) < 5:
     sys.exit('please give 4 parameters. run: "python play_catpole.py <p1> <p2> <p3> <p4>"\n')
-     
+
 # create environment
-env = CartPoleEnvironment()    
+env = CartPoleEnvironment()
 env.setRenderer(CartPoleRenderer())
 env.getRenderer().start()
 env.delay = (episodes == 1)
@@ -35,7 +36,7 @@ net = buildNetwork(4, 1, bias=False)
 
 # create agent and set parameters from command line
 agent = LearningAgent(net, None)
-agent.module._setParameters([float(sys.argv[1]), float(sys.argv[2]), float(sys.argv[3]), float(sys.argv[4])]) 
+agent.module._setParameters([float(sys.argv[1]), float(sys.argv[2]), float(sys.argv[3]), float(sys.argv[4])])
 
 # create experiment
 experiment = EpisodicExperiment(task, agent)
@@ -53,4 +54,4 @@ print ret, "mean:",mean(ret)
 #env.getRenderer().stop()
 
 
-                         
+

@@ -9,7 +9,7 @@ for i in range(1000):
     stND[i] = 1.0 / 2.51 * exp(-0.5 * (x) ** 2)
 
 
-# FIXME: different class name? 
+# FIXME: different class name?
 class MixtureOfGaussians:
     def __init__(self, numOGaus=10, alphaA=0.02, alphaM=0.02, alphaS=0.02):
         self.alphaA = alphaA
@@ -36,7 +36,7 @@ class MixtureOfGaussians:
         self.best = 0.000001
 
     def getStND(self, x, mue=0.0, sig=1.0):
-        x = (x - mue) / sig           
+        x = (x - mue) / sig
         if abs(x) >= 4.0: return 0.000000001
         x = int((x + 4.0) / 8.0 * 1000)
         return stND[x] / sig
@@ -76,21 +76,21 @@ class MixtureOfGaussians:
         sigmoA = self.sigmo(self.alpha)
         sigmoA /= sum(sigmoA)
         self.alpha = self.invSigmo(sigmoA)
-            
+
         #mue learning
         sigmoA = self.sigmo(self.alpha)
-        self.mue += self.alphaM * fakt * (x - self.mue) * sigmoA * norm  
+        self.mue += self.alphaM * fakt * (x - self.mue) * sigmoA * norm
 
         #sigma learning
         if fakt > 0.0:
-            self.sigma += self.alphaS * fakt * ((x - self.mue) ** 2 - self.sigma ** 2) / self.sigma * sigmoA * norm 
+            self.sigma += self.alphaS * fakt * ((x - self.mue) ** 2 - self.sigma ** 2) / self.sigma * sigmoA * norm
 
     def sigmo(self, a):
         return 1.0 / (1.0 + exp(-1.0 * a))
-            
+
     def invSigmo(self, a):
         return - log(1.0 / a - 1.0)
-            
+
     def getSample(self):
         sampleX = self.drawSample()
         return sampleX

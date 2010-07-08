@@ -286,7 +286,7 @@ class ContinuousOptimizer(BlackBoxOptimizer):
             bestE = self.wrappingEvaluable.copy()
         return bestE, bestF
    
-    
+
 class TopologyOptimizer(BlackBoxOptimizer):
     """ A class of algorithms that changes the topology as well as the parameters.
     It does not accept an arbitrary Evolvable as initial point, only a 
@@ -302,4 +302,3 @@ class TopologyOptimizer(BlackBoxOptimizer):
                 self._initEvaluable = MaskedParameters(self._initEvaluable, returnZeros = True)   
     
      
-        

@@ -6,7 +6,7 @@ from pybrain.rl.agents.agent import Agent
 
 
 class SimpleController(Agent):
-    
+
     def integrateObservation(self, obs):
         self.speed = obs[0]
         self.angleToCurrentWP = obs[1]
@@ -15,8 +15,8 @@ class SimpleController(Agent):
         self.distanceToNextWP = obs[4]
         self.angleToOtherVehicle = obs[5]
         self.distanceToOtherVehicle = obs[6]
-        
-        
+
+
     def getAction(self):
         if self.speed < 10:
             driving = 1
@@ -28,4 +28,4 @@ class SimpleController(Agent):
             steering = 1
         print "speed", self.speed, "angle", self.angleToCurrentWP, "driving", driving, "steering", steering
         return array([driving, steering])
-        
+

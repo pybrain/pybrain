@@ -6,5 +6,5 @@
 .. automodule:: pybrain.datasets.importance
 
 .. autoclass:: ImportanceDataSet
-   :members: 
+   :members:
    :show-inheritance:
