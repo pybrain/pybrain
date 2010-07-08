@@ -11,11 +11,12 @@ from setuptools import setup, find_packages
 setup(
     name="PyBrain",
     version="0.3",
-    description="PyBrain is the swiss army knife for neural networking.",
+    description="PyBrain is the Swiss army knife for neural networking.",
     license="BSD",
     keywords="Neural Networks Machine Learning",
     url="http://pybrain.org",
     packages=find_packages(exclude=['examples', 'docs']),
     include_package_data=True,
     test_suite='pybrain.tests.runtests.make_test_suite',
+    package_data={'pybrain': ['rl/environments/ode/models/*.xode']},
 )
