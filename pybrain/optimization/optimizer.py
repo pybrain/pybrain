@@ -169,7 +169,7 @@ class BlackBoxOptimizer(DirectSearchLearner):
         if isinstance(self._initEvaluable, ParameterContainer):
             if self.numParameters is None:            
                 self.numParameters = len(self._initEvaluable)
-            elif self.numParameters is not len(self._initEvaluable):
+            elif self.numParameters != len(self._initEvaluable):
                 raise ValueError("Parameter dimension mismatch: evaluator expects "+str(self.numParameters)\
                                  +" but the evaluable has "+str(len(self._initEvaluable))+".")
                   
