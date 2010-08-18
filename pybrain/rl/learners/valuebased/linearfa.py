@@ -31,6 +31,8 @@ class LinearFALearner(ValueBasedLearner):
     
     rewardDiscount = 0.99 # aka gamma
     
+    batchMode = False
+    
     def __init__(self, num_actions, num_features, **kwargs):
         ValueBasedLearner.__init__(self)
         setAllArgs(self, kwargs)
