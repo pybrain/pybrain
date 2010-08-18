@@ -671,3 +671,12 @@ def dictCombinations(listdict):
     else:
         res = [dict(d, **{k:vs}) for d in res]
     return res
+
+
+def r_argmax(v):
+    """ Acts like scipy argmax, but break ties randomly. """
+    if len(v) == 1:
+        return 0
+    maxbid = max(v)
+    maxbidders = [i for (i, b) in enumerate(v) if b==maxbid]
+    return choice(maxbidders)
