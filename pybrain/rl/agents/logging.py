@@ -3,6 +3,7 @@ __author__ = 'Thomas Rueckstiess, ruecksti@in.tum.de'
 from pybrain.rl.agents.agent import Agent
 from pybrain.datasets import ReinforcementDataSet
 
+
 class LoggingAgent(Agent):
     """ This agent stores actions, states, and rewards encountered during
         interaction with an environment in a ReinforcementDataSet (which is
@@ -19,7 +20,9 @@ class LoggingAgent(Agent):
     lastreward = None
 
 
-    def __init__(self, indim, outdim):
+    def __init__(self, indim, outdim, **kwargs):
+        self.setArgs(**kwargs)
+        
         # store input and output dimension
         self.indim = indim
         self.outdim = outdim

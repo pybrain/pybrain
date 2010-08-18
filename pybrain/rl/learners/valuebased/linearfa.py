@@ -1,3 +1,4 @@
+from enthought.units import temperature
 __author__ = 'Tom Schaul, tom@idsia.ch'
 
 """ RL with linear function approximation. 
@@ -8,14 +9,9 @@ In part inspired by pseudo-code from Szepesvari's 'Algorithms for RL' (2010)
 from pybrain.rl.learners.valuebased.valuebased import ValueBasedLearner
 from scipy import zeros, dot, outer, exp, clip, ravel, ones, rand, array
 from scipy.linalg import pinv2
-from pybrain.rl.agents.learning import LearningAgent
-from pybrain.rl.agents.logging import LoggingAgent
-from pybrain.utilities import drawIndex, r_argmax, fListToString
+from pybrain.utilities import r_argmax, fListToString, setAllArgs
 import unittest
 from random import choice, randint
-
-# TODO: also implement R-Max?
-# Explorers -> consistent ones?!
 
 
 def rv_dot(x, y):
@@ -23,7 +19,7 @@ def rv_dot(x, y):
 
 
 class LinearFALearner(ValueBasedLearner):
-    """ A reinforcement learner using linear function approximation,
+    """ A reinforcement learner using linear function approximation (FA),
     on the states (the actions remain discrete/tabular).
      
     The weights (theta) are arranged in a 2D-array: state-features by actions.
@@ -37,8 +33,9 @@ class LinearFALearner(ValueBasedLearner):
     
     rewardDiscount = 0.99 # aka gamma
     
-    def __init__(self, num_actions, num_features):
+    def __init__(self, num_actions, num_features, **kwargs):
         ValueBasedLearner.__init__(self)
+        setAllArgs(self, kwargs)
         self.explorer = None        
         self.num_actions = num_actions
         self.num_features = num_features
@@ -64,54 +61,20 @@ class LinearFALearner(ValueBasedLearner):
         return tmp
     
     def _boltzmannPolicy(self, state, temperature=1.):
-        if temperature == 0:
-            return self._greedyPolicy(state)
-        else:
-            tmp = self._qValues(state) / temperature
-            tmp -= max(tmp)        
-            tmp = exp(clip(tmp, -20,0))
-            return tmp / sum(tmp)
-        
-
-
-class LinearFA_Agent(LearningAgent):
-    """ Agent class for using linear-FA RL algorithms. """    
+        tmp = self._qValues(state)
+        return LinearFALearner._boltzmannProbs(tmp, temperature)
     
-    temp_decay = 0.9995
-     
-    def __init__(self, learner):
-        LoggingAgent.__init__(self, learner.num_features, 1)
-        self.learner = learner
-        self.learner._behaviorPolicy = self._actionProbs
-        self.learning = True
-        self.reset()
-        
-    def _actionProbs(self, state, real_action=False):
-        """ The default call (e.g. for importance sampling) does not decay the temperature."""
-        # TODO: other agents might explore differently?
-        self.temperature *= self.temp_decay
-        return self.learner._boltzmannPolicy(state, self.temperature)            
-        
-    def getAction(self):
-        LoggingAgent.getAction(self)
-        self.lastaction = drawIndex(self._actionProbs(self.lastobs, real_action=True), True)
-        return [self.lastaction]
-        
-    def reset(self):
-        self.temperature = 1.
-        self.learner.reset()        
-        self.laststate = None
-        self.lastaction = None
-        self.lastreward = None
-        
-    def learn(self):
-        for seq in self.history:
-            for state, action, reward in seq:
-                if self.laststate is not None:
-                    self.learner._updateWeights(self.laststate, self.lastaction, self.lastreward, state)
-                self.laststate = state
-                self.lastaction = action[0]
-                self.lastreward = reward
+    @staticmethod
+    def _boltzmannProbs(qvalues, temperature=1.):
+        if temperature == 0:
+            tmp = zeros(len(qvalues))        
+            tmp[r_argmax(qvalues)] = 1.
+        else:
+            tmp = qvalues / temperature            
+            tmp -= max(tmp)        
+            tmp = exp(clip(tmp, -20, 0))
+        return tmp / sum(tmp)
+    
             
     
 class Q_LinFA(LinearFALearner):
@@ -126,9 +89,9 @@ class Q_LinFA(LinearFALearner):
 class QLambda_LinFA(LinearFALearner):
     """ Q-lambda with linear FA. """
     
-    _lambda  = 0.9
+    _lambda = 0.9
     
-    def reset(self):
+    def newEpisode(self):
         """ Reset eligibilities after each episode. """
         self._etraces = zeros((self.num_actions, self.num_features))
         
@@ -156,7 +119,7 @@ class LSTDQLambda(QLambda_LinFA):
     """ Least-squares Q(lambda)"""
         
     def _additionalInit(self):
-        phi_size = self.num_actions*self.num_features
+        phi_size = self.num_actions * self.num_features
         self._A = zeros((phi_size, phi_size))
         self._b = zeros(phi_size)                           
     
@@ -164,7 +127,7 @@ class LSTDQLambda(QLambda_LinFA):
         """ Policy is a function that returns a probability vector for all actions, 
         given the current state(-features). """
         if learned_policy is None:
-            learned_policy=self._greedyPolicy
+            learned_policy = self._greedyPolicy
         
         self._updateEtraces(state, action)
         
@@ -190,7 +153,7 @@ class LSPI(LinearFALearner):
     explorationReward = 1.
     
     def _additionalInit(self):
-        phi_size = self.num_actions*self.num_features
+        phi_size = self.num_actions * self.num_features
         self._A = zeros((phi_size, phi_size))
         self._b = zeros(phi_size)      
         self._untouched = ones(phi_size, dtype=bool)
@@ -208,7 +171,7 @@ class LSPI(LinearFALearner):
         self._b += reward * phi
         if self.exploring:
             # add something to all the entries that are untouched
-            self._untouched &= (phi==0)
+            self._untouched &= (phi == 0)
             res = dot(pinv2(self._A), self._b + self.explorationReward * self._untouched)
         else:
             res = dot(pinv2(self._A), self._b)
@@ -236,10 +199,10 @@ class GQLambda(QLambda_LinFA):
         
         td_error = reward + self.rewardDiscount * rv_dot(self._theta, phi_bar) - dot(self._theta[action], state)
         if outcome_reward is not None:
-            td_error += (1-self.rewardDiscount) * outcome_reward
+            td_error += (1 - self.rewardDiscount) * outcome_reward
             
         self._theta += self.learningRate * (td_error * self._etraces - 
-                                            self.rewardDiscount * (1-self._lambda) * rv_dot(self._sec_weights, self._etraces) * phi_bar)
+                                            self.rewardDiscount * (1 - self._lambda) * rv_dot(self._sec_weights, self._etraces) * phi_bar)
         
         phi = zeros((self.num_actions, self.num_features))
         phi[action] += state
@@ -248,20 +211,22 @@ class GQLambda(QLambda_LinFA):
     
 
 
+
 class LearningTester(unittest.TestCase):
-    
+    """ Some simple test cases. 
+        Note: this can still fail from time to time!"""
+        
     verbose = False
     
-    algos = [Q_LinFA, 
-             QLambda_LinFA, SARSALambda_LinFA, LSPI, 
-             LSTDQLambda, 
+    algos = [Q_LinFA,
+             QLambda_LinFA, SARSALambda_LinFA, LSPI,
+             LSTDQLambda,
              GQLambda
              ]    
     need_next_action = [LSPI, SARSALambda_LinFA]
     
     def testSingleStateFullDiscounted(self):
-        # Note: this can still fail from time to time!
-        r = self.runSequences(num_actions=4, num_features=3, num_states=1, num_interactions=500, 
+        r = self.runSequences(num_actions=4, num_features=3, num_states=1, num_interactions=500,
                               gamma=0, lr=0.25)
         if self.verbose:
             for x, l in r:
@@ -271,15 +236,14 @@ class LearningTester(unittest.TestCase):
         for _, l in r:        
             self.assertAlmostEquals(min(l[0][0]), 1, places=0) 
             self.assertAlmostEquals(max(l[0][0]), 1, places=0) 
-            self.assertAlmostEquals(2*min(l[1][0]), 1, places=0) 
-            self.assertAlmostEquals(2*max(l[1][0]), 1, places=0) 
+            self.assertAlmostEquals(2 * min(l[1][0]), 1, places=0) 
+            self.assertAlmostEquals(2 * max(l[1][0]), 1, places=0) 
             self.assertAlmostEquals(min(l[2][0]), 0, places=0) 
-            self.assertAlmostEquals(max(l[2][0]), len(l[2][0])-1, places=0) 
-            self.assertAlmostEquals(min(l[3][0]), max(l[3][0]), places=0) 
-                
+            self.assertAlmostEquals(max(l[2][0]), len(l[2][0]) - 1, places=0) 
+            self.assertAlmostEquals(min(l[3][0]), max(l[3][0]), places=0)                 
     
     def testSingleState(self):
-        r = self.runSequences(num_actions=3, num_features=2, num_states=1, num_interactions=1000, 
+        r = self.runSequences(num_actions=3, num_features=2, num_states=1, num_interactions=1000,
                               lr=0.2, _lambda=0.5, gamma=0.5)
         if self.verbose:
             for x, l in r:
@@ -289,12 +253,11 @@ class LearningTester(unittest.TestCase):
         for _, l in r:
             self.assertAlmostEquals(min(l[0][0]), max(l[0][0]), places=0) 
             self.assertAlmostEquals(min(l[1][0]), max(l[1][0]), places=0)
-            self.assertAlmostEquals(min(l[2][0])+len(l[2][0])-1, max(l[2][0]), places=0)             
-            self.assertAlmostEquals(min(l[3][0]), max(l[3][0]), places=0) 
-                        
+            self.assertAlmostEquals(min(l[2][0]) + len(l[2][0]) - 1, max(l[2][0]), places=0)             
+            self.assertAlmostEquals(min(l[3][0]), max(l[3][0]), places=0)                         
                         
     def testSingleAction(self):        
-        r = self.runSequences(num_actions=1, r_states=map(array, [[1,0,0,0],[0,1,0,0],[0,0,1,0]]),
+        r = self.runSequences(num_actions=1, r_states=map(array, [[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0]]),
                               num_interactions=1000, lr=0.1, _lambda=0.5, gamma=0.5)
         if self.verbose:
             for x, l in r:
@@ -305,10 +268,10 @@ class LearningTester(unittest.TestCase):
             self.assertAlmostEquals(min(l[0]), max(l[0]), places=0) 
             self.assertAlmostEquals(min(l[1]), max(l[1]), places=0)
             self.assertAlmostEquals(min(l[2]), max(l[2]), places=0)             
-            self.assertAlmostEquals(max(l[3])-1, min(l[3]), places=0) 
+            self.assertAlmostEquals(max(l[3]) - 1, min(l[3]), places=0) 
             
     def testSimple(self):        
-        r = self.runSequences(num_actions=3, num_features=5, num_states=4, num_interactions=2000, 
+        r = self.runSequences(num_actions=3, num_features=5, num_states=4, num_interactions=2000,
                               lr=0.1, _lambda=0.5, gamma=0.5)        
         if self.verbose:
             for x, l in r:
@@ -318,35 +281,23 @@ class LearningTester(unittest.TestCase):
         for _, l in r:
             self.assertAlmostEquals(min(l[0][0]), max(l[0][0]), places=0) 
             self.assertAlmostEquals(min(l[1][0]), max(l[1][0]), places=0)
-            self.assertAlmostEquals(min(l[2][0])+len(l[2][0])-1, max(l[2][0]), places=0)             
+            self.assertAlmostEquals(min(l[2][0]) + len(l[2][0]) - 1, max(l[2][0]), places=0)             
             self.assertAlmostEquals(min(l[3][0]), max(l[3][0]), places=0) 
             
-    def runSequences(self,
-                     num_actions = 4,
-                     num_features = 1,
-                     num_states = 1,
-                     num_interactions = 10000,
-                     gamma = None,
-                     _lambda= None,
-                     lr = None,
-                     r_states = None,
-                     ):
+    def runSequences(self, num_actions=1, num_features=1, num_states=1,
+                     num_interactions=10000, gamma=None, _lambda=None, lr=None, r_states=None):
         if r_states is None:
             r_states = [rand(num_features) for _ in range(num_states)]
         else:
             num_features = len(r_states[0])
             num_states = len(r_states)
         state_seq = [choice(r_states) for  _ in range(num_interactions)]
-        action_seq = [randint(0,num_actions-1) for  _ in range(num_interactions)]
-        rewards = [ones(num_interactions),
-                   rand(num_interactions), action_seq, [s[0] for s in state_seq]
-                   ]
-        datas = [zip(state_seq, action_seq, r) for r in rewards]
-        
-        res = []
-        
+        action_seq = [randint(0, num_actions - 1) for  _ in range(num_interactions)]
+        rewards = [ones(num_interactions), rand(num_interactions), action_seq, [s[0] for s in state_seq]]
+        datas = [zip(state_seq, action_seq, r) for r in rewards]        
+        res = []        
         for algo in self.algos:
-            res.append((algo.__name__,[]))
+            res.append((algo.__name__, []))
             for d in datas:
                 l = algo(num_actions, num_features)
                 if gamma is not None:       
@@ -354,13 +305,11 @@ class LearningTester(unittest.TestCase):
                 if _lambda is not None:
                     l._lambda = _lambda
                 if lr is not None:
-                    l.learningRate = lr
-                     
+                    l.learningRate = lr                     
                 self.trainWith(l, d)
                 res[-1][-1].append([dot(l._theta, s) for s in r_states])
         return res
-        
-    
+            
     def trainWith(self, algo, data):
         last_s = None
         last_a = None
