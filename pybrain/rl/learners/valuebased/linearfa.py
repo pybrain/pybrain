@@ -1,4 +1,3 @@
-from enthought.units import temperature
 __author__ = 'Tom Schaul, tom@idsia.ch'
 
 """ RL with linear function approximation. 
@@ -12,7 +11,6 @@ from scipy.linalg import pinv2
 from pybrain.utilities import r_argmax, fListToString, setAllArgs
 import unittest
 from random import choice, randint
-
 
 def rv_dot(x, y):
     return dot(ravel(x), ravel(y))
@@ -74,8 +72,7 @@ class LinearFALearner(ValueBasedLearner):
             tmp -= max(tmp)        
             tmp = exp(clip(tmp, -20, 0))
         return tmp / sum(tmp)
-    
-            
+
     
 class Q_LinFA(LinearFALearner):
     """ Standard Q-learning with linear FA. """
@@ -211,18 +208,13 @@ class GQLambda(QLambda_LinFA):
     
 
 
-
 class LearningTester(unittest.TestCase):
     """ Some simple test cases. 
         Note: this can still fail from time to time!"""
         
     verbose = False
     
-    algos = [Q_LinFA,
-             QLambda_LinFA, SARSALambda_LinFA, LSPI,
-             LSTDQLambda,
-             GQLambda
-             ]    
+    algos = [Q_LinFA, QLambda_LinFA, SARSALambda_LinFA, LSPI, LSTDQLambda, GQLambda]    
     need_next_action = [LSPI, SARSALambda_LinFA]
     
     def testSingleStateFullDiscounted(self):
@@ -326,4 +318,3 @@ class LearningTester(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
-        
