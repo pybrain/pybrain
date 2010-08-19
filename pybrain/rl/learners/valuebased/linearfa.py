@@ -27,11 +27,12 @@ class LinearFALearner(ValueBasedLearner):
     Superclass for all the actual algorithms.
     """
     
-    learningRate = 0.01   # aka alpha
+    learningRate = 0.5   # aka alpha: make sure this is being decreased by the learning agent!
     
     rewardDiscount = 0.99 # aka gamma
     
     batchMode = False
+    passNextAction = False # for the _updateWeights method    
     
     def __init__(self, num_actions, num_features, **kwargs):
         ValueBasedLearner.__init__(self)
@@ -107,6 +108,8 @@ class QLambda_LinFA(LinearFALearner):
     
 class SARSALambda_LinFA(QLambda_LinFA):
     
+    passNextAction = True
+    
     def _updateWeights(self, state, action, reward, next_state, next_action):
         """ state and next_state are vectors, action is an integer. """
         td_error = reward + self.rewardDiscount * dot(self._theta[next_action], next_state) - dot(self._theta[action], state)
@@ -148,8 +151,10 @@ class LSPILambda(LSTDQLambda):
 class LSPI(LinearFALearner):
     """ LSPI without eligibility traces. (Mark's version) """
     
-    exploring = True
+    exploring = False
     explorationReward = 1.
+    
+    passNextAction = True
     
     def _additionalInit(self):
         phi_size = self.num_actions * self.num_features

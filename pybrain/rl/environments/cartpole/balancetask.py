@@ -1,3 +1,4 @@
+from pybrain.utilities import crossproduct
 __author__ = 'Thomas Rueckstiess and Tom Schaul'
 
 from scipy import pi, dot, array
@@ -98,7 +99,6 @@ class EasyBalanceTask(BalanceTask):
         return reward
 
 
-
 class DiscreteBalanceTask(BalanceTask):
     """ here there are 3 discrete actions, left, right, nothing. """
 
@@ -118,7 +118,6 @@ class DiscreteBalanceTask(BalanceTask):
 
         # scale actor
         self.actor_limits = [(-50, 50)]
-
 
     def getObservation(self):
         """ a filtered mapping to getSample of the underlying environment. """
@@ -152,6 +151,7 @@ class DiscreteNoHelpTask(DiscreteBalanceTask):
         else:
             reward = 0.0
         return reward
+    
 
 class DiscretePOMDPTask(DiscreteBalanceTask):
     def __init__(self, env=None, maxsteps=1000):
@@ -207,3 +207,37 @@ class LinearizedBalanceTask(BalanceTask):
         return False
 
 
+class DiscreteBalanceTaskRBF(DiscreteBalanceTask):
+    """ From Lagoudakis & Parr, 2003:
+    With RBF features to generate a 10-dimensional observation (including bias),
+    also no cart-restrictions, no helpful rewards, and a single pole. """
+    
+    CENTERS = array(crossproduct([[-pi/4, 0, pi/4], [1, 0, -1]]))
+    
+    def getReward(self):
+        angles = map(abs, self.env.getPoleAngles())
+        if max(angles) > 1.6:
+            reward = -1.
+        else:
+            reward = 0.0
+        return reward
+    
+    def isFinished(self):
+        if max(map(abs, self.env.getPoleAngles())) > 1.6:
+            return True
+        elif self.t >= self.N:
+            return True
+        return False
+    
+    def getObservation(self):
+        from scipy import ones, exp
+        from scipy.linalg import norm
+        res = ones(10)
+        sensors = self.env.getSensors()[:2]        
+        res[1:] = exp(-array(map(norm, self.CENTERS-sensors))**2/2)
+        return res
+    
+    @property
+    def outdim(self):
+        return 10
+    
