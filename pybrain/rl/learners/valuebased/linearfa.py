@@ -27,7 +27,9 @@ class LinearFALearner(ValueBasedLearner):
     Superclass for all the actual algorithms.
     """
     
-    learningRate = 0.5   # aka alpha: make sure this is being decreased by the learning agent!
+    learningRate = 0.5      # aka alpha: make sure this is being decreased by calls from the learning agent!
+    learningRateDecay = 100 # aka n_0, but counting decay-calls
+    
     
     rewardDiscount = 0.99 # aka gamma
     
@@ -75,6 +77,15 @@ class LinearFALearner(ValueBasedLearner):
             tmp -= max(tmp)        
             tmp = exp(clip(tmp, -20, 0))
         return tmp / sum(tmp)
+        
+    def reset(self):
+        ValueBasedLearner.reset(self)
+        self._callcount = 0
+    
+    def _decayLearningRate(self):        
+        self._callcount += 1
+        self.learningRate *= ((self.learningRateDecay + self._callcount) 
+                              / (self.learningRateDecay + self._callcount + 1.))
 
     
 class Q_LinFA(LinearFALearner):

@@ -7,18 +7,19 @@ from scipy import array
 
 class LinearFA_Agent(LoggingAgent):
     """ Agent class for using linear-FA RL algorithms. """    
+        
+    init_exploration = 0.1   # aka epsilon
+    exploration_decay = 0.99 # per episode        
     
-    learningRateDecay = 100 # aka n_0
-    
-    exploration_decay = 0.9995        
-    init_exploration = 0.1 # aka epsilon
     init_temperature = 1.
+    temperature_decay = 0.99 # per episode
     
-    greedy = False
     # default is boltzmann exploration 
     epsilonGreedy = False
-       
+           
+    # flags for different modes
     learning = True    
+    greedy = False
      
     def __init__(self, learner, **kwargs):
         LoggingAgent.__init__(self, learner.num_features, 1, **kwargs)
@@ -33,18 +34,10 @@ class LinearFA_Agent(LoggingAgent):
             return (self.learner._greedyPolicy(state) * (1 - self._expl_proportion) 
                     + self._expl_proportion / float(self.learner.num_actions))
         else:
-            return self.learner._boltzmannPolicy(state, self._temperature)            
-        
-    
-    def _decayLearningRate(self):
-        self.learner.learningRate *= ((self.learningRateDecay + self._numInteractions) 
-                                      / (self.learningRateDecay + self._numInteractions + 1.))
+            return self.learner._boltzmannPolicy(state, self._temperature)                    
     
     def getAction(self):
-        self._numInteractions += 1
         self.lastaction = drawIndex(self._actionProbs(self.lastobs), True)
-        self._temperature *= self.exploration_decay
-        self._expl_proportion *= self.exploration_decay      
         if self.learning and not self.learner.batchMode and self._oaro is not None:
             self.learner._updateWeights(*(self._oaro + [self.lastaction]))
             self._oaro = None          
@@ -56,7 +49,6 @@ class LinearFA_Agent(LoggingAgent):
                 self._oaro = [self.lastobs, self.lastaction, self.lastreward, obs]
             else:
                 self.learner._updateWeights(self.lastobs, self.lastaction, self.lastreward, obs)
-            self._decayLearningRate()
         LoggingAgent.integrateObservation(self, obs)        
         
     def reset(self):
@@ -65,7 +57,6 @@ class LinearFA_Agent(LoggingAgent):
         self._expl_proportion = self.init_exploration
         self.learner.reset()    
         self._oaro = None
-        self._numInteractions = 0
         self.newEpisode()
         
     def newEpisode(self):
@@ -74,6 +65,11 @@ class LinearFA_Agent(LoggingAgent):
             self.history.newSequence()
         if self.learning and not self.learner.batchMode:
             self.learner.newEpisode()
+        else:
+            self._temperature *= self.temperature_decay
+            self._expl_proportion *= self.exploration_decay      
+            self.learner._decayLearningRate()
+
             
     def learn(self):
         if not self.learning:
@@ -88,5 +84,4 @@ class LinearFA_Agent(LoggingAgent):
                 self.lastobs = obs
                 self.lastaction = action[0]
                 self.lastreward = reward
-                self._decayLearningRate()
             self.learner.newEpisode()
