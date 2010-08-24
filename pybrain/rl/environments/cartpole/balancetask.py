@@ -1,12 +1,14 @@
-from pybrain.utilities import crossproduct
+from pybrain.rl.environments.cartpole.doublepole import DoublePoleEnvironment
 __author__ = 'Thomas Rueckstiess and Tom Schaul'
 
-from scipy import pi, dot, array
+from scipy import pi, dot, array, ones, exp
+from scipy.linalg import norm
 
 from pybrain.rl.environments.cartpole.nonmarkovpole import NonMarkovPoleEnvironment
 from pybrain.rl.environments import EpisodicTask
 from cartpole import CartPoleEnvironment
-
+from pybrain.utilities import crossproduct
+        
 
 class BalanceTask(EpisodicTask):
     """ The task of balancing some pole(s) on a cart """
@@ -230,14 +232,23 @@ class DiscreteBalanceTaskRBF(DiscreteBalanceTask):
         return False
     
     def getObservation(self):
-        from scipy import ones, exp
-        from scipy.linalg import norm
-        res = ones(10)
-        sensors = self.env.getSensors()[:2]        
+        res = ones(1+len(self.CENTERS))
+        sensors = self.env.getSensors()[:-2]        
         res[1:] = exp(-array(map(norm, self.CENTERS-sensors))**2/2)
         return res
     
     @property
     def outdim(self):
-        return 10
+        return 1+len(self.CENTERS)
+    
+    
+class DiscreteDoubleBalanceTaskRBF(DiscreteBalanceTaskRBF):
+    """ Same idea, but two poles. """
+    
+    CENTERS = array(crossproduct([[-pi/4, 0, pi/4], [1, 0, -1]]*2))  
+    
+    def __init__(self, env=None, maxsteps=1000):
+        if env == None:
+            env = DoublePoleEnvironment()
+        DiscreteBalanceTask.__init__(self, env, maxsteps)
     

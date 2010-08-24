@@ -167,11 +167,14 @@ class LSPI(LinearFALearner):
     
     passNextAction = True
     
+    lazyInversions = 20
+    
     def _additionalInit(self):
         phi_size = self.num_actions * self.num_features
         self._A = zeros((phi_size, phi_size))
         self._b = zeros(phi_size)      
         self._untouched = ones(phi_size, dtype=bool)
+        self._count = 0
     
     def _updateWeights(self, state, action, reward, next_state, next_action):
         phi = zeros((self.num_actions, self.num_features))
@@ -184,14 +187,19 @@ class LSPI(LinearFALearner):
         
         self._A += outer(phi, phi - self.rewardDiscount * phi_n)
         self._b += reward * phi
-        if self.exploring:
-            # add something to all the entries that are untouched
-            self._untouched &= (phi == 0)
-            res = dot(pinv2(self._A), self._b + self.explorationReward * self._untouched)
-        else:
-            res = dot(pinv2(self._A), self._b)
-        self._theta = res.reshape(self.num_actions, self.num_features)    
-    
+        
+        
+        if self.lazyInversions is None or self._count % self.lazyInversions == 0:        
+            if self.exploring:
+                # add something to all the entries that are untouched
+                self._untouched &= (phi == 0)
+                res = dot(pinv2(self._A), self._b + self.explorationReward * self._untouched)
+            else:
+                res = dot(pinv2(self._A), self._b)
+            self._theta = res.reshape(self.num_actions, self.num_features)    
+            
+        self._count += 1
+        
         
 class GQLambda(QLambda_LinFA):
     """ From Maei/Sutton 2010, with additional info from Adam White. """
