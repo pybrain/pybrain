@@ -104,6 +104,8 @@ class EasyBalanceTask(BalanceTask):
 class DiscreteBalanceTask(BalanceTask):
     """ here there are 3 discrete actions, left, right, nothing. """
 
+    numActions = 3
+
     def __init__(self, env=None, maxsteps=1000):
         """
         :key env: (optional) an instance of a CartPoleEnvironment (or a subclass thereof)
@@ -129,7 +131,7 @@ class DiscreteBalanceTask(BalanceTask):
         return sensors
 
     def performAction(self, action):
-        action = action - 1.
+        action = action - (self.numActions-1)/2.
         BalanceTask.performAction(self, action)
 
     def getReward(self):
