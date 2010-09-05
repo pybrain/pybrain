@@ -6,7 +6,7 @@ In part inspired by pseudo-code from Szepesvari's 'Algorithms for RL' (2010)
 """
 
 from pybrain.rl.learners.valuebased.valuebased import ValueBasedLearner
-from scipy import zeros, dot, outer, exp, clip, ravel, ones, rand, array
+from scipy import zeros, dot, outer, exp, clip, ravel, ones, rand, array, randn
 from scipy.linalg import pinv2
 from pybrain.utilities import r_argmax, fListToString, setAllArgs
 import unittest
@@ -30,6 +30,7 @@ class LinearFALearner(ValueBasedLearner):
     learningRate = 0.5      # aka alpha: make sure this is being decreased by calls from the learning agent!
     learningRateDecay = 100 # aka n_0, but counting decay-calls
     
+    randomInit = False
     
     rewardDiscount = 0.99 # aka gamma
     
@@ -42,7 +43,10 @@ class LinearFALearner(ValueBasedLearner):
         self.explorer = None        
         self.num_actions = num_actions
         self.num_features = num_features
-        self._theta = zeros((self.num_actions, self.num_features))
+        if self.randomInit:
+            self._theta = randn(self.num_actions, self.num_features) / 100.
+        else:
+            self._theta = zeros((self.num_actions, self.num_features))
         self._additionalInit()
         self._behaviorPolicy = self._boltzmannPolicy
         self.reset()
@@ -78,8 +82,9 @@ class LinearFALearner(ValueBasedLearner):
             tmp = exp(clip(tmp, -20, 0))
         return tmp / sum(tmp)
         
-    def reset(self):
+    def reset(self):        
         ValueBasedLearner.reset(self)
+        self.newEpisode()
         self._callcount = 0
     
     def _decayLearningRate(self):        
@@ -165,14 +170,18 @@ class LSPI(LinearFALearner):
     exploring = False
     explorationReward = 1.
     
-    passNextAction = True
+    passNextAction = True    
     
     lazyInversions = 20
     
     def _additionalInit(self):
         phi_size = self.num_actions * self.num_features
-        self._A = zeros((phi_size, phi_size))
-        self._b = zeros(phi_size)      
+        if self.randomInit:
+            self._A = randn(phi_size, phi_size) / 100.
+            self._b = randn(phi_size) / 100.
+        else:
+            self._A = zeros((phi_size, phi_size))
+            self._b = zeros(phi_size)          
         self._untouched = ones(phi_size, dtype=bool)
         self._count = 0
     
