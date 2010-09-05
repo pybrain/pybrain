@@ -16,7 +16,7 @@ from pybrain.structure                 import SoftmaxLayer, LSTMLayer
 from pybrain.utilities                 import setAllArgs
 from pybrain.tools.plotting            import MultilinePlotter
 from pybrain.tools.validation          import testOnSequenceData, ModuleValidator, Validator
-from pybrain.tools.xml                 import NetworkWriter
+from pybrain.tools.customxml           import NetworkWriter
 
 
 class NNtools(object):

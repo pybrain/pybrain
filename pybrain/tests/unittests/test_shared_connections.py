@@ -12,7 +12,7 @@ Check if the parameters are the same:
     >>> (n.connections[n['b']][0].params == n.connections[n['c']][0].params).all()
     True
 
-    >>> from pybrain.tools.xml.networkwriter import NetworkWriter
+    >>> from pybrain.tools.customxml.networkwriter import NetworkWriter
 
 The transformation of the first input to the second output is identical to the transformation of the
 second towards the first:
