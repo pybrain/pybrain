@@ -14,7 +14,7 @@ from math import sqrt
 from random import random, choice
 from string import split
 
-from scipy import where, array, exp, zeros, size, mat
+from scipy import where, array, exp, zeros, size, mat, median
 
 # file extension for load/save protocol mapping
 known_extensions = {
@@ -601,7 +601,7 @@ def blockCombine(l):
     return res
 
 
-def avgFoundAfter(decreasingTargetValues, listsOfActualValues, batchSize=1):
+def avgFoundAfter(decreasingTargetValues, listsOfActualValues, batchSize=1, useMedian=False):
     """ Determine the average number of steps to reach a certain value (for the first time),
     given a list of value sequences.
     If a value is not always encountered, the length of the longest sequence is used.
@@ -623,8 +623,11 @@ def avgFoundAfter(decreasingTargetValues, listsOfActualValues, batchSize=1):
             if not found:
                 lres.append(longest)
     tmp = array(res)
-    summed = sum(tmp, axis=0)[1:]
-    return summed / float(numLists) * batchSize
+    if useMedian:
+        resx = median(tmp, axis=0)[1:]
+    else:
+        resx = sum(tmp, axis=0)[1:] / float(numLists)
+    return resx * batchSize
 
 
 class DivergenceError(Exception):

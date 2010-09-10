@@ -25,3 +25,26 @@ class LennardJones(MultiModalFunction):
         x0[2,:,:,0] += edge
         x0 = x0.reshape(3, numatoms).T
         return x0.flatten()
+    
+    @property
+    def desiredValue(self):
+        N = self.xdim/3
+        return self.BEST_KNOWN_TABLE[N]+1e-5
+    
+    BEST_KNOWN_TABLE = {2: -1,
+                        3: -3,
+                        4: -6,
+                        5: -9.103852,
+                        6: -12.712062,
+                        7:-16.505384,
+                        8: -19.821489,
+                        9: -24.113360,
+                        10: -28.422532,
+                        11:-32.765970,
+                        12:-37.967600,
+                        13:-44.326801,
+                        14:-47.845157,
+                        15:-52.322627,
+                        16:-56.815742,
+                        }
+    
