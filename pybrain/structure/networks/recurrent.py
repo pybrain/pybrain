@@ -15,9 +15,13 @@ class RecurrentNetworkComponent(object):
 
     sequential = True
 
-    def __init__(self, name=None, *args, **kwargs):
+    def __init__(self, forget, name=None, *args, **kwargs):
         self.recurrentConns = []
         self.maxoffset = 0
+        if forget:
+           self.increment = 0
+        else:
+           self.increment = 1
 
     def __str__(self):
         s = super(RecurrentNetworkComponent, self).__str__()
@@ -47,26 +51,26 @@ class RecurrentNetworkComponent(object):
         """Do one transformation of an input and return the result."""
         self.inputbuffer[self.offset] = inpt
         self.forward()
-        return self.outputbuffer[self.offset - 1].copy()
+        return self.outputbuffer[self.offset - self.increment].copy()
 
     def backActivate(self, outerr):
         """Do one transformation of an output error outerr backward and return
         the error on the input."""
-        self.outputerror[self.offset - 1] = outerr
+        self.outputerror[self.offset - self.increment] = outerr
         self.backward()
         return self.inputerror[self.offset].copy()
 
     def forward(self):
         """Produce the output from the input."""
-        if not (self.offset + 1 < self.inputbuffer.shape[0]):
+        if not (self.offset + self.increment < self.inputbuffer.shape[0]):
             self._growBuffers()
         super(RecurrentNetworkComponent, self).forward()
-        self.offset += 1
+        self.offset += self.increment
         self.maxoffset = max(self.offset, self.maxoffset)
 
     def backward(self):
         """Produce the input error from the output error."""
-        self.offset -= 1
+        self.offset -= self.increment
         super(RecurrentNetworkComponent, self).backward()
 
     def _isLastTimestep(self):
@@ -83,7 +87,7 @@ class RecurrentNetworkComponent(object):
 
         if offset > 0:
             for c in self.recurrentConns:
-                c.forward(offset - 1, offset)
+                c.forward(offset - self.increment, offset)
 
         for m in self.modulesSorted:
             m.forward()
@@ -105,7 +109,7 @@ class RecurrentNetworkComponent(object):
 
         if not self._isLastTimestep():
             for c in self.recurrentConns:
-                c.backward(offset, offset + 1)
+                c.backward(offset, offset + self.increment)
 
         for m in reversed(self.modulesSorted):
             for c in self.connections[m]:
@@ -128,10 +132,10 @@ class RecurrentNetwork(RecurrentNetworkComponent, Network):
 
     Until .reset() is called, the network keeps track of all previous inputs and
     thus allows the use of recurrent connections and layers that look back in
-    time."""
+    time, unless forget is set to True."""
 
     bufferlist = Network.bufferlist
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, forget=False, *args, **kwargs):
         Network.__init__(self, *args, **kwargs)
-        RecurrentNetworkComponent.__init__(self, *args, **kwargs)
+        RecurrentNetworkComponent.__init__(self, forget, *args, **kwargs)
