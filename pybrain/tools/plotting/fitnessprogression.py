@@ -17,6 +17,7 @@ def plotFitnessProgession(fitdict, batchsize=1, semilog=True,
                           varyplotsymbols=False,
                           averageOverEvaluations=True,
                           onlysuccessful=False,
+                          useMedian=False,
                           resolution=1000):
     """ Plot multiple fitness curves on a single figure, with the following customizations:
 
@@ -95,7 +96,7 @@ def plotFitnessProgession(fitdict, batchsize=1, semilog=True,
             else:
                 yPlot = list(reversed((array(range(resolution + 1)) / float(resolution)) *
                                              (worstPerf - targetcutoff) + targetcutoff))
-            xPlot = avgFoundAfter(yPlot, flist, batchsize)
+            xPlot = avgFoundAfter(yPlot, flist, batchsize, useMedian=useMedian)
 
         else:
             longestRun = max(map(len, flist))

@@ -1,11 +1,14 @@
+from pybrain.rl.environments.cartpole.doublepole import DoublePoleEnvironment
 __author__ = 'Thomas Rueckstiess and Tom Schaul'
 
-from scipy import pi, dot, array
+from scipy import pi, dot, array, ones, exp
+from scipy.linalg import norm
 
 from pybrain.rl.environments.cartpole.nonmarkovpole import NonMarkovPoleEnvironment
 from pybrain.rl.environments import EpisodicTask
 from cartpole import CartPoleEnvironment
-
+from pybrain.utilities import crossproduct
+        
 
 class BalanceTask(EpisodicTask):
     """ The task of balancing some pole(s) on a cart """
@@ -98,9 +101,10 @@ class EasyBalanceTask(BalanceTask):
         return reward
 
 
-
 class DiscreteBalanceTask(BalanceTask):
     """ here there are 3 discrete actions, left, right, nothing. """
+
+    numActions = 3
 
     def __init__(self, env=None, maxsteps=1000):
         """
@@ -119,7 +123,6 @@ class DiscreteBalanceTask(BalanceTask):
         # scale actor
         self.actor_limits = [(-50, 50)]
 
-
     def getObservation(self):
         """ a filtered mapping to getSample of the underlying environment. """
         sensors = self.env.getSensors()
@@ -128,7 +131,7 @@ class DiscreteBalanceTask(BalanceTask):
         return sensors
 
     def performAction(self, action):
-        action = action - 1.
+        action = action - (self.numActions-1)/2.
         BalanceTask.performAction(self, action)
 
     def getReward(self):
@@ -152,6 +155,7 @@ class DiscreteNoHelpTask(DiscreteBalanceTask):
         else:
             reward = 0.0
         return reward
+    
 
 class DiscretePOMDPTask(DiscreteBalanceTask):
     def __init__(self, env=None, maxsteps=1000):
@@ -207,3 +211,46 @@ class LinearizedBalanceTask(BalanceTask):
         return False
 
 
+class DiscreteBalanceTaskRBF(DiscreteBalanceTask):
+    """ From Lagoudakis & Parr, 2003:
+    With RBF features to generate a 10-dimensional observation (including bias),
+    also no cart-restrictions, no helpful rewards, and a single pole. """
+    
+    CENTERS = array(crossproduct([[-pi/4, 0, pi/4], [1, 0, -1]]))
+    
+    def getReward(self):
+        angles = map(abs, self.env.getPoleAngles())
+        if max(angles) > 1.6:
+            reward = -1.
+        else:
+            reward = 0.0
+        return reward
+    
+    def isFinished(self):
+        if max(map(abs, self.env.getPoleAngles())) > 1.6:
+            return True
+        elif self.t >= self.N:
+            return True
+        return False
+    
+    def getObservation(self):
+        res = ones(1+len(self.CENTERS))
+        sensors = self.env.getSensors()[:-2]        
+        res[1:] = exp(-array(map(norm, self.CENTERS-sensors))**2/2)
+        return res
+    
+    @property
+    def outdim(self):
+        return 1+len(self.CENTERS)
+    
+    
+class DiscreteDoubleBalanceTaskRBF(DiscreteBalanceTaskRBF):
+    """ Same idea, but two poles. """
+    
+    CENTERS = array(crossproduct([[-pi/4, 0, pi/4], [1, 0, -1]]*2))  
+    
+    def __init__(self, env=None, maxsteps=1000):
+        if env == None:
+            env = DoublePoleEnvironment()
+        DiscreteBalanceTask.__init__(self, env, maxsteps)
+    

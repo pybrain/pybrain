@@ -11,7 +11,7 @@ from scipy import randn, zeros
 from pybrain.structure.networks.network import Network
 from pybrain.datasets import SequentialDataSet, SupervisedDataSet
 from pybrain.supervised import BackpropTrainer
-from pybrain.tools.xml import NetworkWriter, NetworkReader
+from pybrain.tools.customxml import NetworkWriter, NetworkReader
 
 
 
