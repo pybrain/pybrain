@@ -67,6 +67,35 @@ class RotateFunction(FunctionEnvironment):
             return basef.f(dot(x, self._M))    
         self.f = rf
         
+
+def penalize(x, distance=5):
+    return sum([max(0, abs(xi)-5)**2 for xi in x])
+        
+
+class SoftConstrainedFunction(FunctionEnvironment):
+    """ Soft constraint handling through a penalization term. """
+    
+    penalized = True
+    
+    def __init__(self, basef, distance=5, penalizationFactor=1.):
+        FunctionEnvironment.__init__(self, basef.xdim, basef.xopt)
+        self.desiredValue = basef.desiredValue            
+        self.toBeMinimized = basef.toBeMinimized
+        if basef.penalized:
+            # already OK
+            self.f = basef.f
+        else:
+            if not self.toBeMinimized:
+                penalizationFactor *= -1
+                
+            def scf(x):
+                if isinstance(x, ParameterContainer):
+                    x = x.params
+                return basef.f(x)+penalize(x, distance)*penalizationFactor
+            
+            self.f = scf
+    
+        
     
 class CompositionFunction(FunctionEnvironment):
     """ composition of functions """

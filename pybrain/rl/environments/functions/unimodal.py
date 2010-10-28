@@ -2,15 +2,16 @@
 
 __author__ = 'Tom Schaul, tom@idsia.ch'
 
-from scipy import ones, sqrt
+from scipy import ones, sqrt, dot
 from numpy.linalg.linalg import norm
 
 from function import FunctionEnvironment
 
 
 class SphereFunction(FunctionEnvironment):
+    """ Simple quadratic function. """
     def f(self, x):
-        return sum((x-self.xopt)**2)
+        return dot(x,x)
 
 
 class SchwefelFunction(FunctionEnvironment):
@@ -22,20 +23,23 @@ class SchwefelFunction(FunctionEnvironment):
 
 
 class CigarFunction(FunctionEnvironment):
+    """ Bent Cigar function """
     xdimMin = 2
 
     def f(self, x):
-        return x[0]**2 + 1e6*sum(x[1:]**2)
+        return x[0]**2 + 1e6*dot(x[1:],x[1:])
 
 
 class TabletFunction(FunctionEnvironment):
+    """ Also known as discus function."""
     xdimMin = 2
 
     def f(self, x):
-        return 1e6*x[0]**2 + sum(x[1:]**2)
+        return 1e6*x[0]**2 + dot(x[1:],x[1:])
 
 
 class ElliFunction(FunctionEnvironment):
+    """ Ellipsoid. """
     def f(self, x):
         s = 0
         for i in range(len(x)):
@@ -43,17 +47,29 @@ class ElliFunction(FunctionEnvironment):
         return s
 
 
+class SharpRFunctionBis(FunctionEnvironment):
+    """ Bounded version of the Sharp ridge function. """
+    def f(self, x):
+        return x[0]**2 + 100*sqrt(dot(x[1:],x[1:]))
+    
+
 class DiffPowFunction(FunctionEnvironment):
-    """ Difference of powers."""
+    """ Different powers.
+    Standard setting: a=10 (other variants: a=4)
+    """
+    
+    a = 10
+    
     def f(self, x):
         s = 0
         for i in range(len(x)):
-            s += abs(x[i])**(2+10*i/(len(x)-1))
+            s += abs(x[i])**(2+self.a*i/(len(x)-1))
         return s
 
 
 class RosenbrockFunction(FunctionEnvironment):
-    """ Banana-shaped function with a tricky optimum in the valley at 1,1. """
+    """ Banana-shaped function with a tricky optimum in the valley at 1,1.
+    (has another, local optimum in higher dimensions)."""
     def __init__(self, xdim = 2, xopt = None):
         assert xdim >= self.xdimMin and not (self.xdimMax != None and xdim > self.xdimMax)
         self.xdim = xdim
@@ -64,11 +80,9 @@ class RosenbrockFunction(FunctionEnvironment):
         self.reset()
 
     def f(self, x):
-        s = 0
-        for i in range(len(x)-1):
-            s += 100 * (x[i]**2 - x[i+1])**2 + (x[i]-1)**2
-        return s
-
+        return sum(100*(x[:-1]**2-x[1:])**2 + (x[:-1]-1)**2)
+        
+        
 class GlasmachersFunction(FunctionEnvironment):
     """ Tricky! Designed to make most algorithms fail. """
     c = .1
