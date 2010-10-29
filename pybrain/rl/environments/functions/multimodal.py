@@ -8,7 +8,7 @@ from math import pi
 from random import shuffle
 
 from function import FunctionEnvironment
-from transformations import penalize
+from transformations import penalize, generateDiags
 
 
 class MultiModalFunction(FunctionEnvironment):
@@ -120,13 +120,6 @@ class Schwefel20Function(MultiModalFunction):
         z = x * self._signs
         z[1:] = x[:-1] * 0.25
         return - 1. / (self.xdim) * sum(z * sin(sqrt(z))) + self._k + 100 * penalize(z / 100)
-    
-
-def generateDiags(alpha, dim, shuffled=False):
-    diags = [power(alpha, i / (2 * dim - 2.)) for i in range(dim)]
-    if shuffled:
-        shuffle(diags)
-    return diag(diags)
         
     
 class GallagherGauss101MeFunction(MultiModalFunction):
