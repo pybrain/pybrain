@@ -1,11 +1,12 @@
-#@PydevCodeAnalysisIgnore
+#@Pydev CodeAnalysisIgnore
 
 __author__ = 'Tom Schaul, tom@idsia.ch'
 
 from scipy import array, sin, cos, randn
 import logging
 
-from pybrain.rl import EpisodicTask
+from pybrain.rl.environments.episodic import EpisodicTask
+
 
 try:
     import cartpolewrap as impl
@@ -16,7 +17,7 @@ except ImportError, e:
 
 
 class FastCartPoleTask(EpisodicTask):
-    """ A Python wrapper of the standard C implentation of the pole-balancing task, directly using the
+    """ A Python wrapper of the standard C implementation of the pole-balancing task, directly using the
     reference code of Faustino Gomez. """
 
     indim = 1
@@ -29,7 +30,7 @@ class FastCartPoleTask(EpisodicTask):
     __single = None
     def __init__(self, numPoles=1, markov=True, verbose=False,
                  extraObservations=False, extraRandoms=0, maxSteps=100000):
-        """ @extraObservations: if this flag is true, the observations include the cartesian coordinates
+        """ @extraObservations: if this flag is true, the observations include the Cartesian coordinates
         of the pole(s).
         """
         if self.__single != None:
@@ -122,11 +123,6 @@ class FastCartPoleTask(EpisodicTask):
         impl.performAction(action[0])
         self.addReward()
 
-if __name__ == '__main__':
-    from pybrain.rl import EpisodicExperiment
-    from pybrain.rl.agents import FlatNetworkAgent
-    x = FastCartPoleTask()
-    a = FlatNetworkAgent(x.outdim, x.indim)
-    e = EpisodicExperiment(x, a)
-    e.doEpisodes(2)
+
+
 

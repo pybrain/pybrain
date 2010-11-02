@@ -70,7 +70,7 @@ class RotateFunction(FunctionEnvironment):
         
 
 def penalize(x, distance=5):
-    return sum([max(0, abs(xi)-5)**2 for xi in x])
+    return sum([max(0, abs(xi)-distance)**2 for xi in x])
         
 
 class SoftConstrainedFunction(FunctionEnvironment):
@@ -105,6 +105,10 @@ def generateDiags(alpha, dim, shuffled=False):
 
 
 class BBOBTransformationFunction(FunctionEnvironment):
+    """ Reimplementation of the relatively complex set of function and 
+    variable transformations, and their non-trivial combinations from BBOB 2010.
+    But in clean, reusable code.
+    """
     
     def __init__(self, basef, 
                  translate=True, 
@@ -112,7 +116,7 @@ class BBOBTransformationFunction(FunctionEnvironment):
                  conditioning=None, 
                  asymmetry=None,
                  oscillate=False, 
-                 penalize=None,
+                 penalized=0,
                  ):
         FunctionEnvironment.__init__(self, basef.xdim, basef.xopt)
         self.desiredValue = basef.desiredValue            
@@ -120,48 +124,75 @@ class BBOBTransformationFunction(FunctionEnvironment):
         
         if translate:            
             self.xopt = (rand(self.xdim) - 0.5) * 9.8
-            
-        self._diags = eye(self.xdim)            
-        self._R = eye(self.xdim)            
-        self._Q = eye(self.xdim)            
-        
-        if conditioning is not None:
-            self._diags = generateDiags(conditioning, self.xdim)
-        if rotate:
-            self._R = orth(rand(basef.xdim, basef.xdim))        
-            if conditioning:
-                self._Q = orth(rand(basef.xdim, basef.xdim))
-                        
-        tmp = lambda x: dot(self._Q, dot(self._diags, dot(self._R, x-self.xopt)))
-        if asymmetry is not None:
-            tmp2 = tmp
-            tmp = lambda x: asymmetrify(tmp2(x), asymmetry)
-        if oscillate:
-            tmp3 = tmp
-            tmp = lambda x: oscillatify(tmp3(x))
-        
-        self.f = lambda x: basef.f(tmp(x))
-
-def asymmetrify(x, beta=0.2):
-    res = x.copy()
-    dim = len(x)
-    for i, xi in enumerate(x):
-        if xi > 0:
-            res[i] = power(xi, 1+beta*i/(dim-1.)*sqrt(xi))
-    return res
-
-def oscillatify(x):
-    res = x.copy()
-    for i, xi in enumerate(x):
-        if xi==0: 
-            continue
-        elif xi > 0:
-            s = 1 
-            c1 = 10
-            c2 = 7.9
+                    
+        if conditioning:
+            prefix = generateDiags(conditioning, self.xdim)
+            if rotate:
+                prefix = dot(prefix, self._getR())
+                if oscillate or not asymmetry:
+                    prefix = dot(self._getR(), prefix)
+                
+        elif rotate and asymmetry and not oscillate:
+            prefix = self._getR()
         else:
-            s = 1
-            c1 = 5.5
-            c2 = 3.1
-        res[i] = s*exp(log(abs(xi)) + 0.049 * (sin(c1*xi)+sin(c2*xi)))
-    return res
+            prefix = eye(self.xdim)  
+            
+        if penalized != 0:
+            if self.penalized:
+                penalized = 0
+            else:
+                self.penalized = True
+            
+        if rotate:
+            r = self._getR()
+            tmp1 = lambda x: dot(r, x)
+        else:
+            tmp1 = lambda x: x
+            
+        if oscillate:
+            tmp2 = lambda x: BBOBTransformationFunction.oscillatify(tmp1(x))     
+        else:
+            tmp2 = tmp1            
+        
+        if asymmetry is not None:
+            tmp3 = lambda x: BBOBTransformationFunction.asymmetrify(tmp2(x), asymmetry)
+        else:
+            tmp3 = tmp2
+                            
+        self.f = lambda x: basef.f(dot(prefix, tmp3(x-self.xopt)))+penalized*penalize(x)
+        
+    def _getR(self):
+        return orth(rand(self.xdim, self.xdim))
+
+
+    @staticmethod
+    def asymmetrify(x, beta=0.2):
+        res = x.copy()
+        dim = len(x)
+        for i, xi in enumerate(x):
+            if xi > 0:
+                res[i] = power(xi, 1+beta*i/(dim-1.)*sqrt(xi))
+        return res
+    
+    @staticmethod
+    def oscillatify(x):
+        if isinstance(x, float):
+            res = [x]
+        else:
+            res = x.copy()        
+        for i, xi in enumerate(res):
+            if xi==0: 
+                continue
+            elif xi > 0:
+                s = 1 
+                c1 = 10
+                c2 = 7.9
+            else:
+                s = 1
+                c1 = 5.5
+                c2 = 3.1
+            res[i] = s*exp(log(abs(xi)) + 0.049 * (sin(c1*xi)+sin(c2*xi)))
+        if isinstance(x, float):
+            return res[0]
+        else:
+            return res
