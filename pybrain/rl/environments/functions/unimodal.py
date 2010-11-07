@@ -5,7 +5,6 @@ __author__ = 'Tom Schaul, tom@idsia.ch'
 from scipy import ones, sqrt, dot, sign, randn, power, rand, floor, array
 from scipy.linalg import norm, orth
 
-from transformations import BBOBTransformationFunction
 from function import FunctionEnvironment
 
 
@@ -76,6 +75,7 @@ class AttractiveSectorFunction(FunctionEnvironment):
         self.xopt = (rand(self.xdim) - 0.5) * 9.8   
     
     def f(self, x):
+        from transformations import BBOBTransformationFunction
         quad = (x*self.xopt > 0)
         sz = 100 * x * quad + x * (quad==False)         
         return power(BBOBTransformationFunction.oscillatify(dot(sz, sz)), 0.9)

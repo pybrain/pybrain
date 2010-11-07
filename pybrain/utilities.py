@@ -669,7 +669,7 @@ def dictCombinations(listdict):
         return [{}]
     k, vs = listdict.popitem()
     res = dictCombinations(listdict)
-    if isinstance(vs, list):
+    if isinstance(vs, list) or isinstance(vs, tuple):
         res = [dict(d, **{k:v}) for d in res for v in sorted(set(vs))]
     else:
         res = [dict(d, **{k:vs}) for d in res]

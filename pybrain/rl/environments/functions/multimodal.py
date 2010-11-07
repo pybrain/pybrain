@@ -97,7 +97,7 @@ class GriewankRosenbrockFunction(MultiModalFunction):
     
     def f(self, x):
         s = 100 * (x[:-1] ** 2 - x[1:]) ** 2 + (x[:-1] - 1) ** 2
-        return sum(s / 4000. - cos(s))
+        return 1/(self.xdim-1.) * sum(s / 4000. - cos(s)) +1
     
 
 

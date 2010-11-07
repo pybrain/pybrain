@@ -3,7 +3,7 @@ __author__ = 'Tom Schaul, tom@idsia.ch'
 
 from scipy import rand, dot, power, diag, eye, sqrt, sin, log, exp
 from scipy.linalg import orth, norm, inv
-from random import shuffle
+from random import shuffle, random, gauss
 
 from function import FunctionEnvironment
 from pybrain.structure.parametercontainer import ParameterContainer
@@ -110,6 +110,7 @@ class BBOBTransformationFunction(FunctionEnvironment):
     But in clean, reusable code.
     """
     
+    
     def __init__(self, basef, 
                  translate=True, 
                  rotate=False, 
@@ -117,9 +118,13 @@ class BBOBTransformationFunction(FunctionEnvironment):
                  asymmetry=None,
                  oscillate=False, 
                  penalized=0,
+                 desiredValue=1e-8,
+                 gnoise=None,
+                 unoise=None,
+                 cnoise=None,
                  ):
         FunctionEnvironment.__init__(self, basef.xdim, basef.xopt)
-        self.desiredValue = basef.desiredValue            
+        self.desiredValue = desiredValue            
         self.toBeMinimized = basef.toBeMinimized
         
         if translate:            
@@ -142,7 +147,8 @@ class BBOBTransformationFunction(FunctionEnvironment):
                 penalized = 0
             else:
                 self.penalized = True
-            
+        
+        # combine transformations    
         if rotate:
             r = self._getR()
             tmp1 = lambda x: dot(r, x)
@@ -158,8 +164,25 @@ class BBOBTransformationFunction(FunctionEnvironment):
             tmp3 = lambda x: BBOBTransformationFunction.asymmetrify(tmp2(x), asymmetry)
         else:
             tmp3 = tmp2
+            
+        # noise
+        ntmp = None
+        if gnoise:
+            ntmp = lambda f: f*exp(gnoise*gauss(0,1))
+        elif unoise:
+            alpha = 0.49*(1./self.xdim) * unoise
+            ntmp = lambda f: f*power(random(),unoise) * max(1, power(1e9/(f+1e-99),alpha*random())) 
+        elif cnoise:
+            alpha, beta = cnoise
+            ntmp = lambda f: f+alpha*max(0, 1000 * (random()<beta) * gauss(0,1) / (abs(gauss(0,1)) + 1e-199))
+            
+        def noisetrans(f):
+            if ntmp is None or f < 1e-8:
+                return f
+            else:
+                return ntmp(f) + 1.01e-8
                             
-        self.f = lambda x: basef.f(dot(prefix, tmp3(x-self.xopt)))+penalized*penalize(x)
+        self.f = lambda x: noisetrans(basef.f(dot(prefix, tmp3(x-self.xopt))))+penalized*penalize(x)
         
     def _getR(self):
         return orth(rand(self.xdim, self.xdim))
