@@ -9,3 +9,5 @@ build
 dist
 docs/sphinx/.build
 .DS_Store
+/pybrain/rl/environments/cartpole/fast_version/cartpolewrap.cpp
+/pybrain/rl/environments/cartpole/fast_version/cartpolewrap.pyd

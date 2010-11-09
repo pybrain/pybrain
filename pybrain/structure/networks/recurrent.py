@@ -146,6 +146,10 @@ class RecurrentNetwork(RecurrentNetworkComponent, Network):
 
     bufferlist = Network.bufferlist
 
-    def __init__(self, forget=False, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         Network.__init__(self, *args, **kwargs)
+        if 'forget' in kwargs:
+            forget = kwargs['forget']
+        else:
+            forget = False
         RecurrentNetworkComponent.__init__(self, forget, *args, **kwargs)
