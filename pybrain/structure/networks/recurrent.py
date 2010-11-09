@@ -15,13 +15,10 @@ class RecurrentNetworkComponent(object):
 
     sequential = True
 
-    def __init__(self, forget, name=None, *args, **kwargs):
+    def __init__(self, forget=None, name=None, *args, **kwargs):
         self.recurrentConns = []
         self.maxoffset = 0
-        if forget:
-           self.increment = 0
-        else:
-           self.increment = 1
+        self.forget = forget
 
     def __str__(self):
         s = super(RecurrentNetworkComponent, self).__str__()
@@ -51,26 +48,29 @@ class RecurrentNetworkComponent(object):
         """Do one transformation of an input and return the result."""
         self.inputbuffer[self.offset] = inpt
         self.forward()
-        return self.outputbuffer[self.offset - self.increment].copy()
+        if self.forget:
+            return self.outputbuffer[self.offset].copy()
+        else:
+            return self.outputbuffer[self.offset - 1].copy()
 
     def backActivate(self, outerr):
         """Do one transformation of an output error outerr backward and return
         the error on the input."""
-        self.outputerror[self.offset - self.increment] = outerr
+        self.outputerror[self.offset - 1] = outerr
         self.backward()
         return self.inputerror[self.offset].copy()
 
     def forward(self):
         """Produce the output from the input."""
-        if not (self.offset + self.increment < self.inputbuffer.shape[0]):
+        if not (self.offset + 1 < self.inputbuffer.shape[0]):
             self._growBuffers()
         super(RecurrentNetworkComponent, self).forward()
-        self.offset += self.increment
+        self.offset += 1
         self.maxoffset = max(self.offset, self.maxoffset)
 
     def backward(self):
         """Produce the input error from the output error."""
-        self.offset -= self.increment
+        self.offset -= 1
         super(RecurrentNetworkComponent, self).backward()
 
     def _isLastTimestep(self):
@@ -78,6 +78,9 @@ class RecurrentNetworkComponent(object):
 
     def _forwardImplementation(self, inbuf, outbuf):
         assert self.sorted, ".sortModules() has not been called"
+
+        if self.forget:
+            self.offset += 1
 
         index = 0
         offset = self.offset
@@ -87,12 +90,18 @@ class RecurrentNetworkComponent(object):
 
         if offset > 0:
             for c in self.recurrentConns:
-                c.forward(offset - self.increment, offset)
+                c.forward(offset - 1, offset)
 
         for m in self.modulesSorted:
             m.forward()
             for c in self.connections[m]:
                 c.forward(offset, offset)
+
+        if self.forget:
+            for m in self.modules:
+                m.shift(-1)
+            offset -= 1
+            self.offset -= 2
 
         index = 0
         for m in self.outmodules:
@@ -100,6 +109,7 @@ class RecurrentNetworkComponent(object):
             index += m.outdim
 
     def _backwardImplementation(self, outerr, inerr, outbuf, inbuf):
+        assert not self.forget, "Cannot back propagate a forgetful network"
         assert self.sorted, ".sortModules() has not been called"
         index = 0
         offset = self.offset
@@ -109,7 +119,7 @@ class RecurrentNetworkComponent(object):
 
         if not self._isLastTimestep():
             for c in self.recurrentConns:
-                c.backward(offset, offset + self.increment)
+                c.backward(offset, offset + 1)
 
         for m in reversed(self.modulesSorted):
             for c in self.connections[m]:
@@ -136,6 +146,10 @@ class RecurrentNetwork(RecurrentNetworkComponent, Network):
 
     bufferlist = Network.bufferlist
 
-    def __init__(self, forget=False, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         Network.__init__(self, *args, **kwargs)
+        if 'forget' in kwargs:
+            forget = kwargs['forget']
+        else:
+            forget = False
         RecurrentNetworkComponent.__init__(self, forget, *args, **kwargs)

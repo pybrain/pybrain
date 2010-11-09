@@ -44,8 +44,8 @@ and therefore dividing the provided output by 2. Also clearing the old state.
     True
 
 List all the states again, explicitly (buffer size is 8 by now).
-    >>> fListToString(N['mdlstm'].outputbuffer[:,1], 3)
-    '[0.4   , 0.4   , 0.814 , 0.407 , -0.152, -0.152, 0     , 0     ]'
+    >>> fListToString(N['mdlstm'].outputbuffer[:,1], 2)
+    '[0.4  , 0.4  , 0.81 , 0.41 , -0.15, -0.15, 0    , 0    ]'
 
 """
 
