@@ -1,6 +1,6 @@
 __author__ = 'Daan Wierstra and Tom Schaul'
 
-from scipy import zeros
+from scipy import append, zeros
 
 from pybrain.utilities import abstractMethod, Named
 
@@ -85,6 +85,21 @@ class Module(Named):
         for buffername, l  in self.bufferlist:
             buf = getattr(self, buffername)
             buf[:] = zeros(l)
+
+    def shift(self, items):
+        """Shift all buffers up or down a defined number of items on offset axis.
+        Negative values indicate backward shift."""
+        if items == 0:
+            return
+        self.offset += items
+        for buffername, l  in self.bufferlist:
+            buf = getattr(self, buffername)
+            assert abs(items) <= len(buf), "Cannot shift further than length of buffer."
+            fill = zeros((abs(items), len(buf[0])))
+            if items < 0:
+                buf[:] = append(buf[-items:], fill, 0)
+            else:
+                buf[:] = append(fill ,buf[0:-items] , 0)
 
     def activateOnDataset(self, dataset):
         """Run the module's forward pass on the given dataset unconditionally
