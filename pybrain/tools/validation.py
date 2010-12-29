@@ -2,7 +2,9 @@ __author__ = 'Michael Isik'
 
 
 from numpy.random import permutation
-from numpy import array, array_split, apply_along_axis, concatenate, ones, dot, delete, append, zeros, argmax
+from numpy import array, array_split, apply_along_axis, concatenate, ones, dot, delete, append, zeros, argmax, nonzero
+from numpy import int as npint
+from numpy import copy as npcopy
 import copy
 from pybrain.datasets.importance import ImportanceDataSet
 from pybrain.datasets.sequential import SequentialDataSet
@@ -31,6 +33,57 @@ class Validator(object):
         assert len(output) == len(target)
         n_correct = sum(output == target)
         return float(n_correct) / float(len(output))
+
+    @classmethod
+    def computeTargetToOutputMapping(cls, target, output):
+        """
+        Returns a list of tuples specifying a mapping from target class indices to the class labels in output.
+        This can handle mapping multiple output class indices to the target class indices.
+
+            :arg target: array of target values
+            :arg output: array of output (learned) values 
+        """
+        # TODO:output and target should be the same length
+
+        targetVals = set(target)
+        outputVals = set(output)
+
+        output = array(output)
+        target = array(target)
+        mappings = []
+
+        for t in targetVals:
+            maxCount = 0;
+            for o in outputVals:
+                numMatches = nonzero(output[target==t]==o)[0].size
+                if numMatches > maxCount:
+                    maxCount = numMatches
+                    mapping = o
+            mappings.append( (t,mapping,maxCount) )
+
+        return mappings
+
+    @classmethod
+    def mapOutputToTarget(cls,output,target):
+        """ Returns a copy of output where the class indices have been changed to match those used by target
+
+            :arg output: array of output values
+            :arg mappings: list of tuples mapping output indices to target indices obtained from computeOutputToTargetMapping
+        """
+        """ blah blah blah
+        """
+        output = array(output)
+        target = array(target)
+
+        mappings = Validator.computeTargetToOutputMapping(output,target)
+
+        newOutput = npcopy(output)
+        for mapping in mappings:
+            newOutput[ output==mapping[0] ] = mapping[1]
+            print mapping
+            print newOutput
+
+        return ( newOutput , mappings )
 
     @classmethod
     def ESS(cls, output, target):
@@ -92,8 +145,8 @@ class ClassificationHelper(object):
             and returns the result.
 
             :arg data: array of vectors, that are in the one-of-many format.
-                         Each vector will be converted to the index of the
-                         component with the maximum value.
+                Each vector will be converted to the index of the
+                component with the maximum value.
         """
         return apply_along_axis(argmax, 1, data)
 
@@ -259,7 +312,7 @@ class CrossValidator(object):
             :arg dataset: Dataset for training and testing
             :key n_folds: Number of pieces, the dataset will be splitted to
             :key valfunc: Validation function. Should expect a module and a dataset.
-                            E.g. ModuleValidator.MSE()
+                E.g. ModuleValidator.MSE()
             :key others: see setArgs() method
         """
         self._trainer = trainer
