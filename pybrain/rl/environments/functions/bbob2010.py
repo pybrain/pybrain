@@ -262,7 +262,9 @@ def bbob_f121(dim):
                                       penalized=1,
                                       rotate=True,
                                       cnoise=(1,0.2))    
-    
+
+
+# multi-modal with severe noise
 def bbob_f122(dim):
     return BBOBTransformationFunction(SchaffersF7Function(dim), 
                                       conditioning=10,
