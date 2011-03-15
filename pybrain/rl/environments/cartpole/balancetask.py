@@ -1,10 +1,10 @@
-from pybrain.rl.environments.cartpole.doublepole import DoublePoleEnvironment
 __author__ = 'Thomas Rueckstiess and Tom Schaul'
 
 from scipy import pi, dot, array, ones, exp
 from scipy.linalg import norm
 
 from pybrain.rl.environments.cartpole.nonmarkovpole import NonMarkovPoleEnvironment
+from pybrain.rl.environments.cartpole.doublepole import DoublePoleEnvironment
 from pybrain.rl.environments import EpisodicTask
 from cartpole import CartPoleEnvironment
 from pybrain.utilities import crossproduct

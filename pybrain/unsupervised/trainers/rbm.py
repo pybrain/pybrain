@@ -166,7 +166,7 @@ class RbmGibbsTrainer(Trainer):
 class RbmBernoulliTrainer(RbmGibbsTrainer):
 
     def sampler(self, probabilities):
-        result = probabilities > random.rand(1, self.rbm.hiddenDim)
+        result = probabilities > random.rand(self.rbm.hiddenDim)
         return result.astype('int32')
 
     def updater(self, pos, neg, poshb, neghb, posvb, negvb):
