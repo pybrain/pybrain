@@ -153,7 +153,8 @@ void step(double action, double *st, double *derivs)
     else force = -FORCE_MAG;
   }
   else
-    force =  (action /*- 0.5*/) * FORCE_MAG2;
+    force =  (action /*- 0.5*/) * FORCE_MAG;
+    //force =  (action - 0.5) * FORCE_MAG2;
   if(force > FORCE_MAG)
     force = FORCE_MAG;
   if(force < -FORCE_MAG)
