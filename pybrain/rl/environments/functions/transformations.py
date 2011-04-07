@@ -1,13 +1,14 @@
 __author__ = 'Tom Schaul, tom@idsia.ch'
 
 
-from scipy import rand, dot, power, diag, eye, sqrt, sin, log, exp
+from scipy import rand, dot, power, diag, eye, sqrt, sin, log, exp, ravel, clip, arange
 from scipy.linalg import orth, norm, inv
 from random import shuffle, random, gauss
 
 from function import FunctionEnvironment
 from pybrain.structure.parametercontainer import ParameterContainer
 from pybrain.rl.environments.fitnessevaluator import FitnessEvaluator
+from pybrain.utilities import sparse_orth, dense_orth
 
 
 def oppositeFunction(basef):
@@ -70,7 +71,10 @@ class RotateFunction(FunctionEnvironment):
         
 
 def penalize(x, distance=5):
-    return sum([max(0, abs(xi)-distance)**2 for xi in x])
+    ax = abs(x)
+    tmp = clip(ax-distance, 0, ax.max())
+    return dot(tmp, tmp)
+    #return sum([max(0, abs(xi) - distance) ** 2 for xi in x])
         
 
 class SoftConstrainedFunction(FunctionEnvironment):
@@ -92,7 +96,7 @@ class SoftConstrainedFunction(FunctionEnvironment):
             def scf(x):
                 if isinstance(x, ParameterContainer):
                     x = x.params
-                return basef.f(x)+penalize(x, distance)*penalizationFactor
+                return basef.f(x) + penalize(x, distance) * penalizationFactor
             
             self.f = scf
     
@@ -108,37 +112,59 @@ class BBOBTransformationFunction(FunctionEnvironment):
     """ Reimplementation of the relatively complex set of function and 
     variable transformations, and their non-trivial combinations from BBOB 2010.
     But in clean, reusable code.
-    """
+    """    
     
-    
-    def __init__(self, basef, 
-                 translate=True, 
-                 rotate=False, 
-                 conditioning=None, 
+    def __init__(self, basef,
+                 translate=True,
+                 rotate=False,
+                 conditioning=None,
                  asymmetry=None,
-                 oscillate=False, 
+                 oscillate=False,
                  penalized=0,
                  desiredValue=1e-8,
                  gnoise=None,
                  unoise=None,
                  cnoise=None,
+                 sparse=True,
                  ):
         FunctionEnvironment.__init__(self, basef.xdim, basef.xopt)
+        self._name = basef.__class__.__name__
         self.desiredValue = desiredValue            
         self.toBeMinimized = basef.toBeMinimized
+        
+        if self.xdim < 500:
+            sparse = False
+        
+        if sparse:
+            try:
+                from scipy.sparse import csc_matrix
+            except:
+                sparse = False
         
         if translate:            
             self.xopt = (rand(self.xdim) - 0.5) * 9.8
                     
         if conditioning:
-            prefix = generateDiags(conditioning, self.xdim)
-            if rotate:
-                prefix = dot(prefix, self._getR())
-                if oscillate or not asymmetry:
-                    prefix = dot(self._getR(), prefix)
+            prefix = generateDiags(conditioning, self.xdim)                
+            if sparse:
+                prefix = csc_matrix(prefix)
+                if rotate:
+                    prefix = prefix * sparse_orth(self.xdim)
+                    if oscillate or not asymmetry:
+                        prefix = sparse_orth(self.xdim) * prefix                
+            else:
+                if rotate:
+                    prefix = dot(prefix, dense_orth(self.xdim))
+                    if oscillate or not asymmetry:
+                        prefix = dot(dense_orth(self.xdim), prefix)
                 
         elif rotate and asymmetry and not oscillate:
-            prefix = self._getR()
+            if sparse:
+                prefix = sparse_orth(self.xdim)
+            else:
+                prefix = dense_orth(self.xdim)
+        elif sparse:
+            prefix = None
         else:
             prefix = eye(self.xdim)  
             
@@ -150,8 +176,12 @@ class BBOBTransformationFunction(FunctionEnvironment):
         
         # combine transformations    
         if rotate:
-            r = self._getR()
-            tmp1 = lambda x: dot(r, x)
+            if sparse:
+                r = sparse_orth(self.xdim)
+                tmp1 = lambda x: ravel(x * r)
+            else:
+                r = dense_orth(self.xdim)
+                tmp1 = lambda x: dot(x, r)
         else:
             tmp1 = lambda x: x
             
@@ -168,43 +198,50 @@ class BBOBTransformationFunction(FunctionEnvironment):
         # noise
         ntmp = None
         if gnoise:
-            ntmp = lambda f: f*exp(gnoise*gauss(0,1))
+            ntmp = lambda f: f * exp(gnoise * gauss(0, 1))
         elif unoise:
-            alpha = 0.49*(1./self.xdim) * unoise
-            ntmp = lambda f: f*power(random(),unoise) * max(1, power(1e9/(f+1e-99),alpha*random())) 
+            alpha = 0.49 * (1. / self.xdim) * unoise
+            ntmp = lambda f: f * power(random(), unoise) * max(1, power(1e9 / (f + 1e-99), alpha * random())) 
         elif cnoise:
             alpha, beta = cnoise
-            ntmp = lambda f: f+alpha*max(0, 1000 * (random()<beta) * gauss(0,1) / (abs(gauss(0,1)) + 1e-199))
+            ntmp = lambda f: f + alpha * max(0, 1000 * (random() < beta) * gauss(0, 1) / (abs(gauss(0, 1)) + 1e-199))
             
         def noisetrans(f):
             if ntmp is None or f < 1e-8:
                 return f
             else:
                 return ntmp(f) + 1.01e-8
+            
+        if sparse:
+            if prefix is None:
+                tmp4 = lambda x: tmp3(x - self.xopt)
+            else:
+                tmp4 = lambda x: ravel(prefix * tmp3(x - self.xopt))
+        else:
+            tmp4 = lambda x: dot(prefix, tmp3(x - self.xopt))
                             
-        self.f = lambda x: noisetrans(basef.f(dot(prefix, tmp3(x-self.xopt))))+penalized*penalize(x)
+        self.f = lambda x: (noisetrans(basef.f(tmp4(x))) 
+                            + penalized * penalize(x))
         
-    def _getR(self):
-        return orth(rand(self.xdim, self.xdim))
-
 
     @staticmethod
     def asymmetrify(x, beta=0.2):
-        res = x.copy()
         dim = len(x)
-        for i, xi in enumerate(x):
-            if xi > 0:
-                res[i] = power(xi, 1+beta*i/(dim-1.)*sqrt(xi))
-        return res
+        return x * (x<=0) + (x>0) * exp((1+beta*arange(dim)/(dim-1.)*sqrt(abs(x))) * log(abs(x)+1e-100))
+        #res = x.copy()
+        #for i, xi in enumerate(x):
+        #    if xi > 0:
+        #        res[i] = power(xi, 1 + beta * i / (dim - 1.) * sqrt(xi))
+        #return res
     
     @staticmethod
-    def oscillatify(x):
+    def _oscillatify(x):
         if isinstance(x, float):
             res = [x]
         else:
             res = x.copy()        
         for i, xi in enumerate(res):
-            if xi==0: 
+            if xi == 0: 
                 continue
             elif xi > 0:
                 s = 1 
@@ -214,8 +251,15 @@ class BBOBTransformationFunction(FunctionEnvironment):
                 s = 1
                 c1 = 5.5
                 c2 = 3.1
-            res[i] = s*exp(log(abs(xi)) + 0.049 * (sin(c1*xi)+sin(c2*xi)))
+            res[i] = s * exp(log(abs(xi)) + 0.049 * (sin(c1 * xi) + sin(c2 * xi)))
         if isinstance(x, float):
             return res[0]
         else:
             return res
+
+    @staticmethod
+    def oscillatify(x):
+        return exp(log(abs(x)+1e-100)
+                   + (x>0) * 0.049 * (sin(10 * x) + sin(7.9 * x))
+                   + (x<0) * 0.049 * (sin(5.5 * x) + sin(3.1 * x)))
+        
