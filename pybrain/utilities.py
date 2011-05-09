@@ -669,7 +669,7 @@ def dictCombinations(listdict):
         return [{}]
     k, vs = listdict.popitem()
     res = dictCombinations(listdict)
-    if isinstance(vs, list):
+    if isinstance(vs, list) or isinstance(vs, tuple):
         res = [dict(d, **{k:v}) for d in res for v in sorted(set(vs))]
     else:
         res = [dict(d, **{k:vs}) for d in res]
@@ -683,3 +683,39 @@ def r_argmax(v):
     maxbid = max(v)
     maxbidders = [i for (i, b) in enumerate(v) if b==maxbid]
     return choice(maxbidders)
+
+
+def dense_orth(dim):
+    """ Constructs a dense orthogonal matrix. """
+    from scipy import rand
+    from scipy.linalg import orth
+    return orth(rand(dim, dim))
+    
+def sparse_orth(d):
+    """ Constructs a sparse orthogonal matrix.
+    
+    The method is described in:
+    Gi-Sang Cheon et al., Constructions for the sparsest orthogonal matrices,
+    Bull. Korean Math. Soc 36 (1999) No.1 pp.199-129
+    """
+    from scipy.sparse import eye
+    from scipy import r_, pi, sin, cos
+    if d%2 == 0:
+        seq = r_[0:d:2,1:d-1:2]
+    else:
+        seq = r_[0:d-1:2,1:d:2]
+    Q = eye(d,d).tocsc()
+    for i in seq:
+        theta = random() * 2 * pi
+        flip = (random() - 0.5)>0;
+        Qi = eye(d,d).tocsc()
+        Qi[i,i] = cos(theta)
+        Qi[(i+1),i] = sin(theta)
+        if flip > 0:
+            Qi[i,(i+1)] = -sin(theta)
+            Qi[(i+1),(i+1)] = cos(theta)
+        else:
+            Qi[i,(i+1)] = sin(theta)
+            Qi[(i+1),(i+1)] = -cos(theta)            
+        Q = Q*Qi;
+    return Q

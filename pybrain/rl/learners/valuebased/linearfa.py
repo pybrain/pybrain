@@ -30,7 +30,7 @@ class LinearFALearner(ValueBasedLearner):
     learningRate = 0.5      # aka alpha: make sure this is being decreased by calls from the learning agent!
     learningRateDecay = 100 # aka n_0, but counting decay-calls
     
-    randomInit = False
+    randomInit = True
     
     rewardDiscount = 0.99 # aka gamma
     
@@ -44,7 +44,7 @@ class LinearFALearner(ValueBasedLearner):
         self.num_actions = num_actions
         self.num_features = num_features
         if self.randomInit:
-            self._theta = randn(self.num_actions, self.num_features) / 100.
+            self._theta = randn(self.num_actions, self.num_features) / 10.
         else:
             self._theta = zeros((self.num_actions, self.num_features))
         self._additionalInit()
@@ -83,11 +83,12 @@ class LinearFALearner(ValueBasedLearner):
         return tmp / sum(tmp)
         
     def reset(self):        
-        ValueBasedLearner.reset(self)
-        self.newEpisode()
+        ValueBasedLearner.reset(self)        
         self._callcount = 0
+        self.newEpisode()
     
-    def _decayLearningRate(self):        
+    def newEpisode(self):  
+        ValueBasedLearner.newEpisode(self)      
         self._callcount += 1
         self.learningRate *= ((self.learningRateDecay + self._callcount) 
                               / (self.learningRateDecay + self._callcount + 1.))
@@ -99,6 +100,9 @@ class Q_LinFA(LinearFALearner):
     def _updateWeights(self, state, action, reward, next_state):
         """ state and next_state are vectors, action is an integer. """
         td_error = reward + self.rewardDiscount * max(dot(self._theta, next_state)) - dot(self._theta[action], state) 
+        #print action, reward, td_error,self._theta[action], state, dot(self._theta[action], state)
+        #print self.learningRate * td_error * state
+        #print 
         self._theta[action] += self.learningRate * td_error * state 
           
 
@@ -109,6 +113,7 @@ class QLambda_LinFA(LinearFALearner):
     
     def newEpisode(self):
         """ Reset eligibilities after each episode. """
+        LinearFALearner.newEpisode(self)
         self._etraces = zeros((self.num_actions, self.num_features))
         
     def _updateEtraces(self, state, action, responsibility=1.):

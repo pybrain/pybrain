@@ -16,16 +16,14 @@ But first of all, we need to import some general packages and the RL
 components from PyBrain:
 """
 
-from scipy import *
-import sys, time
+from scipy import * #@UnusedWildImport
 import pylab
 
 from pybrain.rl.environments.mazes import Maze, MDPMazeTask
 from pybrain.rl.learners.valuebased import ActionValueTable
 from pybrain.rl.agents import LearningAgent
-from pybrain.rl.learners import Q, SARSA
+from pybrain.rl.learners import Q, SARSA #@UnusedImport
 from pybrain.rl.experiments import Experiment
-from pybrain.rl.environments import Task
 
 
 """

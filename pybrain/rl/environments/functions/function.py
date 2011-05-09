@@ -1,3 +1,4 @@
+from pybrain.utilities import setAllArgs
 __author__ = 'Tom Schaul, tom@idsia.ch'
 
 from scipy import zeros, array, ndarray
@@ -25,7 +26,7 @@ class FunctionEnvironment(Environment, FitnessEvaluator):
     # does the function already include a penalization term, to keep search near the origin?
     penalized = False
 
-    def __init__(self, xdim = None, xopt = None):
+    def __init__(self, xdim = None, xopt = None, **args):
         if xdim is None:
             xdim = self.xdim
         if xdim is None:
@@ -36,6 +37,7 @@ class FunctionEnvironment(Environment, FitnessEvaluator):
             self.xopt = zeros(self.xdim)
         else:
             self.xopt = xopt
+        setAllArgs(self, args)
         self.reset()
 
     def __call__(self, x):

@@ -18,10 +18,11 @@ class CMAES(ContinuousOptimizer):
     stopPrecision = 1e-6
 
     storeAllCenters = False
+    initStepSize = 0.5
 
     def _additionalInit(self):
         self.center = self._initEvaluable
-        self.stepSize = 0.5         # coordinate wise standard deviation (sigma)
+        self.stepSize = self.initStepSize  # coordinate wise standard deviation (sigma)
         if self.storeAllCenters:
             self._allCenters = []
 

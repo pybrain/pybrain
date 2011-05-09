@@ -34,7 +34,7 @@ class Rbm(object):
         self.bias = [i for i in self.net.modules if isinstance(i, BiasUnit)][0]
         self.biascon = self.net.connections[self.bias][0]
         self.visible = net['visible']
-        self.hidden = ['hidden']
+        self.hidden = net['hidden']
         self.con = self.net.connections[self.visible][0]
 
     @classmethod

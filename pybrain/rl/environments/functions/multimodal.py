@@ -2,7 +2,7 @@
 
 __author__ = 'Tom Schaul, tom@idsia.ch'
 
-from scipy import power, exp, cos, sqrt, rand, sin, floor, dot, ones, sign, randn, diag, prod
+from scipy import power, exp, cos, sqrt, rand, sin, floor, dot, ones, sign, randn, prod
 from scipy.linalg import orth
 from math import pi
 from random import shuffle
@@ -80,13 +80,24 @@ class GriewankFunction(MultiModalFunction):
             prod *= cos(xi / sqrt(i + 1))
         return 1 + sum(x ** 2) / 4000. - prod
     
+class BucheRastriginFunction(MultiModalFunction):
+    """ Deceptive and highly multi-modal."""
+    
+    def f(self, x):
+        z = x[:]
+        for i in range(self.xdim):
+            e = i/(self.xdim-1.)/2.
+            if x[i] <= 0 or i%2==0:
+                e += 1
+            z[i] *= power(10, e)
+        return dot(z,z) + 10 * self.xdim - 10*sum(cos(2*pi*z))
     
 class GriewankRosenbrockFunction(MultiModalFunction):
     """ Composite between the two. """
     
     def f(self, x):
         s = 100 * (x[:-1] ** 2 - x[1:]) ** 2 + (x[:-1] - 1) ** 2
-        return sum(s / 4000. - cos(s))
+        return 1/(self.xdim-1.) * sum(s / 4000. - cos(s)) +1
     
 
 
@@ -111,15 +122,19 @@ class Schwefel20Function(MultiModalFunction):
     penalized = True
     
     _k = 4.189828872724339
+    _k2 = 4.20966874633/2
     
     def __init__(self, *args, **kwargs):
         MultiModalFunction.__init__(self, *args, **kwargs)
         self._signs = sign(randn(self.xdim))
+        self._diags = generateDiags(10, self.xdim)
+        self.xopt = self._k2 * self._signs
         
     def f(self, x):
-        z = x * self._signs
-        z[1:] = x[:-1] * 0.25
-        return - 1. / (self.xdim) * sum(z * sin(sqrt(z))) + self._k + 100 * penalize(z / 100)
+        z = 2* x * self._signs        
+        z[1:] += (z[:-1]-self.xopt[:-1]) * 0.25
+        z = 100 * (dot(self._diags, (z-self.xopt)) + self.xopt)
+        return - 1. / float(self.xdim) * sum(z * sin(sqrt(abs(z)))) + self._k + 100 * penalize(z / 100.)
         
     
 class GallagherGauss101MeFunction(MultiModalFunction):
@@ -131,8 +146,9 @@ class GallagherGauss101MeFunction(MultiModalFunction):
 
     def __init__(self, *args, **kwargs):
         MultiModalFunction.__init__(self, *args, **kwargs)
-        self._opts = (rand((self.numPeaks, self.xdim)) - 0.5) * 9.8
-        self._opts[0] = (rand(self.xdim) - 0.5) * 8
+        print self.numPeaks, self.xdim
+        self._opts = [(rand(self.xdim) - 0.5) * 8]
+        self._opts.extend([(rand(self.xdim) - 0.5) * 9.8 for _ in range(self.numPeaks-1)])
         alphas = [power(self.maxCond, 2 * i / float(self.numPeaks - 2)) for i in range(self.numPeaks - 1)]
         shuffle(alphas)
         self._covs = [generateDiags(alpha, self.xdim, shuffled=True) / power(alpha, 0.25) for alpha in [self.optCond] + alphas]
@@ -141,9 +157,9 @@ class GallagherGauss101MeFunction(MultiModalFunction):
         
         
     def f(self, x):
-        rxy = dot(self._R, (x - self._opts))
-        return (10 - max([self._w[i] * exp(-1 / (2. * self.xdim) * dot(rxy, dot(self._covs[i], rxy))) 
-                        for i in range(self.numPeaks)])) ** 2
+        rxy = [dot(self._R, (x - o)) for o in self._opts]
+        return (10 - max([self._ws[i] * exp(-1 / (2. * self.xdim) * dot(rxy[i], dot(self._covs[i], rxy[i]))) 
+                          for i in range(self.numPeaks)])) ** 2
 
 
 class GallagherGauss21HiFunction(GallagherGauss101MeFunction):
@@ -158,8 +174,8 @@ class KatsuuraFunction(MultiModalFunction):
     
     def f(self, x):
         return - 1 + prod([power(1 + (i + 1) * sum([abs(2 ** j * x[i] - int(2 ** j * x[i])) * 2 ** -j 
-                                             for j in range(1, 33)]),
-                                10 / power(self.xdim, 1.2)) 
+                                                    for j in range(1, 33)]),
+                                 10. / power(self.xdim, 1.2)) 
                           for i in range(self.xdim)])
     
 class LunacekBiRastriginFunction(MultiModalFunction):

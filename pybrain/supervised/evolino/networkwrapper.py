@@ -35,7 +35,7 @@ class EvolinoNetwork(Module):
 
         self._network.sortModules()
 
-        self.time = self._network.time
+        self.offset = self._network.offset
         self.backprojectionFactor = 0.01
 
     def reset(self):
@@ -67,7 +67,7 @@ class EvolinoNetwork(Module):
     def _activateNetwork(self, input):
         assert len(input) == self._network.indim
         output = self._network.activate(input)
-        self.time = self._network.time
+        self.offset = self._network.offset
 #        print "INNNNNNN=", input, "   OUTPP=", output
         return output
 
@@ -152,13 +152,13 @@ class EvolinoNetwork(Module):
 
 
     def _getLastOutput(self):
-        if self.time == 0:
+        if self.offset == 0:
             return zeros(self.outdim)
         else:
-            return self._out_layer.outputbuffer[self.time - 1]
+            return self._out_layer.outputbuffer[self.offset - 1]
 
     def _setLastOutput(self, output):
-        self._out_layer.outputbuffer[self.time - 1][:] = output
+        self._out_layer.outputbuffer[self.offset - 1][:] = output
 
 
     # ======================================================== Genome related ===
@@ -261,7 +261,7 @@ class EvolinoNetwork(Module):
             the weight matrix W of the full connection between this layer
             and the output layer.
         """
-        return copy(self._hid_layer.outputbuffer[self.time - 1])
+        return copy(self._hid_layer.outputbuffer[self.offset - 1])
 
 
 
@@ -457,7 +457,7 @@ class NetworkWrapper(object):
             :key injection: vector of length self.network.outdim
         """
         outlayer = self.getOutputLayer()
-        outlayer.outputbuffer[self.network.time - 1][:] = injection
+        outlayer.outputbuffer[self.network.offset - 1][:] = injection
 
 
     def _getRawOutput(self):
@@ -466,7 +466,7 @@ class NetworkWrapper(object):
             the weight matrix W of the full connection between this layer
             and the output layer.
         """
-        return copy(self.getLastHiddenLayer().outputbuffer[self.network.time - 1])
+        return copy(self.getLastHiddenLayer().outputbuffer[self.network.offset - 1])
 
 
     # ====================================================== Topology Helper ===
