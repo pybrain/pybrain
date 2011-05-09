@@ -31,7 +31,7 @@ class LennardJones(MultiModalFunction):
         N = self.xdim / 3
         return self.BEST_KNOWN_TABLE[N] + 1e-5
     
-    BEST_KNOWN_TABLE = {
+    BEST_KNOWN_TABLE = {0:0, 1:0,
         2:-1.000000, 57:-288.342625,
         3:-3.000000, 58:-294.378148,
         4:-6.000000, 59:-299.738070,
