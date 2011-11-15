@@ -54,6 +54,8 @@ class Module(Named):
         """Reset buffers to a length (in time dimension) of 1."""
         for buffername, dim in self.bufferlist:
             setattr(self, buffername, zeros((length, dim)))
+        if length==1:
+            self.offset = 0
 
     def _growBuffers(self):
         """Double the size of the modules buffers in its first dimension and
@@ -92,7 +94,7 @@ class Module(Named):
         if items == 0:
             return
         self.offset += items
-        for buffername, l  in self.bufferlist:
+        for buffername, _  in self.bufferlist:
             buf = getattr(self, buffername)
             assert abs(items) <= len(buf), "Cannot shift further than length of buffer."
             fill = zeros((abs(items), len(buf[0])))
