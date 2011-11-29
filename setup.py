@@ -10,7 +10,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="PyBrain",
-    version="0.3",
+    version="0.3.1",
     description="PyBrain is the Swiss army knife for neural networking.",
     license="BSD",
     keywords="Neural Networks Machine Learning",
