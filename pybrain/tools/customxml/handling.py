@@ -94,8 +94,12 @@ class XMLHandling:
             root = self.root
         for n in root.childNodes:
             if n.nodeName == name:
-                if 'name' in n.attributes:
-                    if n.attributes['name'] == nameattr:
+# modif JPQ
+#                if 'name' in n.attributes:
+                if n.attributes['name']:
+# modif JPQ
+#                    if n.attributes['name'] == nameattr:
+                    if n.attributes['name'].value == nameattr:
                         return n
         return None
 

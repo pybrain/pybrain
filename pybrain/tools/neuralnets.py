@@ -208,7 +208,8 @@ class NNclassifier(NNtools):
             self.hidden = hidden
         self._convertAllDataToOneOfMany()
 
-        RNN = buildNetwork(self.DS.indim, self.hidden, self.DS.outdim, hiddenclass=LSTMLayer, outclass=SoftmaxLayer)
+        RNN = buildNetwork(self.DS.indim, self.hidden, self.DS.outdim, hiddenclass=LSTMLayer, 
+                           recurrent=True, outclass=SoftmaxLayer)
         logging.info("Constructing classification RNN with following config:")
         logging.info(str(RNN) + "\n  Hidden units:\n    " + str(self.hidden))
         logging.info("Trainer received the following special arguments:")
