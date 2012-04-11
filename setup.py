@@ -19,4 +19,5 @@ setup(
     include_package_data=True,
     test_suite='pybrain.tests.runtests.make_test_suite',
     package_data={'pybrain': ['rl/environments/ode/models/*.xode']},
+    install_requires = ["scipy"],
 )
