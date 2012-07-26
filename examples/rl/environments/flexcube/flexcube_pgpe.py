@@ -41,7 +41,7 @@ from pybrain.rl.experiments import EpisodicExperiment
 hiddenUnits = 4
 batch=1 #number of samples per learning step
 prnts=1 #number of learning steps after results are printed
-epis=5000000/batch/prnts #number of roleouts
+epis=int(5000000/batch/prnts) #number of roleouts
 numbExp=10 #number of experiments
 et = ExTools(batch, prnts) #tool for printing and plotting
 

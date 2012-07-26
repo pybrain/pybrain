@@ -9,7 +9,7 @@ from pybrain.tools.shortcuts     import buildNetwork
 from pybrain.supervised.trainers import BackpropTrainer
 from pybrain.structure.modules   import SoftmaxLayer
 
-from .datasets import generateGridData, generateClassificationData, plotData
+from datasets import generateGridData, generateClassificationData, plotData
 
 # load the training data set
 trndata = generateClassificationData(250)
