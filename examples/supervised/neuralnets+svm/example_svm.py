@@ -17,7 +17,7 @@ from pybrain.structure.modules.svmunit        import SVMUnit
 from pybrain.supervised.trainers.svmtrainer   import SVMTrainer
 
 # import some local stuff
-from .datasets               import generateClassificationData, plotData, generateGridData
+from datasets               import generateClassificationData, plotData, generateGridData
 
 logging.basicConfig(level=logging.INFO, filename=join('.','testrun.log'),
                     format='%(asctime)s %(levelname)s %(message)s')

@@ -11,7 +11,7 @@ from pybrain.supervised          import RPropMinusTrainer
 from pybrain.tools.validation    import testOnSequenceData
 from pybrain.tools.shortcuts     import buildNetwork
 
-from .datasets import generateNoisySines
+from datasets import generateNoisySines
 
 # create training and test data
 trndata = generateNoisySines(50, 40)
