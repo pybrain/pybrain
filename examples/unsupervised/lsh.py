@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-from __future__ import division
+
 
 __author__ = 'Justin Bayer, bayer.justin@googlemail.com'
 
@@ -31,7 +31,7 @@ def makeData(amount = 10000):
         vectorLength = lambda x: dot(x.T, x)
         return point, 'blue' if vectorLength(point - center) < 25 else 'red'
 
-    return [makePoint() for _ in xrange(amount)]
+    return [makePoint() for _ in range(amount)]
 
 
 if __name__ == '__main__':
@@ -64,8 +64,8 @@ if __name__ == '__main__':
     result = []
     width, height = 2**5, 2**5
     grid = (array([i / width * 10, j / height * 10])
-            for i in xrange(width)
-            for j in xrange(height))
+            for i in range(width)
+            for j in range(height))
     projected_grid = [(p, dot(p, proj)) for p in grid]
 
     # Just to fake random access
@@ -95,7 +95,7 @@ if __name__ == '__main__':
         plot(xs_blue, ys_blue, 'bo')
         show()
 
-    ballsizes = (len(ball) for ball in m.balls.itervalues())
+    ballsizes = (len(ball) for ball in m.balls.values())
     logging.info("Sizes of the balls: " + " ".join(str(i) for i in ballsizes))
 
     logging.info("Finished")

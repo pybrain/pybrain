@@ -36,10 +36,10 @@ agent = OptimizationAgent(net, learner)
 exp = EpisodicExperiment(task, agent)
 exp.doEpisodes(100)
 
-print 'Episodes learned from:', len(learner._allEvaluations)
+print('Episodes learned from:', len(learner._allEvaluations))
 n, fit = learner._bestFound()
-print 'Best fitness found:', fit
-print 'with this network:'
-print n
-print 'containing these parameters:'
-print fListToString(n.params, 4)
+print('Best fitness found:', fit)
+print('with this network:')
+print(n)
+print('containing these parameters:')
+print(fListToString(n.params, 4))

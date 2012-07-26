@@ -64,7 +64,7 @@ agent.actaspg = False
 experiment = EpisodicExperiment(task, agent)
 
 # print weights at beginning
-print agent.module.params
+print(agent.module.params)
 
 rewards = []
 if useGraphics:
@@ -93,8 +93,8 @@ while x<5000:
     reward = mean(agent.history.getSumOverSequences('reward'))*task.rewardscale
     if useGraphics:
         pl.addData(0,x,reward)
-    print agent.module.params
-    print reward
+    print(agent.module.params)
+    print(reward)
     #if reward > 3:
     #    pass
     agent.learn()

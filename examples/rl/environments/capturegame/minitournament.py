@@ -31,19 +31,19 @@ try:
     javaAgent = ClientCapturePlayer(game, name = 'java')
     agents.append(javaAgent)
 except:
-    print 'No Java server available.'
+    print('No Java server available.')
 
-print
-print 'Starting tournament...'
+print()
+print('Starting tournament...')
 tourn = Tournament(game, agents)
 tourn.organize(50)
-print tourn
+print(tourn)
 
 # try a different network, and play again:
 net.randomize()
 tourn.reset()
 tourn.organize(50)
-print tourn
+print(tourn)
 
 
 

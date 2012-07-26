@@ -9,7 +9,7 @@ from pybrain.tools.shortcuts     import buildNetwork
 from pybrain.supervised.trainers import BackpropTrainer
 from pybrain.structure.modules   import SoftmaxLayer
 
-from datasets import generateGridData, generateClassificationData, plotData
+from .datasets import generateGridData, generateClassificationData, plotData
 
 # load the training data set
 trndata = generateClassificationData(250)
@@ -42,9 +42,9 @@ for i in range(20):
            dataset=tstdata ), tstdata['class'] )
 
     # print the result
-    print "epoch: %4d" % trainer.totalepochs, \
+    print("epoch: %4d" % trainer.totalepochs, \
           "  train error: %5.2f%%" % trnresult, \
-          "  test error: %5.2f%%" % tstresult
+          "  test error: %5.2f%%" % tstresult)
 
     # run our grid data through the FNN, get the most likely class
     # and shape it into an array

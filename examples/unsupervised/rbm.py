@@ -19,8 +19,8 @@ cfg.maxIter = 3
 
 rbm = Rbm.fromDims(6, 1)
 trainer = RbmBernoulliTrainer(rbm, ds, cfg)
-print rbm.params, rbm.biasParams
-for _ in xrange(50):
+print(rbm.params, rbm.biasParams)
+for _ in range(50):
     trainer.train()
 
-print rbm.params, rbm.biasParams
+print(rbm.params, rbm.biasParams)

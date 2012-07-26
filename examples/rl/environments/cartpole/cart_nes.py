@@ -39,7 +39,7 @@ for runs in range(numbExp):
     for updates in range(epis):
         for i in range(prnts):
             experiment.doEpisodes(batch)
-        print "Epsilon   : ", agent.learner.sigma
+        print("Epsilon   : ", agent.learner.sigma)
         et.printResults((agent.learner._allEvaluations)[-50:-1], runs, updates)
     et.addExps()
 et.showExps()
