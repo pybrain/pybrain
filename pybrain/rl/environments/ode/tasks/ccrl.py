@@ -129,7 +129,7 @@ class CCRLGlasTask(CCRLTask):
         self.dist[8] = 0.0
         dis = 100.0/((self.dist[:3] ** 2).sum()+0.1)
         nig = 10.0/((self.dist[3:] ** 2).sum()+0.1)
-        if self.env.stepCounter == self.epiLen: print "Grip:", grip, "Dis:", dis, "Nig:", nig, "Table:", self.tableFlag
+        if self.env.stepCounter == self.epiLen: print("Grip:", grip, "Dis:", dis, "Nig:", nig, "Table:", self.tableFlag)
         return (10 + grip + nig + dis + self.tableFlag) / float(self.epiLen) #-dis
         #else:
         #    return (25.0 - dis) / float(self.epiLen) + (grip / nig - float(self.env.tableSum)) * 0.1 #+self.grepRew (10.0-dis)/float(self.epiLen)+

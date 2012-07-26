@@ -2,7 +2,7 @@ __author__ = 'Tom Schaul, tom@idsia.ch'
 
 from scipy import zeros
 
-from swiping import SwipingNetwork
+from .swiping import SwipingNetwork
 from pybrain.structure.modules import BiasUnit
 from pybrain.structure.connections.shared import MotherConnection, SharedFullConnection
 from pybrain.utilities import iterCombinations, tupleRemoveItem, reachable, decrementAny
@@ -93,11 +93,11 @@ class BorderSwipingNetwork(SwipingNetwork):
     def _extrapolateBorderAt(self, t, using):
         """ maybe we can use weights that are similar to neighboring borderconnections
         as initialization. """
-        closest = reachable(decrementAny, [t], using.keys())
+        closest = reachable(decrementAny, [t], list(using.keys()))
         if len(closest) > 0:
-            params = zeros(using[closest.keys()[0]].paramdim)
+            params = zeros(using[list(closest.keys())[0]].paramdim)
             normalize = 0.
-            for c, dist in closest.items():
+            for c, dist in list(closest.items()):
                 params += using[c].params / dist
                 normalize += 1./dist
             params /= normalize

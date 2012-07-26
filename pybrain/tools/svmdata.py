@@ -109,12 +109,12 @@ class SVMData(SupervisedDataSet):
         for line in open(fname, 'r').readlines():
             if not line: break
             targline = targetfile.readline()
-            targline = map(int, targline.split())
+            targline = list(map(int, targline.split()))
             for i, v in enumerate(targline):
                 if v:
                     label = i
                     break
-            feat = map(float, line.split())
+            feat = list(map(float, line.split()))
             x.append(feat)
             y.append([float(label)])
             self.nSamples += 1
@@ -155,6 +155,6 @@ if __name__ == '__main__':
     d = SVMData()
     d.clear()
     d.loadSVMdata(r'M:\Data\Johan\svm\trials_scale.svm')
-    print d.getSample()
-    print d.getSample()
+    print(d.getSample())
+    print(d.getSample())
 

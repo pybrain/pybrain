@@ -1,4 +1,4 @@
-from __future__ import division
+
 
 """This module provides functionality for locality sensitive hashing in high
 dimensional euclidean spaces.
@@ -178,7 +178,8 @@ class MultiDimHash(object):
 
         candidates = self._findKnnCandidates(point)
 
-        def sortKey((point_, satellite_)):
+        def sortKey(xxx_todo_changeme):
+            (point_, satellite_) = xxx_todo_changeme
             distance = point - point_
             return - dot(distance.T, distance)
 

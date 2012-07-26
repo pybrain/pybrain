@@ -53,7 +53,7 @@ class MemeticSearch(HillClimber, TopologyOptimizer):
     def _notify(self):
         HillClimber._notify(self)
         if self.verbose:
-            print '  Bits on in best mask:', sum(self.bestEvaluable.mask)
+            print('  Bits on in best mask:', sum(self.bestEvaluable.mask))
 
     @property
     def batchSize(self):

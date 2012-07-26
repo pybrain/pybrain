@@ -1,6 +1,6 @@
 __author__ = 'Tom Schaul, tom@idsia.ch'
 
-from neuronlayer import NeuronLayer
+from .neuronlayer import NeuronLayer
 
 
 class LinearLayer(NeuronLayer):

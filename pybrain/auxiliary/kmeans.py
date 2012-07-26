@@ -15,6 +15,7 @@ __author__ = "Thomas Rueckstiess, ruecksti@in.tum.de"
 from scipy.cluster.vq import kmeans2
 from scipy import random, array
 from scipy.linalg import norm
+from functools import reduce
 
 def kinit(X, k):
     'init k seeds according to kmeans++'
@@ -30,13 +31,13 @@ def kinit(X, k):
         for i in range(n):
             'Dsum = sum_{x in X} min(D(x)^2,||x-xi||^2)'
             Dsum = reduce(lambda x, y:x + y,
-                          (min(D[j], norm(X[j] - X[i]) ** 2) for j in xrange(n)))
+                          (min(D[j], norm(X[j] - X[i]) ** 2) for j in range(n)))
 
             if bestDsum < 0 or Dsum < bestDsum:
                 bestDsum, bestIdx = Dsum, i
 
         centers.append (X[bestIdx])
-        D = [min(D[i], norm(X[i] - X[bestIdx]) ** 2) for i in xrange(n)]
+        D = [min(D[i], norm(X[i] - X[bestIdx]) ** 2) for i in range(n)]
 
     return array (centers)
 

@@ -1,6 +1,6 @@
 __author__ = 'Thomas Rueckstiess, ruecksti@in.tum.de'
 
-from experiment import Experiment
+from .experiment import Experiment
 
 
 class ContinuousExperiment(Experiment):

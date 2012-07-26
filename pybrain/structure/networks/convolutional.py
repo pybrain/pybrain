@@ -54,7 +54,7 @@ class SimpleConvolutionalNetwork(FeedForwardNetwork):
 
 if __name__ == '__main__':
     from scipy import array, ravel
-    from custom.convboard import ConvolutionalBoardNetwork
+    from .custom.convboard import ConvolutionalBoardNetwork
     from pybrain.rl.environments.twoplayergames.tasks import CaptureGameTask
 
     N = ConvolutionalBoardNetwork(4, 3, 5)
@@ -65,18 +65,18 @@ if __name__ == '__main__':
              ]
     res = N.activate(ravel(array(input)))
     res = res.reshape(4, 4)
-    print N['pad'].inputbuffer[0].reshape(6, 6, 2)[:, :, 0]
-    print res
+    print(N['pad'].inputbuffer[0].reshape(6, 6, 2)[:, :, 0])
+    print(res)
 
     t = CaptureGameTask(4)
-    print t(N)
+    print(t(N))
 
     if False:
         N = SimpleConvolutionalNetwork(4, 2, 5)
-        print N
+        print(N)
         res = N.activate(ravel(array(input)))
         res = res.reshape(3, 3)
-        print res
+        print(res)
 
 
 

@@ -6,7 +6,7 @@
 # Author: Frank Sehnke, sehnke@in.tum.de
 #########################################################################
 
-from cPickle import load, dump
+from pickle import load, dump
 from scipy import array, sqrt
 from pylab import errorbar, show
 
@@ -49,19 +49,19 @@ class ExTools():
         if self.kind == "optimizer":
             rLen = len(resList)
             avReward = array(resList).sum()/rLen
-            print "Parameters:", self.agent.learner._bestFound()
-            print "Experiment:", runs,
-            print " Evaluation:", (updates+1)*self.batch*self.prnts,
-            print " BestReward:", self.agent.learner.bestEvaluation, 
-            print " AverageReward:", avReward
-            print 
+            print("Parameters:", self.agent.learner._bestFound())
+            print("Experiment:", runs, end=' ')
+            print(" Evaluation:", (updates+1)*self.batch*self.prnts, end=' ')
+            print(" BestReward:", self.agent.learner.bestEvaluation, end=' ') 
+            print(" AverageReward:", avReward)
+            print() 
             self.rl.append(avReward)
         else:
             avReward = resList
             #print "Parameters: ", self.agent.learner._bestFound()
-            print "Step: ", runs, "/", (updates+1)*self.batch*self.prnts,
+            print("Step: ", runs, "/", (updates+1)*self.batch*self.prnts, end=' ')
             #print "Best: ", self.agent.learner.bestEvaluation, 
-            print "Base: ", avReward
+            print("Base: ", avReward)
             #print 
             self.rl.append(avReward)
 
@@ -77,5 +77,5 @@ class ExTools():
         v = (d**2).sum(axis=0)
         v = v/nEx
         stand = sqrt(v)
-        errorbar(array(range(len(self.rll[0])))*self.prnts*self.batch+self.prnts*self.batch,r,stand)
+        errorbar(array(list(range(len(self.rll[0]))))*self.prnts*self.batch+self.prnts*self.batch,r,stand)
         show()

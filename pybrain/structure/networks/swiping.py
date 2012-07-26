@@ -124,12 +124,12 @@ class SwipingNetwork(FeedForwardNetwork):
         if dic == None:
             dic = self.predefined
         for k, val in sorted(dic.items()):
-            print ' ' * indent, k,
+            print(' ' * indent, k, end=' ')
             if isinstance(val, dict):
-                print ':'
+                print(':')
                 self._printPredefined(val, indent + 2)
             elif isinstance(val, MotherConnection):
-                print val.params
+                print(val.params)
             else:
-                print val
+                print(val)
 

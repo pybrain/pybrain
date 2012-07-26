@@ -3,7 +3,7 @@ __author__ = 'Tom Schaul, tom@idsia.ch'
 from random import choice, random
 from scipy import array
 
-from pomdp import POMDPTask
+from .pomdp import POMDPTask
 
 
 class TigerTask(POMDPTask):

@@ -19,7 +19,7 @@ class XMLHandling:
         if not newfile:
             self.dom = parse(filename)
             if self.dom.firstChild.nodeName != 'PyBrain':
-                raise Exception, 'Not a correct PyBrain XML file'
+                raise Exception('Not a correct PyBrain XML file')
         else:
             domimpl = getDOMImplementation()
             self.dom = domimpl.createDocument(None, 'PyBrain', None)
@@ -34,7 +34,7 @@ class XMLHandling:
         """ read a dictionnary of attributes
         :key transform: optionally function transforming the attribute values on reading """
         args = {}
-        for name, val in node.attributes.items():
+        for name, val in list(node.attributes.items()):
             name = str(name)
             if transform != None:
                 args[name] = transform(val, name)
@@ -46,7 +46,7 @@ class XMLHandling:
         """ read a dictionnary of attributes
 
         :key transform: optionally transform the attribute values on writing """
-        for name, val in adict.items():
+        for name, val in list(adict.items()):
             if val != None:
                 if transform != None:
                     node.setAttribute(name, transform(val, name))
@@ -74,7 +74,7 @@ class XMLHandling:
 
     def getChildrenOf(self, node):
         """ get the element children """
-        return filter(lambda x: x.nodeType == x.ELEMENT_NODE, node.childNodes)
+        return [x for x in node.childNodes if x.nodeType == x.ELEMENT_NODE]
 
     def findNode(self, name, index = 0, root = None):
         """ return the toplevel node with the provided name (if there are more, choose the
@@ -110,7 +110,7 @@ class XMLHandling:
 
     def readDoubles(self, node):
         dstrings = string.split(node.firstChild.data)
-        return map(lambda s: float(s), dstrings)
+        return [float(s) for s in dstrings]
 
     def readMatrix(self, node):
         rows = []

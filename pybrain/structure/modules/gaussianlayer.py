@@ -1,7 +1,7 @@
 __author__ = 'Thomas Rueckstiess, ruecksti@in.tum.de'
 
 from scipy import random
-from neuronlayer import NeuronLayer
+from .neuronlayer import NeuronLayer
 from pybrain.tools.functions import expln, explnPrime
 from pybrain.structure.parametercontainer import ParameterContainer
 

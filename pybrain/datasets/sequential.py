@@ -4,7 +4,7 @@ __author__ = 'Thomas Rueckstiess, ruecksti@in.tum.de'
 from scipy import ravel, r_
 from random import sample
 
-from supervised import SupervisedDataSet
+from .supervised import SupervisedDataSet
 
 
 class EmptySequenceError(Exception): pass
@@ -193,7 +193,7 @@ class SequentialDataSet(SupervisedDataSet):
         The first dataset will have a fraction given by `proportion` of the
         dataset."""
         l = self.getNumSequences()
-        leftIndices = sample(range(l), int(l * proportion))
+        leftIndices = sample(list(range(l)), int(l * proportion))
         leftDs = self.copy()
         leftDs.clear()
         rightDs = leftDs.copy()

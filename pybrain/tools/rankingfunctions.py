@@ -15,7 +15,7 @@ def rankedFitness(R):
     #l = sorted(list(enumerate(l)), cmp = lambda a,b: cmp(a[1],b[1]))
     #return array(map(lambda (r, dummy): r, l))
     res = zeros_like(R)
-    l = zip(R, range(len(R)))
+    l = list(zip(R, list(range(len(R)))))
     l.sort()
     for i, (_, j) in enumerate(l):
         res[j] = i
@@ -32,7 +32,7 @@ class RankingFunction(Named):
     def __init__(self, **args):
         self.setArgs(**args)
         n = self.__class__.__name__
-        for k, val in args.items():
+        for k, val in list(args.items()):
             n += '-' + str(k) + '=' + str(val)
         self.name = n
 
@@ -57,7 +57,7 @@ class TournamentSelection(RankingFunction):
                 while randindex == i:
                     randindex = randint(0, len(R) - 1)
                 l.append(randindex)
-            fits = map(lambda x: R[x], l)
+            fits = [R[x] for x in l]
             res[argmax(fits)] += 1
         return res
 

@@ -18,6 +18,7 @@ from pybrain.structure.modules import MDLSTMLayer, LinearLayer, BiasUnit
 from pybrain.structure.modules.module import Module
 from pybrain.structure.modules.neuronlayer import NeuronLayer
 from pybrain.structure.parametercontainer import ParameterContainer
+from functools import reduce
 
 
 class MdrnnLayer(NeuronLayer, ParameterContainer):
@@ -39,7 +40,7 @@ class MdrnnLayer(NeuronLayer, ParameterContainer):
         offset = self.num_in_params
         rest = self.params[offset:]
         return [rest[(i * self.num_rec_params):(i + 1) * self.num_rec_params]
-                for i in xrange(self.timedim)]
+                for i in range(self.timedim)]
 
     @property
     def outParams(self):
@@ -112,7 +113,7 @@ class MdrnnLayer(NeuronLayer, ParameterContainer):
         self.hiddenlayer = MDLSTMLayer(self.hiddendim, self.timedim)
 
         # Every point in the sequence has timedim predecessors.
-        self.predlayers = [LinearLayer(self.outsize) for _ in xrange(timedim)]
+        self.predlayers = [LinearLayer(self.outsize) for _ in range(timedim)]
 
         # We need a single layer to hold the input. We will swipe a connection
         # over the corrects part of it, in order to feed the correct input in.

@@ -30,7 +30,7 @@ class LevinSeach:
             c = 0
             while c <= maxLevin:
                 try:
-                    c, p = piter.next()
+                    c, p = next(piter)
                 except StopIteration:
                     break
                 if c not in complexities:

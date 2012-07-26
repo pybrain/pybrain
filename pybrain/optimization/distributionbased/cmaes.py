@@ -29,7 +29,7 @@ class CMAES(ContinuousOptimizer):
         # Strategy parameter setting: Selection
         # population size, offspring number
         self.mu = int(floor(self.batchSize / 2))        # number of parents/points for recombination
-        self.weights = log(self.mu + 1) - log(array(xrange(1, self.mu + 1)))      # use array
+        self.weights = log(self.mu + 1) - log(array(range(1, self.mu + 1)))      # use array
         self.weights /= sum(self.weights)     # normalize recombination weights array
         self.muEff = sum(self.weights) ** 2 / sum(power(self.weights, 2)) # variance-effective size of mu
 
@@ -57,15 +57,15 @@ class CMAES(ContinuousOptimizer):
         arx = tile(self.center.reshape(self.numParameters, 1), (1, self.batchSize))\
                         + self.stepSize * dot(dot(self.B, self.D), arz)
         arfitness = zeros(self.batchSize)
-        for k in xrange(self.batchSize):
+        for k in range(self.batchSize):
             arfitness[k] = self._oneEvaluation(arx[:, k])
 
         # Sort by fitness and compute weighted mean into center
         arfitness, arindex = sorti(arfitness)  # minimization
         arz = arz[:, arindex]
         arx = arx[:, arindex]
-        arzsel = arz[:, xrange(self.mu)]
-        arxsel = arx[:, xrange(self.mu)]
+        arzsel = arz[:, range(self.mu)]
+        arxsel = arx[:, range(self.mu)]
         arxmut = arxsel - tile(self.center.reshape(self.numParameters, 1), (1, self.mu))
 
         zmean = dot(arzsel, self.weights)
@@ -107,13 +107,13 @@ class CMAES(ContinuousOptimizer):
         if arfitness[0] == arfitness[-1] or (abs(arfitness[0] - arfitness[-1]) /
                                              (abs(arfitness[0]) + abs(arfitness[-1]))) <= self.stopPrecision:
             if self.verbose:
-                print "Converged."
+                print("Converged.")
             self.maxLearningSteps = self.numLearningSteps
 
         # or diverged, unfortunately
         if min(Ev) > 1e5:
             if self.verbose:
-                print "Diverged."
+                print("Diverged.")
             self.maxLearningSteps = self.numLearningSteps
 
     @property
@@ -123,8 +123,8 @@ class CMAES(ContinuousOptimizer):
 
 def sorti(vect):
     """ sort, but also return the indices-changes """
-    tmp = sorted(map(lambda (x, y): (y, x), enumerate(ravel(vect))))
-    res1 = array(map(lambda x: x[0], tmp))
-    res2 = array(map(lambda x: int(x[1]), tmp))
+    tmp = sorted([(x_y[1], x_y[0]) for x_y in enumerate(ravel(vect))])
+    res1 = array([x[0] for x in tmp])
+    res2 = array([int(x[1]) for x in tmp])
     return res1, res2
 

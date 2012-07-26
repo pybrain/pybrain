@@ -1,7 +1,7 @@
 __author__ = 'Tom Schaul, tom@idsia.ch'
 
 from pybrain.utilities import abstractMethod
-from evolvable import Evolvable
+from .evolvable import Evolvable
 from pybrain.structure.parametercontainer import ParameterContainer
 
 

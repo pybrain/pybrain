@@ -1,2 +1,2 @@
-from environment import FlexCubeEnvironment
-from tasks import *
+from .environment import FlexCubeEnvironment
+from .tasks import *

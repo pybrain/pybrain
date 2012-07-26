@@ -1,3 +1,3 @@
-from johnnie import *
-from ccrl import *
-from acrobot import *
+from .johnnie import *
+from .ccrl import *
+from .acrobot import *

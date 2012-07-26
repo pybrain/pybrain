@@ -3,7 +3,7 @@ __author__ = 'Tom Schaul, tom@idsia.ch'
 from scipy import randn, zeros
 from random import choice, random, gauss
 
-from evolution import Evolution
+from .evolution import Evolution
 from pybrain.optimization.optimizer import ContinuousOptimizer
 
 
@@ -49,7 +49,7 @@ class GA(ContinuousOptimizer, Evolution):
                 children.append(p1)
             else:
                 p2 = choice(parents)
-                point = choice(range(xdim-1))
+                point = choice(list(range(xdim-1)))
                 res = zeros(xdim)
                 res[:point] = p1[:point]
                 res[point:] = p2[point:]
@@ -84,10 +84,10 @@ class GA(ContinuousOptimizer, Evolution):
 
         :return: list of selected parents """
         if not self.tournament:
-            tmp = zip(self.fitnesses, self.currentpop)
+            tmp = list(zip(self.fitnesses, self.currentpop))
             tmp.sort(key = lambda x: x[0])
             tmp2 = list(reversed(tmp))[:self.selectionSize]
-            return map(lambda x: x[1], tmp2)
+            return [x[1] for x in tmp2]
         else:
             # TODO: tournament selection
             raise NotImplementedError()

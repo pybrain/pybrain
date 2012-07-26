@@ -20,7 +20,7 @@ class ENAC(PolicyGradientLearner):
         X = ones((self.dataset.getNumSequences(), self.loglh.getDimension('loglh') + 1), float)
 
         # collect sufficient statistics
-        print self.dataset.getNumSequences()
+        print(self.dataset.getNumSequences())
         for n in range(self.dataset.getNumSequences()):
             _state, _action, reward = self.dataset.getSequence(n)
             seqidx = ravel(self.dataset['sequence_index'])

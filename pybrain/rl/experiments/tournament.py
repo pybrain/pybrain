@@ -104,14 +104,14 @@ class Tournament(Named):
                 delta = k * (s - est)
                 elos[a1] += delta
                 elos[a2] -= delta
-        for a, e in elos.items():
+        for a, e in list(elos.items()):
             a.elo = e
         return elos
 
     def __str__(self):
         s = 'Tournament results (' + str(self.rounds) + ' rounds, ' + str(self.numGames) + ' games):\n'
         for p1, p2 in self._produceAllPairs():
-            wins = len(filter(lambda x: x == p1, self.results[(p1, p2)]))
-            losses = len(filter(lambda x: x == p2, self.results[(p1, p2)]))
+            wins = len([x for x in self.results[(p1, p2)] if x == p1])
+            losses = len([x for x in self.results[(p1, p2)] if x == p2])
             s += ' ' * 3 + p1.name + ' won ' + str(wins) + ' times and lost ' + str(losses) + ' times against ' + p2.name + '\n'
         return s

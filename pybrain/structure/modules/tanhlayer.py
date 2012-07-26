@@ -2,7 +2,7 @@ __author__ = 'Tom Schaul, tom@idsia.ch'
 
 from scipy import tanh
 
-from neuronlayer import NeuronLayer
+from .neuronlayer import NeuronLayer
 
 
 class TanhLayer(NeuronLayer):
