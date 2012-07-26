@@ -12,7 +12,7 @@ import operator
 from itertools import count
 from math import sqrt
 from random import random, choice
-from string import split
+#from string import split
 
 from scipy import where, array, exp, zeros, size, mat, median
 from functools import reduce
