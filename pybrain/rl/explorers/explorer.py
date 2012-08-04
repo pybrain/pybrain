@@ -8,6 +8,16 @@ class Explorer(Module):
     """ An Explorer object is used in Agents, receives the current state
         and action (from the controller Module) and returns an explorative
         action that is executed instead the given action.
+
+        Explorer have to be added to the learner before adding the learner
+        to the LearningAgent.
+
+        For Example::
+
+            controller = ActionValueNetwork(2, 100)
+            learner = SARSA()
+            learner.explorer = NormalExplorer(1, 0.1)
+            self.learning_agent = LearningAgent(controller, learner)
     """
 
     def activate(self, state, action):
