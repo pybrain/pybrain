@@ -8,8 +8,20 @@ class Explorer(Module):
     """ An Explorer object is used in Agents, receives the current state
         and action (from the controller Module) and returns an explorative
         action that is executed instead the given action.
+        
+        Continous explorer will produce continous action states, discrete
+        once discrete actions accordingly. 
+        
+        Explorer                        action    episodic?
+        =============================== ========= =========
+        NormalExplorer                  continous no
+        StateDependentExplorer          continous yes
+        BoltzmannExplorer               discrete  no
+        EpsilonGreedyExplorer           discrete  no
+        DiscreteStateDependentExplorer  discrete  yes
+        
 
-        Explorer have to be added to the learner before adding the learner
+        Explorer has to be added to the learner before adding the learner
         to the LearningAgent.
 
         For Example::
