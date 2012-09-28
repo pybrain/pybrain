@@ -81,13 +81,13 @@ class ClassificationDataSet(SupervisedDataSet):
     def __add__(self, other):
         """Adds the patterns of two datasets, if dimensions and type match."""
         if type(self) != type(other):
-            raise TypeError, 'DataSets to be added must agree in type'
+            raise TypeError('DataSets to be added must agree in type')
         elif self.indim != other.indim:
-            raise TypeError, 'DataSets to be added must agree in input dimensions'
+            raise TypeError('DataSets to be added must agree in input dimensions')
         elif self.outdim != 1 or other.outdim != 1:
-            raise TypeError, 'Cannot add DataSets in 1-of-k representation'
+            raise TypeError('Cannot add DataSets in 1-of-k representation')
         elif self.nClasses != other.nClasses:
-            raise IndexError, 'Number of classes does not agree'
+            raise IndexError('Number of classes does not agree')
         else:
             result = self.copy()
             for pat in other:
@@ -100,7 +100,7 @@ class ClassificationDataSet(SupervisedDataSet):
         """
         if len(self['class']) < len(self['target']):
             if self.outdim > 1:
-                raise IndexError, 'Classes and 1-of-k representation out of sync!'
+                raise IndexError('Classes and 1-of-k representation out of sync!')
             else:
                 self.setField('class', self.getField('target').astype(int))
 
@@ -123,7 +123,7 @@ class ClassificationDataSet(SupervisedDataSet):
         try:
             return self.class_labels[idx]
         except IndexError:
-            print "error: classes not defined yet!"
+            print("error: classes not defined yet!")
 
     def _convertToOneOfMany(self, bounds=(0, 1)):
         """Converts the target classes to a 1-of-k representation, retaining the
@@ -212,7 +212,7 @@ class SequenceClassificationDataSet(SequentialDataSet, ClassificationDataSet):
             # calculate class histogram, if we already have data
             self.calculateStatistics()
         self.nClasses = nb_classes
-        self.class_labels = range(self.nClasses) if class_labels is None else class_labels
+        self.class_labels = list(range(self.nClasses)) if class_labels is None else class_labels
         # copy classes (targets may be changed into other representation)
         self.setField('class', self.getField('target'))
 
@@ -270,7 +270,7 @@ class SequenceClassificationDataSet(SequentialDataSet, ClassificationDataSet):
                 return self['class'][self['sequence_index'].astype(int)[index + 1, 0] - 1, 0]
             elif index == lastSeq:
                 return self['class'][len(self) - 1, 0]
-            raise IndexError, "Sequence index out of range!"
+            raise IndexError("Sequence index out of range!")
 
     def removeSequence(self, index):
         """Remove sequence (including class field) from the dataset."""
@@ -309,7 +309,7 @@ class SequenceClassificationDataSet(SequentialDataSet, ClassificationDataSet):
                     'numSeqs':             self.getNumSequences(),
                     'maxLabelLength':      2 }
         dims = {}
-        for name, sz in dimsize.iteritems():
+        for name, sz in dimsize.items():
             dims[name] = d.def_dim(name, sz)
 
         # Create a netCDF record variables
@@ -331,7 +331,7 @@ class SequenceClassificationDataSet(SequentialDataSet, ClassificationDataSet):
         seqLengths[:] = [self.getSequenceLength(i) for i in range(self.getNumSequences())]
 
         # Close file
-        print "wrote netCDF file " + filename
+        print("wrote netCDF file " + filename)
         d.close()
 
 
@@ -345,15 +345,15 @@ if __name__ == "__main__":
     dataset.appendLinked([ 0.20, 0.90 ] , [2])
 
     dataset.calculateStatistics()
-    print "class histogram:", dataset.classHist
-    print "# of classes:", dataset.nClasses
-    print "class 1 is: ", dataset.getClass(1)
-    print "targets: ", dataset.getField('target')
+    print("class histogram:", dataset.classHist)
+    print("# of classes:", dataset.nClasses)
+    print("class 1 is: ", dataset.getClass(1))
+    print("targets: ", dataset.getField('target'))
     dataset._convertToOneOfMany(bounds=[0, 1])
-    print "converted targets: "
-    print dataset.getField('target')
+    print("converted targets: ")
+    print(dataset.getField('target'))
     dataset._convertToClassNb()
-    print "reconverted to original:", dataset.getField('target')
+    print("reconverted to original:", dataset.getField('target'))
 
 
 

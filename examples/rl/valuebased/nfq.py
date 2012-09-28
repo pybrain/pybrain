@@ -61,8 +61,8 @@ while(True):
     if not render:
         plotPerformance(performance, pf_fig)
 
-    print "reward avg", r
-    print "explorer epsilon", learner.explorer.epsilon
-    print "num episodes", agent.history.getNumSequences()
-    print "update step", len(performance)
+    print("reward avg", r)
+    print("explorer epsilon", learner.explorer.epsilon)
+    print("num episodes", agent.history.getNumSequences())
+    print("update step", len(performance))
 

@@ -2,7 +2,7 @@ __author__ = 'Tom Schaul, tom@idsia.ch'
 
 from scipy import array
 
-from pomdp import POMDPTask
+from .pomdp import POMDPTask
 from pybrain.rl.environments.mazes import Maze
 from pybrain.rl.environments.task import Task
 

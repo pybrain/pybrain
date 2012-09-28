@@ -4,7 +4,7 @@ __author__ = 'Tom Schaul, tom@idsia.ch'
 
 from math import sqrt
 
-from function import FunctionEnvironment
+from .function import FunctionEnvironment
 
 
 class UnboundedFunctionEnvironment(FunctionEnvironment):

@@ -90,10 +90,10 @@ class Coevolution(Named):
         self.hallOfFitnesses.append(bestFits)
 
         if self.verbose:
-            print 'Generation', self.generation
-            print '        relat. fits:', fListToString(sorted(fitnesses), 4)
+            print('Generation', self.generation)
+            print('        relat. fits:', fListToString(sorted(fitnesses), 4))
             if len(best.params) < 20:
-                print '        best params:', fListToString(best.params, 4)
+                print('        best params:', fListToString(best.params, 4))
 
         self.pop = self._selectAndReproduce(self.pop, fitnesses)
 
@@ -153,11 +153,11 @@ class Coevolution(Named):
     def _selectAndReproduce(self, pop, fits):
         """ apply selection and reproduction to host population, according to their fitness."""
         # combine population with their fitness, then sort, only by fitness
-        s = zip(fits, pop)
+        s = list(zip(fits, pop))
         shuffle(s)
         s.sort(key=lambda x:-x[0])
         # select...
-        selected = map(lambda x: x[1], s[:self._numSelected()])
+        selected = [x[1] for x in s[:self._numSelected()]]
         # ... and reproduce
         if self.elitism:
             newpop = self._extendPopulation(selected, self.populationSize)
@@ -224,7 +224,7 @@ class Coevolution(Named):
                 if self._beats(p, opp) > 0:
                     beaten.append(opp)
             tmp[p] = beaten
-        beatlist = map(lambda (p, beaten): (len(beaten), self._globalScore(p), p), tmp.items())
+        beatlist = [(len(p_beaten[1]), self._globalScore(p_beaten[0]), p_beaten[0]) for p_beaten in list(tmp.items())]
         shuffle(beatlist)
         beatlist.sort(key=lambda x: x[:2])
         best = beatlist[-1][2]
@@ -287,5 +287,5 @@ if __name__ == '__main__':
     x.allOpponents[3] = [2, 4]
     x.allOpponents[4] = [3]
     x.allOpponents[5] = [2]
-    print x._sharedSampling(4, [1, 2, 3, 4, 5], [1, 2, 3, 4, 6, 7, 8, 9])
-    print 'should be', [4, 1, 2, 5]
+    print(x._sharedSampling(4, [1, 2, 3, 4, 5], [1, 2, 3, 4, 6, 7, 8, 9]))
+    print('should be', [4, 1, 2, 5])

@@ -26,6 +26,6 @@ class SimpleController(Agent):
             steering = -1
         else:
             steering = 1
-        print "speed", self.speed, "angle", self.angleToCurrentWP, "driving", driving, "steering", steering
+        print("speed", self.speed, "angle", self.angleToCurrentWP, "driving", driving, "steering", steering)
         return array([driving, steering])
 

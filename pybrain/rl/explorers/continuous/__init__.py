@@ -1,1 +1,1 @@
-from normal import NormalExplorer
+from .normal import NormalExplorer

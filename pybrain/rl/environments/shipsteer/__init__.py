@@ -1,2 +1,2 @@
-from shipsteer import ShipSteeringEnvironment
-from northwardtask import GoNorthwardTask
+from .shipsteer import ShipSteeringEnvironment
+from .northwardtask import GoNorthwardTask

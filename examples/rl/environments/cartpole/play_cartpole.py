@@ -50,7 +50,7 @@ for n in range(agent.history.getNumSequences()):
     ret.append( sum(reward, 0).item() )
 
 # print results
-print ret, "mean:",mean(ret)
+print(ret, "mean:",mean(ret))
 #env.getRenderer().stop()
 
 

@@ -5,7 +5,7 @@ from OpenGL.GLU import * #@UnusedWildImport
 from OpenGL.GLUT import * #@UnusedWildImport
 
 from math import acos, pi, sqrt
-from tools.mathhelpers import crossproduct, norm, dotproduct
+from .tools.mathhelpers import crossproduct, norm, dotproduct
 
 import time
 import Image #@UnresolvedImport
@@ -162,7 +162,7 @@ class ODEViewer(object):
 
         if item['type'] in ['GeomBox', 'GeomSphere', 'GeomCylinder', 'GeomCCylinder']:
             # set color of object (currently dark gray)
-            if item.has_key('color'):
+            if 'color' in item:
                 glEnable (GL_BLEND)
                 glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
                 glColor4f(*(item['color']))
@@ -302,7 +302,7 @@ class ODEViewer(object):
         """ keyboard call-back function. """
         if c == 's':
             self.setCaptureScreen(not self.getCaptureScreen())
-            print "Screen Capture: " + (self.getCaptureScreen() and "on" or "off")
+            print("Screen Capture: " + (self.getCaptureScreen() and "on" or "off"))
         if c in ['x', 'q']:
             sys.exit()
         if c == 'v':
@@ -360,7 +360,7 @@ class ODEViewer(object):
             image = Image.fromstring("RGB", (self.width, self.height), data)
             image = image.transpose(Image.FLIP_TOP_BOTTOM)
             image.save(path, format)
-            print 'Image saved to %s' % (os.path.basename(path))
+            print('Image saved to %s' % (os.path.basename(path)))
         else:
             self.counter += 1
 

@@ -1,7 +1,8 @@
 __author__ = 'Tom Schaul, tom@idsia.ch'
 
 from pybrain.utilities import iterCombinations, Named
-from moduleslice import ModuleSlice
+from .moduleslice import ModuleSlice
+from functools import reduce
 
 
 class ModuleMesh(Named):
@@ -42,7 +43,7 @@ class ModuleMesh(Named):
             for index in range(nbunits):
                 yield ModuleSlice(layer, insize*index, insize*(index+1), outsize*index, outsize*(index+1))
         c = slicer()
-        return ModuleMesh(lambda: c.next(), dimensions, name)
+        return ModuleMesh(lambda: next(c), dimensions, name)
 
     def __iter__(self):
         for coord in iterCombinations(self.dims):

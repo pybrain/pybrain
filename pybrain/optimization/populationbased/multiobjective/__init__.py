@@ -1,1 +1,1 @@
-from nsga2 import MultiObjectiveGA
+from .nsga2 import MultiObjectiveGA

@@ -2,7 +2,7 @@ __author__ = 'Frank Sehnke, sehnke@in.tum.de, Tom Schaul'
 
 from scipy import random
 
-from fd import FiniteDifferences
+from .fd import FiniteDifferences
 
 
 class SimpleSPSA(FiniteDifferences):

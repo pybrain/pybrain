@@ -6,7 +6,7 @@ from scipy.linalg import norm
 from pybrain.rl.environments.cartpole.nonmarkovpole import NonMarkovPoleEnvironment
 from pybrain.rl.environments.cartpole.doublepole import DoublePoleEnvironment
 from pybrain.rl.environments import EpisodicTask
-from cartpole import CartPoleEnvironment
+from .cartpole import CartPoleEnvironment
 from pybrain.utilities import crossproduct
         
 
@@ -45,7 +45,7 @@ class BalanceTask(EpisodicTask):
         EpisodicTask.performAction(self, action)
 
     def isFinished(self):
-        if max(map(abs, self.env.getPoleAngles())) > 0.7:
+        if max(list(map(abs, self.env.getPoleAngles()))) > 0.7:
             # pole has fallen
             return True
         elif abs(self.env.getCartPosition()) > 2.4:
@@ -57,7 +57,7 @@ class BalanceTask(EpisodicTask):
         return False
 
     def getReward(self):
-        angles = map(abs, self.env.getPoleAngles())
+        angles = list(map(abs, self.env.getPoleAngles()))
         s = abs(self.env.getCartPosition())
         reward = 0
         if min(angles) < 0.05 and abs(s) < 0.05:
@@ -75,7 +75,7 @@ class BalanceTask(EpisodicTask):
 class JustBalanceTask(BalanceTask):
     """ this task does not require the cart to be moved to the middle. """
     def getReward(self):
-        angles = map(abs, self.env.getPoleAngles())
+        angles = list(map(abs, self.env.getPoleAngles()))
         s = abs(self.env.getCartPosition())
         if min(angles) < 0.05:
             reward = 0
@@ -90,7 +90,7 @@ class EasyBalanceTask(BalanceTask):
     """ this task is a bit easier to learn because it gives gradual feedback
         about the distance to the centre. """
     def getReward(self):
-        angles = map(abs, self.env.getPoleAngles())
+        angles = list(map(abs, self.env.getPoleAngles()))
         s = abs(self.env.getCartPosition())
         if min(angles) < 0.05 and abs(s) < 0.05:
             reward = 0
@@ -135,7 +135,7 @@ class DiscreteBalanceTask(BalanceTask):
         BalanceTask.performAction(self, action)
 
     def getReward(self):
-        angles = map(abs, self.env.getPoleAngles())
+        angles = list(map(abs, self.env.getPoleAngles()))
         s = abs(self.env.getCartPosition())
         if min(angles) < 0.05: # and abs(s) < 0.05:
             reward = 1.0
@@ -148,7 +148,7 @@ class DiscreteBalanceTask(BalanceTask):
 
 class DiscreteNoHelpTask(DiscreteBalanceTask):
     def getReward(self):
-        angles = map(abs, self.env.getPoleAngles())
+        angles = list(map(abs, self.env.getPoleAngles()))
         s = abs(self.env.getCartPosition())
         if max(angles) > 0.7 or abs(s) > 2.4:
             reward = -1. * (self.N - self.t)
@@ -219,7 +219,7 @@ class DiscreteBalanceTaskRBF(DiscreteBalanceTask):
     CENTERS = array(crossproduct([[-pi/4, 0, pi/4], [1, 0, -1]]))
     
     def getReward(self):
-        angles = map(abs, self.env.getPoleAngles())
+        angles = list(map(abs, self.env.getPoleAngles()))
         if max(angles) > 1.6:
             reward = -1.
         else:
@@ -227,7 +227,7 @@ class DiscreteBalanceTaskRBF(DiscreteBalanceTask):
         return reward
     
     def isFinished(self):
-        if max(map(abs, self.env.getPoleAngles())) > 1.6:
+        if max(list(map(abs, self.env.getPoleAngles()))) > 1.6:
             return True
         elif self.t >= self.N:
             return True
@@ -236,7 +236,7 @@ class DiscreteBalanceTaskRBF(DiscreteBalanceTask):
     def getObservation(self):
         res = ones(1+len(self.CENTERS))
         sensors = self.env.getSensors()[:-2]        
-        res[1:] = exp(-array(map(norm, self.CENTERS-sensors))**2/2)
+        res[1:] = exp(-array(list(map(norm, self.CENTERS-sensors)))**2/2)
         return res
     
     @property

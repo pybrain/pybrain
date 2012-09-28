@@ -1,1 +1,1 @@
-from structure.__init__ import *
+from .structure.__init__ import *

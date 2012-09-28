@@ -1,4 +1,4 @@
-from __future__ import with_statement
+
 
 
 __author__ = 'Daan Wierstra and Tom Schaul'
@@ -181,16 +181,16 @@ class Network(Module, ParameterContainer):
         # Create a directed graph, including a counter of incoming connections.
         graph = {}
         for node in self.modules:
-            if not graph.has_key(node):
+            if node not in graph:
                 # Zero incoming connections.
                 graph[node] = [0]
-        for c in chain(*self.connections.values()):
+        for c in chain(*list(self.connections.values())):
             graph[c.inmod].append(c.outmod)
             # Update the count of incoming arcs in outnode.
             graph[c.outmod][0] += 1
 
         # Find all roots (nodes with zero incoming arcs).
-        roots = [node for (node, nodeinfo) in graph.items() if nodeinfo[0] == 0]
+        roots = [node for (node, nodeinfo) in list(graph.items()) if nodeinfo[0] == 0]
 
         # Make sure the ordering on all runs is the same.
         roots.sort(key=lambda x: x.name)
@@ -280,7 +280,7 @@ class Network(Module, ParameterContainer):
         try:
             from arac.pybrainbridge import _RecurrentNetwork, _FeedForwardNetwork #@UnresolvedImport
         except:
-            print "No fast networks available."
+            print("No fast networks available.")
             return None
 
         net = self.copy()
@@ -296,7 +296,7 @@ class Network(Module, ParameterContainer):
         for m in net.modules:
             cnet.addModule(m)
 
-        for clist in net.connections.values():
+        for clist in list(net.connections.values()):
             for c in clist:
                 cnet.addConnection(c)
         if isinstance(net, RecurrentNetwork):
@@ -306,7 +306,7 @@ class Network(Module, ParameterContainer):
         try:
             cnet.sortModules()
         except ValueError:
-            print "Network cannot be converted."
+            print("Network cannot be converted.")
             return None
 
         cnet.owner = cnet

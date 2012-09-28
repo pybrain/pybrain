@@ -1,7 +1,7 @@
 __author__ = 'Thomas Rueckstiess, ruecksti@in.tum.de'
 
-from sequential import SequentialDataSet
-from dataset import DataSet
+from .sequential import SequentialDataSet
+from .dataset import DataSet
 from scipy import zeros
 
 

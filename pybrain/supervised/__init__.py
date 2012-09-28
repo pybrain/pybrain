@@ -1,1 +1,1 @@
-from trainers.__init__ import *
+from .trainers.__init__ import *

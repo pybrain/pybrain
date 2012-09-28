@@ -4,7 +4,7 @@ from scipy import random
 from scipy.ndimage import minimum_position
 from scipy import mgrid, zeros, tile, array, floor, sum
 
-from module import Module
+from .module import Module
 
 
 class KohonenMap(Module):

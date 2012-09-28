@@ -42,9 +42,9 @@ for i in range(20):
            dataset=tstdata ), tstdata['class'] )
 
     # print the result
-    print "epoch: %4d" % trainer.totalepochs, \
+    print("epoch: %4d" % trainer.totalepochs, \
           "  train error: %5.2f%%" % trnresult, \
-          "  test error: %5.2f%%" % tstresult
+          "  test error: %5.2f%%" % tstresult)
 
     # run our grid data through the FNN, get the most likely class
     # and shape it into an array

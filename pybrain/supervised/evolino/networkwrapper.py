@@ -50,7 +50,7 @@ class EvolinoNetwork(Module):
         if first_idx is None: first_idx = 0
         if last_idx  is None: last_idx = len(target) - 1
         raw_outputs = []
-        for i in xrange(first_idx, last_idx + 1):
+        for i in range(first_idx, last_idx + 1):
             backprojection = self._getLastOutput()
             backprojection *= self.backprojectionFactor
             full_inp = self._createFullInput(input[i], backprojection)
@@ -275,7 +275,7 @@ class EvolinoNetwork(Module):
     def _getInputConnectionsOfLayer(self, layer):
         """ Returns a list of all input connections for the layer. """
         connections = []
-        for c in sum(self._network.connections.values(), []):
+        for c in sum(list(self._network.connections.values()), []):
             if c.outmod is layer:
                 if not isinstance(c, FullConnection):
                     raise NotImplementedError("At the time there is only support for FullConnection")
@@ -526,7 +526,7 @@ class NetworkWrapper(object):
 
     def getConnections(self):
         """ Returns a list of all connections. """
-        return sum(self.network.connections.values(), [])
+        return sum(list(self.network.connections.values()), [])
 
     def getInputLayer(self):
         """ Returns the input layer. """
@@ -536,7 +536,7 @@ class NetworkWrapper(object):
     def _getInputConnectionsOfLayer(self, layer):
         """ Returns a list of all input connections for the layer. """
         connections = []
-        for c in sum(self.network.connections.values(), []):
+        for c in sum(list(self.network.connections.values()), []):
             if c.outmod is layer:
                 if not isinstance(c, FullConnection):
                     raise NotImplementedError("At the time there is only support for FullConnection")

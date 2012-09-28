@@ -11,10 +11,10 @@ from pybrain.structure.networks.custom.convboard import ConvolutionalBoardNetwor
 
 dim = 7
 g = PenteGame((dim, dim))
-print g
+print(g)
 n = ConvolutionalBoardNetwork(dim, 5, 3)
 p1 = ModuleDecidingPlayer(n, g)
 p2 = RandomGomokuPlayer(g)
 p2.color = g.WHITE
 g.playToTheEnd(p1, p2)
-print g
+print(g)

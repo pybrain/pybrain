@@ -24,7 +24,7 @@ class PermutationConnection(Connection):
                 (self.indim / blocksize), len(permutation)))
 
         self.permutation = array(permutation)
-        self.invpermutation = permute(range(len(permutation)), permutation)
+        self.invpermutation = permute(list(range(len(permutation))), permutation)
         self.blocksize = blocksize
 
     def _forwardImplementation(self, inbuf, outbuf):

@@ -51,7 +51,7 @@ class GaussianProcess:
     def _buildGrid(self):
         (start, stop, step) = (self.start, self.stop, self.step)
         """ returns a mgrid type of array for 'dim' dimensions """
-        if isinstance(start, (int, long, float, complex)):
+        if isinstance(start, (int, float, complex)):
             dimstr = 'start:stop:step, '*self.indim
         else:
             assert len(start) == len(stop) == len(step)
@@ -184,7 +184,7 @@ class GaussianProcess:
             ax.plot3D(ravel(self.trainx[:, 0]), ravel(self.trainx[:, 1]), ravel(self.trainy), 'ro')
 
             # plot mean
-            (x, y, z) = map(lambda m: m.reshape(sqrt(len(m)), sqrt(len(m))), (self.testx[:, 0], self.testx[:, 1], self.pred_mean))
+            (x, y, z) = [m.reshape(sqrt(len(m)), sqrt(len(m))) for m in (self.testx[:, 0], self.testx[:, 1], self.pred_mean)]
             ax.plot_wireframe(x, y, z, colors='gray')
             return ax
 
@@ -195,7 +195,7 @@ class GaussianProcess:
             m = floor(sqrt(len(self.pred_mean)))
             pcolor(self.pred_mean.reshape(m, m)[::-1, :])
 
-        else: print "plotting only supported for indim=1 or indim=2."
+        else: print("plotting only supported for indim=1 or indim=2.")
 
 
 if __name__ == '__main__':
@@ -224,7 +224,7 @@ if __name__ == '__main__':
 
     # you can also test the gp on single points, but this deletes the
     # original testing grid. it can be restored with a call to _buildGrid()
-    print gp.testOnArray(array([[0.4]]))
+    print(gp.testOnArray(array([[0.4]])))
 
 
     # --- example on how to use the GP in 2 dimensions
@@ -235,7 +235,7 @@ if __name__ == '__main__':
 
     x, y = mgrid[0:5:4j, 0:5:4j]
     z = cos(x) * sin(y)
-    (x, y, z) = map(ravel, [x, y, z])
+    (x, y, z) = list(map(ravel, [x, y, z]))
 
     for i, j, k in zip(x, y, z):
         ds.addSample([i, j], [k])

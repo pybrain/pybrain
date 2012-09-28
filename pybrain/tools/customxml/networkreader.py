@@ -1,7 +1,7 @@
 __author__ = 'Tom Schaul, tom@idsia.ch'
 
 
-from handling import XMLHandling
+from .handling import XMLHandling
 
 # those imports are necessary for the eval() commands to find the right classes
 import pybrain #@UnusedImport
@@ -89,8 +89,8 @@ class NetworkReader(XMLHandling):
         try:
             m = eval(mclass)(**argdict)
         except:
-            print 'Could not construct', mclass
-            print 'with arguments:', argdict
+            print('Could not construct', mclass)
+            print('with arguments:', argdict)
             return None
         m.name = node.getAttribute('name')
         self.readParams(node, m)

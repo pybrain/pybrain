@@ -42,7 +42,7 @@ trainer.train( log2C=log2C, log2g=log2g )
 # pass data sets through the SVM to get performance
 trnresult = percentError( svm.activateOnDataset(trndata), trndata['target'] )
 tstresult = percentError( svm.activateOnDataset(tstdata), tstdata['target'] )
-print "sigma: %7g,  C: %7g,  train error: %5.2f%%,  test error: %5.2f%%" % (2.0**log2g, 2.0**log2C, trnresult, tstresult)
+print("sigma: %7g,  C: %7g,  train error: %5.2f%%,  test error: %5.2f%%" % (2.0**log2g, 2.0**log2C, trnresult, tstresult))
 
 # generate a grid dataset
 griddat, X, Y = generateGridData(x=[-4,8,0.1],y=[-2,3,0.1])
@@ -52,7 +52,7 @@ griddat, X, Y = generateGridData(x=[-4,8,0.1],y=[-2,3,0.1])
 Z = svm.activateOnDataset(griddat, values=True)
 
 # the output format is a bit weird... make it into a decent array
-Z = p.array([z.values()[0] for z in Z]).reshape(X.shape)
+Z = p.array([list(z.values())[0] for z in Z]).reshape(X.shape)
 
 # make a 2d plot of training data with an decision value contour overlay
 fig = p.figure()

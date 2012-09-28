@@ -1,6 +1,6 @@
 __author__ = 'Tom Schaul, tom@idsia.ch'
 
-from coevolution import Coevolution
+from .coevolution import Coevolution
 
 
 class CompetitiveCoevolution(Coevolution):
@@ -77,7 +77,7 @@ class CompetitiveCoevolution(Coevolution):
         fit = self._competitiveSharedFitness(self.pop, self.parasitePop)
         if hoFtournSize > 0:
             fitHof = self._competitiveSharedFitness(self.pop, self.hallOfFame)
-            fit = map(lambda (f1, f2): tournSize * f1 + hoFtournSize * f2, zip(fit, fitHof))
+            fit = [tournSize * f1_f2[0] + hoFtournSize * f1_f2[1] for f1_f2 in zip(fit, fitHof)]
         return fit
 
     def _oneGeneration(self):
@@ -118,8 +118,8 @@ if __name__ == '__main__':
     b(4, 5)
     b(4, 7)
     b(8, 4)
-    print C.pop
-    print C.parasitePop
-    print '          ', fListToString(C._competitiveSharedFitness(C.pop, C.parasitePop), 2)
-    print 'should be:', fListToString([0.83, 0.00, 1.33, 0.83], 2)
+    print(C.pop)
+    print(C.parasitePop)
+    print('          ', fListToString(C._competitiveSharedFitness(C.pop, C.parasitePop), 2))
+    print('should be:', fListToString([0.83, 0.00, 1.33, 0.83], 2))
 

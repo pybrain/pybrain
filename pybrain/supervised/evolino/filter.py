@@ -1,8 +1,8 @@
 __author__ = 'Michael Isik'
 
-from gfilter import Filter, SimpleMutation
-from variate import CauchyVariate
-from population import SimplePopulation
+from .gfilter import Filter, SimpleMutation
+from .variate import CauchyVariate
+from .population import SimplePopulation
 from pybrain.tools.validation import Validator
 from pybrain.tools.kwargsprocessor import KWArgsProcessor
 
@@ -53,7 +53,7 @@ class EvolinoEvaluation(Filter):
         numSequences = dataset.getNumSequences()
         washout_sequences = []
         training_sequences = []
-        for i in xrange(numSequences):
+        for i in range(numSequences):
             sequence = dataset.getSequence(i)[1]
             training_start = int(wtRatio * len(sequence))
             washout_sequences.append(sequence[                  : training_start   ])
@@ -114,7 +114,7 @@ class EvolinoEvaluation(Filter):
             net.setGenome(individual.getGenome())
             fitness = self._evaluateNet(net, dataset, self.wtRatio)
             if self.verbosity > 1:
-                print "Calculated fitness for individual", id(individual), " is ", fitness
+                print("Calculated fitness for individual", id(individual), " is ", fitness)
 
             # set the individual fitness
             population.setIndividualFitness(individual, fitness)

@@ -2,9 +2,9 @@ from pybrain.structure.modules.linearlayer import LinearLayer
 __author__ = 'Tom Schaul, tom@idsia.ch'
 
 from pybrain.structure.parametercontainer import ParameterContainer
-from connection import Connection
-from full import FullConnection
-from subsampling import SubsamplingConnection
+from .connection import Connection
+from .full import FullConnection
+from .subsampling import SubsamplingConnection
 
 
 class OwnershipViolation(Exception):

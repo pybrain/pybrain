@@ -11,14 +11,14 @@ def crowding_distance(individuals, fitnesses):
     individuals = list(individuals)
     # Infer the number of objectives by looking at the fitness of the first.
     n_obj = len(fitnesses[individuals[0]])
-    for i in xrange(n_obj):
+    for i in range(n_obj):
         individuals.sort(key=lambda x: fitnesses[x][i])
         # normalization between 0 and 1.
         normalization = float(fitnesses[individuals[0]][i] - fitnesses[individuals[-1]][i])
         # Make sure the boundary points are always selected.
         distances[individuals[0]] = 1e100
         distances[individuals[-1]] = 1e100
-        tripled = zip(individuals, individuals[1:-1], individuals[2:])
+        tripled = list(zip(individuals, individuals[1:-1], individuals[2:]))
         for pre, ind, post in tripled:
             distances[ind] += (fitnesses[pre][i] - fitnesses[post][i]) / normalization
     return distances
@@ -29,8 +29,8 @@ def _non_dominated_front_old(iterable, key=lambda x: x, allowequality=True):
     other item in iterable."""
     items = list(iterable)
     keys = dict((i, key(i)) for i in items)
-    dim = len(keys.values()[0])
-    if any(dim != len(k) for k in keys.values()):
+    dim = len(list(keys.values())[0])
+    if any(dim != len(k) for k in list(keys.values())):
         raise ValueError("Wrong tuple size.")
 
     # Make a dictionary that holds the items another item dominates.
@@ -38,10 +38,10 @@ def _non_dominated_front_old(iterable, key=lambda x: x, allowequality=True):
     for i in items:
         for j in items:
             if allowequality:
-                if all(keys[i][k] < keys[j][k] for k in xrange(dim)):
+                if all(keys[i][k] < keys[j][k] for k in range(dim)):
                     dominations[i].append(j)
             else:
-                if all(keys[i][k] <= keys[j][k] for k in xrange(dim)):
+                if all(keys[i][k] <= keys[j][k] for k in range(dim)):
                     dominations[i].append(j)
 
     dominates = lambda i, j: j in dominations[i]
@@ -69,18 +69,18 @@ def _non_dominated_front_fast(iterable, key=lambda x: x, allowequality=True):
     """
     items = list(iterable)
     keys = dict((i, key(i)) for i in items)
-    dim = len(keys.values()[0])
+    dim = len(list(keys.values())[0])
     dominations = {}
     for i in items:
         for j in items:
             good = True
             if allowequality:
-                for k in xrange(dim):
+                for k in range(dim):
                     if keys[i][k] >= keys[j][k]:
                         good = False
                         break
             else:
-                for k in xrange(dim):
+                for k in range(dim):
                     if keys[i][k] > keys[j][k]:
                         good = False
                         break
@@ -122,7 +122,7 @@ def _non_dominated_front_arr(iterable, key=lambda x: x, allowequality=True):
     Faster version, based on boolean matrix manipulations.
     """
     items = list(iterable)
-    fits = map(key, items)
+    fits = list(map(key, items))
     l = len(items)
     x = array(fits)
     a = tile(x, (l, 1, 1))
@@ -143,7 +143,7 @@ def _non_dominated_front_arr(iterable, key=lambda x: x, allowequality=True):
                 break
             elif not ndom[ii, ij]:
                 res.remove(ij)
-    return set(map(lambda i: items[i], res))
+    return set([items[i] for i in res])
 
 
 def _non_dominated_front_merge_arr(iterable, key=lambda x: x, allowequality=True):

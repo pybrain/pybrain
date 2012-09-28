@@ -28,7 +28,7 @@ def testTraining():
     t.trainOnDataset(d, 200)
 
     # the resulting weights are in the network:
-    print 'Final weights:', n.params
+    print('Final weights:', n.params)
 
 if __name__ == '__main__':
     testTraining()

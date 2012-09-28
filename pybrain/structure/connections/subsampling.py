@@ -1,6 +1,6 @@
 __author__ = 'Tom Schaul, tom@idsia.ch'
 
-from connection import Connection
+from .connection import Connection
 from pybrain.structure.parametercontainer import ParameterContainer
 from scipy import average
 

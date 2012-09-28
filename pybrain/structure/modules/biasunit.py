@@ -1,7 +1,7 @@
 __author__ = 'Tom Schaul, tom@idsia.ch'
 
-from neuronlayer import NeuronLayer
-from module import Module
+from .neuronlayer import NeuronLayer
+from .module import Module
 
 
 class BiasUnit(NeuronLayer):

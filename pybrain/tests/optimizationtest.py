@@ -220,50 +220,49 @@ def testOnEvolvable(algo):
 def testAll(tests, allalgos, tolerant=True):
     countgood = 0
     for i, algo in enumerate(sorted(allalgos)):
-        print "%d, %s:" % (i + 1, algo.__name__)
-        print ' ' * int(log10(i + 1) + 2),
+        print("%d, %s:" % (i + 1, algo.__name__))
+        print(' ' * int(log10(i + 1) + 2), end=' ')
         good = True
         messages = []
         for t in tests:
             try:
                 res = t(algo)
-            except Exception, e:
+            except Exception as e:
                 if not tolerant:
                     raise e
                 res = e
 
             if res is True:
-                print '.',
+                print('.', end=' ')
             else:
                 good = False
                 messages.append(res)
-                print 'F',
+                print('F', end=' ')
         if good:
             countgood += 1
-            print '--- OK.'
+            print('--- OK.')
         else:
-            print '--- NOT OK.'
+            print('--- NOT OK.')
             for m in messages:
                 if m is not None:
-                    print ' ' * int(log10(i + 1) + 2), '->', m
-    print
-    print 'Summary:', countgood, '/', len(allalgos), 'of test were passed.'
+                    print(' ' * int(log10(i + 1) + 2), '->', m)
+    print()
+    print('Summary:', countgood, '/', len(allalgos), 'of test were passed.')
 
 
 
 if __name__ == '__main__':
     from pybrain.optimization import *  #@UnusedWildImport
     #from pybrain.optimization import CMAES #@UnusedImport
-    allalgos = filter(lambda c: (isclass(c)
+    allalgos = [c for c in list(globals().values()) if (isclass(c)
                                  and issubclass(c, bbo.BlackBoxOptimizer)
                                  and not issubclass(c, mobj.MultiObjectiveGA)
-                                 ),
-                      globals().values())
+                                 )]
 
-    print 'Optimization algorithms to be tested:', len(allalgos)
-    print
-    print 'Note: this collection of tests may take quite some time.'
-    print
+    print('Optimization algorithms to be tested:', len(allalgos))
+    print()
+    print('Note: this collection of tests may take quite some time.')
+    print()
 
     tests = [testInterface,
              testContinuousInterface,

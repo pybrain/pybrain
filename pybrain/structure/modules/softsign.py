@@ -1,6 +1,6 @@
 __author__ = 'Thomas Rueckstiess, ruecksti@in.tum.de'
 
-from neuronlayer import NeuronLayer
+from .neuronlayer import NeuronLayer
 
 class SoftSignLayer(NeuronLayer):
     """ softsign activation function as described in X. Glorot and Y.
