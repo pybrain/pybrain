@@ -218,14 +218,14 @@ class BackpropTrainer(Trainer):
         self.ds = trainingData
         bestweights = self.module.params.copy()
         bestverr = self.testOnData(validationData)
-        trainingErrors = []
-        validationErrors = [bestverr]
+        self.trainingErrors = []
+        self.validationErrors = [bestverr]
         while True:
-            trainingErrors.append(self.train())
-            validationErrors.append(self.testOnData(validationData))
-            if epochs == 0 or validationErrors[-1] < bestverr:
+            self.trainingErrors.append(self.train())
+            self.validationErrors.append(self.testOnData(validationData))
+            if epochs == 0 or self.validationErrors[-1] < bestverr:
                 # one update is always done
-                bestverr = validationErrors[-1]
+                bestverr = self.validationErrors[-1]
                 bestweights = self.module.params.copy()
 
             if maxEpochs != None and epochs >= maxEpochs:
@@ -233,17 +233,17 @@ class BackpropTrainer(Trainer):
                 break
             epochs += 1
 
-            if len(validationErrors) >= continueEpochs * 2:
+            if len(self.validationErrors) >= continueEpochs * 2:
                 # have the validation errors started going up again?
                 # compare the average of the last few to the previous few
-                old = validationErrors[-continueEpochs * 2:-continueEpochs]
-                new = validationErrors[-continueEpochs:]
+                old = self.validationErrors[-continueEpochs * 2:-continueEpochs]
+                new = self.validationErrors[-continueEpochs:]
                 if min(new) > max(old):
                     self.module.params[:] = bestweights
                     break
-        trainingErrors.append(self.testOnData(trainingData))
+        self.trainingErrors.append(self.testOnData(trainingData))
         self.ds = dataset
         if verbose:
-            print 'train-errors:', fListToString(trainingErrors, 6)
-            print 'valid-errors:', fListToString(validationErrors, 6)
-        return trainingErrors, validationErrors
+            print 'train-errors:', fListToString(self.trainingErrors, 6)
+            print 'valid-errors:', fListToString(self.validationErrors, 6)
+        return self.trainingErrors, self.validationErrors
