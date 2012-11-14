@@ -185,7 +185,7 @@ class BackpropTrainer(Trainer):
 
     def trainUntilConvergence(self, dataset=None, maxEpochs=None, verbose=None,
                               continueEpochs=10, validationProportion=0.25,
-                              trainingset=None, validationset=None):
+                              trainingData=None, validationData=None):
         """Train the module on the dataset until it converges.
 
         Return the module with the parameters that gave the minimal validation
@@ -205,13 +205,11 @@ class BackpropTrainer(Trainer):
             dataset = self.ds
         if verbose is None:
             verbose = self.verbose
-        if trainingset is None and validationset is None:
+        if trainingData is None or validationData is None:
             # Split the dataset randomly: validationProportion of the samples for
             # validation.
             trainingData, validationData = (
                 dataset.splitWithProportion(1 - validationProportion))
-        else:
-            trainingData, validationData = trainingset, validationset
         if not (len(trainingData) > 0 and len(validationData)):
             raise ValueError("Provided dataset too small to be split into training " +
                              "and validation sets with proportion " + str(validationProportion))
