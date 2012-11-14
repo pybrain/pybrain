@@ -2,7 +2,7 @@ __author__ = 'Daan Wierstra and Tom Schaul'
 
 from scipy import dot, argmax
 from random import shuffle
-
+from math import isnan
 from trainer import Trainer
 from pybrain.utilities import fListToString
 from pybrain.auxiliary import GradientDescent
@@ -221,8 +221,12 @@ class BackpropTrainer(Trainer):
         self.trainingErrors = []
         self.validationErrors = [bestverr]
         while True:
-            self.trainingErrors.append(self.train())
-            self.validationErrors.append(self.testOnData(validationData))
+            trainingError = self.train()
+            validationError = self.testOnData(validationData)
+            if isnan(trainingError) or isnan(validationError):
+                raise Exception("Training produced NaN results")
+            self.trainingErrors.append(trainingError)
+            self.validationErrors.append(validationError)
             if epochs == 0 or self.validationErrors[-1] < bestverr:
                 # one update is always done
                 bestverr = self.validationErrors[-1]
