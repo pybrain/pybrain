@@ -18,9 +18,9 @@
     >>> 
     >>> net = FeedForwardNetwork()
     >>> 
-    >>> net.addInputModule(SigmoidLayer(6, name='in'))
-    >>> net.addModule(LinearLayer(40, name='hidden_0'))
-    >>> net.addModule(LinearLayer(16, name='hidden_1'))
+    >>> net.addInputModule(LinearLayer(6, name='in'))
+    >>> net.addModule(SigmoidLayer(40, name='hidden_0'))
+    >>> net.addModule(SigmoidLayer(16, name='hidden_1'))
     >>> net.addOutputModule(LinearLayer(2, name='out'))
     >>> 
     >>> net.addConnection(FullConnection(net['in'], net['hidden_0']))
@@ -40,7 +40,7 @@
     >>> 
     >>> trainingErrors, validationErrors = trainer.trainUntilConvergence(
     ...    dataset=dataset, 
-    ...    maxEpochs=100)
+    ...    maxEpochs=10)
 """
 
 
