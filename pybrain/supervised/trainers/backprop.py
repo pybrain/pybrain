@@ -185,7 +185,8 @@ class BackpropTrainer(Trainer):
 
     def trainUntilConvergence(self, dataset=None, maxEpochs=None, verbose=None,
                               continueEpochs=10, validationProportion=0.25,
-                              trainingData=None, validationData=None):
+                              trainingData=None, validationData=None,
+                              convergence_threshold=10):
         """Train the module on the dataset until it converges.
 
         Return the module with the parameters that gave the minimal validation
@@ -216,6 +217,7 @@ class BackpropTrainer(Trainer):
         self.ds = trainingData
         bestweights = self.module.params.copy()
         bestverr = self.testOnData(validationData)
+        bestepoch = 0
         self.trainingErrors = []
         self.validationErrors = [bestverr]
         while True:
@@ -229,6 +231,7 @@ class BackpropTrainer(Trainer):
                 # one update is always done
                 bestverr = self.validationErrors[-1]
                 bestweights = self.module.params.copy()
+                bestepoch = epochs
 
             if maxEpochs != None and epochs >= maxEpochs:
                 self.module.params[:] = bestweights
@@ -243,9 +246,12 @@ class BackpropTrainer(Trainer):
                 if min(new) > max(old):
                     self.module.params[:] = bestweights
                     break
-        self.trainingErrors.append(self.testOnData(trainingData))
+                elif reduce(lambda x, y: x + (y - round(new[-1], convergence_threshold)), [round(y, convergence_threshold) for y in new]) == 0:
+                    self.module.params[:] = bestweights
+                    break
+        #self.trainingErrors.append(self.testOnData(trainingData))
         self.ds = dataset
         if verbose:
             print 'train-errors:', fListToString(self.trainingErrors, 6)
             print 'valid-errors:', fListToString(self.validationErrors, 6)
-        return self.trainingErrors, self.validationErrors
+        return self.trainingErrors[:bestepoch], self.validationErrors[:1 + bestepoch]

@@ -363,6 +363,6 @@ class DataSet(Serializable):
         for d in self.data.itervalues():
             means = scipy.nansum(d[:self.getLength()], axis=0) / self.getLength()
             for i in xrange(self.getLength()):
-                for j in xrange(ds.dim):
+                for j in xrange(d.dim):
                     if not scipy.isfinite(d[i, j]):
                         d[i, j] = means[j]
