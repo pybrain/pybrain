@@ -20,10 +20,10 @@ To make some nice sidelengths, we cheat on omega
 
     >>> m = nearoptimal.MultiDimHash(dim=dim, omega=omega, prob=0.8)
 
-    >>> m.radius
-    1.189207115002721
-    >>> m.radiusSquared
-    1.4142135623730949
+    >>> '%.14f' % m.radius
+    '1.18920711500272'
+    >>> '%.14f' % m.radiusSquared
+    '1.41421356237309'
 
 This gives us hypecube sidelength of
 
