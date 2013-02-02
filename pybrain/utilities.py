@@ -684,6 +684,10 @@ def r_argmax(v):
     maxbidders = [i for (i, b) in enumerate(v) if b==maxbid]
     return choice(maxbidders)
 
+def all_argmax(x):
+    """ Return the indices of all values that are equal to the maximum: no breaking ties. """
+    m = max(x)
+    return [i for i, v in enumerate(x) if v == m]
 
 def dense_orth(dim):
     """ Constructs a dense orthogonal matrix. """
@@ -719,3 +723,30 @@ def sparse_orth(d):
             Qi[(i+1),(i+1)] = -cos(theta)            
         Q = Q*Qi;
     return Q
+
+def xhash(arr):
+    """ Hashing function for arrays. Use with care. """
+    import hashlib
+    return hashlib.sha1(arr).hexdigest()
+
+def binArr2int(arr):
+    """ Convert a binary array into its (long) integer representation. """
+    from numpy import packbits
+    tmp2 = packbits(arr.astype(int))
+    return sum(val * 256 ** i for i, val in enumerate(tmp2[::-1])) 
+        
+def uniqueArrays(vs):
+    """ create a set of arrays """
+    resdic = {}
+    for v in vs:
+        resdic[xhash(v)] = v
+    return resdic.values()    
+    
+
+def seedit(seed=0):
+    """ Fixed seed makes for repeatability, but there may be two different
+    random number generators involved. """
+    import random
+    import numpy
+    random.seed(seed)
+    numpy.random.seed(seed)
