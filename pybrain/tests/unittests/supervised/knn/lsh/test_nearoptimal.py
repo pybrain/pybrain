@@ -23,7 +23,7 @@ To make some nice sidelengths, we cheat on omega
     >>> m.radius
     1.189207115002721
     >>> m.radiusSquared
-    1.4142135623730949
+    1.41421356237309...
 
 This gives us hypecube sidelength of
 
