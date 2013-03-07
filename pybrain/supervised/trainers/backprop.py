@@ -74,7 +74,6 @@ class BackpropTrainer(Trainer):
         self.totalepochs += 1
         return errors / ponderation
 
-
     def _calcDerivs(self, seq):
         """Calculate error function and backpropagate output errors to yield
         the gradient."""
@@ -88,6 +87,7 @@ class BackpropTrainer(Trainer):
             # importance, and others
             target = sample[1]
             outerr = target - self.module.outputbuffer[offset]
+            # print (outerr, target, self.module.outputbuffer[offset])
             if len(sample) > 2:
                 importance = sample[2]
                 error += 0.5 * dot(importance, outerr ** 2)
@@ -99,7 +99,7 @@ class BackpropTrainer(Trainer):
                 # FIXME: the next line keeps arac from producing NaNs. I don't
                 # know why that is, but somehow the __str__ method of the
                 # ndarray class fixes something,
-                str(outerr)
+                # str(outerr)
                 self.module.backActivate(outerr)
 
         return error, ponderation
@@ -135,7 +135,7 @@ class BackpropTrainer(Trainer):
 
         If no dataset is supplied, the one passed upon Trainer initialization is
         used."""
-        if dataset == None:
+        if dataset is None:
             dataset = self.ds
         dataset.reset()
         if verbose:
@@ -167,7 +167,7 @@ class BackpropTrainer(Trainer):
         initialization is used. If return_targets is set, also return
         corresponding target classes.
         """
-        if dataset == None:
+        if dataset is None:
             dataset = self.ds
         dataset.reset()
         out = []
@@ -198,9 +198,9 @@ class BackpropTrainer(Trainer):
         are trained. Each time validation error hits a minimum, try for
         continueEpochs epochs to find a better one."""
         epochs = 0
-        if dataset == None:
+        if dataset is None:
             dataset = self.ds
-        if verbose == None:
+        if verbose is None:
             verbose = self.verbose
         # Split the dataset randomly: validationProportion of the samples for
         # validation.
@@ -222,7 +222,7 @@ class BackpropTrainer(Trainer):
                 bestverr = validationErrors[-1]
                 bestweights = self.module.params.copy()
 
-            if maxEpochs != None and epochs >= maxEpochs:
+            if maxEpochs is not None and epochs >= maxEpochs:
                 self.module.params[:] = bestweights
                 break
             epochs += 1
