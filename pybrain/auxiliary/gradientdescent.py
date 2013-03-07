@@ -23,7 +23,7 @@ class GradientDescent(object):
         self.momentumvector = None
 
         # --- RProp parameters ---
-        self.rprop = False
+        self.rprop = True
         # maximum step width (1 - 20)
         self.deltamax = 5.0
         # minimum step width (0.01 - 1e-6)
@@ -66,7 +66,7 @@ class GradientDescent(object):
             # update rprop meta parameters
             dirSwitch = self.lastgradient * gradient_arr
             rprop_theta[dirSwitch > 0] *= self.etaplus
-            idx =  dirSwitch < 0
+            idx = dirSwitch < 0
             rprop_theta[idx] *= self.etaminus
             gradient_arr[idx] = 0
 
