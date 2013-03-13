@@ -456,22 +456,27 @@ def flood(stepFunction, fullSet, initSet, relevant=None):
 
     :key relevant: (optional) list of relevant elements: stop once all relevant elements are found.
     """
-    full = set(fullSet)
-    flooded = full.intersection(set(initSet))
-
-    if relevant is None:
-        relevant = full.copy()
+    if fullSet is None:
+        flooded = set(initSet)
     else:
+        full = set(fullSet)
+        flooded = full.intersection(set(initSet))
+        if relevant is None:
+            relevant = full.copy()
+    if relevant:
         relevant = set(relevant)
 
     change = flooded.copy()
     while len(change)>0:
         new = set()
         for m in change:
-            new.update(full.intersection(stepFunction(m)))
+            if fullSet is None:
+                new.update(stepFunction(m))
+            else:
+                new.update(full.intersection(stepFunction(m)))
         change = new.difference(flooded)
         flooded.update(change)
-        if relevant.issubset(flooded):
+        if relevant is not None and relevant.issubset(flooded):
             break
     return list(flooded)
 
