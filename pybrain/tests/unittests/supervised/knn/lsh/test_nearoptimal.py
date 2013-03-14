@@ -8,8 +8,6 @@
 Internal Tests:
 ====================
 
-    >>> from pybrain.supervised.knn.lsh import nearoptimal
-
 Let's make a hypercube for 2 dimensions.
 
     >>> dim = 2
@@ -21,7 +19,7 @@ To make some nice sidelengths, we cheat on omega
     >>> m = nearoptimal.MultiDimHash(dim=dim, omega=omega, prob=0.8)
 
     >>> m.radius
-    1.189207115002721
+    1.189207115002...
     >>> m.radiusSquared
     1.41421356237309...
 
@@ -118,6 +116,7 @@ Example Usage:
 """
 
 from pybrain.tests import runModuleTestSuite
+from pybrain.supervised.knn.lsh import nearoptimal
 
 if __name__ == "__main__":
     runModuleTestSuite(__import__('__main__'))

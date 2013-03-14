@@ -8,7 +8,7 @@
     >>> d = datasets.dataset.DataSet()
     >>> d.addField('input', 2)
     >>> d.data['input']
-    array([], shape=(0, 2), dtype=...)
+    array([], shape=(0..., 2...), dtype=...)
 
 Build up a DataSet for testing:
 
