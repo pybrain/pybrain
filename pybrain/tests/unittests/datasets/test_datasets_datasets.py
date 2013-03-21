@@ -1,15 +1,23 @@
 # -*- coding: utf-8 -*-
 
 """
-
     >>> from scipy import array
     >>> from pybrain import datasets
     >>> from copy import deepcopy
     >>> d = datasets.dataset.DataSet()
     >>> d.addField('input', 2)
-    >>> d.data['input']
-    array([], shape=(0..., 2...), dtype=...)
-
+    >>> type(d.data['input'])
+	<type 'numpy.ndarray'>
+	
+    >>> len(d.data['input'])
+    0
+	
+    >>> x, y = d.data['input'].shape
+	>>> str(x)
+	0
+	>>> str(y)
+    2
+	
 Build up a DataSet for testing:
 
     >>> d.append('input', (array((0, 0))))

@@ -23,7 +23,7 @@ To make some nice sidelengths, we cheat on omega
     >>> m.radiusSquared
     1.41421356237309...
 
-This gives us hypecube sidelength of
+This gives us hypercube sidelength of
 
     >>> SIDELENGTH = sqrt(sqrt(2)) * omega
     >>> epsilonCheck(SIDELENGTH - 5)
