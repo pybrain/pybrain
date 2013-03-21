@@ -193,7 +193,7 @@ class BlackBoxOptimizer(DirectSearchLearner):
         """ The main loop that does the learning. """
         assert self.__evaluator is not None, "No evaluator has been set. Learning cannot start."
         if additionalLearningSteps is not None:
-            self.maxLearningSteps = self.numLearningSteps + additionalLearningSteps
+            self.maxLearningSteps = self.numLearningSteps + additionalLearningSteps - 1
         while not self._stoppingCriterion():
             try:
                 self._learnStep()
