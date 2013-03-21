@@ -57,6 +57,9 @@ class LearningAgent(LoggingAgent):
 
     def newEpisode(self):
         """ Indicate the beginning of a new episode in the training cycle. """
+        # reset the module when a new episode starts.
+        self.module.reset()
+        
         if self.logging:
             self.history.newSequence()
 
