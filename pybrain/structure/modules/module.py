@@ -35,7 +35,7 @@ class Module(Named):
         dimension of outdim."""
         self.setArgs(name=name, **args)
 
-        # Make sure that it does not matter wether Module.__init__ is called
+        # Make sure that it does not matter whether Module.__init__ is called
         # before or after adding elements to bufferlist in subclasses.
         # TODO: it should be possible to use less than these buffers. For some
         # methods, an error is not completely necessary. (e.g. evolution)
