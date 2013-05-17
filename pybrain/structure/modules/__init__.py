@@ -12,3 +12,4 @@ from tanhlayer import TanhLayer
 from kohonen import KohonenMap
 from table import Table
 from module import Module
+from relulayer import ReluLayer

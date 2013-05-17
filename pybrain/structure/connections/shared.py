@@ -1,4 +1,3 @@
-from pybrain.structure.modules.linearlayer import LinearLayer
 __author__ = 'Tom Schaul, tom@idsia.ch'
 
 from pybrain.structure.parametercontainer import ParameterContainer
