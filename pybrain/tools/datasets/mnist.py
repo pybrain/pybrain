@@ -16,7 +16,7 @@ def labels(filename):
 
 
 def images(filename):
-    fp = file(filename)
+    fp = file(filename,'rb')
     chunk = fp.read(16)
     magicnumber, length, numrows, numcols = struct.unpack('>iiii', chunk)
     assert magicnumber in (2049, 2051), ("Not an MNIST file: %i" % magicnumber)
