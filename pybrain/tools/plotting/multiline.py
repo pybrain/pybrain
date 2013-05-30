@@ -180,7 +180,7 @@ class MultilinePlotter:
         self.replot = False
 
 
-    def show(self, xLabel='', yLabel='', title='', popup=False, imgfile=None):
+    def show(self, xLabel='', yLabel='', Title='', popup=False, imgfile=None):
         """ Plots the data internally and saves an image of it to the plotting directory.
 
     :key title: The title of the plot.
@@ -192,7 +192,7 @@ class MultilinePlotter:
             plot(self.indexList[i], self.dataList[i])
         xlabel(xLabel)
         ylabel(yLabel)
-        title(title)
+        title(Title)
         if imgfile == None:
             imgfile = imp.find_module('pybrain')[1] + "/tools/plotting/plot.png"
         savefig(imgfile)
