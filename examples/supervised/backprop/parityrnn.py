@@ -27,7 +27,7 @@ def buildParityNet():
 
     return net
 
-def evalRnnOnSeqDataset(net, verbose = False, silent = False):
+def evalRnnOnSeqDataset(net, DS, verbose = False, silent = False):
     """ evaluate the network on all the sequences of a dataset. """
     r = 0.
     samples = 0.
@@ -49,10 +49,10 @@ def evalRnnOnSeqDataset(net, verbose = False, silent = False):
 if __name__ == "__main__":
     N = buildParityNet()
     DS = ParityDataSet()
-    evalRnnOnSeqDataset(N, verbose = True)
+    evalRnnOnSeqDataset(N, DS, verbose = True)
     print '(preset weights)'
     N.randomize()
-    evalRnnOnSeqDataset(N)
+    evalRnnOnSeqDataset(N, DS)
     print '(random weights)'
 
 
@@ -60,5 +60,5 @@ if __name__ == "__main__":
     N.reset()
     bp = BackpropTrainer(N, DS, verbose = True)
     bp.trainEpochs(5000)
-    evalRnnOnSeqDataset(N)
+    evalRnnOnSeqDataset(N, DS)
     print '(backprop-trained weights)'
