@@ -21,7 +21,7 @@ You also need to exchange the following two ``.py`` files with custom versions:
 ::
 	
 	cd pybrain/pybrain/rl/environments/ode/xode_changes/
-	sudo cp * /usr/lib/python2.6/dist-packages/xode/ (or there ever your dist-packages are)
+	sudo cp * /usr/lib/python2.6/dist-packages/xode/ (or wherever your dist-packages are)
 
 You can test if all your settings are ok by starting following example:
 ::
