@@ -102,7 +102,7 @@ class SupervisedDataSet(DataSet):
     def splitWithProportion(self, proportion = 0.5):
         """Produce two new datasets, the first one containing the fraction given
         by `proportion` of the samples."""
-        leftIndices = sample(range(len(self)), int(len(self)*proportion))
+        leftIndices = set(sample(range(len(self)), int(len(self)*proportion)))
         leftDs = self.copy()
         leftDs.clear()
         rightDs = leftDs.copy()
