@@ -173,7 +173,7 @@ def non_dominated_sort(iterable, key=lambda x: x, allowequality=True):
         fronts.append(front)
     return fronts
     
-''' added by JPQ for Constraine Multi-objective Optimization '''
+''' added by JPQ for Constrained Multi-objective Optimization '''
 
 
 def _const_non_dominated_front_merge_arr(iterable, key=lambda x: x, allowequality=True):

@@ -1,10 +1,10 @@
 """ Some multi-objective benchmark functions.
 Implemented according to the classical reference paper of Deb et al. (Evolutionary Computation 2002) """
 
-from scipy import array, exp, sqrt, sin, cos, power, pi, arctan
+from scipy import array, exp, sqrt, sin, cos, power, pi, arctan, ndarray
 from pybrain.rl.environments.functions.function import FunctionEnvironment
 from pybrain.structure.parametercontainer import ParameterContainer
-from scipy import  array, ndarray
+
 
 __author__ = 'Tom Schaul, tom@idsia.ch'
 
@@ -229,6 +229,7 @@ class ConstTnk(MultiObjectiveFunction):
         f1 = x[0]
         f2 = x[1]
         return -array([f1, f2])
+    
 class ConstBnh(MultiObjectiveFunction):
     """ Binh & Korn 1997 """
     xdim = 2

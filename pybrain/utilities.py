@@ -755,3 +755,35 @@ def seedit(seed=0):
     import numpy
     random.seed(seed)
     numpy.random.seed(seed)
+
+
+    
+def weightedUtest(g1, w1, g2, w2):
+    """ Determines the confidence level of the assertion:
+    'The values of g2 are higher than those of g1'.  
+    (adapted from the scipy.stats version)
+    
+    Twist: here the elements of each group have associated weights, 
+    corresponding to how often they are present (i.e. two identical entries with 
+    weight w are equivalent to one entry with weight 2w).
+    Reference: "Studies in Continuous Black-box Optimization", Schaul, 2011 [appendix B].
+    
+    TODO: make more efficient for large sets. 
+    """
+    from scipy.stats.distributions import norm
+    import numpy
+    n1 = sum(w1)
+    n2 = sum(w2)
+    u1 = 0.
+    for x1, wx1 in zip(g1, w1):
+        for x2, wx2 in zip(g2, w2):
+            if x1 == x2:
+                u1 += 0.5 * wx1 * wx2
+            elif x1 > x2:
+                u1 += wx1 * wx2
+    mu = n1*n2/2.
+    sigu = numpy.sqrt(n1*n2*(n1+n2+1)/12.)
+    z = (u1 - mu) / sigu
+    conf = norm.cdf(z)
+    return conf 
+
