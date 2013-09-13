@@ -34,6 +34,7 @@ Quick answer:
 ::
 
 	$ git clone git://github.com/pybrain/pybrain.git
+	$ cd pybrain
 	$ python setup.py install
 
 Long answer:
