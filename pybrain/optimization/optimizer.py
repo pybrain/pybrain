@@ -340,3 +340,13 @@ class TopologyOptimizer(BlackBoxOptimizer):
                 self._initEvaluable = MaskedParameters(self._initEvaluable, returnZeros = True)   
     
      
+class TabuOptimizer(BlackBoxOptimizer):
+    """A class of optimizers that apply the tabu meta-heuristic."""
+    tabuList=[]
+    maxTabuList=7
+    def __init__(self, tabuGenerator, evaluator = None, initEvaluable = None, tabuList=None, maxTabuList=7, **kwargs):
+        BlackBoxOptimizer._init_(self,evaluator=evaluator,initEvaluable=initEvaluable, kwargs=kwargs)
+        if tabuList:
+            self.tabuList=tabuList
+        self.maxTabuList=maxTabuList
+        self.tabuGenerator=tabuGenerator

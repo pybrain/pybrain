@@ -41,7 +41,7 @@ class StochasticHillClimber(HillClimber):
     temperature = 1.
 
     def _learnStep(self):
-        # re-evaluate the current individual in case the evaluator is noisy
+        """re-evaluate the current individual in case the evaluator is noisy"""
         if self.evaluatorIsNoisy:
             self.bestEvaluation = self._oneEvaluation(self.bestEvaluable)
 
