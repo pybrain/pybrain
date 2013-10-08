@@ -31,7 +31,31 @@ class HillClimber(BlackBoxOptimizer):
         else:
             return 1
 
+class tabuHillClimber(HillClimber,tabuOptimizer):
+    """Applies the tabu proccess in addition to a hill climbing search."""
 
+    def _learnStep(self):
+        """generate a new a evaluable by mutation and check if it is tabu, repeat until a non-tabu
+        evaluable is created then keep it and update the tabu list iff the new evaluable is an improvement"""
+         # re-evaluate the current individual in case the evaluator is noisy                                        
+        if self.evaluatorIsNoisy:
+            self.bestEvaluation = self._oneEvaluation(self.bestEvaluable)
+        tabu=True
+        old=self.bestEvaluable()
+        while tabu:
+            challenger = self.bestEvaluable.copy()
+            challenger.mutate()
+            tabu=False
+            for t in tabuList:
+                if t(challenger):
+                    tabu=True
+        self._oneEvaluation(challenger)
+        if challenger==self.bestEvaluable():
+            self.tabuList.append(tabuGenerator(old,self.bestEvaluable()))
+            l=lenght(tabuList)
+            if l > maxTabuList:
+                tabuList=tabuList[(l-maxTabuList):l]
+   
 class StochasticHillClimber(HillClimber):
     """ Stochastic hill-climbing always moves to a better point, but may also
     go to a worse point with a probability that decreases with increasing drop in fitness
