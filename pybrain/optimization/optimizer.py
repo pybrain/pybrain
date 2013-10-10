@@ -343,8 +343,12 @@ class TopologyOptimizer(BlackBoxOptimizer):
 class TabuOptimizer(BlackBoxOptimizer):
     """A class of optimizers that apply the tabu meta-heuristic."""
     tabuList=[]
-    maxTabuList=7
-    def __init__(self, tabuGenerator, evaluator = None, initEvaluable = None, tabuList=None, maxTabuList=7, **kwargs):
+    def _additionalInit(self, tabuGenerator, tabuList=None, maxTabuList=7):
+        """Takes a callable that produces callable tabus given two evaluables
+        as this optimizer's tabu generation protocol. 
+        Optionally sets this optimizer's starting tabu list and max tabu list size.  
+        Otherwise they defualt to an empty list and seven respectivly."""  
+        
         BlackBoxOptimizer._init_(self,evaluator=evaluator,initEvaluable=initEvaluable, kwargs=kwargs)
         if tabuList:
             self.tabuList=tabuList

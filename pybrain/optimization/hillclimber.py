@@ -1,6 +1,6 @@
 __author__ = 'Tom Schaul, tom@idsia.ch'
 
-from pybrain.optimization.optimizer import BlackBoxOptimizer
+from pybrain.optimization.optimizer import BlackBoxOptimizer, TabuOptimizer
 from scipy import exp
 from random import random
 
@@ -31,7 +31,7 @@ class HillClimber(BlackBoxOptimizer):
         else:
             return 1
 
-class tabuHillClimber(HillClimber,tabuOptimizer):
+class tabuHillClimber(HillClimber,TabuOptimizer):
     """Applies the tabu proccess in addition to a hill climbing search."""
 
     def _learnStep(self):
