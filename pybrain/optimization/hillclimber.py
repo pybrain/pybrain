@@ -31,7 +31,7 @@ class HillClimber(BlackBoxOptimizer):
         else:
             return 1
 
-class tabuHillClimber(HillClimber,TabuOptimizer):
+class TabuHillClimber(HillClimber,TabuOptimizer):
     """Applies the tabu proccess in addition to a hill climbing search."""
 
     def _learnStep(self):
