@@ -31,7 +31,7 @@ class HillClimber(BlackBoxOptimizer):
         else:
             return 1
 
-class TabuHillClimber(HillClimber,TabuOptimizer):
+class TabuHillClimber(TabuOptimizer,HillClimber):
     """Applies the tabu proccess in addition to a hill climbing search."""
 
     def _learnStep(self):
@@ -41,20 +41,22 @@ class TabuHillClimber(HillClimber,TabuOptimizer):
         if self.evaluatorIsNoisy:
             self.bestEvaluation = self._oneEvaluation(self.bestEvaluable)
         tabu=True
-        old=self.bestEvaluable()
+        old=self.bestEvaluable
         while tabu:
             challenger = self.bestEvaluable.copy()
             challenger.mutate()
             tabu=False
-            for t in tabuList:
+            for t in self.tabuList:
                 if t(challenger):
                     tabu=True
         self._oneEvaluation(challenger)
-        if challenger==self.bestEvaluable():
-            self.tabuList.append(tabuGenerator(old,self.bestEvaluable()))
-            l=lenght(tabuList)
-            if l > maxTabuList:
-                tabuList=tabuList[(l-maxTabuList):l]
+        print challenger.params,self.bestEvaluable.params
+        if challenger.params==self.bestEvaluable.params:
+            print "leaned a tabu"
+            self.tabuList.append(self.tabuGenerator(old,self.bestEvaluable))
+            l=len(self.tabuList)
+            if l > self.maxTabuList:
+                self.tabuList=self.tabuList[(l-self.maxTabuList):l]
    
 class StochasticHillClimber(HillClimber):
     """ Stochastic hill-climbing always moves to a better point, but may also
