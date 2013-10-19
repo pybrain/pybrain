@@ -340,3 +340,20 @@ class TopologyOptimizer(BlackBoxOptimizer):
                 self._initEvaluable = MaskedParameters(self._initEvaluable, returnZeros = True)   
     
      
+class TabuOptimizer(BlackBoxOptimizer):
+    """A class of optimizers that apply the tabu meta-heuristic.
+    
+    This class extends BlackBoxOptimizer because it can make use of much of BlackBoxOptimizer's infrastructure
+    and because this makes it easier to extend to several optimizers that are commonly paired with the tabu meta-heuristic which PyBrain implements as BlackBoxOptimizer subclasses.  However it is not conceptually a BlackBoxOptimizer.
+    """
+    tabuList=[]
+    def tabuSetUp(self, tabuGenerator, tabuList=[], maxTabuList=7):
+        """Takes a callable that produces callable tabus given two evaluables
+        as this optimizer's tabu generation protocol.
+
+        Optionally sets this optimizer's starting tabu list and max tabu list size.  
+        Otherwise they defualt to an empty list and seven respectivly."""  
+        
+        self.tabuList=tabuList
+        self.maxTabuList=maxTabuList
+        self.tabuGenerator=tabuGenerator
