@@ -37,7 +37,7 @@ class TabuHillClimber(TabuOptimizer,HillClimber):
     def _learnStep(self):
         """generate a new a evaluable by mutation and check if it is tabu, repeat until a non-tabu
         evaluable is created then keep it and update the tabu list iff the new evaluable is an improvement"""
-         # re-evaluate the current individual in case the evaluator is noisy                                        
+                                              
         if self.evaluatorIsNoisy:
             self.bestEvaluation = self._oneEvaluation(self.bestEvaluable)
         tabu=True
@@ -50,9 +50,7 @@ class TabuHillClimber(TabuOptimizer,HillClimber):
                 if t(challenger):
                     tabu=True
         self._oneEvaluation(challenger)
-        print challenger.params,self.bestEvaluable.params
-        if challenger.params==self.bestEvaluable.params:
-            print "leaned a tabu"
+        if all(challenger.params[x]==self.bestEvaluable.params[x] for x in range(0,len(challenger))):
             self.tabuList.append(self.tabuGenerator(old,self.bestEvaluable))
             l=len(self.tabuList)
             if l > self.maxTabuList:
