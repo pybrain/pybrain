@@ -347,13 +347,83 @@ class TabuOptimizer(BlackBoxOptimizer):
     and because this makes it easier to extend to several optimizers that are commonly paired with the tabu meta-heuristic which PyBrain implements as BlackBoxOptimizer subclasses.  However it is not conceptually a BlackBoxOptimizer.
     """
     tabuList=[]
-    def tabuSetUp(self, tabuGenerator, tabuList=[], maxTabuList=7):
+    def tabuSetUp(self, tabuGenerator, tabuPenalty, tabuList=[], maxTabuList=7,):
         """Takes a callable that produces callable tabus given two evaluables
-        as this optimizer's tabu generation protocol.
-
+        as this optimizer's tabu generation protocol.  Takes a number as the penalty 
+        to be applied when evaluating moves that would violate a tabu.
         Optionally sets this optimizer's starting tabu list and max tabu list size.  
         Otherwise they defualt to an empty list and seven respectivly."""  
-        
+
         self.tabuList=tabuList
         self.maxTabuList=maxTabuList
         self.tabuGenerator=tabuGenerator
+        self.tabuPenalty=tabuPenalty
+        self._evaluator=self._BlackBoxOptimizer__evaluator
+
+    def _oneEvaluation(self, evaluable):
+        """ This method should be called by all optimizers for producing an evaluation. """
+        if self._wasUnwrapped:
+            self.wrappingEvaluable._setParameters(evaluable)
+            res = self.evaluator(self.wrappingEvaluable)
+        elif self._wasWrapped:            
+            res = self.evaluator(evaluable.params)
+        else:            
+            res = self.evaluator(evaluable)
+            ''' added by JPQ '''
+            if self.constrained :
+                self.feasible = self.evaluator.outfeasible
+                self.violation = self.evaluator.outviolation
+            # ---
+        if isscalar(res):
+            # detect numerical instability
+            if isnan(res) or isinf(res):
+                raise DivergenceError
+            #apply pentalty if tabu
+            for t in self.tabuList:
+                if t(evaluable):
+                    res-=self.tabuPenalty
+                    break
+            # always keep track of the best
+            if (self.numEvaluations == 0
+                or self.bestEvaluation is None
+                or (self.minimize and res <= self.bestEvaluation)
+                or (not self.minimize and res >= self.bestEvaluation)):
+                self.bestEvaluation = res
+                #update tabuList
+                self.tabuList.append(self.tabuGenerator(self.bestEvaluable,evaluable))
+                l=len(self.tabuList)
+                if l > self.maxTabuList:
+                    self.tabuList=self.tabuList[(l-self.maxTabuList):l]
+                self.bestEvaluable = evaluable.copy()
+        
+        self.numEvaluations += 1
+        
+        # if desired, also keep track of all evaluables and/or their fitness.                        
+        if self.storeAllEvaluated:
+            if self._wasUnwrapped:            
+                self._allEvaluated.append(self.wrappingEvaluable.copy())
+            elif self._wasWrapped:            
+                self._allEvaluated.append(evaluable.params.copy())
+            else:            
+                self._allEvaluated.append(evaluable.copy())        
+        if self.storeAllEvaluations:
+            if self._wasOpposed and isscalar(res):
+                ''' added by JPQ '''
+                if self.constrained :
+                    self._allEvaluations.append([-res,self.feasible,self.violation])
+                # ---
+                else:
+                    self._allEvaluations.append(-res)
+            else:
+                ''' added by JPQ '''
+                if self.constrained :
+                    self._allEvaluations.append([res,self.feasible,self.violation])
+                # ---
+                else:
+                    self._allEvaluations.append(res)
+        ''' added by JPQ '''
+        if self.constrained :
+            return [res,self.feasible,self.violation]
+        else:
+        # ---
+            return res
