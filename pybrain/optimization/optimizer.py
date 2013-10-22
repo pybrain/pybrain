@@ -346,6 +346,7 @@ class TabuOptimizer(BlackBoxOptimizer):
     This class extends BlackBoxOptimizer because it can make use of much of BlackBoxOptimizer's infrastructure
     and because this makes it easier to extend to several optimizers that are commonly paired with the tabu meta-heuristic which PyBrain implements as BlackBoxOptimizer subclasses.  However it is not conceptually a BlackBoxOptimizer.
     """
+    _setUp=False
     tabuList=[]
     def tabuSetUp(self, tabuGenerator, tabuPenalty, tabuList=[], maxTabuList=7,):
         """Takes a callable that produces callable tabus given two evaluables
@@ -362,13 +363,16 @@ class TabuOptimizer(BlackBoxOptimizer):
         else:
             self.tabuPenalty=tabuPenalty
         self._evaluator=self._BlackBoxOptimizer__evaluator
+        self._setUp=True
 
     def _oneEvaluation(self, evaluable):
         """ This method should be called by all tabu optimizers for producing an evaluation. 
         
         This is nearly identical to BlackBoxOptimizer's _oneEvaluation except that it subtracts
         the tabuPenalty from the evaluations of tabuEvaluables"""
-
+        
+        if not self._setUp:
+            return BlackBoxOptimizer._oneEvaluation(self,evaluable)
         if self._wasUnwrapped:
             self.wrappingEvaluable._setParameters(evaluable)
             res = self.evaluator(self.wrappingEvaluable)
