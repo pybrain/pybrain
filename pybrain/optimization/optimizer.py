@@ -357,11 +357,18 @@ class TabuOptimizer(BlackBoxOptimizer):
         self.tabuList=tabuList
         self.maxTabuList=maxTabuList
         self.tabuGenerator=tabuGenerator
-        self.tabuPenalty=tabuPenalty
+        if self.minimize:
+            self.tabuPenalty=0-tabuPenalty
+        else:
+            self.tabuPenalty=tabuPenalty
         self._evaluator=self._BlackBoxOptimizer__evaluator
 
     def _oneEvaluation(self, evaluable):
-        """ This method should be called by all optimizers for producing an evaluation. """
+        """ This method should be called by all tabu optimizers for producing an evaluation. 
+        
+        This is nearly identical to BlackBoxOptimizer's _oneEvaluation except that it subtracts
+        the tabuPenalty from the evaluations of tabuEvaluables"""
+
         if self._wasUnwrapped:
             self.wrappingEvaluable._setParameters(evaluable)
             res = self.evaluator(self.wrappingEvaluable)

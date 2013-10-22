@@ -7,8 +7,9 @@ class TabuHillClimber(TabuOptimizer):
     evaluatorIsNoisy = False
 
     def _learnStep(self):
-        """generate a new a evaluable by mutation and check if it is tabu, repeat until a non-tabu                                         evaluable is created then keep it and update the tabu list iff the new evaluable is an improvement"""
-        
+        """generate a new a evaluable by mutation and check if it is tabu, repeat until a non-tabu                                         evaluable is created then keep it and update the tabu list iff the new evaluable is an improvement
+        """
+
         if self.evaluatorIsNoisy:
             self.bestEvaluation = self._oneEvaluation(self.bestEvaluable)
         tabu=True
