@@ -378,12 +378,22 @@ class TabuOptimizer(BlackBoxOptimizer):
             # detect numerical instability
             if isnan(res) or isinf(res):
                 raise DivergenceError
+            #apply pentalty if tabu
+            for t in self.tabuList:
+                if t(evaluable):
+                    res-=self.tabuPenalty
+                    break
             # always keep track of the best
             if (self.numEvaluations == 0
                 or self.bestEvaluation is None
                 or (self.minimize and res <= self.bestEvaluation)
                 or (not self.minimize and res >= self.bestEvaluation)):
                 self.bestEvaluation = res
+                #update tabuList
+                self.tabuList.append(self.tabuGenerator(self.bestEvaluable,evaluable))
+                l=len(self.tabuList)
+                if l > self.maxTabuList:
+                    self.tabuList=self.tabuList[(l-self.maxTabuList):l]
                 self.bestEvaluable = evaluable.copy()
         
         self.numEvaluations += 1
