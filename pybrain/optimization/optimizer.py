@@ -341,18 +341,25 @@ class TopologyOptimizer(BlackBoxOptimizer):
     
      
 class TabuOptimizer(BlackBoxOptimizer):
-    """A class of optimizers that apply the tabu meta-heuristic.
+    """A class that makes it easy to add the tabu meta-heuristic to subclasses of BlackBoxOptimizer.
     
-    This class extends BlackBoxOptimizer because it can make use of much of BlackBoxOptimizer's infrastructure
-    and because this makes it easier to extend to several optimizers that are commonly paired with the tabu meta-heuristic which PyBrain implements as BlackBoxOptimizer subclasses.  However it is not conceptually a BlackBoxOptimizer.
+    To use this class create an empty class that inherits from this and an existing implementation
+    of BlackBoxOptimizer.  TabuOptimizer must precede the other superclass in the class signiture.
+    The resulting class will behave like the second superclass if when _setUp is false, and will
+    add tabu functionality to the second superclass if you call tabuSetUp before learn.
+    See tabusearch.py and tests/unittests/optimization/test_tabuhillclimber.py for examples.
+    
+    This class adds (most) of the meta-heuristic functionality described in Tabu Search: a Tutorial by Glover
+    http://www.cse.unt.edu/~garlick/teaching/4310/assign/TS%20-%20Tutorial.pdf
     """
+    _setUp=False
     tabuList=[]
     def tabuSetUp(self, tabuGenerator, tabuPenalty, tabuList=[], maxTabuList=7,):
-        """Takes a callable that produces callable tabus given two evaluables
-        as this optimizer's tabu generation protocol.  Takes a number as the penalty 
-        to be applied when evaluating moves that would violate a tabu.
-        Optionally sets this optimizer's starting tabu list and max tabu list size.  
-        Otherwise they defualt to an empty list and seven respectivly."""  
+        """Intializes tabu related varibables and sets a flag that activates tabu behavior.
+
+        tabuGenerator should be  a callable that produces callable tabus given two evaluables. 
+        tabePenalty is the amount that tabu moves are penalized by.  It is effectively 
+        an aspiration function, but the implentation is differnt than in most tabu algorizims."""  
 
         self.tabuList=tabuList
         self.maxTabuList=maxTabuList
@@ -361,7 +368,13 @@ class TabuOptimizer(BlackBoxOptimizer):
         self._evaluator=self._BlackBoxOptimizer__evaluator
 
     def _oneEvaluation(self, evaluable):
-        """ This method should be called by all optimizers for producing an evaluation. """
+        """ This method should be called by all tabu optimizers for producing an evaluation. 
+        
+        This is nearly identical to BlackBoxOptimizer's _oneEvaluation except that it subtracts
+        the tabuPenalty from the evaluations of tabuEvaluables"""
+        
+        if not self._setUp:
+            return BlackBoxOptimizer._oneEvaluation(self,evaluable)
         if self._wasUnwrapped:
             self.wrappingEvaluable._setParameters(evaluable)
             res = self.evaluator(self.wrappingEvaluable)
