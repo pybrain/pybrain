@@ -344,7 +344,7 @@ class TabuOptimizer(BlackBoxOptimizer):
     """A class that makes it easy to add the tabu meta-heuristic to subclasses of BlackBoxOptimizer.
     
     To use this class create an empty class that inherits from this and an existing implementation
-    of BlackBoxOptimizer.  TabuOptimizer must precede the other superclass in the class signiture.
+    of BlackBoxOptimizer.
     The resulting class will behave like the second superclass if when _setUp is false, and will
     add tabu functionality to the second superclass if you call tabuSetUp before learn.
     See tabusearch.py and tests/unittests/optimization/test_tabuhillclimber.py for examples.
