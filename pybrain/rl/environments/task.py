@@ -34,7 +34,7 @@ class Task(object):
         self.env.performAction(action)
 
     def getObservation(self):
-        """ A filtered mapping to getSample of the underlying environment. """
+        """ A filtered mapping to getSensors of the underlying environment. """
         sensors = self.env.getSensors()
         if self.sensor_limits:
             sensors = self.normalize(sensors)
