@@ -37,6 +37,7 @@ def plotPerformance(values, fig):
     plt.clf()
     plt.plot(values, 'o-')
     plt.gcf().canvas.draw()
+    # Without the next line, the pyplot plot won't actually show up.
     plt.pause(0.001)
 
 performance = []
