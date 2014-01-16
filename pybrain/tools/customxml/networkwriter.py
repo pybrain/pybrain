@@ -62,7 +62,7 @@ class NetworkWriter(XMLHandling):
         for m in net.modulesSorted:
             for c in net.connections[m]:
                 self.writeConnection(conns, c, False)
-        if isinstance(net, RecurrentNetwork):
+        if hasattr(net, "recurrentConns"):
             for c in net.recurrentConns:
                 self.writeConnection(conns, c, True)
 
