@@ -80,7 +80,10 @@ def buildNetwork(*layers, **options):
     # arbitrary number of hidden layers of type 'hiddenclass'
     for i, num in enumerate(layers[1:-1]):
         layername = 'hidden%i' % i
-        n.addModule(opt['hiddenclass'](num, name=layername))
+        if issubclass(opt['hiddenclass'], LSTMLayer):
+            n.addModule(opt['hiddenclass'](num, peepholes=opt['peepholes'], name=layername))
+        else:
+            n.addModule(opt['hiddenclass'](num, name=layername))
         if opt['bias']:
             # also connect all the layers with the bias
             n.addConnection(FullConnection(n['bias'], n[layername]))
