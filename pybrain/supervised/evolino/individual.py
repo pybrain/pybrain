@@ -1,7 +1,7 @@
 __author__ = 'Michael Isik'
 
 
-from gindividual import Individual
+from pybrain.supervised.evolino.gindividual import Individual
 from copy import copy, deepcopy
 
 

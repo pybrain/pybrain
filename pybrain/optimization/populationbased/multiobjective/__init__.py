@@ -1,4 +1,4 @@
-from nsga2 import MultiObjectiveGA
+from pybrain.optimization.populationbased.multiobjective.nsga2 import MultiObjectiveGA
 """ added by JPQ """
-from constnsga2 import ConstMultiObjectiveGA
+from pybrain.optimization.populationbased.multiobjective.constnsga2 import ConstMultiObjectiveGA
 # ---

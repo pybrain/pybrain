@@ -55,9 +55,9 @@ class ConstMultiObjectiveGA(GA):
 #                                                          key=lambda x: self.fitnesses[x],
 #                                                          allowequality = self.allowEquality)
 #        self.topProportion = float(number_of_feasible)/self.populationSize
-#        print 'Len bestEvaluable ',len(self.bestEvaluable)
+#        print('Len bestEvaluable ',len(self.bestEvaluable))
 #        for i in range(len(self.bestEvaluable)):
-#            print self.bestEvaluable[i],':',self.bestEvaluation[i]
+#            print(self.bestEvaluable[i],':',self.bestEvaluation[i])
         self.produceOffspring()
 
     def select(self):

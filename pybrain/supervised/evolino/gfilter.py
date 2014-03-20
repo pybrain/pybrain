@@ -1,7 +1,7 @@
 __author__ = 'Michael Isik'
 
 
-from variate import UniformVariate, GaussianVariate
+from pybrain.supervised.evolino.variate import UniformVariate, GaussianVariate
 
 class Filter(object):
     """ Base class for all kinds of operators on the population during the
@@ -92,7 +92,7 @@ class SimpleMutation(SimpleGenomeManipulation):
         """
         self.mutationVariate.x0 = value
         newval = self.mutationVariate.getSample()
-#        print "MUTATED: ", value, "--->", newval
+#        print("MUTATED: ", value, "--->", newval)
         return newval
 
 

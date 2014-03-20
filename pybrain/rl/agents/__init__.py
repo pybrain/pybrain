@@ -1,2 +1,2 @@
-from learning import LearningAgent
-from optimization import OptimizationAgent
+from pybrain.rl.agents.learning import LearningAgent
+from pybrain.rl.agents.optimization import OptimizationAgent

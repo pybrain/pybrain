@@ -116,7 +116,7 @@ class SequenceHelper(object):
         """
         sequence_ends = delete(dataset.getField('sequence_index') - 1, 0)
         sequence_ends = append(sequence_ends, dataset.getLength() - 1)
-#        print sequence_ends; exit()
+#        print(sequence_ends; exit())
         sequence_ends = array(sequence_ends)
         return sequence_ends
 
@@ -311,7 +311,7 @@ class CrossValidator(object):
             test_idxs = perms[i]
 
             # train
-            #print "training iteration", i
+            #print("training iteration", i)
             train_ds = SupervisedDataSet(indim, outdim)
             train_ds.setField("input"  , inp[train_idxs])
             train_ds.setField("target" , tar[train_idxs])
@@ -323,7 +323,7 @@ class CrossValidator(object):
                 trainer.trainEpochs(self._max_epochs)
 
             # test
-            #print "testing iteration", i
+            #print("testing iteration", i)
             test_ds = SupervisedDataSet(indim, outdim)
             test_ds.setField("input"  , inp[test_idxs])
             test_ds.setField("target" , tar[test_idxs])
@@ -373,7 +373,7 @@ def testOnSequenceData(module, dataset):
     for j in xrange(len(output)):
         # sum up the output values of one sequence
         summed_output += output[j]
-#            print j, output[j], " --> ", summed_output
+#            print(j, output[j], " --> ", summed_output)
         # if we reached the end of the sequence
         if j in ends:
             # convert summed_output and target to class labels
@@ -383,13 +383,13 @@ def testOnSequenceData(module, dataset):
             # reset the summed_output to zeros
             summed_output = zeros(dataset.outdim)
 
-    ##print format % tuple(class_output)
-    ##print format % tuple(class_target)
+    ##print(format % tuple(class_output))
+    ##print(format % tuple(class_target))
 
     class_output = array(class_output)
     class_target = array(class_target)
-#    print class_target
-#    print class_output
+#    print(class_target)
+#    print(class_output)
     return Validator.classificationPerformance(class_output, class_target)
 
 

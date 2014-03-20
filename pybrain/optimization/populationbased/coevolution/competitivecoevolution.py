@@ -1,6 +1,6 @@
 __author__ = 'Tom Schaul, tom@idsia.ch'
 
-from coevolution import Coevolution
+from pybrain.optimization.coevolution.coevolution import Coevolution
 
 
 class CompetitiveCoevolution(Coevolution):
@@ -118,8 +118,8 @@ if __name__ == '__main__':
     b(4, 5)
     b(4, 7)
     b(8, 4)
-    print C.pop
-    print C.parasitePop
-    print '          ', fListToString(C._competitiveSharedFitness(C.pop, C.parasitePop), 2)
-    print 'should be:', fListToString([0.83, 0.00, 1.33, 0.83], 2)
+    print(C.pop)
+    print(C.parasitePop)
+    print('          ', fListToString(C._competitiveSharedFitness(C.pop, C.parasitePop), 2))
+    print('should be:', fListToString([0.83, 0.00, 1.33, 0.83], 2))
 

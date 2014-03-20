@@ -1,9 +1,9 @@
 __author__ = 'Tom Schaul, tom@idsia.ch'
 
 from pybrain.structure.parametercontainer import ParameterContainer
-from connection import Connection
-from full import FullConnection
-from subsampling import SubsamplingConnection
+from pybrain.structure.connections.connection import Connection
+from pybrain.structure.connections.full import FullConnection
+from pybrain.structure.connections.subsampling import SubsamplingConnection
 
 
 class OwnershipViolation(Exception):

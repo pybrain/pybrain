@@ -20,7 +20,7 @@ class SimpleraceEnvironment(Environment):
         self.theSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.theSocket.connect((host, port))
         self.step = 0
-        print "Connected to a simplerace server"
+        print("Connected to a simplerace server")
         self.reset()
         self.serverIsReady = False
 
@@ -52,20 +52,20 @@ class SimpleraceEnvironment(Environment):
             else:
                 command = 4
         if self.waitOne:
-            print 'Waiting one step'
+            print('Waiting one step')
             self.waitOne = False
         elif self.serverIsReady:
             self.theSocket.send (str(command) + "\n")
         else:
-            print "not sending"
+            print("not sending")
         # get and process the answer
         data = ""
         while len (data) < 2:
             data = self.theSocket.recv(1000)
-        #print "received", data
+        #print("received", data)
         inputs = string.split(str(data), " ")
         if (inputs[0][:5] == "reset"):
-            print "Should we reset the scores here?"
+            print("Should we reset the scores here?")
             self.reset ()
             self.serverIsReady = True
             self.waitOne = True
@@ -79,7 +79,7 @@ class SimpleraceEnvironment(Environment):
                 if (currentWp[0] != self.lastStepCurrentWp[0]):
                     # check that we don't have a server side change of episode
                     if (currentWp[0] != self.lastStepNextWp[0]):
-                        print "%.3f   %.3f   %.3f   %.3f   " % (currentWp[0], currentWp[1], self.lastStepNextWp[0], self.lastStepNextWp[1])
+                        print("%.3f   %.3f   %.3f   %.3f   " % (currentWp[0], currentWp[1], self.lastStepNextWp[0], self.lastStepNextWp[1]))
                         raise Exception("Unexpected episode change")
                     else:
                         # all is fine, increase score. but for who?
@@ -93,9 +93,9 @@ class SimpleraceEnvironment(Environment):
             self.lastStepCurrentWp = currentWp
             self.step += 1
         elif (len (inputs[0]) < 2):
-            print "impossible!"
+            print("impossible!")
         else:
-            print "incomprehensible and thus roundly ignored", data
+            print("incomprehensible and thus roundly ignored", data)
 
     def reset(self):
         self.step = 0

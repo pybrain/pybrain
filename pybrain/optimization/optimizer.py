@@ -292,7 +292,7 @@ class BlackBoxOptimizer(DirectSearchLearner):
     def _notify(self):
         """ Provide some feedback during the run. """
         if self.verbose:
-            print 'Step:', self.numLearningSteps, 'best:', self.bestEvaluation
+            print('Step:', self.numLearningSteps, 'best:', self.bestEvaluation)
         if self.listener is not None:
             self.listener(self.bestEvaluable, self.bestEvaluation)
         

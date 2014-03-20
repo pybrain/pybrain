@@ -3,7 +3,7 @@ __author__ = 'Michael Isik'
 
 from numpy import Infinity
 
-from trainer import Trainer
+from pybrain.supervised.trainers.trainer import Trainer
 from pybrain.supervised.evolino.population import EvolinoPopulation
 from pybrain.supervised.evolino.individual import EvolinoSubIndividual
 from pybrain.supervised.evolino.filter import EvolinoEvaluation, EvolinoSelection, EvolinoReproduction, EvolinoBurstMutation
@@ -121,7 +121,7 @@ class EvolinoTrainer(Trainer):
         self.totalepochs += 1
 
         if self.totalepochs - self._max_fitness_epoch >= self.nBurstMutationEpochs:
-            if self.verbosity: print "RUNNING BURST MUTATION"
+            if self.verbosity: print("RUNNING BURST MUTATION")
             self.burstMutate()
             self._max_fitness_epoch = self.totalepochs
 
@@ -130,11 +130,11 @@ class EvolinoTrainer(Trainer):
             filter.apply(self._population)
 
         if self._max_fitness < self.evaluation.max_fitness:
-            if self.verbosity: print "GAINED FITNESS: ", self._max_fitness, " -->" , self.evaluation.max_fitness, "\n"
+            if self.verbosity: print("GAINED FITNESS: ", self._max_fitness, " -->" , self.evaluation.max_fitness, "\n")
             self._max_fitness = self.evaluation.max_fitness
             self._max_fitness_epoch = self.totalepochs
         else:
-            if self.verbosity: print "DIDN'T GAIN FITNESS:", "best =", self._max_fitness, "    current-best = ", self.evaluation.max_fitness, "\n"
+            if self.verbosity: print("DIDN'T GAIN FITNESS:", "best =", self._max_fitness, "    current-best = ", self.evaluation.max_fitness, "\n")
 
     def burstMutate(self):
         self.burstMutation.apply(self._population)

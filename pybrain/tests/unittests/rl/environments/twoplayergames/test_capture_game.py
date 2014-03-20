@@ -3,7 +3,7 @@
 Initialize a capturegame
     >>> from pybrain.rl.environments.twoplayergames import CaptureGame
     >>> c = CaptureGame(5)
-    >>> print c
+    >>> print(c)
      . . . . .
      . . . . .
      . . . . .
@@ -34,7 +34,7 @@ White wins.
     -1
 
 Check if all the values are right:
-    >>> print c
+    >>> print(c)
      x X O . .
      X X O . .
      O O . . .

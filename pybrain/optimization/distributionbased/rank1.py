@@ -94,9 +94,9 @@ class Rank1NES(DistributionBasedOptimizer):
         """ Provide some feedback during the run. """
         if self.verbose:
             if self.numEvaluations % self.verboseGaps == 0:
-                print 'Step:', self.numLearningSteps, 'best:', self.bestEvaluation,
-                print 'logVar', round(self._logDetA, 3), 
-                print 'log|vector|', round(log(dot(self._principalVector, self._principalVector))/2, 3)
+                print('Step:', self.numLearningSteps, 'best:', self.bestEvaluation,
+                    'logVar', round(self._logDetA, 3),
+                    'log|vector|', round(log(dot(self._principalVector, self._principalVector))/2, 3))
                   
         if self.listener is not None:
             self.listener(self.bestEvaluable, self.bestEvaluation)

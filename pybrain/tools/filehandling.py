@@ -46,7 +46,7 @@ def pickleDumpDict(name, d):
         f.close()
         return True
     except Exception, e:
-        print 'Error writing into', name, ':', str(e)
+        print('Error writing into', name, ':', str(e))
         return False
 
 
@@ -57,20 +57,20 @@ def pickleReadDict(name):
         val = pickle.load(f)
         f.close()
     except Exception, e:
-        print 'Nothing read from', name, ':', str(e)
+        print('Nothing read from', name, ':', str(e))
         val = {}
     return val
 
 
 def addToDictFile(name, key, data, verbose=False):
     if verbose:
-        print '.',
+        print('.',)
     d = pickleReadDict(name)
     if key not in d:
         d[key] = []
     d[key].append(data)
     pickleDumpDict(name, d)
     if verbose:
-        print ':'
+        print(':')
 
 

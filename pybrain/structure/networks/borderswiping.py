@@ -2,7 +2,7 @@ __author__ = 'Tom Schaul, tom@idsia.ch'
 
 from scipy import zeros
 
-from swiping import SwipingNetwork
+from pybrain.structure.networks.swiping import SwipingNetwork
 from pybrain.structure.modules import BiasUnit
 from pybrain.structure.connections.shared import MotherConnection, SharedFullConnection
 from pybrain.utilities import iterCombinations, tupleRemoveItem, reachable, decrementAny

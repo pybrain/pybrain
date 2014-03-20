@@ -1,6 +1,6 @@
 __author__ = 'Tom Schaul, tom@idsia.ch'
 
-from neuronlayer import NeuronLayer
+from pybrain.structure.modules.neuronlayer import NeuronLayer
 
 class ReluLayer(NeuronLayer):
     """ Layer of rectified linear units (relu). """

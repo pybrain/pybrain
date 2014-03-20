@@ -1,1 +1,1 @@
-from structure.__init__ import *
+from pybrain.structure.__init__ import *

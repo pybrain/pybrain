@@ -12,7 +12,6 @@ import operator
 from itertools import count
 from math import sqrt
 from random import random, choice
-from string import split
 
 from scipy import where, array, exp, zeros, size, mat, median
 
@@ -40,7 +39,7 @@ def drawIndex(probs, tolerant=False):
         if tolerant:
             probs /= sum(probs)
         else:
-            print probs, 1 - sum(probs)
+            print(probs, 1 - sum(probs))
             raise ValueError()
     r = random()
     s = 0
@@ -99,7 +98,7 @@ def setAllArgs(obj, argdict):
             if xmlstore:
                 obj.argdict[n] = argdict[n]
         else:
-            print 'Warning: parameter name', n, 'not found!'
+            print('Warning: parameter name', n, 'not found!')
             if xmlstore:
                 if not hasattr(obj, '_unknown_argdict'):
                     obj._unknown_argdict = {}
@@ -225,7 +224,7 @@ class Named(XMLBuildable):
 
     def _generateName(self):
         """Return a unique name for this object."""
-        return "%s-%i" % (self.__class__.__name__, self._nameIds.next())
+        return "%s-%i" % (self.__class__.__name__, next(self._nameIds))
 
     def __repr__(self):
         """ The default representation of a named object is its name. """
@@ -254,7 +253,7 @@ def confidenceIntervalSize(stdev, nbsamples):
 
 def trace(func):
     def inner(*args, **kwargs):
-        print "%s: %s, %s" % (func.__name__, args, kwargs)
+        print("%s: %s, %s" % (func.__name__, args, kwargs))
         return func(*args, **kwargs)
     return inner
 
@@ -309,7 +308,7 @@ def storeCallResults(obj, verbose=False):
         result = oldcall(*args, **kwargs)
         results.append(result)
         if verbose:
-            print result
+            print(result)
         return result
     obj.__class__.__call__ = newcall
     return results
@@ -393,7 +392,7 @@ def n_to_one(arr):
 def canonicClassString(x):
     """ the __class__ attribute changed from old-style to new-style classes... """
     if isinstance(x, object):
-        return split(repr(x.__class__), "'")[1]
+        return repr(x.__class__).split("'")[1]
     else:
         return repr(x.__class__)
 

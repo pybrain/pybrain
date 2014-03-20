@@ -1,6 +1,6 @@
 __author__ = 'Tom Schaul, tom@idsia.ch'
 
-from module import Module
+from pybrain.structure.modules.module import Module
 
 
 class NeuronLayer(Module):

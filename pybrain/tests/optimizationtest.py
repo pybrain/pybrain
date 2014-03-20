@@ -220,8 +220,8 @@ def testOnEvolvable(algo):
 def testAll(tests, allalgos, tolerant=True):
     countgood = 0
     for i, algo in enumerate(sorted(allalgos)):
-        print "%d, %s:" % (i + 1, algo.__name__)
-        print ' ' * int(log10(i + 1) + 2),
+        print("%d, %s:" % (i + 1, algo.__name__))
+        print(' ' * int(log10(i + 1) + 2),)
         good = True
         messages = []
         for t in tests:
@@ -233,21 +233,21 @@ def testAll(tests, allalgos, tolerant=True):
                 res = e
 
             if res is True:
-                print '.',
+                print('.',)
             else:
                 good = False
                 messages.append(res)
-                print 'F',
+                print('F',)
         if good:
             countgood += 1
-            print '--- OK.'
+            print('--- OK.')
         else:
-            print '--- NOT OK.'
+            print('--- NOT OK.')
             for m in messages:
                 if m is not None:
-                    print ' ' * int(log10(i + 1) + 2), '->', m
+                    print(' ' * int(log10(i + 1) + 2), '->', m)
     print
-    print 'Summary:', countgood, '/', len(allalgos), 'of test were passed.'
+    print('Summary:', countgood, '/', len(allalgos), 'of test were passed.')
 
 
 
@@ -260,9 +260,9 @@ if __name__ == '__main__':
                                  ),
                       globals().values())
 
-    print 'Optimization algorithms to be tested:', len(allalgos)
+    print('Optimization algorithms to be tested:', len(allalgos))
     print
-    print 'Note: this collection of tests may take quite some time.'
+    print('Note: this collection of tests may take quite some time.')
     print
 
     tests = [testInterface,

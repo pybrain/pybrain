@@ -67,7 +67,7 @@ class DataSet(Serializable):
             '1d': self._convertArray1d,
             '2d': self._convertArray2d,
             'list': self._convertList,
-            'none': lambda(x):x
+            'none': lambda x:x
         }
         try:
             self._convert = switch[vf]

@@ -44,7 +44,7 @@ class MountainCar(EpisodicTask):
         self.state = self.GetInitialState()
     
     def getObservation(self):    
-        #print array([self.state[0], self.state[1] * 100, 1])
+        #print(array([self.state[0], self.state[1] * 100, 1]))
         return array([self.state[0], self.state[1] * 100, 1])
         
     def performAction(self, action):
@@ -103,8 +103,8 @@ class MountainCar(EpisodicTask):
         # acti: is the force to be applied to the car
         # x: is the vector containning the position and speed of the car
         # xp: is the vector containing the new position and velocity of the car
-        #print 'action',a
-        #print 'state',s
+        #print('action',a)
+        #print('state',s)
         force = self.action_list[a]
 
         self.steps = self.steps + 1

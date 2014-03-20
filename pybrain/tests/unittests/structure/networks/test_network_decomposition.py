@@ -5,7 +5,7 @@ Build a decomposable network
     >>> n = buildDecomposableNetwork()
 
 Check if it was built correctly
-    >>> print n.paramdim
+    >>> print(n.paramdim)
     12
     >>> tmp = n.getDecomposition()
     >>> tmp[2]

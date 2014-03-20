@@ -42,11 +42,11 @@ class ModuleDecidingPlayer(RandomCapturePlayer):
     def _legalizeIt(self, a):
         """ draw index from an array of values, filtering out illegal moves. """
         if not min(a) >= 0:
-            print a
-            print min(a)
-            print self.module.params
-            print self.module.inputbuffer
-            print self.module.outputbuffer
+            print(a)
+            print(min(a))
+            print(self.module.params)
+            print(self.module.inputbuffer)
+            print(self.module.outputbuffer)
             raise Exception('Non-positive value in array?')
         legals = self.game.getLegals(self.color)
         vals = ones(len(a))*(-100)*(1+self.temperature)

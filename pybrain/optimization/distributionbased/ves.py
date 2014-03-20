@@ -158,15 +158,15 @@ class VanillaGradientEvolutionStrategies(DistributionBasedOptimizer):
             self.sigma = dot(self.factorSigma.T, self.factorSigma)
 
         except ValueError:
-            print 'Numerical Instability. Stopping.'
+            print('Numerical Instability. Stopping.')
             self.maxLearningSteps = self.numLearningSteps
 
         if self._hasConverged():
-            print 'Premature convergence. Stopping.'
+            print('Premature convergence. Stopping.')
             self.maxLearningSteps = self.numLearningSteps
 
         if self.verbose:
-            print 'Evals:', self.numEvaluations,
+            print('Evals:', self.numEvaluations,)
 
         self.allCenters.append(self.x.copy())
         self.allFactorSigmas.append(self.factorSigma.copy())

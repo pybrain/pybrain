@@ -4,7 +4,7 @@ __author__ = 'Thomas Rueckstiess, ruecksti@in.tum.de'
 from scipy import ravel, r_
 from random import sample
 
-from supervised import SupervisedDataSet
+from pybrain.datasets.supervised import SupervisedDataSet
 
 
 class EmptySequenceError(Exception): pass

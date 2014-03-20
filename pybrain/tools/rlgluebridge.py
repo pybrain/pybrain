@@ -79,7 +79,7 @@ class RlglueAgentAdapter(object):
                           framework
         """
         if not issubclass(klass, LearningAgent):
-            raise ValueError, "Supply a LearningAgent as first argument"
+            raise ValueError("Supply a LearningAgent as first argument")
 
         self.agent = klass(*args, **kwargs)
 
@@ -153,7 +153,7 @@ class RlglueAgentAdapter(object):
     def agent_message(self, message):
         # Originally thought to enable dynamic methods for agents, but this
         # does not make a lot of sense in a dynamic language (and in OO?)
-        print "Message:", message
+        print("Message:", message)
 
     def _getAction(self):
         """

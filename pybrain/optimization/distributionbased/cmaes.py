@@ -107,13 +107,13 @@ class CMAES(ContinuousOptimizer):
         if arfitness[0] == arfitness[-1] or (abs(arfitness[0] - arfitness[-1]) /
                                              (abs(arfitness[0]) + abs(arfitness[-1]))) <= self.stopPrecision:
             if self.verbose:
-                print "Converged."
+                print("Converged.")
             self.maxLearningSteps = self.numLearningSteps
 
         # or diverged, unfortunately
         if min(Ev) > 1e5:
             if self.verbose:
-                print "Diverged."
+                print("Diverged.")
             self.maxLearningSteps = self.numLearningSteps
 
     @property

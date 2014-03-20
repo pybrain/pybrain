@@ -40,7 +40,7 @@ def jacardCoefficient(a, b):
     1 or 0.
     """
     if a.shape != b.shape:
-        raise ValueError, "Arrays must be of same shape"
+        raise ValueError("Arrays must be of same shape")
 
     length = a.shape[0]
     a = a.astype(bool)
@@ -88,9 +88,9 @@ class MinHash(object):
 
     def _checkItem(self, item):
         if item.ndim != 1:
-            raise ValueError, "Only one dimensional arrays are supported"
+            raise ValueError("Only one dimensional arrays are supported")
         if item.shape != (self.dim,):
-            raise ValueError, "Array has wrong size"
+            raise ValueError("Array has wrong size")
 
     def _hash(self, item):
         """Return a hash for item based on the internal permutations.
