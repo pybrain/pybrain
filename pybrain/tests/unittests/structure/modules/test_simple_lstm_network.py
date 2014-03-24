@@ -3,7 +3,7 @@
 Build a simple lstm network with peepholes:
 
     >>> n = buildSimpleLSTMNetwork(True)
-    >>> print n
+    >>> print(n)
     simpleLstmNet
        Modules:
         [<BiasUnit 'bias'>, <LinearLayer 'i'>, <LSTMLayer 'lstm'>, <LinearLayer 'o'>]

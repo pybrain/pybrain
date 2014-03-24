@@ -262,7 +262,7 @@ class GridSearch(svm_model):
         x = dbarr[:, 0]
         dimy = len(x[x == x[0]])
         dimx = x.size / dimy
-        print 'plotting: ', dimx, dimy
+        print('plotting: ', dimx, dimy)
         x = x.reshape(dimx, dimy)
         y = dbarr[:, 1]
         y = y.reshape(dimx, dimy)

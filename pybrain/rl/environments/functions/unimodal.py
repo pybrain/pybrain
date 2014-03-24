@@ -5,7 +5,7 @@ __author__ = 'Tom Schaul, tom@idsia.ch'
 from scipy import ones, sqrt, dot, sign, randn, power, rand, floor, array
 from scipy.linalg import norm, orth
 
-from function import FunctionEnvironment
+from pybrain.rl.environments.functions.function import FunctionEnvironment
 
 
 class SphereFunction(FunctionEnvironment):

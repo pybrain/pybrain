@@ -38,14 +38,14 @@ class UDPServer(object):
         self.cIP = []
         self.addrList = []
         self.UDPOutSockList = []
-        print "listening on port", self.inPort
+        print("listening on port", self.inPort)
 
     # Adding a client to the list
     def addClient(self, cIP):
         self.cIP.append(cIP)
         self.addrList.append((cIP, self.outPort))
         self.UDPOutSockList.append(socket.socket(socket.AF_INET, socket.SOCK_DGRAM))
-        print "client", cIP, "connected"
+        print("client", cIP, "connected")
         self.clients += 1
 
     # Listen for clients
@@ -71,12 +71,12 @@ class UDPServer(object):
                 if newClient:
                     self.addClient(cIP)
             except:
-                print "All clients disconnected"
+                print("All clients disconnected")
                 self.clients = 0
                 self.cIP = []
                 self.addrList = []
                 self.UDPOutSockList = []
-                print "listening on port", self.inPort
+                print("listening on port", self.inPort)
 
 
     # Sending the actual data too all clients
@@ -115,11 +115,11 @@ class UDPClient(object):
                 arrayList = eval(data)
                 return arrayList
             except:
-                print "Unsupported data format received from", self.outAddr, "!"
+                print("Unsupported data format received from", self.outAddr, "!")
                 return None
 
         except:
-            print "Server has quit!"
+            print("Server has quit!")
             return None
             # Try to recreate sockets
             #self.createSockets()

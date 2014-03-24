@@ -74,7 +74,7 @@ def predictOutcome(net, input, output):
     if epsilonCheck(res - output):
         return True
     else:
-        print 'expected:', round(output, 7), '- got:', round(res, 7)
+        print('expected:', round(output, 7), '- got:', round(res, 7))
         return False
 
 

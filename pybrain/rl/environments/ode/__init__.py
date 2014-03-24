@@ -3,7 +3,7 @@ try:
 except ImportError:
     raise ImportError('This environment requires the py-ode package to be installed on your system.')
 
-from environment import ODEEnvironment
-from sensors import *
-from actuators import *
-from instances import *
+from pybrain.rl.environments.ode.environment import ODEEnvironment
+from pybrain.rl.environments.ode.sensors import *
+from pybrain.rl.environments.ode.actuators import *
+from pybrain.rl.environments.ode.instances import *

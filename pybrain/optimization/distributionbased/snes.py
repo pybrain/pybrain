@@ -112,5 +112,5 @@ class SNES(DistributionBasedOptimizer):
         
 if __name__ == "__main__":
     from pybrain.rl.environments.functions.unimodal import ElliFunction
-    print SNES(ElliFunction(100), ones(100), verbose=True).learn()
+    print(SNES(ElliFunction(100), ones(100), verbose=True).learn())
     

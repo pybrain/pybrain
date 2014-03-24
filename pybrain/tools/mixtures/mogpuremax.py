@@ -103,7 +103,7 @@ if __name__ == '__main__':
         if abs(n) > 5.0: n = 0.0
         y = (20.0 + n ** 2 - 10.0 * cos(2.0 * 3.1416 * n)) / 55.0 + random.normal(0, 0.2) #one dimensional rastrigin
         m.learn(x, y)
-    print m.alpha
-    print m.mue
-    print m.sigma
+    print(m.alpha)
+    print(m.mue)
+    print(m.sigma)
 

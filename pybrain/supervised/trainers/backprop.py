@@ -3,7 +3,7 @@ __author__ = 'Daan Wierstra and Tom Schaul'
 from scipy import dot, argmax
 from random import shuffle
 from math import isnan
-from trainer import Trainer
+from pybrain.supervised.trainers.trainer import Trainer
 from pybrain.utilities import fListToString
 from pybrain.auxiliary import GradientDescent
 
@@ -67,7 +67,7 @@ class BackpropTrainer(Trainer):
                 self.module.resetDerivatives()
 
         if self.verbose:
-            print "Total error:", errors / ponderation
+            print("Total error:", errors / ponderation)
         if self.batchlearning:
             self.module._setParameters(self.descent(self.module.derivs))
         self.epoch += 1
@@ -127,7 +127,7 @@ class BackpropTrainer(Trainer):
             r = zip(analyticalDerivs, numericalDerivs)
             res.append(r)
             if not silent:
-                print r
+                print(r)
         return res
 
     def testOnData(self, dataset=None, verbose=False):
@@ -139,7 +139,7 @@ class BackpropTrainer(Trainer):
             dataset = self.ds
         dataset.reset()
         if verbose:
-            print '\nTesting on data:'
+            print('\nTesting on data:')
         errors = []
         importances = []
         ponderatedErrors = []
@@ -150,13 +150,13 @@ class BackpropTrainer(Trainer):
             errors.append(e)
             ponderatedErrors.append(e / i)
         if verbose:
-            print 'All errors:', ponderatedErrors
+            print('All errors:', ponderatedErrors)
         assert sum(importances) > 0
         avgErr = sum(errors) / sum(importances)
         if verbose:
-            print 'Average error:', avgErr
-            print ('Max error:', max(ponderatedErrors), 'Median error:',
-                   sorted(ponderatedErrors)[len(errors) / 2])
+            print('Average error:', avgErr)
+            print(('Max error:', max(ponderatedErrors), 'Median error:',
+                   sorted(ponderatedErrors)[len(errors) / 2]))
         return avgErr
 
     def testOnClassData(self, dataset=None, verbose=False,
@@ -252,6 +252,6 @@ class BackpropTrainer(Trainer):
         #self.trainingErrors.append(self.testOnData(trainingData))
         self.ds = dataset
         if verbose:
-            print 'train-errors:', fListToString(self.trainingErrors, 6)
-            print 'valid-errors:', fListToString(self.validationErrors, 6)
+            print('train-errors:', fListToString(self.trainingErrors, 6))
+            print('valid-errors:', fListToString(self.validationErrors, 6))
         return self.trainingErrors[:bestepoch], self.validationErrors[:1 + bestepoch]

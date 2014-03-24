@@ -166,7 +166,7 @@ class NNclassifier(NNtools):
     def __init__(self, DS, **kwargs):
         """ Initialize the classifier: the least we need is the dataset to be classified. All keywords given are set as member variables. """
         if not isinstance(DS, ClassificationDataSet):
-            raise TypeError, 'Need a ClassificationDataSet to do classification!'
+            raise TypeError('Need a ClassificationDataSet to do classification!')
         NNtools.__init__(self, DS, **kwargs)
         self.nClasses = self.DS.nClasses  # need this because targets may be altered later
         self.clsnames = None

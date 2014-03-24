@@ -70,7 +70,7 @@ class GridSearch2D:
                 perf = self._validate(params)
                 perfs[params] = perf
                 if self._verbosity > 0:
-                    print "validated:", params, " performance = ", perf
+                    print("validated:", params, " performance = ", perf)
 
             self._onStep()
 
@@ -99,7 +99,7 @@ class GridSearch2D:
             linspaces.append(
                 self._permuteSequence(
                     list(linspace(self._min_params[i], self._max_params[i], self._n_steps[i]))))
-#        print linspaces; exit(0)
+#        print(linspaces; exit(0))
 #        linspaces = array(linspaces,float)
         nr_c = len(linspaces[0])
         nr_g = len(linspaces[1])
@@ -196,7 +196,7 @@ class GridSearchDOE:
             center = grid[max_idx]
             if self._verbosity > 0:
                 print
-                print "Found maximum at:", center, "   performance = ", local_perf[max_idx]
+                print("Found maximum at:", center, "   performance = ", local_perf[max_idx])
                 print
 
         return center
@@ -207,7 +207,7 @@ class GridSearchDOE:
         """
         perf = self._validate(params)
         if self._verbosity > 0:
-            print "validated:", params, " performance = ", perf
+            print("validated:", params, " performance = ", perf)
         self._performances[tuple(params)] = perf
         return perf
 

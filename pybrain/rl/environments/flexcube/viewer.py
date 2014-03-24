@@ -73,7 +73,7 @@ class FlexCubeRenderer(object):
         image = Image.fromstring("RGB", (width, height), data)
         image = image.transpose(Image.FLIP_TOP_BOTTOM)
         image.save(filename, format)
-        print 'Saved image to ', filename
+        print('Saved image to ', filename)
         return image
 
     # the render method containing the Glut mainloop

@@ -43,7 +43,7 @@ What if we construct it in a different order?
 
 Is it the same ordering than our reference?
 
-    >>> print ord3
+    >>> print(ord3)
     [<LinearLayer 'l0'>, <LinearLayer 'l2'>, <LinearLayer 'l3'>, <LinearLayer 'l5'>, <LinearLayer 'l6'>, <LinearLayer 'l7'>, <LinearLayer 'l8'>, <LinearLayer 'l9'>, <LinearLayer 'l1'>, <LinearLayer 'l4'>]
 
 """

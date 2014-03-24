@@ -66,21 +66,21 @@ if __name__ == '__main__':
             return str(dict(self.__dict__))
 
     c1 = C(m=1)
-    print 'c1 =', c1
+    print('c1 =', c1)
 
     c2 = C(m=1, a=1, b=2)
-    print 'c2 =', c2
+    print('c2 =', c2)
 
     c3 = C(m=1, simple="hallo", a=11, b=22, c=55)
-    print 'c3 =', c3
+    print('c3 =', c3)
 
 
-    print "\nc3.b = ", c3.b
+    print("\nc3.b = ", c3.b)
 
     try:
         C() # will raise KeyError because mandatory keyword argument "m" is missing
     except KeyError, k:
-        print k
+        print(k)
 
 
 

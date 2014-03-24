@@ -56,7 +56,7 @@ class EvolinoNetwork(Module):
             full_inp = self._createFullInput(input[i], backprojection)
             self._activateNetwork(full_inp)
             raw_out = self._getRawOutput()
-#            print "RAWOUT: ", full_inp, " --> ", raw_out, self._getLastOutput()
+#            print("RAWOUT: ", full_inp, " --> ", raw_out, self._getLastOutput())
             raw_outputs.append(array(raw_out))
             self._setLastOutput(target[i])
 
@@ -68,7 +68,7 @@ class EvolinoNetwork(Module):
         assert len(input) == self._network.indim
         output = self._network.activate(input)
         self.offset = self._network.offset
-#        print "INNNNNNN=", input, "   OUTPP=", output
+#        print("INNNNNNN=", input, "   OUTPP=", output)
         return output
 
     def activate(self, input):
@@ -78,7 +78,7 @@ class EvolinoNetwork(Module):
         backprojection *= self.backprojectionFactor
         full_inp = self._createFullInput(input, backprojection)
         out = self._activateNetwork(full_inp)
-#        print "AAAAAACT: ", full_inp, "-->", out
+#        print("AAAAAACT: ", full_inp, "-->", out)
 
 #        self._setLastOutput(last_out*5)
 
@@ -119,8 +119,8 @@ class EvolinoNetwork(Module):
 #            for i in xrange(washout_steps, len(input)):
             for inp in input[washout_steps:]:
                 out = self.activate(inp)
-#                    print out
-#                print inp
+#                    print(out)
+#                print(inp)
                 inputs.append(inp)
                 outputs.append(out)
 
@@ -129,7 +129,7 @@ class EvolinoNetwork(Module):
                 collected_input = append(collected_input, inputs, axis=0)
             else:
                 collected_input = array(inputs)
-#            print collected_input; exit()
+#            print(collected_input; exit())
 
             if collected_output is not None:
                 collected_output = append(collected_output, outputs, axis=0)
@@ -500,7 +500,7 @@ class NetworkWrapper(object):
             layers = []
             for c in self.getConnections():
                 if c.outmod is outlayer:
-#                    print c.inmod
+#                    print(c.inmod)
                     layers.append(c.inmod)
 
             assert len(layers) == 1

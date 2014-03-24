@@ -129,7 +129,7 @@ class FEM(DistributionBasedOptimizer):
             elif pdf < 1e-40:
                 pdf = 1e-40
             if isnan(pdf):
-                print 'NaN!'
+                print('NaN!')
                 pdf = 0.
             densities[c] = self.alphas[c] * pdf
         densities /= sum(densities)
@@ -189,7 +189,7 @@ class FEM(DistributionBasedOptimizer):
             if self.alphas[c] < self.minimumCenterWeight:
                 # center-splitting
                 if self.verbose:
-                    print 'Split!'
+                    print('Split!')
                 bestCenter = argmax(self.alphas)
                 totalWeight = self.alphas[c] + self.alphas[bestCenter]
                 self.alphas[c] = totalWeight / 2
@@ -219,8 +219,8 @@ class FEM(DistributionBasedOptimizer):
         self.shapingFunction.setParameter(possible[argmax(matchValues)])
 
         if len(self.allsamples) % 100 == 0:
-            print possible[argmax(matchValues)]
-            print fListToString(matchValues, 3)
+            print(possible[argmax(matchValues)])
+            print(fListToString(matchValues, 3))
 
     def _learnStep(self):
         k = len(self.allsamples) % self.windowSize
@@ -230,7 +230,7 @@ class FEM(DistributionBasedOptimizer):
         if len(self.allsamples) < self.windowSize:
             return
         if self.verbose and len(self.allsamples) % 100 == 0:
-            print len(self.allsamples), min(self.fitnesses), max(self.fitnesses)#, self.alphas
+            print(len(self.allsamples), min(self.fitnesses), max(self.fitnesses)#, self.alphas)
 
         updateSize = self._computeUpdateSize(self._computeDensities(sample), k)
         self.allUpdateSizes.append(deepcopy(updateSize))
@@ -261,8 +261,8 @@ class FEM(DistributionBasedOptimizer):
             index = int(self.windowSize * 0.8)
             if sortedLast[index] >= sortedSecond[index]:
                 self.sigmas = [1.2 * sigma for sigma in self.sigmas]
-                #print "+"
+                #print("+")
             else:
                 self.sigmas = [0.5 * sigma for sigma in self.sigmas]
-                #print "-"
+                #print("-")
 

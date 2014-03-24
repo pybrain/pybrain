@@ -65,7 +65,7 @@ class ParticleSwarmOptimizer(ContinuousOptimizer):
             maxs = scipy.array([max_ for min_, max_ in self.boundaries])
 
         self.particles = []
-        for _ in xrange(self.size):
+        for _ in range(self.size):
             startingPosition = scipy.random.random(self.dim)
             startingPosition *= (maxs - mins)
             startingPosition += mins

@@ -99,12 +99,12 @@ def make_test_suite():
         untests = [(m, md) for m, md in modules if md]
         modules = [m for m, md in modules if not md]
     
-        # Print out modules that are missing dependencies
+        # print(out modules that are missing dependencies)
         for module, miss_dep in untests:    # Mr Dep is not around, though
             logging.warning('Module %s is missing dependencies: %s' % (
                             module.__name__, ', '.join(miss_dep)))
     
-        # Print out a list of tests that are found
+        # print(out a list of tests that are found)
         for m in modules:
             logging.info('Tests found: %s' % m.__name__)
     

@@ -163,21 +163,21 @@ class XMLstruct:
         """parse XML structure recursively and append to the output fileID,
         increasing the offset (tabs) while descending into the tree"""
         if not self.tag.has_key('myName'):
-            print "Error parsing XML structure: Tag name missing!"
+            print("Error parsing XML structure: Tag name missing!")
             sys.exit(1)
         # find number of attributes (disregarding special keys)
         nAttr = self.nbAttributes()
         endmark = '/>'
         if self.hasSubtag():
             endmark = '>'
-        # print start tag, with attributes if present
+        # print(start tag, with attributes if present)
         if nAttr > 0:
             file.write(self._tab * depth + "<" + self.tag['myName'] + " " + \
                 ' '.join([name + '="' + str(val) + '"' for name, val in self.tag.iteritems() \
                 if name != 'myName' and name != 'Icontain']) + endmark + '\n')
         else:
             file.write(self._tab * depth + "<" + self.tag['myName'] + ">\n")
-        # print enclosed tags, if any
+        # print(enclosed tags, if any)
         if self.hasSubtag():
             for subtag in self.tag['Icontain']:
                 subtag.write(file, depth=depth + 1)

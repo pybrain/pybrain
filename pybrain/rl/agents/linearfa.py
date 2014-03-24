@@ -75,7 +75,7 @@ class LinearFA_Agent(LoggingAgent):
         if not self.learning:
             return
         if not self.learner.batchMode:
-            print 'Learning is done online, and already finished.'
+            print('Learning is done online, and already finished.')
             return
         for seq in self.history:
             for obs, action, reward in seq:

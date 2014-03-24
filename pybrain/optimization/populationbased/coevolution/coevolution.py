@@ -90,10 +90,10 @@ class Coevolution(Named):
         self.hallOfFitnesses.append(bestFits)
 
         if self.verbose:
-            print 'Generation', self.generation
-            print '        relat. fits:', fListToString(sorted(fitnesses), 4)
+            print('Generation', self.generation)
+            print('        relat. fits:', fListToString(sorted(fitnesses), 4))
             if len(best.params) < 20:
-                print '        best params:', fListToString(best.params, 4)
+                print('        best params:', fListToString(best.params, 4))
 
         self.pop = self._selectAndReproduce(self.pop, fitnesses)
 
@@ -287,5 +287,5 @@ if __name__ == '__main__':
     x.allOpponents[3] = [2, 4]
     x.allOpponents[4] = [3]
     x.allOpponents[5] = [2]
-    print x._sharedSampling(4, [1, 2, 3, 4, 5], [1, 2, 3, 4, 6, 7, 8, 9])
-    print 'should be', [4, 1, 2, 5]
+    print(x._sharedSampling(4, [1, 2, 3, 4, 5], [1, 2, 3, 4, 6, 7, 8, 9]))
+    print('should be', [4, 1, 2, 5])

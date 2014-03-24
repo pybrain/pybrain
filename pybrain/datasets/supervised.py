@@ -3,7 +3,7 @@ __author__ = 'Thomas Rueckstiess, ruecksti@in.tum.de'
 from random import sample
 from scipy import isscalar
 
-from dataset import DataSet
+from pybrain.datasets.dataset import DataSet
 from pybrain.utilities import fListToString
 
 
@@ -85,9 +85,9 @@ class SupervisedDataSet(DataSet):
             totalError += e
             ponderation += len(target)
             if verbose:
-                print     'out:    ', fListToString( list( res ) )
-                print     'correct:', fListToString( target )
-                print     'error: % .8f' % e
+                print(    'out:    ', fListToString( list( res ) ))
+                print(    'correct:', fListToString( target ))
+                print(    'error: % .8f' % e)
         return totalError, ponderation
 
     def evaluateModuleMSE(self, module, averageOver = 1, **args):

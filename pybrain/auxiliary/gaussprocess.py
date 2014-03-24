@@ -81,7 +81,7 @@ class GaussianProcess:
         self.trainx = dataset.getField('input')
         self.trainy = ravel(dataset.getField('target'))
         self.noise = array([0.001] * len(self.trainx))
-        # print self.trainx, self.trainy
+        # print(self.trainx, self.trainy)
         self.calculated = False
 
     def addDataset(self, dataset):
@@ -195,7 +195,7 @@ class GaussianProcess:
             m = floor(sqrt(len(self.pred_mean)))
             pcolor(self.pred_mean.reshape(m, m)[::-1, :])
 
-        else: print "plotting only supported for indim=1 or indim=2."
+        else: print("plotting only supported for indim=1 or indim=2.")
 
 
 if __name__ == '__main__':
@@ -224,7 +224,7 @@ if __name__ == '__main__':
 
     # you can also test the gp on single points, but this deletes the
     # original testing grid. it can be restored with a call to _buildGrid()
-    print gp.testOnArray(array([[0.4]]))
+    print(gp.testOnArray(array([[0.4]])))
 
 
     # --- example on how to use the GP in 2 dimensions

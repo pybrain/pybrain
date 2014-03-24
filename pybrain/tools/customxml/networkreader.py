@@ -89,8 +89,8 @@ class NetworkReader(XMLHandling):
         try:
             m = eval(mclass)(**argdict)
         except:
-            print 'Could not construct', mclass
-            print 'with arguments:', argdict
+            print('Could not construct', mclass)
+            print('with arguments:', argdict)
             return None
         m.name = node.getAttribute('name')
         self.readParams(node, m)

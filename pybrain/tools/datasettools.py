@@ -33,11 +33,11 @@ def convertSequenceToTimeWindows(DSseq, NewClass, winsize):
             tar_win = target[k - 1, :]
             DSwin.addSample(inp_win.flatten(), tar_win.flatten())
             nsamples += 1
-            ##print "added sample %d from sequence %d: %d - %d" %( nsamples, nseqs, k-winsize, k-1)
-    print "samples in original dataset: ", len(DSseq)
-    print "window size * nsamples = ", winsize * nsamples
-    print "total data points in original data: ", len(DSseq) * DSseq.indim
-    print "total data points in windowed dataset: ", len(DSwin) * DSwin.indim
+            ##print("added sample %d from sequence %d: %d - %d" %( nsamples, nseqs, k-winsize, k-1))
+    print("samples in original dataset: ", len(DSseq))
+    print("window size * nsamples = ", winsize * nsamples)
+    print("total data points in original data: ", len(DSseq) * DSseq.indim)
+    print("total data points in windowed dataset: ", len(DSwin) * DSwin.indim)
     return DSwin
 
 def windowSequenceEval(DS, winsz, result):
@@ -62,15 +62,15 @@ def windowSequenceEval(DS, winsz, result):
                 wrong += 1.
                 y += [0., 0.]
             idx += 1
-            #print "winidx: ", idx
+            #print("winidx: ", idx)
             curr_x += winsz
             x.append(curr_x)
 
         seq_res.append(100. * correct / (correct + wrong))
-        print "sequence %d correct: %g12.2%%" % (i, seq_res[-1])
+        print("sequence %d correct: %g12.2%%" % (i, seq_res[-1]))
 
     seq_res = array(seq_res)
-    print "total fraction of correct sequences: ", 100. * float((seq_res >= 0.5).sum()) / seq_res.size
+    print("total fraction of correct sequences: ", 100. * float((seq_res >= 0.5).sum()) / seq_res.size)
 
 
 class DataSetNormalizer(object):
@@ -115,10 +115,10 @@ class DataSetNormalizer(object):
     def normalize(self, ds, field='input'):
         """ normalize dataset or vector wrt. to stored min and max """
         if self.dim <= 0:
-            raise IndexError, "No normalization parameters defined!"
+            raise IndexError("No normalization parameters defined!")
         dsdim = ds[field].shape[1]
         if self.dim != dsdim:
-            raise IndexError, "Dimension of normalization params does not match DataSet field!"
+            raise IndexError("Dimension of normalization params does not match DataSet field!")
         newfeat = ds[field]
         if self.meanstd:
             for i in range(dsdim):

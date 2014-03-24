@@ -1,3 +1,3 @@
-from trainer import Trainer
-from backprop import BackpropTrainer
-from rprop import RPropMinusTrainer
+from pybrain.supervised.trainers.trainer import Trainer
+from pybrain.supervised.trainers.backprop import BackpropTrainer
+from pybrain.supervised.trainers.rprop import RPropMinusTrainer

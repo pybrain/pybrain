@@ -73,13 +73,13 @@ def plotFitnessProgession(fitdict, batchsize=1, semilog=True,
 
         i += 1
         nbRuns = len(flist)
-        print name, nbRuns, 'runs',
+        print(name, nbRuns, 'runs',)
 
         if targetcutoff != None:
             if onlysuccessful:
                 # filter out unsuccessful runs
                 flist = filter(isSuccessful, flist)
-                print ',', len(flist), 'of which were successful.'
+                print(',', len(flist), 'of which were successful.')
             else:
                 print
             # cut off irrelevant part

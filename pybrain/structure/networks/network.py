@@ -181,7 +181,7 @@ class Network(Module, ParameterContainer):
         # Create a directed graph, including a counter of incoming connections.
         graph = {}
         for node in self.modules:
-            if not graph.has_key(node):
+            if node not in graph:
                 # Zero incoming connections.
                 graph[node] = [0]
         for c in chain(*self.connections.values()):
@@ -280,7 +280,7 @@ class Network(Module, ParameterContainer):
         try:
             from arac.pybrainbridge import _RecurrentNetwork, _FeedForwardNetwork #@UnresolvedImport
         except:
-            print "No fast networks available."
+            print("No fast networks available.")
             return None
 
         net = self.copy()
@@ -306,7 +306,7 @@ class Network(Module, ParameterContainer):
         try:
             cnet.sortModules()
         except ValueError:
-            print "Network cannot be converted."
+            print("Network cannot be converted.")
             return None
 
         cnet.owner = cnet

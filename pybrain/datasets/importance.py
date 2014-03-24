@@ -2,7 +2,7 @@ __author__ = 'Tom Schaul, tom@idsia.ch'
 
 from scipy import ones, dot
 
-from sequential import SequentialDataSet
+from pybrain.datasets.sequential import SequentialDataSet
 from pybrain.utilities import fListToString
 
 
@@ -40,9 +40,9 @@ class ImportanceDataSet(SequentialDataSet):
             totalError += e
             ponderation += sum(importance)
             if verbose:
-                print     'out:       ', fListToString(list(res))
-                print     'correct:   ', fListToString(target)
-                print     'importance:', fListToString(importance)
-                print     'error: % .8f' % e
+                print(    'out:       ', fListToString(list(res)))
+                print(    'correct:   ', fListToString(target))
+                print(    'importance:', fListToString(importance))
+                print(    'error: % .8f' % e)
         return totalError, ponderation
 

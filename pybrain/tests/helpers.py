@@ -41,7 +41,7 @@ def gradientCheck(module, tolerance=0.0001, dataset=None):
     """ check the gradient of a module with a randomly generated dataset,
     (and, in the case of a network, determine which modules contain incorrect derivatives). """
     if module.paramdim == 0:
-        print 'Module has no parameters'
+        print('Module has no parameters')
         return True
     if dataset:
         d = dataset
@@ -59,18 +59,18 @@ def gradientCheck(module, tolerance=0.0001, dataset=None):
                 precision[i] += abs((p[0] + p[1]) / (p[0] - p[1]))
     precision /= len(res)
     if max(precision) < tolerance:
-        print 'Perfect gradient'
+        print('Perfect gradient')
         return True
     else:
-        print 'Incorrect gradient', precision
+        print('Incorrect gradient', precision)
         if isinstance(module, Network):
             index = 0
             for m in module._containerIterator():
                 if max(precision[index:index + m.paramdim]) > tolerance:
-                    print 'Incorrect module:', m, res[-1][index:index + m.paramdim]
+                    print('Incorrect module:', m, res[-1][index:index + m.paramdim])
                 index += m.paramdim
         else:
-            print res
+            print(res)
         return False
 
 
@@ -78,13 +78,13 @@ def netCompare(net1, net2, forwardpasses=1, verbose=False):
     identical = True
     if str(net2) == str(net1):
         if verbose:
-            print 'Same representation'
+            print('Same representation')
     else:
         identical = False
         if verbose:
-            print net2
-            print '-' * 80
-            print net1
+            print(net2)
+            print('-' * 80)
+            print(net1)
 
     outN = zeros(net2.outdim)
     outEnd = zeros(net1.outdim)
@@ -97,21 +97,21 @@ def netCompare(net1, net2, forwardpasses=1, verbose=False):
 
     if sum(map(abs, outN - outEnd)) < 1e-9:
         if verbose:
-            print 'Same function'
+            print('Same function')
     else:
         identical = False
         if verbose:
-            print outN
-            print outEnd
+            print(outN)
+            print(outEnd)
 
     if net2.__class__ == net1.__class__:
         if verbose:
-            print 'Same class'
+            print('Same class')
     else:
         identical = False
         if verbose:
-            print net2.__class__
-            print net1.__class__
+            print(net2.__class__)
+            print(net1.__class__)
 
     return identical
 

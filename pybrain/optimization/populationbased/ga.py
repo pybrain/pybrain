@@ -5,7 +5,7 @@ from scipy import random as rd, array
 from random import choice, random, gauss, shuffle, sample
 from numpy import ndarray
 
-from evolution import Evolution
+from pybrain.optimization.populationbased.evolution import Evolution
 from pybrain.optimization.optimizer import ContinuousOptimizer
 
 

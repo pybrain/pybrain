@@ -5,7 +5,7 @@ Let's build a convolutional network designed for board games:
     >>> from pybrain.structure.networks.custom.convboard import ConvolutionalBoardNetwork
     >>> from scipy import array, ravel, var
     >>> N = ConvolutionalBoardNetwork(4, 3, 5)
-    >>> print N.paramdim
+    >>> print(N.paramdim)
     97
 
 This is what a typical input would look like (on a 4x4 board)
@@ -24,7 +24,7 @@ We let the network process the input:
 
 The input of the first features (e.g. white stone presence) is in the middle, like we set it:
 
-    >>> print inp[1:5,1:5]
+    >>> print(inp[1:5,1:5])
     [[ 0.  0.  0.  0.]
      [ 0.  0.  0.  0.]
      [ 0.  1.  0.  0.]

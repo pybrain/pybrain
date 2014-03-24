@@ -140,5 +140,5 @@ if __name__ == '__main__':
     dim = 10
     f = RosenbrockFunction(dim)
     l = XNES(f, -ones(dim))
-    print l.learn()
-    print 'Evaluations needed:', len(l._allEvaluations)
+    print(l.learn())
+    print('Evaluations needed:', len(l._allEvaluations))

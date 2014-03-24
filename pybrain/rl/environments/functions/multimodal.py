@@ -7,8 +7,8 @@ from scipy.linalg import orth
 from math import pi
 from random import shuffle
 
-from function import FunctionEnvironment
-from transformations import penalize, generateDiags
+from pybrain.rl.environments.functions.function import FunctionEnvironment
+from pybrain.rl.environments.functions.transformations import penalize, generateDiags
 
 
 class MultiModalFunction(FunctionEnvironment):
@@ -146,7 +146,7 @@ class GallagherGauss101MeFunction(MultiModalFunction):
 
     def __init__(self, *args, **kwargs):
         MultiModalFunction.__init__(self, *args, **kwargs)
-        print self.numPeaks, self.xdim
+        print(self.numPeaks, self.xdim)
         self._opts = [(rand(self.xdim) - 0.5) * 8]
         self._opts.extend([(rand(self.xdim) - 0.5) * 9.8 for _ in range(self.numPeaks-1)])
         alphas = [power(self.maxCond, 2 * i / float(self.numPeaks - 2)) for i in range(self.numPeaks - 1)]

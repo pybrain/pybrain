@@ -1,7 +1,7 @@
 __author__ = 'Tom Schaul, tom@idsia.ch'
 
 from pybrain.utilities import iterCombinations, Named
-from moduleslice import ModuleSlice
+from pybrain.structure.moduleslice import ModuleSlice
 
 
 class ModuleMesh(Named):
