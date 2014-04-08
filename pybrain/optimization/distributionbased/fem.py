@@ -230,7 +230,8 @@ class FEM(DistributionBasedOptimizer):
         if len(self.allsamples) < self.windowSize:
             return
         if self.verbose and len(self.allsamples) % 100 == 0:
-            print(len(self.allsamples), min(self.fitnesses), max(self.fitnesses)#, self.alphas)
+            print(len(self.allsamples), min(self.fitnesses), max(self.fitnesses))
+            # print(len(self.allsamples), min(self.fitnesses), max(self.fitnesses)#, self.alphas)
 
         updateSize = self._computeUpdateSize(self._computeDensities(sample), k)
         self.allUpdateSizes.append(deepcopy(updateSize))
