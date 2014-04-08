@@ -1,4 +1,4 @@
-from pybrain.rl.environments.mazes.tiger import TigerTask
+from pybrain.rl.environments.mazes.tasks.tiger import TigerTask
 from pybrain.rl.environments.mazes.maze import TrivialMaze, MazeTask
 from pybrain.rl.environments.mazes.cheesemaze import CheeseMaze
 from pybrain.rl.environments.mazes.tmaze import TMaze
