@@ -240,10 +240,15 @@ class DataSet(Serializable):
     def getField(self, label):
         """Return the entire field given by `label` as an array or list,
         depending on user settings."""
+        # Note: label_data should always be a np.array, so this will never
+        # actually clone a list (performances are O(1)).
+        label_data = self.data[label][:self.endmarker[label]]
+
+        # Convert to list if requested.
         if self.vectorformat == 'list':
-            return self.data[label][:self.endmarker[label]].tolist()
-        else:
-            return self.data[label][:self.endmarker[label]]
+            label_data = label_data.tolist()
+
+        return label_data
 
     def hasField(self, label):
         """Tell whether the field given by `label` exists."""
