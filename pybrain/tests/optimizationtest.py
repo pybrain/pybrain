@@ -227,7 +227,7 @@ def testAll(tests, allalgos, tolerant=True):
         for t in tests:
             try:
                 res = t(algo)
-            except Exception, e:
+            except Exception as e:
                 if not tolerant:
                     raise e
                 res = e

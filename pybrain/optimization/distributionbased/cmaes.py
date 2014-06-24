@@ -123,7 +123,7 @@ class CMAES(ContinuousOptimizer):
 
 def sorti(vect):
     """ sort, but also return the indices-changes """
-    tmp = sorted(map(lambda (x, y): (y, x), enumerate(ravel(vect))))
+    tmp = sorted([(y, x) for (x, y) in enumerate(ravel(vect))])
     res1 = array(map(lambda x: x[0], tmp))
     res2 = array(map(lambda x: int(x[1]), tmp))
     return res1, res2

@@ -45,7 +45,7 @@ def pickleDumpDict(name, d):
         pickle.dump(d, f)
         f.close()
         return True
-    except Exception, e:
+    except Exception as e:
         print('Error writing into', name, ':', str(e))
         return False
 
@@ -56,7 +56,7 @@ def pickleReadDict(name):
         f = open(name + '.pickle')
         val = pickle.load(f)
         f.close()
-    except Exception, e:
+    except Exception as e:
         print('Nothing read from', name, ':', str(e))
         val = {}
     return val

@@ -10,7 +10,7 @@ from pybrain.rl.environments.episodic import EpisodicTask
 
 try:
     import cartpolewrap as impl
-except ImportError, e:
+except ImportError as e:
     logging.error("FastCartPoleTask is wrapping C code that needs to be compiled - it's simple: run .../cartpolecompile.py")
     raise e
 

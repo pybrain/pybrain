@@ -15,7 +15,6 @@ code.
 __author__ = 'Justin Bayer, bayerj@in.tum.de'
 
 
-import exceptions
 import logging
 import os
 
@@ -247,7 +246,7 @@ class RLCExperiment(object):
     def _killProcess(self, pid):
         try:
             os.kill(pid, SIGKILL) #@UndefinedVariable
-        except exceptions.OSError:
+        except OSError:
             # Explicitly silence if the process has already been killed
             pass
 
@@ -278,12 +277,12 @@ class RlCompBenchmark(object):
         # and time.
         try:
             os.makedirs(self.benchmarkDir)
-        except OSError, e:
+        except OSError as e:
             if not "File exists" in str(e):
                 raise e
 
         for name, agent_klass in self.agents:
-            todo = xrange(self.loops)
+            todo = range(self.loops)
             if not self.overwrite:
                 # If overwrite is set to false, we will only do the experiments
                 # that have not been done.

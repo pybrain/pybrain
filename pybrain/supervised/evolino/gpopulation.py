@@ -139,7 +139,7 @@ class SimplePopulation(Population):
     def getSortedIndividualList(self):
         """ Returns a sorted list of all individuals with descending fitness values. """
         fitness = self._fitness
-        return sorted(fitness.iterkeys(), key=lambda(k):-fitness[k])
+        return sorted(fitness.iterkeys(), key=lambda k:-fitness[k])
 
 
     def getIndividualsN(self):
