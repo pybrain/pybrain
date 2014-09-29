@@ -3,6 +3,7 @@ __author__ = 'Daan Wierstra and Tom Schaul'
 from scipy import dot, argmax
 from random import shuffle
 from math import isnan
+from functools import reduce
 from pybrain.supervised.trainers.trainer import Trainer
 from pybrain.utilities import fListToString
 from pybrain.auxiliary import GradientDescent

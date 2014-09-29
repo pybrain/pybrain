@@ -3,6 +3,11 @@ import os
 import scipy
 import struct
 
+try:
+    from itertools import izip
+except ImportError:
+    izip = zip
+
 from pybrain.datasets import SupervisedDataSet
 
 
@@ -42,7 +47,7 @@ def makeMnistDataSets(path):
     test_images = images(test_image_file)
     test_labels = (flaggedArrayByIndex(l, 10) for l in labels(test_label_file))
 
-    for image, label in itertools.izip(test_images, test_labels):
+    for image, label in izip(test_images, test_labels):
         test.addSample(image, label)
 
     train = SupervisedDataSet(28 * 28, 10)
@@ -50,7 +55,7 @@ def makeMnistDataSets(path):
     train_label_file = os.path.join(path, 'train-labels-idx1-ubyte')
     train_images = images(train_image_file)
     train_labels = (flaggedArrayByIndex(l, 10) for l in labels(train_label_file))
-    for image, label in itertools.izip(train_images, train_labels):
+    for image, label in izip(train_images, train_labels):
         train.addSample(image, label)
 
     return train, test

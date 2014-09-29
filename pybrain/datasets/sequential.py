@@ -1,7 +1,13 @@
 __author__ = 'Thomas Rueckstiess, ruecksti@in.tum.de'
 # $Id$
 
-from itertools import izip
+try:
+    # Python 2
+    from itertools import izip
+except ImportError:
+    # Python 3
+    izip = zip
+
 from scipy import ravel, r_
 from random import sample
 
