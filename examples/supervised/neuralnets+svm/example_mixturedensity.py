@@ -8,7 +8,7 @@ __author__ = 'Martin Felder'
 import pylab as p
 import numpy as np
 from pybrain.structure.modules import LinearLayer, BiasUnit, SigmoidLayer
-from pybrain.structure import FullConnection, Network
+from pybrain.structure import FullConnection, FeedForwardNetwork
 from pybrain.datasets import SupervisedDataSet
 from pybrain.supervised.trainers.mixturedensity import RPropMinusTrainerMix, BackpropTrainerMix
 from pybrain.structure.modules.mixturedensity import MixtureDensityLayer
@@ -23,7 +23,7 @@ def multigaussian(x, mean, stddev):
 
 if __name__ == '__main__':    
     # build a network
-    n = Network()
+    n = FeedForwardNetwork()
     # linear input layer
     n.addInputModule(LinearLayer(1, name='in'))
     # output layer of type 'outclass'
