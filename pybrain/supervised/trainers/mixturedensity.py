@@ -37,10 +37,14 @@ class BackpropTrainerMix(BackpropTrainer):
         error = 0
         nDims = self.module.modulesSorted[-1].nDims
         nGauss = self.module.modulesSorted[-1].nGaussians
-        gamma = []
-        means = []
-        stddevs = []
         for time, sample in reversed(list(enumerate(seq))):
+
+            # Should these three lines be inside this 'for' block
+            # or outside?  I moved them inside - Jack
+            gamma = []
+            means = []
+            stddevs = []
+
             dummy, target = sample
             par = self.module.outputbuffer[time] # parameters for mixture
             # calculate error contributions from all Gaussians in the mixture
