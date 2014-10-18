@@ -29,7 +29,7 @@ class GA(ContinuousOptimizer, Evolution):
     initRangeScaling = 10.
 
     initialPopulation = None
-    
+
     mustMaximize = True
 
     '''added by JPQ'''
@@ -37,7 +37,7 @@ class GA(ContinuousOptimizer, Evolution):
         assert len(self.xBound) == self.numParameters
         self.mins = array([min_ for min_, max_ in self.xBound])
         self.maxs = array([max_ for min_, max_ in self.xBound])
-    # ---        
+    # ---
     def initPopulation(self):
         '''added by JPQ '''
         if self.xBound is not None:
@@ -78,7 +78,7 @@ class GA(ContinuousOptimizer, Evolution):
                 res[point:] = p2[point:]
                 children.append(res)
         return children
-        
+
     def mutatedOld(self, indiv):
         """ mutate some genes of the given individual """
         res = indiv.copy()
@@ -86,8 +86,8 @@ class GA(ContinuousOptimizer, Evolution):
             if random() < self.mutationProb:
                 res[i] = indiv[i] + gauss(0, self.mutationStdDev)
         return res
-        
-    ''' added by JPQ in replacement of crossover and mutated '''    
+
+    ''' added by JPQ in replacement of crossover and mutated '''
     def crossOver(self, parents, nbChildren):
         """ generate a number of children by doing 1-point cross-over """
         """ change as the <choice> return quite often the same p1 and even
@@ -114,11 +114,11 @@ class GA(ContinuousOptimizer, Evolution):
                 children.append(res)
         shuffle(children)
         if len(children) > nbChildren:
-            children = children[:nbChildren]  
+            children = children[:nbChildren]
         elif len(children) < nbChildren:
             children += sample(children,len(children))
         return children
-        
+
     def childexist(self,indiv,pop):
         if isinstance(pop,list):
             for i in range(len(pop)):
@@ -126,7 +126,7 @@ class GA(ContinuousOptimizer, Evolution):
                         < 1.e-7 for k in xrange(self.numParameters)):
                     return True
         return False
-        
+
     def mutated(self, indiv):
         """ mutate some genes of the given individual """
         res = indiv.copy()
@@ -149,7 +149,7 @@ class GA(ContinuousOptimizer, Evolution):
             if random() < self.mutationProb:
                 res[i] = max(min(indiv[i] + gauss(0, self.mutationStdDev),self.maxs[i]),
                              self.mins[i])
-            
+
             if random() < self.mutationProb or in_pop:
                 if self.xBound is None:
                     res[i] = indiv[i] + gauss(0, self.mutationStdDev)
@@ -168,7 +168,7 @@ class GA(ContinuousOptimizer, Evolution):
 
         return res
     # ---
-    
+
     @property
     def selectionSize(self):
         """ the number of parents selected from the current population """
