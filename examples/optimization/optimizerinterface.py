@@ -25,10 +25,10 @@ from pybrain.tools.shortcuts import buildNetwork
 # all other black-box optimizers can be user in the same way.
 # Try it yourself, change the following line to use e.g. GA, CMAES, MemeticSearch or NelderMead
 algo = HillClimber
-#algo = GA
-#algo = MemeticSearch
-#algo = NelderMead
-algo = CMAES
+# algo = GA
+# algo = MemeticSearch
+# algo = NelderMead
+# algo = CMAES
 print 'Algorithm:', algo.__name__
 
 
