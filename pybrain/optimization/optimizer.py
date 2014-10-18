@@ -14,6 +14,11 @@ from pybrain.structure.evolvables.maskedparameters import MaskedParameters
 from pybrain.structure.evolvables.topology import TopologyEvolvable
 from pybrain.structure.modules.module import Module
 
+import traceback
+import sys
+def printStackTrace():
+    traceback.print_tb(sys.exc_info()[2])
+
 
 class BlackBoxOptimizer(DirectSearchLearner):
     """ The super-class for learning algorithms that treat the problem as a black box.
@@ -201,9 +206,11 @@ class BlackBoxOptimizer(DirectSearchLearner):
                 self.numLearningSteps += 1
             except DivergenceError as e:
                 logging.warning("Algorithm diverged. Stopped after "+str(self.numLearningSteps)+" learning steps.\n\terror: "+str(e))
+                printStackTrace()
                 break
             except ValueError as e:
                 logging.warning("Something numerical went wrong. Stopped after "+str(self.numLearningSteps)+" learning steps.\n\terror: "+str(e))
+                printStackTrace()
                 break
         return self._bestFound()
 
