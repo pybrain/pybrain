@@ -116,7 +116,7 @@ class GA(ContinuousOptimizer, Evolution):
         if len(children) > nbChildren:
             children = children[:nbChildren]  
         elif len(children) < nbChildren:
-            children +=sample(children,(nbChildren-len(children)))  
+            children += sample(children,len(children))
         return children
         
     def childexist(self,indiv,pop):
