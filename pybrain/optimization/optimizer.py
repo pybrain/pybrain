@@ -199,11 +199,11 @@ class BlackBoxOptimizer(DirectSearchLearner):
                 self._learnStep()
                 self._notify()
                 self.numLearningSteps += 1
-            except DivergenceError:
-                logging.warning("Algorithm diverged. Stopped after "+str(self.numLearningSteps)+" learning steps.")
+            except DivergenceError as e:
+                logging.warning("Algorithm diverged. Stopped after "+str(self.numLearningSteps)+" learning steps.\n\terror: "+str(e))
                 break
-            except ValueError:
-                logging.warning("Something numerical went wrong. Stopped after "+str(self.numLearningSteps)+" learning steps.")
+            except ValueError as e:
+                logging.warning("Something numerical went wrong. Stopped after "+str(self.numLearningSteps)+" learning steps.\n\terror: "+str(e))
                 break
         return self._bestFound()
         
