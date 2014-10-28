@@ -167,10 +167,10 @@ class Network(Module, ParameterContainer):
             index += x.paramdim
 
     def _forwardImplementation(self, inbuf, outbuf):
-        raise NotImplemented("Must be implemented by subclass.")
+        raise NotImplementedError("Must be implemented by subclass.")
 
     def _backwardImplementation(self, outerr, inerr, outbuf, inbuf):
-        raise NotImplemented("Must be implemented by subclass.")
+        raise NotImplementedError("Must be implemented by subclass.")
 
     def _topologicalSort(self):
         """Update the network structure and make .modulesSorted a topologically
