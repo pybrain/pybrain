@@ -19,7 +19,7 @@ class XMLHandling:
         if not newfile:
             self.dom = parse(filename)
             if self.dom.firstChild.nodeName != 'PyBrain':
-                raise Exception, 'Not a correct PyBrain XML file'
+                raise Exception('Not a correct PyBrain XML file')
         else:
             domimpl = getDOMImplementation()
             self.dom = domimpl.createDocument(None, 'PyBrain', None)

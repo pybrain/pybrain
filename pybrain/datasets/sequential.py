@@ -1,7 +1,6 @@
 __author__ = 'Thomas Rueckstiess, ruecksti@in.tum.de'
 # $Id$
 
-from itertools import izip
 from scipy import ravel, r_
 from random import sample
 
@@ -60,7 +59,7 @@ class SequentialDataSet(SupervisedDataSet):
         `index`.
 
         Each element is a tuple."""
-        return izip(*self.getSequence(index))
+        return zip(*self.getSequence(index))
 
     def endOfSequence(self, index):
         """Return True if the marker was moved over the last element of

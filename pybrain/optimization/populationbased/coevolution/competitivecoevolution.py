@@ -77,7 +77,7 @@ class CompetitiveCoevolution(Coevolution):
         fit = self._competitiveSharedFitness(self.pop, self.parasitePop)
         if hoFtournSize > 0:
             fitHof = self._competitiveSharedFitness(self.pop, self.hallOfFame)
-            fit = map(lambda (f1, f2): tournSize * f1 + hoFtournSize * f2, zip(fit, fitHof))
+            fit = [(tournSize * f1 + hoFtournSize * f2) for (f1, f2) in zip(fit, fitHof)]
         return fit
 
     def _oneGeneration(self):

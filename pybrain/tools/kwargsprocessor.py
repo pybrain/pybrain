@@ -79,7 +79,7 @@ if __name__ == '__main__':
 
     try:
         C() # will raise KeyError because mandatory keyword argument "m" is missing
-    except KeyError, k:
+    except KeyError as k:
         print(k)
 
 
