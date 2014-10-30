@@ -22,11 +22,11 @@ class FunctionEnvironment(Environment, FitnessEvaluator):
     # what would be the desired performance? by default: something close to zero
     desiredValue = 1e-10
     toBeMinimized = True
-    
+
     # does the function already include a penalization term, to keep search near the origin?
     penalized = False
 
-    def __init__(self, xdim = None, xopt = None, xbound=5, feasible=True, constrained=False, violation=False, **args):
+    def __init__(self, xdim = None, xopt = None, xbound=None, feasible=True, constrained=False, violation=False, **args):
         self.feasible=feasible
         self.constrained=constrained
         self.violation=violation
