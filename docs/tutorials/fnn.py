@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 ############################################################################
 # PyBrain Tutorial "Classification with Feed-Forward Neural Networks"
 #
