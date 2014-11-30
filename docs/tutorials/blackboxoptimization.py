@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 ############################################################################
 # PyBrain Tutorial "Black Box Optimization"
 # 
