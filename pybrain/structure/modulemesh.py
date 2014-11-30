@@ -2,6 +2,7 @@ __author__ = 'Tom Schaul, tom@idsia.ch'
 
 from pybrain.utilities import iterCombinations, Named
 from pybrain.structure.moduleslice import ModuleSlice
+from functools import reduce
 
 
 class ModuleMesh(Named):
@@ -37,12 +38,12 @@ class ModuleMesh(Named):
         assert max(dimensions) > 1, "At least one dimension needs to be larger than one."
         def slicer():
             nbunits = reduce(lambda x, y: x*y, dimensions, 1)
-            insize = layer.indim / nbunits
-            outsize = layer.outdim / nbunits
+            insize = layer.indim // nbunits
+            outsize = layer.outdim // nbunits
             for index in range(nbunits):
                 yield ModuleSlice(layer, insize*index, insize*(index+1), outsize*index, outsize*(index+1))
         c = slicer()
-        return ModuleMesh(lambda: c.next(), dimensions, name)
+        return ModuleMesh(lambda: next(c), dimensions, name)
 
     def __iter__(self):
         for coord in iterCombinations(self.dims):

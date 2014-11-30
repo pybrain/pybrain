@@ -95,7 +95,6 @@ TODO:
 __author__ = 'Tom Schaul, tom@idsia.ch'
 _dependencies = ['arac']
 
-
 from pybrain.tests.helpers import buildAppropriateDataset, epsilonCheck
 from pybrain.tests import runModuleTestSuite
 
@@ -114,13 +113,13 @@ def testEquivalence(net):
                 if net.name == '22':
                     h = net['hidden0']
                     ch = cnet['hidden0']
-                    print('ni', input, net.inputbuffer.T)
-                    print('ci', input, cnet.inputbuffer.T)
-                    print('hni', h.inputbuffer.T[0])
-                    print('hci', ch.inputbuffer.T[0])
-                    print('hnout', h.outputbuffer.T[0])
-                    print('hcout', ch.outputbuffer.T[0])
-                    print
+                    print(('ni', input, net.inputbuffer.T))
+                    print(('ci', input, cnet.inputbuffer.T))
+                    print(('hni', h.inputbuffer.T[0]))
+                    print(('hci', ch.inputbuffer.T[0]))
+                    print(('hnout', h.outputbuffer.T[0]))
+                    print(('hcout', ch.outputbuffer.T[0]))
+                    print()
 
     else:
         for input, _ in ds:
@@ -129,10 +128,10 @@ def testEquivalence(net):
     if epsilonCheck(sum(res - cres), 0.001):
         return True
     else:
-        print('in-net', net.inputbuffer.T)
-        print('in-arac', cnet.inputbuffer.T)
-        print('out-net', net.outputbuffer.T)
-        print('out-arac', cnet.outputbuffer.T)
+        print(('in-net', net.inputbuffer.T))
+        print(('in-arac', cnet.inputbuffer.T))
+        print(('out-net', net.outputbuffer.T))
+        print(('out-arac', cnet.outputbuffer.T))
         return (res, cres)
 
 

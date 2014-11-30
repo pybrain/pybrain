@@ -3,7 +3,7 @@ __author__ = 'Tom Schaul, tom@idsia.ch'
 from scipy import array, zeros
 from random import choice
 
-from maze import MazeTask
+from .maze import MazeTask
 
 
 class TMaze(MazeTask):

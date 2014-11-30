@@ -2,7 +2,7 @@ __author__ = 'Tom Schaul, tom@idsia.ch'
 
 from random import choice
 
-from captureplayer import CapturePlayer
+from .captureplayer import CapturePlayer
 
 
 class RandomCapturePlayer(CapturePlayer):

@@ -44,11 +44,11 @@ class MultiObjectiveGA(GA):
             self._allGenerations.append((self.currentpop, self.fitnesses))
 
         if self.elitism:
-            self.bestEvaluable = list(non_dominated_front(map(tuple, self.currentpop),
+            self.bestEvaluable = list(non_dominated_front(list(map(tuple, self.currentpop)),
                                                           key=lambda x: self.fitnesses[x],
                                                           allowequality = self.allowEquality))
         else:
-            self.bestEvaluable = list(non_dominated_front(map(tuple, self.currentpop)+self.bestEvaluable,
+            self.bestEvaluable = list(non_dominated_front(list(map(tuple, self.currentpop))+self.bestEvaluable,
                                                           key=lambda x: self.fitnesses[x],
                                                           allowequality = self.allowEquality))
         self.bestEvaluation = [self.fitnesses[indiv] for indiv in self.bestEvaluable]
@@ -56,8 +56,8 @@ class MultiObjectiveGA(GA):
         self.produceOffspring()
 
     def select(self):
-        return map(array, nsga2select(map(tuple, self.currentpop), self.fitnesses,
-                                      self.selectionSize, self.allowEquality))
+        return list(map(array, nsga2select(list(map(tuple, self.currentpop)), self.fitnesses,
+                                      self.selectionSize, self.allowEquality)))
 
 
 

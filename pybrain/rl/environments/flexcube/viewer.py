@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 __author__ = 'Frank Sehnke, sehnke@in.tum.de'
 
 #########################################################################
@@ -28,7 +30,7 @@ from OpenGL.GLUT import * #@UnusedWildImport
 from OpenGL.GL import * #@UnusedWildImport
 from OpenGL.GLE import * #@UnusedWildImport
 from OpenGL.GLU import * #@UnusedWildImport
-import objects3d
+from . import objects3d
 from time import sleep
 from scipy import ones, array
 from pybrain.tools.networking.udpconnection import UDPClient
@@ -73,7 +75,7 @@ class FlexCubeRenderer(object):
         image = Image.fromstring("RGB", (width, height), data)
         image = image.transpose(Image.FLIP_TOP_BOTTOM)
         image.save(filename, format)
-        print('Saved image to ', filename)
+        print(('Saved image to ', filename))
         return image
 
     # the render method containing the Glut mainloop

@@ -1,6 +1,6 @@
 __author__ = 'Frank Sehnke, sehnke@in.tum.de'
 
-from environment import Environment
+from .environment import Environment
 
 class GraphicalEnvironment(Environment):
     """ Special type of environment that has graphical output and therefore needs a renderer.

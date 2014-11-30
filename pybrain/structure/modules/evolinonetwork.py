@@ -100,7 +100,7 @@ class EvolinoNetwork(Module):
 
         Use .reset() and .washout() before."""
         generated_sequence = [] #empty(length)
-        for _ in xrange(length):
+        for _ in range(length):
             backprojection = self._getLastOutput()
             backprojection *= self.backprojectionFactor
             out = self._activateNetwork(backprojection)
@@ -209,7 +209,7 @@ class EvolinoNetwork(Module):
         """Return a list of all input connections for the layer."""
         connections = []
         all_cons = list(self._network.recurrentConns)
-        all_cons += sum(self._network.connections.values(), [])
+        all_cons += sum(list(self._network.connections.values()), [])
         for c in all_cons:
             if c.outmod is layer:
                 if not isinstance(c, FullConnection):

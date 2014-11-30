@@ -14,10 +14,10 @@ def runModuleTestSuite(module):
     suite = TestSuite([TestLoader().loadTestsFromModule(module)])
 
     # Add local doctests
-    optionflags = ELLIPSIS | NORMALIZE_WHITESPACE | REPORT_ONLY_FIRST_FAILURE
+    optionflags = ELLIPSIS | NORMALIZE_WHITESPACE | REPORT_ONLY_FIRST_FAILURE | IGNORE_EXCEPTION_DETAIL
 
     try:
-        suite.addTest(DocTestSuite(module, optionflags=optionflags))
+        suite.addTest(DocTestSuite(module), optionflags=optionflags)
     except ValueError:
         # No tests have been found in that module.
         pass

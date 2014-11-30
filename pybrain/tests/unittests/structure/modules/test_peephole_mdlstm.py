@@ -2,7 +2,7 @@
     >>> from pybrain.tests.helpers import epsilonCheck
     >>> from pybrain.tools.functions import tanh
     >>> from pybrain.utilities import fListToString
-    >>> from test_peephole_lstm import predictOutcome
+    >>> from .test_peephole_lstm import predictOutcome
     >>> from scipy import arctanh
     >>> from random import random
 

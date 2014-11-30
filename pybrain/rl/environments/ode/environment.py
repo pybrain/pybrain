@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 __author__ = 'Thomas Rueckstiess, ruecksti@in.tum.de'
 
 import sys, time
@@ -6,8 +8,8 @@ import xode.parser, xode.body, xode.geom #@UnresolvedImport @UnusedImport @Reimp
 import ode #@UnresolvedImport
 
 from pybrain.rl.environments.environment import Environment
-from tools.configgrab import ConfigGrabber
-import sensors, actuators
+from .tools.configgrab import ConfigGrabber
+from . import sensors, actuators
 from pybrain.utilities import threaded
 import threading
 import warnings
@@ -167,7 +169,7 @@ class ODEEnvironment(Environment):
             self.getRenderer().setCenterObj(self.root.namedChild(name).getODEObject())
         except KeyError:
             # name not found, unset centerObj
-            print("Warning: Cannot center on " + name)
+            print(("Warning: Cannot center on " + name))
             self.centerObj = None
 
     def loadXODE(self, filename, reload=False):
@@ -182,7 +184,7 @@ class ODEEnvironment(Environment):
             world = filter(lambda x: isinstance(x, xode.parser.World), self.root.getChildren())[0]
         except IndexError:
             # malicious format, no world tag found
-            print("no <world> tag found in " + filename + ". quitting.")
+            print(("no <world> tag found in " + filename + ". quitting."))
             sys.exit()
         self.world = world.getODEObject()
         self._setWorldParameters()
@@ -191,7 +193,7 @@ class ODEEnvironment(Environment):
             space = filter(lambda x: isinstance(x, xode.parser.Space), world.getChildren())[0]
         except IndexError:
             # malicious format, no space tag found
-            print("no <space> tag found in " + filename + ". quitting.")
+            print(("no <space> tag found in " + filename + ". quitting."))
             sys.exit()
         self.space = space.getODEObject()
 
@@ -203,7 +205,7 @@ class ODEEnvironment(Environment):
             print("-------[body/mass list]-----")
             for (body, _) in self.body_geom:
                 try:
-                    print(body.name, body.getMass())
+                    print((body.name, body.getMass()))
                 except AttributeError:
                     print("<Nobody>")
 
@@ -221,7 +223,7 @@ class ODEEnvironment(Environment):
             self.passpairs.append(eval(passpairstring))
         if self.verbosity > 0:
             print("-------[pass tuples]--------")
-            print(self.passpairs)
+            print((self.passpairs))
             print("----------------------------")
 
         # <centerOn>
@@ -238,7 +240,7 @@ class ODEEnvironment(Environment):
                 # find first object with that name
                 obj = self.root.namedChild(jointName).getODEObject()
             except IndexError:
-                print("ERROR: Could not affix object '" + jointName + "' to environment!")
+                print(("ERROR: Could not affix object '" + jointName + "' to environment!"))
                 sys.exit(1)
             if isinstance(obj, ode.Joint):
                 # if it is a joint, use this joint to fix to environment
@@ -273,7 +275,7 @@ class ODEEnvironment(Environment):
                 try:
                     self.addSensor(eval('sensors.' + s))
                 except AttributeError:
-                    print(dir(sensors))
+                    print((dir(sensors)))
                     warnings.warn("Sensor name with name " + s + " not found. skipped.")
         else:
             for s in self.sensors:

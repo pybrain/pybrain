@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 __author__ = 'Daan Wierstra and Tom Schaul'
 
 from scipy import dot, rand, ones, eye, zeros, outer, isnan, multiply, argmax, product, log
@@ -71,7 +73,7 @@ class FEM(DistributionBasedOptimizer):
             self.mus.append(rand(xdim) * (self.rangemaxs - self.rangemins) + self.rangemins)
             self.sigmas.append(dot(eye(xdim), self.initCovariances))
 
-        self.samples = range(self.windowSize)
+        self.samples = list(range(self.windowSize))
         self.fitnesses = zeros(self.windowSize)
         self.generation = 0
         self.allsamples = []
@@ -219,8 +221,8 @@ class FEM(DistributionBasedOptimizer):
         self.shapingFunction.setParameter(possible[argmax(matchValues)])
 
         if len(self.allsamples) % 100 == 0:
-            print(possible[argmax(matchValues)])
-            print(fListToString(matchValues, 3))
+            print((possible[argmax(matchValues)]))
+            print((fListToString(matchValues, 3)))
 
     def _learnStep(self):
         k = len(self.allsamples) % self.windowSize
@@ -230,7 +232,7 @@ class FEM(DistributionBasedOptimizer):
         if len(self.allsamples) < self.windowSize:
             return
         if self.verbose and len(self.allsamples) % 100 == 0:
-            print(len(self.allsamples), min(self.fitnesses), max(self.fitnesses))
+            print((len(self.allsamples), min(self.fitnesses), max(self.fitnesses)))
             # print(len(self.allsamples), min(self.fitnesses), max(self.fitnesses)#, self.alphas)
 
         updateSize = self._computeUpdateSize(self._computeDensities(sample), k)

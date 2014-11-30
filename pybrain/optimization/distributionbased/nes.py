@@ -1,7 +1,7 @@
 __author__ = 'Daan Wierstra, Tom Schaul and Sun Yi'
 
 
-from ves import VanillaGradientEvolutionStrategies
+from .ves import VanillaGradientEvolutionStrategies
 from pybrain.utilities import triu2flat, blockCombine
 from scipy.linalg import inv, pinv2
 from scipy import outer, dot, multiply, zeros, diag, mat, sum
@@ -52,7 +52,7 @@ class ExactNES(VanillaGradientEvolutionStrategies):
         u[j] = dot(G, u[j])
         V[j, :] = dot(G, V[j, :])
         j -= 1
-        for k in reversed(range(d - 1)):
+        for k in reversed(list(range(d - 1))):
             p = invSigma[k + 1:, k]
             w = invSigma[k, k]
             wg = w + invA[k, k] ** 2
@@ -77,7 +77,7 @@ class ExactNES(VanillaGradientEvolutionStrategies):
             update = zeros(self.numDistrParams)
             vsquare = multiply(V, V)
             j = self.numDistrParams - 1
-            for k in reversed(range(self.numParameters)):
+            for k in reversed(list(range(self.numParameters))):
                 b0 = sum(vsquare[j - (d - k - 1):j + 1, :], 0)
                 b = dot(b0, fitnesses) / sum(b0)
                 update[j - (d - k - 1):j + 1] = dot(V[j - (d - k - 1):j + 1, :], (fitnesses - b))

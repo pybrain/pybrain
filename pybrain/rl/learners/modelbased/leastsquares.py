@@ -32,7 +32,7 @@ def trueFeatureStats(T, R, fMap, discountFactor, stateProp=1, MAT_LIMIT=1e8):
     numStates = len(T)
     statMatrix = zeros((dim, dim))
     statResidual = zeros(dim)
-    ss = range(numStates)
+    ss = list(range(numStates))
     repVersion = False
     
     if stateProp < 1:

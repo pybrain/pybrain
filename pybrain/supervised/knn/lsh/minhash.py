@@ -1,4 +1,4 @@
-from __future__ import division
+
 
 
 """Module that provides functionality for locality sensitive hashing in hamming
@@ -46,7 +46,7 @@ def jacardCoefficient(a, b):
     a = a.astype(bool)
     b = b.astype(bool)
 
-    return (a == b).sum() / length
+    return float((a == b).sum()) / length
 
 
 class MinHash(object):
@@ -75,7 +75,7 @@ class MinHash(object):
         The number of buckets is dim * nPermutations."""
         self.dim = dim
         self.permutations = array([permutation(dim)
-                                   for _ in xrange(nPermutations)])
+                                   for _ in range(nPermutations)])
 
         self.buckets = defaultdict(lambda: [])
 

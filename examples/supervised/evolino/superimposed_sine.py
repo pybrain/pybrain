@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 #!/usr/bin/env python
 
 
@@ -10,9 +12,9 @@ from pybrain.structure.modules.evolinonetwork import EvolinoNetwork
 from pybrain.supervised.trainers.evolino      import EvolinoTrainer
 from lib.data_generator import generateSuperimposedSineData
 
-print
-print "=== Learning to extrapolate 5 superimposed sine waves ==="
-print
+print()
+print("=== Learning to extrapolate 5 superimposed sine waves ===")
+print()
 sinefreqs = ( 0.2, 0.311, 0.42, 0.51, 0.74 )
 # sinefreqs = ( 0.2, 0.311, 0.42, 0.51, 0.74, 0.81 )
 metascale = 8.
@@ -26,19 +28,19 @@ stepsize = 0.1 * metascale
 # === create training dataset
 # the sequences must be stored in the target field
 # the input field will be ignored
-print "creating training data"
+print("creating training data")
 trnInputSpace = numpy.arange( 0*scale , 190*scale , stepsize )
 trnData = generateSuperimposedSineData(sinefreqs, trnInputSpace)
 
 # === create testing dataset
-print "creating test data"
+print("creating test data")
 tstInputSpace = numpy.arange( 400*scale , 540*scale , stepsize)
 tstData = generateSuperimposedSineData(sinefreqs, tstInputSpace)
 
 
 
 # === create the evolino-network
-print "creating EvolinoNetwork"
+print("creating EvolinoNetwork")
 net = EvolinoNetwork( trnData.outdim, 40 )
 
 
@@ -47,7 +49,7 @@ wtRatio = 1./3.
 
 # === instantiate an evolino trainer
 # it will train our network through evolutionary algorithms
-print "creating EvolinoTrainer"
+print("creating EvolinoTrainer")
 trainer = EvolinoTrainer(
     net,
     dataset=trnData,
@@ -80,16 +82,16 @@ tstSequenceTarget  = tstSequence[separatorIdx:]
 
 ion() # switch matplotlib to interactive mode
 for i in range(3000):
-    print "======================"
-    print "====== NEXT RUN ======"
-    print "======================"
+    print("======================")
+    print("====== NEXT RUN ======")
+    print("======================")
 
-    print "=== TRAINING"
+    print("=== TRAINING")
     # train the network for 1 epoch
     trainer.trainEpochs( 1 )
 
 
-    print "=== PLOTTING\n"
+    print("=== PLOTTING\n")
     # calculate the nets output for train and the test data
     trnSequenceOutput = net.extrapolate(trnSequenceWashout, len(trnSequenceTarget))
     tstSequenceOutput = net.extrapolate(tstSequenceWashout, len(tstSequenceTarget))

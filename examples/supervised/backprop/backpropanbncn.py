@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 #!/usr/bin/env python
 # A simple recurrent neural network that learns a simple sequential data set.
 
@@ -28,7 +30,7 @@ def testTraining():
     t.trainOnDataset(d, 200)
 
     # the resulting weights are in the network:
-    print 'Final weights:', n.params
+    print('Final weights:', n.params)
 
 if __name__ == '__main__':
     testTraining()

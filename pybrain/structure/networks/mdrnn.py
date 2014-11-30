@@ -7,6 +7,7 @@ __version__ = '$Id$'
 
 import operator
 import scipy
+from functools import reduce
 
 try:
     from arac.pybrainbridge import _FeedForwardNetwork #@UnresolvedImport
@@ -32,7 +33,7 @@ class _Mdrnn(_FeedForwardNetwork):
         self.blockshape = blockshape
         self.indim = reduce(operator.mul, shape, 1)
         self.blocksize = reduce(operator.mul, blockshape, 1)
-        self.sequenceLength = self.indim / self.blocksize
+        self.sequenceLength = self.indim // self.blocksize
         self.inlayerclass = inlayerclass
         self.outlayerclass = outlayerclass
 
@@ -48,7 +49,7 @@ class _Mdrnn(_FeedForwardNetwork):
         """Return the permutation of input data that is suitable for this
         network."""
         # TODO: include blockpermute here
-        return scipy.array(range(self.sequenceLength))
+        return scipy.array(list(range(self.sequenceLength)))
 
     def _buildTopology(self):
         inlayer = self.inlayerclass(self.indim)
@@ -62,7 +63,7 @@ class _Mdrnn(_FeedForwardNetwork):
             # Make a connection that permutes the input...
             in_pc = PermutationConnection(inlayer, i, p, self.blocksize)
             # .. and one that permutes it back.
-            pinv = permute(range(len(p)), p)
+            pinv = permute(list(range(len(p))), p)
             out_pc = PermutationConnection(i, outlayer, pinv, self.outsize)
             self.addModule(i)
             self.addConnection(in_pc)
@@ -93,8 +94,8 @@ class _MultiDirectionalMdrnn(_Mdrnn):
         """
         # We use an identity permutation to generate the permutations from by
         # slicing correctly.
-        identity = scipy.array(range(self.sequenceLength))
-        identity.shape = tuple(s / b for s, b in zip(self.shape, self.blockshape))
+        identity = scipy.array(list(range(self.sequenceLength)))
+        identity.shape = tuple(s // b for s, b in zip(self.shape, self.blockshape))
         permutations = []
         # Loop over all possible directions: from each corner to each corner
         for direction in crossproduct([('+', '-')] * self.timedim):

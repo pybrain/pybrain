@@ -1,7 +1,6 @@
 """
 
 Build a simple mdlstm network with peepholes:
-
     >>> n = buildSimpleMDLSTMNetwork(True)
     >>> print(n)
     simpleMDLstmNet

@@ -28,7 +28,7 @@ read in your data from a file, e.g. using pylab.load(). """
 means = [(-1, 0), (2, 4), (3, 1)]
 cov = [diag([1, 1]), diag([0.5, 1.2]), diag([1.5, 0.7])]
 alldata = ClassificationDataSet(2, 1, nb_classes=3)
-for n in xrange(400):
+for n in range(400):
     for klass in range(3):
         input = multivariate_normal(means[klass], cov[klass])
         alldata.addSample(input, [klass])
@@ -44,10 +44,10 @@ trndata._convertToOneOfMany()
 tstdata._convertToOneOfMany()
 
 """ Test our dataset by printing a little information about it. """
-print "Number of training patterns: ", len(trndata)
-print "Input and output dimensions: ", trndata.indim, trndata.outdim
-print "First sample (input, target, class):"
-print trndata['input'][0], trndata['target'][0], trndata['class'][0]
+print("Number of training patterns: ", len(trndata))
+print("Input and output dimensions: ", trndata.indim, trndata.outdim)
+print("First sample (input, target, class):")
+print(trndata['input'][0], trndata['target'][0], trndata['class'][0])
 
 """ Now build a feed-forward network with 5 hidden units. We use the a convenience
 function for this. The input and output
@@ -78,7 +78,7 @@ ticks = arange(-3., 6., 0.2)
 X, Y = meshgrid(ticks, ticks)
 # need column vectors in dataset, not arrays
 griddata = ClassificationDataSet(2, 1, nb_classes=3)
-for i in xrange(X.size):
+for i in range(X.size):
     griddata.addSample([X.ravel()[i], Y.ravel()[i]], [0])
 griddata._convertToOneOfMany()  # this is still needed to make the fnn feel comfy
 
@@ -96,9 +96,9 @@ for i in range(20):
     tstresult = percentError(trainer.testOnClassData(
            dataset=tstdata), tstdata['class'])
 
-    print "epoch: %4d" % trainer.totalepochs, \
+    print("epoch: %4d" % trainer.totalepochs, \
           "  train error: %5.2f%%" % trnresult, \
-          "  test error: %5.2f%%" % tstresult
+          "  test error: %5.2f%%" % tstresult)
 
     """ Run our grid data through the FNN, get the most likely class
     and shape it into a square array again. """

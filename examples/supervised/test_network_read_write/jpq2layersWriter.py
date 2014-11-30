@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 from pybrain.structure import FeedForwardNetwork
 from pybrain.structure           import LinearLayer, SigmoidLayer
 from pybrain.structure           import BiasUnit,TanhLayer
@@ -103,14 +105,14 @@ t = BackpropTrainer(n, learningrate = 0.01 ,
 #train the neural network from the train DataSet
 
 cterrori=1.0
-print "trainer momentum:"+str(mom)
+print("trainer momentum:"+str(mom))
 for iter in range(25):
   t.trainOnDataset(trndata, 1000)
   ctrndata = mv.calculateModuleOutput(n,trndata)
   cterr = v.MSE(ctrndata,trndata['target'])
   relerr = abs(cterr-cterrori)
   cterrori = cterr
-  print 'iteration:',iter+1,'MSE error:',cterr
+  print('iteration:',iter+1,'MSE error:',cterr)
   myplot(trndata,ctrndata,iter=iter+1)
   if cterr < 1.e-5 or relerr < 1.e-7:
     break
@@ -124,7 +126,7 @@ else:
 #calculate the test DataSet based on the trained Neural Network
 ctsts = mv.calculateModuleOutput(n,tsts)
 tserr = v.MSE(ctsts,tsts['target'])
-print 'MSE error on TSTS:',tserr
+print('MSE error on TSTS:',tserr)
 myplot(trndata,ctrndata,tsts,ctsts)
 
 pylab.show()

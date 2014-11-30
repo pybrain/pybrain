@@ -71,7 +71,7 @@ class GA(ContinuousOptimizer, Evolution):
                 children.append(p1)
             else:
                 p2 = choice(parents)
-                point = choice(range(xdim-1))
+                point = choice(list(range(xdim-1)))
                 point += 1
                 res = zeros(xdim)
                 res[:point] = p1[:point]
@@ -95,14 +95,14 @@ class GA(ContinuousOptimizer, Evolution):
         xdim = self.numParameters
         shuffle(parents)
         children = []
-        for i in range(len(parents)/2):
+        for i in range(len(parents)//2):
             p1 = parents[i]
             p2 = parents[i+(len(parents)/2)]
             if xdim < 2:
                 children.append(p1)
                 children.append(p2)
             else:
-                point = choice(range(xdim-1))
+                point = choice(list(range(xdim-1)))
                 point += 1
                 res = zeros(xdim)
                 res[:point] = p1[:point]
@@ -123,7 +123,7 @@ class GA(ContinuousOptimizer, Evolution):
         if isinstance(pop,list):
             for i in range(len(pop)):
                 if all((abs(indiv[k] - pop[i][k])/(self.maxs[k]-self.mins[k]))
-                        < 1.e-7 for k in xrange(self.numParameters)):
+                        < 1.e-7 for k in range(self.numParameters)):
                     return True
         return False
         
@@ -189,10 +189,10 @@ class GA(ContinuousOptimizer, Evolution):
 
         :return: list of selected parents """
         if not self.tournament:
-            tmp = zip(self.fitnesses, self.currentpop)
+            tmp = list(zip(self.fitnesses, self.currentpop))
             tmp.sort(key = lambda x: x[0])
             tmp2 = list(reversed(tmp))[:self.selectionSize]
-            return map(lambda x: x[1], tmp2)
+            return [x[1] for x in tmp2]
         else:
             # TODO: tournament selection
             raise NotImplementedError()

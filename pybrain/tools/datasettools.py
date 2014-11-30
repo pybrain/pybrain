@@ -1,7 +1,8 @@
+from __future__ import print_function
+
 # This tool converts a sequential data set into a number of equally sized windows,
 # to be used for supervised training.
 __author__ = "Martin Felder"
-
 
 from numpy import r_, array, isfinite
 from pybrain.datasets import SequentialDataSet
@@ -22,7 +23,7 @@ def convertSequenceToTimeWindows(DSseq, NewClass, winsize):
     nsamples = 0
     nseqs = 0
     si = r_[DSseq['sequence_index'].flatten(), DSseq.endmarker['sequence_index']]
-    for i in xrange(DSseq.getNumSequences()):
+    for i in range(DSseq.getNumSequences()):
         # get one sequence as arrays
         input = DSseq['input'][si[i]:si[i + 1], :]
         target = DSseq['target'][si[i]:si[i + 1], :]
@@ -34,10 +35,10 @@ def convertSequenceToTimeWindows(DSseq, NewClass, winsize):
             DSwin.addSample(inp_win.flatten(), tar_win.flatten())
             nsamples += 1
             ##print("added sample %d from sequence %d: %d - %d" %( nsamples, nseqs, k-winsize, k-1))
-    print("samples in original dataset: ", len(DSseq))
-    print("window size * nsamples = ", winsize * nsamples)
-    print("total data points in original data: ", len(DSseq) * DSseq.indim)
-    print("total data points in windowed dataset: ", len(DSwin) * DSwin.indim)
+    print(("samples in original dataset: ", len(DSseq)))
+    print(("window size * nsamples = ", winsize * nsamples))
+    print(("total data points in original data: ", len(DSseq) * DSseq.indim))
+    print(("total data points in windowed dataset: ", len(DSwin) * DSwin.indim))
     return DSwin
 
 def windowSequenceEval(DS, winsz, result):
@@ -67,10 +68,10 @@ def windowSequenceEval(DS, winsz, result):
             x.append(curr_x)
 
         seq_res.append(100. * correct / (correct + wrong))
-        print("sequence %d correct: %g12.2%%" % (i, seq_res[-1]))
+        print(("sequence %d correct: %g12.2%%" % (i, seq_res[-1])))
 
     seq_res = array(seq_res)
-    print("total fraction of correct sequences: ", 100. * float((seq_res >= 0.5).sum()) / seq_res.size)
+    print(("total fraction of correct sequences: ", 100. * float((seq_res >= 0.5).sum()) / seq_res.size))
 
 
 class DataSetNormalizer(object):

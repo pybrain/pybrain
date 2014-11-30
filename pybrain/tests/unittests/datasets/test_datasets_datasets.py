@@ -143,7 +143,7 @@ ReinforcementDataSet
 __author__ = 'Justin Bayer, bayerj@in.tum.de'
 
 
-from cStringIO import StringIO
+from io import StringIO
 
 from pybrain.tests import runModuleTestSuite
 
@@ -160,12 +160,12 @@ def saveInvariant(dataset):
     equal = True
     for (k, v), (k_, v_) in zip(orig_array_data, rec_array_data):
         if k != k_:
-            print("Differing keys: %s <=> %s" % (dataset.dataset.keys(),
-                                                 rec_array_data.dataset.keys()))
+            print(("Differing keys: %s <=> %s" % (list(dataset.dataset.keys()),
+                                                 list(rec_array_data.dataset.keys()))))
             equal = False
             break
         if not (v == v_).all():
-            print("Differing values for %s" % k)
+            print(("Differing values for %s" % k))
             print(v)
             print(v_)
             equal = False

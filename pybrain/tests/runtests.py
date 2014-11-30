@@ -74,7 +74,7 @@ def make_test_suite():
     
     # Initialize the testsuite to add to
     suite = TestSuite()
-    optionflags = doctest.ELLIPSIS | doctest.NORMALIZE_WHITESPACE
+    optionflags = doctest.ELLIPSIS | doctest.NORMALIZE_WHITESPACE | doctest.IGNORE_EXCEPTION_DETAIL
     
     for testdir in testdirs:
         # All unittest modules have to start with 'test_' and have to be, of

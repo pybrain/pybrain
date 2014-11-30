@@ -20,7 +20,7 @@ def generateIBP(customers, alpha=10, reducedprop=1.):
     This implementation uses a stick-breaking construction.
     An additional parameter permits reducing the expected number of times a dish is tried. """
     # max number of dishes is distributed according to Poisson(alpha*sum(1/i))
-    _lambda = alpha * sum(1. / array(range(1, customers + 1)))
+    _lambda = alpha * sum(1. / array(list(range(1, customers + 1))))
     alpha /= reducedprop
 
     # we give it 2 standard deviations as cutoff

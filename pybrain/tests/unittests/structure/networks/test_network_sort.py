@@ -42,7 +42,6 @@ What if we construct it in a different order?
     True
 
 Is it the same ordering than our reference?
-
     >>> print(ord3)
     [<LinearLayer 'l0'>, <LinearLayer 'l2'>, <LinearLayer 'l3'>, <LinearLayer 'l5'>, <LinearLayer 'l6'>, <LinearLayer 'l7'>, <LinearLayer 'l8'>, <LinearLayer 'l9'>, <LinearLayer 'l1'>, <LinearLayer 'l4'>]
 
@@ -63,7 +62,7 @@ def buildSomeModules(number = 4):
 def buildSomeConnections(modules):
     """ add a connection from every second to every third module """
     res = []
-    for i in range(len(modules)/3-1):
+    for i in range(len(modules)//3-1):
         res.append(FullConnection(modules[i*2], modules[i*3+1]))
     return res
 

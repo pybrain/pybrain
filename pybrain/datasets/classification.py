@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 __author__ = "Martin Felder, felder@in.tum.de"
 
 from numpy import zeros, where, ravel, r_, single
@@ -212,7 +214,7 @@ class SequenceClassificationDataSet(SequentialDataSet, ClassificationDataSet):
             # calculate class histogram, if we already have data
             self.calculateStatistics()
         self.nClasses = nb_classes
-        self.class_labels = range(self.nClasses) if class_labels is None else class_labels
+        self.class_labels = list(range(self.nClasses)) if class_labels is None else class_labels
         # copy classes (targets may be changed into other representation)
         self.setField('class', self.getField('target'))
 
@@ -309,7 +311,7 @@ class SequenceClassificationDataSet(SequentialDataSet, ClassificationDataSet):
                     'numSeqs':             self.getNumSequences(),
                     'maxLabelLength':      2 }
         dims = {}
-        for name, sz in dimsize.iteritems():
+        for name, sz in dimsize.items():
             dims[name] = d.def_dim(name, sz)
 
         # Create a netCDF record variables
@@ -331,7 +333,7 @@ class SequenceClassificationDataSet(SequentialDataSet, ClassificationDataSet):
         seqLengths[:] = [self.getSequenceLength(i) for i in range(self.getNumSequences())]
 
         # Close file
-        print("wrote netCDF file " + filename)
+        print(("wrote netCDF file " + filename))
         d.close()
 
 
@@ -345,15 +347,15 @@ if __name__ == "__main__":
     dataset.appendLinked([ 0.20, 0.90 ] , [2])
 
     dataset.calculateStatistics()
-    print("class histogram:", dataset.classHist)
-    print("# of classes:", dataset.nClasses)
-    print("class 1 is: ", dataset.getClass(1))
-    print("targets: ", dataset.getField('target'))
+    print(("class histogram:", dataset.classHist))
+    print(("# of classes:", dataset.nClasses))
+    print(("class 1 is: ", dataset.getClass(1)))
+    print(("targets: ", dataset.getField('target')))
     dataset._convertToOneOfMany(bounds=[0, 1])
     print("converted targets: ")
-    print(dataset.getField('target'))
+    print((dataset.getField('target')))
     dataset._convertToClassNb()
-    print("reconverted to original:", dataset.getField('target'))
+    print(("reconverted to original:", dataset.getField('target')))
 
 
 

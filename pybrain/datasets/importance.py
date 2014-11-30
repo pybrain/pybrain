@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 __author__ = 'Tom Schaul, tom@idsia.ch'
 
 from scipy import ones, dot
@@ -40,9 +42,9 @@ class ImportanceDataSet(SequentialDataSet):
             totalError += e
             ponderation += sum(importance)
             if verbose:
-                print(    'out:       ', fListToString(list(res)))
-                print(    'correct:   ', fListToString(target))
-                print(    'importance:', fListToString(importance))
-                print(    'error: % .8f' % e)
+                print((    'out:       ', fListToString(list(res))))
+                print((    'correct:   ', fListToString(target)))
+                print((    'importance:', fListToString(importance)))
+                print((    'error: % .8f' % e))
         return totalError, ponderation
 

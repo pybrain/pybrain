@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 __author__ = 'Tom Schaul, tom@idsia.ch'
 
 from os import unlink, getcwd
@@ -62,12 +64,12 @@ def gradientCheck(module, tolerance=0.0001, dataset=None):
         print('Perfect gradient')
         return True
     else:
-        print('Incorrect gradient', precision)
+        print(('Incorrect gradient', precision))
         if isinstance(module, Network):
             index = 0
             for m in module._containerIterator():
                 if max(precision[index:index + m.paramdim]) > tolerance:
-                    print('Incorrect module:', m, res[-1][index:index + m.paramdim])
+                    print(('Incorrect module:', m, res[-1][index:index + m.paramdim]))
                 index += m.paramdim
         else:
             print(res)
@@ -83,7 +85,7 @@ def netCompare(net1, net2, forwardpasses=1, verbose=False):
         identical = False
         if verbose:
             print(net2)
-            print('-' * 80)
+            print(('-' * 80))
             print(net1)
 
     outN = zeros(net2.outdim)
@@ -110,8 +112,8 @@ def netCompare(net1, net2, forwardpasses=1, verbose=False):
     else:
         identical = False
         if verbose:
-            print(net2.__class__)
-            print(net1.__class__)
+            print((net2.__class__))
+            print((net1.__class__))
 
     return identical
 

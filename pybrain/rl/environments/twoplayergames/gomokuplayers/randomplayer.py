@@ -2,7 +2,7 @@ __author__ = 'Tom Schaul, tom@idsia.ch'
 
 from random import choice
 
-from gomokuplayer import GomokuPlayer
+from .gomokuplayer import GomokuPlayer
 
 
 class RandomGomokuPlayer(GomokuPlayer):

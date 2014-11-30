@@ -1,6 +1,6 @@
 __author__ = 'Thomas Rueckstiess, ruecksti@in.tum.de'
 
-from policygradient import PolicyGradientLearner
+from .policygradient import PolicyGradientLearner
 from scipy import zeros, mean
 
 ### NOT WORKING YET ###

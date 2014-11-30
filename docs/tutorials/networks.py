@@ -48,21 +48,21 @@ n.sortModules()
 
 """ Let's see what we did. """
 
-print n
+print(n)
 
 """ One way of using the network is to call its 'activate()' method with an input to be transformed. """
 
-print n.activate([1, 2])
+print(n.activate([1, 2]))
 
 """ We can access the trainable parameters (weights) of a connection directly, or read
 all weights of the network at once. """
 
-print hidden2out.params
-print n.params
+print(hidden2out.params)
+print(n.params)
 
 """ The former are the last slice of the latter. """
 
-print n.params[-3:] == hidden2out.params
+print(n.params[-3:] == hidden2out.params)
 
 """ Ok, after having covered the basics, let's move on to some additional concepts.
 First of all, we encourage you to name all modules, or connections you create, because that gives you
@@ -79,7 +79,7 @@ n2.addConnection(FullConnection(n2['h'], n2['out'], name='c2'))
 n2.sortModules()
 
 """ Printouts look more concise and readable: """
-print n2
+print(n2)
 
 """ There is an even quicker way to build networks though, as long as their structure is nothing
 more fancy than a stack of fully connected layers: """
@@ -96,21 +96,21 @@ n2.addRecurrentConnection(FullConnection(n2['h'], n2['h'], name='rec'))
 """ After every structural modification, if we want ot use the network, we call 'sortModules()' again"""
 
 n2.sortModules()
-print n2
+print(n2)
 
 """ As the network is now recurrent, successive activations produce different outputs: """
 
-print n2.activate([1, 2]),
-print n2.activate([1, 2]),
-print n2.activate([1, 2])
+print(n2.activate([1, 2]), end=' ')
+print(n2.activate([1, 2]), end=' ')
+print(n2.activate([1, 2]))
 
 """ The 'reset()' method re-initializes the network, and with it sets the recurrent
 activations to zero, so now we get the same results: """
 
 n2.reset()
-print n2.activate([1, 2]),
-print n2.activate([1, 2]),
-print n2.activate([1, 2])
+print(n2.activate([1, 2]), end=' ')
+print(n2.activate([1, 2]), end=' ')
+print(n2.activate([1, 2]))
 
 """ This is already a good coverage of the basics, but if you're an advanced user
 you might want to find out about the possibilities of nesting networks within

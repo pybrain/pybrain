@@ -3,7 +3,7 @@ __author__ = 'Tom Schaul, tom@idsia.ch'
 from random import choice
 from scipy import zeros
 
-from twoplayergame import TwoPlayerGame
+from .twoplayergame import TwoPlayerGame
 
 
 # TODO: undo operation
@@ -96,7 +96,7 @@ class CaptureGame(TwoPlayerGame):
 
     def getSensors(self):
         """ just a list of the board position states. """
-        return map(lambda x: x[1], sorted(self.b.items()))
+        return [x[1] for x in sorted(self.b.items())]
 
     def __str__(self):
         s = ''
@@ -133,7 +133,7 @@ class CaptureGame(TwoPlayerGame):
         self.b[pos] = c
         merge = False
         self.groups[pos] = self.size * pos[0] + pos[1]
-        freen = filter(lambda n: self.b[n] == self.EMPTY, self._neighbors(pos))
+        freen = [n for n in self._neighbors(pos) if self.b[n] == self.EMPTY]
         self.liberties[self.groups[pos]] = set(freen)
         for n in self._neighbors(pos):
             if self.b[n] == -c:
@@ -146,7 +146,7 @@ class CaptureGame(TwoPlayerGame):
                         self.liberties[newg].difference_update([pos])
                     else:
                         # merging 2 groups
-                        for p in self.groups.keys():
+                        for p in list(self.groups.keys()):
                             if self.groups[p] == oldg:
                                 self.groups[p] = newg
                         self.liberties[newg].update(self.liberties[oldg])
@@ -198,19 +198,19 @@ class CaptureGame(TwoPlayerGame):
         if self.b[pos] == self.EMPTY:
             return None
         g = self.groups[pos]
-        return len(filter(lambda x: x == g, self.groups.values()))
+        return len([x for x in list(self.groups.values()) if x == g])
 
     def getLegals(self, c):
         """ return all the legal positions for a color """
-        return filter(lambda p: self.b[p] == self.EMPTY, self._iterPos())
+        return [p for p in self._iterPos() if self.b[p] == self.EMPTY]
 
     def getAcceptable(self, c):
         """ return all legal positions for a color that don't commit suicide. """
-        return filter(lambda p: not self._suicide(c, p), self.getLegals(c))
+        return [p for p in self.getLegals(c) if not self._suicide(c, p)]
 
     def getKilling(self, c):
         """ return all legal positions for a color that immediately kill the opponent. """
-        return filter(lambda p: self._capture(c, p), self.getAcceptable(c))
+        return [p for p in self.getAcceptable(c) if self._capture(c, p)]
 
     def randomBoard(self, nbmoves):
         """ produce a random, undecided and legal capture-game board, after at most nbmoves.

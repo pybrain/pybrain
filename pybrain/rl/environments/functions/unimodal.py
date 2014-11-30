@@ -75,7 +75,7 @@ class AttractiveSectorFunction(FunctionEnvironment):
         self.xopt = (rand(self.xdim) - 0.5) * 9.8   
     
     def f(self, x):
-        from transformations import BBOBTransformationFunction
+        from .transformations import BBOBTransformationFunction
         quad = (x*self.xopt > 0)
         sz = 100 * x * quad + x * (quad==False)         
         return power(BBOBTransformationFunction.oscillatify(dot(sz, sz)), 0.9)
@@ -124,7 +124,7 @@ class GlasmachersFunction(FunctionEnvironment):
     xdimMin = 2
 
     def f(self, x):
-        m = self.xdim/2
+        m = self.xdim//2
         a = self.c * norm(x[:m])
         b = norm(x[m:])
         return a + b + sqrt(2*a*b+b**2)

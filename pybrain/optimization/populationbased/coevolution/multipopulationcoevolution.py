@@ -35,7 +35,7 @@ class MultiPopulationCoevolution(Coevolution):
             if other == self.pop:
                 continue
             # TODO: parametrize
-            bestPart = len(other)/2
+            bestPart = len(other)//2
             if bestPart < 1:
                 bestPart = 1
             self._doTournament(self.pop, other[:bestPart], self.tournamentSize)
