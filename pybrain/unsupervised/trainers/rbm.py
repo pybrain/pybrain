@@ -56,7 +56,7 @@ class RbmGibbsTrainer(Trainer):
                 zeros((self.rbm.visibleDim, self.rbm.hiddenDim)), \
                 zeros(self.rbm.hiddenDim), zeros(self.rbm.visibleDim)
 
-            for t in xrange(cfg.maxIter):
+            for t in range(cfg.maxIter):
                 #print("*** Iteration %2d **************************************" % t)
 
                 params = self.rbm.params

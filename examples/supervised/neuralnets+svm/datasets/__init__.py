@@ -1,1 +1,1 @@
-from datagenerator import generateNoisySines, generateGridData, generateClassificationData, plotData
+from .datagenerator import generateNoisySines, generateGridData, generateClassificationData, plotData

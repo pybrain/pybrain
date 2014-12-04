@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 from pybrain.structure import FeedForwardNetwork
 from pybrain.tools.validation    import ModuleValidator,Validator
 from pybrain.utilities           import percentError
@@ -64,7 +66,7 @@ if os.path.isfile(myneuralnet):
   #calculate the test DataSet based on the trained Neural Network
   ctsts = mv.calculateModuleOutput(n,tsts)
   tserr = v.MSE(ctsts,tsts['target'])
-  print 'MSE error on TSTS:',tserr
+  print('MSE error on TSTS:',tserr)
   myplot(trndata,tsts = tsts,ctsts = ctsts)
 
   pylab.show()

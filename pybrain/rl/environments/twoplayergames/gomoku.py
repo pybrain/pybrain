@@ -2,7 +2,7 @@ __author__ = 'Tom Schaul, tom@idsia.ch'
 
 from scipy import zeros
 
-from twoplayergame import TwoPlayerGame
+from .twoplayergame import TwoPlayerGame
 
 # TODO: factor out the similarities with the CaptureGame and Go.
 
@@ -95,7 +95,7 @@ class GomokuGame(TwoPlayerGame):
 
     def getSensors(self):
         """ just a list of the board position states. """
-        return map(lambda x: x[1], sorted(self.b.items()))
+        return [x[1] for x in sorted(self.b.items())]
 
     def __str__(self):
         s = ''
@@ -133,11 +133,11 @@ class GomokuGame(TwoPlayerGame):
 
     def getLegals(self, c):
         """ return all the legal positions for a color """
-        return filter(lambda p: self.b[p] == self.EMPTY, self._iterPos())
+        return [p for p in self._iterPos() if self.b[p] == self.EMPTY]
 
     def getKilling(self, c):
         """ return all legal positions for a color that immediately kill the opponent. """
-        return filter(lambda p: self._fiveRow(c, p), self.getLegals(c))
+        return [p for p in self.getLegals(c) if self._fiveRow(c, p)]
 
     def playToTheEnd(self, p1, p2):
         """ alternate playing moves between players until the game is over. """

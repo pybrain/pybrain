@@ -1,7 +1,6 @@
 """
 
 Initialize a game of Pente.
-
     >>> from pybrain.rl.environments.twoplayergames.pente import PenteGame
     >>> dim = 5
     >>> c = PenteGame((dim, dim))

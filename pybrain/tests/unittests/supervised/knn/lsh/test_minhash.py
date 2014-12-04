@@ -49,8 +49,13 @@ So let's put in some values that will hash to the same bucket
 
 Some "introspection" to check if everything went right
 
-    >>> m.buckets
-    defaultdict(<function <lambda> at ...>, {(0, 0): [(array([...True], dtype=bool), 'red')]})
+    Changed this test to work with python 2 AND 3.
+    Old correct output: defaultdict(<function <lambda> at ...>, {(0, 0): [(array([...True], dtype=bool), 'red')]})
+
+    >>> import pprint
+    >>> pprint.pprint(dict(m.buckets))
+    {(0, 0): [(array([ True,  True,  True,  True,  True], dtype=bool), 'red')]}
+
     >>> m._hash(array([1, 1, 0, 0, 0]))
     (0, 0)
 

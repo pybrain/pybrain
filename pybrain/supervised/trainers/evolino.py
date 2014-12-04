@@ -1,5 +1,6 @@
-__author__ = 'Michael Isik'
+from __future__ import print_function
 
+__author__ = 'Michael Isik'
 
 from numpy import Infinity
 
@@ -130,11 +131,11 @@ class EvolinoTrainer(Trainer):
             filter.apply(self._population)
 
         if self._max_fitness < self.evaluation.max_fitness:
-            if self.verbosity: print("GAINED FITNESS: ", self._max_fitness, " -->" , self.evaluation.max_fitness, "\n")
+            if self.verbosity: print(("GAINED FITNESS: ", self._max_fitness, " -->" , self.evaluation.max_fitness, "\n"))
             self._max_fitness = self.evaluation.max_fitness
             self._max_fitness_epoch = self.totalepochs
         else:
-            if self.verbosity: print("DIDN'T GAIN FITNESS:", "best =", self._max_fitness, "    current-best = ", self.evaluation.max_fitness, "\n")
+            if self.verbosity: print(("DIDN'T GAIN FITNESS:", "best =", self._max_fitness, "    current-best = ", self.evaluation.max_fitness, "\n"))
 
     def burstMutate(self):
         self.burstMutation.apply(self._population)

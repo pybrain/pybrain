@@ -1,7 +1,6 @@
 """
 
 Build a simple lstm network with peepholes:
-
     >>> n = buildSimpleLSTMNetwork(True)
     >>> print(n)
     simpleLstmNet

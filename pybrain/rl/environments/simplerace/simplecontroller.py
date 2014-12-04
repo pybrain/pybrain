@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 __author__ = 'Julian Togelius, julian@idsia.ch'
 
 from scipy import array
@@ -26,6 +28,6 @@ class SimpleController(Agent):
             steering = -1
         else:
             steering = 1
-        print("speed", self.speed, "angle", self.angleToCurrentWP, "driving", driving, "steering", steering)
+        print(("speed", self.speed, "angle", self.angleToCurrentWP, "driving", driving, "steering", steering))
         return array([driving, steering])
 

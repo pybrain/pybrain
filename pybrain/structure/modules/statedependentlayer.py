@@ -68,9 +68,9 @@ class StateDependentLayer(NeuronLayer, ParameterContainer):
                             ).reshape(len(outbuf), len(self.state))
 
             idx = 0
-            for j in xrange(len(outbuf)):
+            for j in range(len(outbuf)):
                 sigma_subst2 = dot(self.state ** 2, expln_params[j, :]**2)
-                for i in xrange(len(self.state)):
+                for i in range(len(self.state)):
                     self._derivs[idx] = ((outbuf[j] - inbuf[j]) ** 2 - sigma_subst2) / sigma_subst2 * \
                         self.state[i] ** 2 * expln_params[j, i] * explnPrime_params[j, i]
                     if self.autoalpha and sigma_subst2 != 0:

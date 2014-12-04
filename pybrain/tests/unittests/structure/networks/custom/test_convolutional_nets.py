@@ -1,7 +1,6 @@
 """
 
 Let's build a convolutional network designed for board games:
-
     >>> from pybrain.structure.networks.custom.convboard import ConvolutionalBoardNetwork
     >>> from scipy import array, ravel, var
     >>> N = ConvolutionalBoardNetwork(4, 3, 5)
@@ -41,8 +40,11 @@ The rest of that array has been padded with an arbitrary, but identical bias wei
 On the output, all the values should be distinct, except for two in the middle above
 because a cluster-size of 3x3 makes their input look identical.
 
-    >>> res[0,1] - res[0,2]
-    0.0
+    The prior output was 0.0. Need to test this differently due to
+    print precision differences in 2 and 3.
+    >>> import sys
+    >>> res[0,1] - res[0,2] < sys.float_info.epsilon
+    True
 
     >>> res[0,1] == res[0,3]
     False

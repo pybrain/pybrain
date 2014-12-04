@@ -1,7 +1,7 @@
 __author__ = 'Tom Schaul, tom@idsia.ch'
 
-from doublepole import DoublePoleEnvironment
-from nonmarkovpole import NonMarkovPoleEnvironment
+from .doublepole import DoublePoleEnvironment
+from .nonmarkovpole import NonMarkovPoleEnvironment
 
 
 class NonMarkovDoublePoleEnvironment(DoublePoleEnvironment, NonMarkovPoleEnvironment):

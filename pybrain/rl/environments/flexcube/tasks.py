@@ -18,7 +18,7 @@ __author__ = 'Frank Sehnke, sehnke@in.tum.de'
 
 from pybrain.rl.environments import EpisodicTask
 from scipy import array, r_, clip
-import sensors
+from . import sensors
 
 #Task basis class
 class NoRewardTask(EpisodicTask):

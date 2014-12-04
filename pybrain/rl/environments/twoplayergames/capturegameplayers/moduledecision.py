@@ -1,10 +1,12 @@
+from __future__ import print_function
+
 __author__ = 'Tom Schaul, tom@idsia.ch'
 
 
 from scipy import zeros, ones
 
 from pybrain.rl.environments.twoplayergames import CaptureGame
-from randomplayer import RandomCapturePlayer
+from .randomplayer import RandomCapturePlayer
 from pybrain.utilities import drawGibbs
 
 
@@ -43,21 +45,21 @@ class ModuleDecidingPlayer(RandomCapturePlayer):
         """ draw index from an array of values, filtering out illegal moves. """
         if not min(a) >= 0:
             print(a)
-            print(min(a))
-            print(self.module.params)
-            print(self.module.inputbuffer)
-            print(self.module.outputbuffer)
+            print((min(a)))
+            print((self.module.params))
+            print((self.module.inputbuffer))
+            print((self.module.outputbuffer))
             raise Exception('Non-positive value in array?')
         legals = self.game.getLegals(self.color)
         vals = ones(len(a))*(-100)*(1+self.temperature)
         for i in map(self._convertPosToIndex, legals):
             vals[i] = a[i]
         drawn = self._convertIndexToPos(drawGibbs(vals, self.temperature))
-        assert drawn in legals
+        assert drawn in legals, (drawn, legals)
         return drawn
 
     def _convertIndexToPos(self, i):
-        return (i/self.game.size, i%self.game.size)
+        return (i//self.game.size, i%self.game.size)
 
     def _convertPosToIndex(self, p):
         return p[0]*self.game.size+p[1]

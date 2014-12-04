@@ -1,5 +1,4 @@
-from __future__ import with_statement
-
+from __future__ import print_function
 
 __author__ = 'Daan Wierstra and Tom Schaul'
 
@@ -184,13 +183,13 @@ class Network(Module, ParameterContainer):
             if node not in graph:
                 # Zero incoming connections.
                 graph[node] = [0]
-        for c in chain(*self.connections.values()):
+        for c in chain(*list(self.connections.values())):
             graph[c.inmod].append(c.outmod)
             # Update the count of incoming arcs in outnode.
             graph[c.outmod][0] += 1
 
         # Find all roots (nodes with zero incoming arcs).
-        roots = [node for (node, nodeinfo) in graph.items() if nodeinfo[0] == 0]
+        roots = [node for (node, nodeinfo) in list(graph.items()) if nodeinfo[0] == 0]
 
         # Make sure the ordering on all runs is the same.
         roots.sort(key=lambda x: x.name)
@@ -244,8 +243,8 @@ class Network(Module, ParameterContainer):
         # TODO: make this a property; indim and outdim are invalid before
         # .sortModules is called!
         # Determine the input and output dimensions of the network.
-        self.indim = sum(m.indim for m in self.inmodules)
-        self.outdim = sum(m.outdim for m in self.outmodules)
+        self.indim = int(sum(m.indim for m in self.inmodules))
+        self.outdim = int(sum(m.outdim for m in self.outmodules))
 
         self.indim = 0
         for m in self.inmodules:
@@ -296,7 +295,7 @@ class Network(Module, ParameterContainer):
         for m in net.modules:
             cnet.addModule(m)
 
-        for clist in net.connections.values():
+        for clist in list(net.connections.values()):
             for c in clist:
                 cnet.addConnection(c)
         if isinstance(net, RecurrentNetwork):

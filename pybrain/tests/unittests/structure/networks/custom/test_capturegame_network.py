@@ -1,6 +1,5 @@
 """
 Build a CaptureGameNetwork with LSTM cells
-
     >>> from pybrain.structure.networks.custom import CaptureGameNetwork
     >>> from pybrain import MDLSTMLayer
     >>> size = 2
@@ -18,10 +17,10 @@ Check it's string representation
 Check some of the connections dimensionalities
     >>> c1 = n.connections[n['hidden(1, 0, 3)']][0]
     >>> c2 = n.connections[n['hidden(0, 1, 2)']][-1]
-    >>> print(c1.indim, c1.outdim)
-    1 1
-    >>> print(c2.indim, c2.outdim)
-    1 1
+    >>> print((c1.indim, c1.outdim))
+    (1, 1)
+    >>> print((c2.indim, c2.outdim))
+    (1, 1)
     >>> n.paramdim
     21
 

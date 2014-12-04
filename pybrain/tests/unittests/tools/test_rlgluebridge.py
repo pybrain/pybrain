@@ -116,11 +116,11 @@ class PseudoPybrainAgent(LearningAgent):
     def __init__(self): pass
 
     def integrateObservation(self, obs):
-        print("I saw %s" % obs)
+        print(("I saw %s" % obs))
 
     def getAction(self):
         action = array([2.7, -1])
-        print("I did %s" % action)
+        print(("I did %s" % action))
         return action
 
     def giveReward(self, r):
@@ -130,7 +130,7 @@ class PseudoPybrainAgent(LearningAgent):
                       negative
             :type r: double
         """
-        print("I was given %.2f" % float(r))
+        print(("I was given %.2f" % float(r)))
 
     def newEpisode(self):
         print("I got a new episode")

@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 __author__ = 'Frank Sehnke, sehnke@in.tum.de'
 
 from pybrain.rl.environments.ode import ODEEnvironment, sensors, actuators
@@ -95,7 +97,7 @@ class CCRLEnvironment(ODEEnvironment):
             world = filter(lambda x: isinstance(x, xode.parser.World), self.root.getChildren())[0]
         except IndexError:
             # malicious format, no world tag found
-            print("no <world> tag found in " + filename + ". quitting.")
+            print(("no <world> tag found in " + filename + ". quitting."))
             sys.exit()
         self.world = world.getODEObject()
         self._setWorldParameters()
@@ -104,7 +106,7 @@ class CCRLEnvironment(ODEEnvironment):
             space = filter(lambda x: isinstance(x, xode.parser.Space), world.getChildren())[0]
         except IndexError:
             # malicious format, no space tag found
-            print("no <space> tag found in " + filename + ". quitting.")
+            print(("no <space> tag found in " + filename + ". quitting."))
             sys.exit()
         self.space = space.getODEObject()
 
@@ -122,7 +124,7 @@ class CCRLEnvironment(ODEEnvironment):
             print("-------[body/mass list]-----")
             for (body, _) in self.body_geom:
                 try:
-                    print(body.name, body.getMass())
+                    print((body.name, body.getMass()))
                 except AttributeError:
                     print("<Nobody>")
 

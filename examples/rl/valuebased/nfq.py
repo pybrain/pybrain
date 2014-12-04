@@ -1,6 +1,7 @@
+from __future__ import print_function
+
 #!/usr/bin/env python
 __author__ = 'Thomas Rueckstiess, ruecksti@in.tum.de'
-
 
 from pybrain.rl.environments.cartpole import CartPoleEnvironment, DiscreteBalanceTask, CartPoleRenderer
 from pybrain.rl.agents import LearningAgent
@@ -63,8 +64,8 @@ while(True):
     if not render:
         plotPerformance(performance, pf_fig)
 
-    print "reward avg", r
-    print "explorer epsilon", learner.explorer.epsilon
-    print "num episodes", agent.history.getNumSequences()
-    print "update step", len(performance)
+    print("reward avg", r)
+    print("explorer epsilon", learner.explorer.epsilon)
+    print("num episodes", agent.history.getNumSequences())
+    print("update step", len(performance))
 

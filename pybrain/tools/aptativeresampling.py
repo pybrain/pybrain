@@ -1,8 +1,9 @@
+from __future__ import print_function
+
 __author__ = "Tom Schaul, tom@idsia.ch"
 
 
 from scipy import median
-
 
 class AdaptiveResampler(object):
     """ A simplified version of the uncertainty handling method described in
@@ -53,14 +54,14 @@ def testnes():
     fun2 = AdaptiveResampler(fun, 10)
     l = XNES(fun, x0, maxEvaluations=1100, storeAllEvaluations=True)
     res = l.learn()
-    print(sum(res[0]**2) )
-    pylab.plot(map(abs, l._allEvaluations))
+    print((sum(res[0]**2) ))
+    pylab.plot(list(map(abs, l._allEvaluations)))
     
     l2 = XNES(fun2, x0, maxEvaluations=1100, storeAllEvaluations=True)
     res = l2.learn()
-    print(sum(res[0]**2) )
-    print(fun2.resample_over)
-    pylab.plot(map(abs,l2._allEvaluations))
+    print((sum(res[0]**2) ))
+    print((fun2.resample_over))
+    pylab.plot(list(map(abs,l2._allEvaluations)))
     pylab.semilogy()
     pylab.show()
     

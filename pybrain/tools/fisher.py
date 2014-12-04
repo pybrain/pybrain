@@ -35,7 +35,7 @@ def calcInvFisher(sigma, invSigma=None, factorSigma=None):
 
     invF = [mat(1 / (invSigma[-1, -1] + factorSigma[-1, -1] ** -2))]
     invD = 1 / invSigma[-1, -1]
-    for k in reversed(range(dim - 1)):
+    for k in reversed(list(range(dim - 1))):
         v = invSigma[k + 1:, k]
         w = invSigma[k, k]
         wr = w + factorSigma[k, k] ** -2

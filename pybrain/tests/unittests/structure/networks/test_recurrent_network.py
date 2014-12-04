@@ -1,7 +1,6 @@
 """
 
 Build a simple recurrent network:
-
     >>> n = buildRecurrentNetwork()
     >>> print(n)
     RecurrentNetwork

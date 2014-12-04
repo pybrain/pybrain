@@ -1,8 +1,9 @@
+from __future__ import print_function
+
 __author__ = 'Tom Schaul, tom@idsia.ch'
 
 import os
 import pickle
-
 
 def getAllFilesIn(dir, tag='', extension='.pickle'):
     """ return a list of all filenames in the specified directory
@@ -45,8 +46,8 @@ def pickleDumpDict(name, d):
         pickle.dump(d, f)
         f.close()
         return True
-    except Exception, e:
-        print('Error writing into', name, ':', str(e))
+    except Exception as e:
+        print(('Error writing into', name, ':', str(e)))
         return False
 
 
@@ -56,15 +57,15 @@ def pickleReadDict(name):
         f = open(name + '.pickle')
         val = pickle.load(f)
         f.close()
-    except Exception, e:
-        print('Nothing read from', name, ':', str(e))
+    except Exception as e:
+        print(('Nothing read from', name, ':', str(e)))
         val = {}
     return val
 
 
 def addToDictFile(name, key, data, verbose=False):
     if verbose:
-        print('.',)
+        print(('.',))
     d = pickleReadDict(name)
     if key not in d:
         d[key] = []

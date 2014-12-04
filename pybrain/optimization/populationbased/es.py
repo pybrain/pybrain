@@ -25,7 +25,7 @@ class ES(BlackBoxOptimizer):
         self.hallOfFame = []
         # population is a list of (fitness, individual) tuples.
         self.population = [(self._oneEvaluation(self._initEvaluable), self._initEvaluable)] * self._popsize
-        map(self._replaceByMutation, range(1, self._popsize))
+        list(map(self._replaceByMutation, list(range(1, self._popsize))))
         self._sortPopulation()
 
     @property
@@ -53,9 +53,9 @@ class ES(BlackBoxOptimizer):
 
         # mutate the offspring
         if self.elitism:
-            map(self._replaceByMutation, range(self.mu, self._popsize))
+            list(map(self._replaceByMutation, list(range(self.mu, self._popsize))))
         else:
-            map(self._replaceByMutation, range(self._popsize))
+            list(map(self._replaceByMutation, list(range(self._popsize))))
 
         self._sortPopulation()
 

@@ -1,10 +1,12 @@
+from __future__ import print_function
+
 __author__ = 'Tom Schaul, tom@idsia.ch'
 
 
 from scipy import zeros, ones
 
 from pybrain.rl.environments.twoplayergames import GomokuGame
-from randomplayer import RandomGomokuPlayer
+from .randomplayer import RandomGomokuPlayer
 from pybrain.utilities import drawGibbs
 
 
@@ -43,10 +45,10 @@ class ModuleDecidingPlayer(RandomGomokuPlayer):
         """ draw index from an array of values, filtering out illegal moves. """
         if not min(a) >= 0:
             print(a)
-            print(min(a))
-            print(self.module.params)
-            print(self.module.inputbuffer)
-            print(self.module.outputbuffer)
+            print((min(a)))
+            print((self.module.params))
+            print((self.module.inputbuffer))
+            print((self.module.outputbuffer))
             raise Exception('No positve value in array?')
         legals = self.game.getLegals(self.color)
         vals = ones(len(a))*(-100)*(1+self.temperature)
@@ -57,7 +59,7 @@ class ModuleDecidingPlayer(RandomGomokuPlayer):
         return drawn
 
     def _convertIndexToPos(self, i):
-        return (i/self.game.size[0], i%self.game.size[0])
+        return (i//self.game.size[0], i%self.game.size[0])
 
     def _convertPosToIndex(self, p):
         return p[0]*self.game.size[0]+p[1]

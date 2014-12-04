@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 __author__ = 'Tom Schaul, tom@idsia.ch'
 
 from pybrain.rl.agents.logging import LoggingAgent

@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 __author__ = 'Daan Wierstra and Tom Schaul'
 
 from scipy import eye, multiply, ones, dot, array, outer, rand, zeros, diag, randn, exp
@@ -166,7 +168,7 @@ class VanillaGradientEvolutionStrategies(DistributionBasedOptimizer):
             self.maxLearningSteps = self.numLearningSteps
 
         if self.verbose:
-            print('Evals:', self.numEvaluations,)
+            print(('Evals:', self.numEvaluations,))
 
         self.allCenters.append(self.x.copy())
         self.allFactorSigmas.append(self.factorSigma.copy())

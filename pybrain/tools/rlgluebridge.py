@@ -1,4 +1,4 @@
-from __future__ import division
+from __future__ import print_function
 
 """This module provides functionality to use pybrain with rlglue and to use it
 for the rlcompetition.
@@ -153,7 +153,7 @@ class RlglueAgentAdapter(object):
     def agent_message(self, message):
         # Originally thought to enable dynamic methods for agents, but this
         # does not make a lot of sense in a dynamic language (and in OO?)
-        print("Message:", message)
+        print(("Message:", message))
 
     def _getAction(self):
         """
@@ -278,12 +278,12 @@ class RlCompBenchmark(object):
         # and time.
         try:
             os.makedirs(self.benchmarkDir)
-        except OSError, e:
+        except OSError as e:
             if not "File exists" in str(e):
                 raise e
 
         for name, agent_klass in self.agents:
-            todo = xrange(self.loops)
+            todo = range(self.loops)
             if not self.overwrite:
                 # If overwrite is set to false, we will only do the experiments
                 # that have not been done.

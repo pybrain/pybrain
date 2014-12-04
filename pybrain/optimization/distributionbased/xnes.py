@@ -1,5 +1,6 @@
-__author__ = 'Tom Schaul, Sun Yi, Tobias Glasmachers'
+from __future__ import print_function
 
+__author__ = 'Tom Schaul, Sun Yi, Tobias Glasmachers'
 
 from pybrain.tools.rankingfunctions import HansenRanking
 from pybrain.optimization.distributionbased.distributionbased import DistributionBasedOptimizer
@@ -58,7 +59,7 @@ class XNES(DistributionBasedOptimizer):
         utilities /= sum(utilities)  # make the utilities sum to 1
         if self.uniformBaseline:
             utilities -= 1./self.batchSize
-        samples = array(map(self._base2sample, self._population))
+        samples = array(list(map(self._base2sample, self._population)))
 
         dCenter = dot(samples.T, utilities)
         covGradient = dot(array([outer(s,s) - I for s in samples]).T, utilities)
@@ -92,7 +93,7 @@ class XNES(DistributionBasedOptimizer):
     def _currentEvaluations(self):
         fits = [self._allEvaluations[i] for i in self._pointers]
         if self._wasOpposed:
-            fits = map(lambda x:-x, fits)
+            fits = [-x for x in fits]
         return fits
 
     def _produceSample(self):
@@ -124,11 +125,11 @@ class XNES(DistributionBasedOptimizer):
             [self._oneEvaluation(self._sample2base(self._produceSample())) for _ in range(self.batchSize)]
             self._pointers = list(range(len(self._allEvaluated)-self.batchSize, len(self._allEvaluated)))
         else:
-            reuseindices, newpoints = importanceMixing(map(self._base2sample, self._currentEvaluations),
+            reuseindices, newpoints = importanceMixing(list(map(self._base2sample, self._currentEvaluations)),
                                                        self._oldpdf, self._newpdf, self._produceSample, self.forcedRefresh)
             [self._oneEvaluation(self._sample2base(s)) for s in newpoints]
             self._pointers = ([self._pointers[i] for i in reuseindices]+
-                              range(len(self._allEvaluated)-self.batchSize+len(reuseindices), len(self._allEvaluated)))
+                              list(range(len(self._allEvaluated)-self.batchSize+len(reuseindices), len(self._allEvaluated))))
         self._allGenSteps.append(self._allGenSteps[-1]+self.batchSize-len(reuseindices))
         self._allPointers.append(self._pointers)
 
@@ -140,5 +141,5 @@ if __name__ == '__main__':
     dim = 10
     f = RosenbrockFunction(dim)
     l = XNES(f, -ones(dim))
-    print(l.learn())
-    print('Evaluations needed:', len(l._allEvaluations))
+    print((l.learn()))
+    print(('Evaluations needed:', len(l._allEvaluations)))

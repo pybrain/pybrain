@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 #!/usr/bin/env python
 """ A simple example on how to use the GaussianProcess class
 in pybrain, for one and two dimensions. """
@@ -30,7 +32,7 @@ gp.plotCurves(showSamples=True)
 
 # you can also test the gp on single points, but this deletes the
 # original testing grid. it can be restored with a call to _buildGrid()
-print gp.testOnArray(array([[0.4]]))
+print(gp.testOnArray(array([[0.4]])))
 
 
 # --- example on how to use the GP in 2 dimensions
@@ -41,12 +43,12 @@ figure()
 
 x,y = mgrid[0:5:4j, 0:5:4j]
 z = cos(x)*sin(y)
-(x, y, z) = map(ravel, [x, y, z])
+(x, y, z) = list(map(ravel, [x, y, z]))
 
 for i,j,k in zip(x, y, z):
     ds.addSample([i, j], [k])
 
-print "preparing plots. this can take a few seconds..."
+print("preparing plots. this can take a few seconds...")
 gp.trainOnDataset(ds)
 gp.plotCurves()
 

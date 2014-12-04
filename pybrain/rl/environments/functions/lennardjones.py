@@ -11,7 +11,7 @@ class LennardJones(MultiModalFunction):
     input are the Cartesian coordinates of all atoms."""
     
     def f(self, x):
-        N = self.xdim / 3
+        N = self.xdim // 3
         coords = x.reshape((N, 3))
         distances = sqrt(scipy.sum((tile(coords, (N, 1, 1)) - swapaxes(tile(coords, (N, 1, 1)), 0, 1)) ** 2, axis=2)) + eye(N)
         return 2 * sum(ravel(distances ** -12 - distances ** -6))
@@ -28,7 +28,7 @@ class LennardJones(MultiModalFunction):
     
     @property
     def desiredValue(self):
-        N = self.xdim / 3
+        N = self.xdim // 3
         return self.BEST_KNOWN_TABLE[N] + 1e-5
     
     BEST_KNOWN_TABLE = {0:0, 1:0,

@@ -1,7 +1,6 @@
 """
 
 Build a decomposable network
-
     >>> n = buildDecomposableNetwork()
 
 Check if it was built correctly

@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 __author__ = 'Thomas Rueckstiess, ruecksti@in.tum.de'
 
 import sys
@@ -123,7 +125,7 @@ class XMLstruct:
     def hasSubtag(self, name=None):
         """determine whether current tag contains other tags, and returns
         the tag with a matching name (if name is given) or True (if not)"""
-        if self.tag.has_key('Icontain'):
+        if 'Icontain' in self.tag:
             if name is None:
                 return(True)
             else:
@@ -135,14 +137,14 @@ class XMLstruct:
     def getSubtag(self, name=None):
         """determine whether current tag contains other tags, and returns
         the tag with a matching name (if name is given) or None (if not)"""
-        if self.tag.has_key('Icontain'):
+        if 'Icontain' in self.tag:
             for subtag in self.tag['Icontain']:
                 if subtag.name == name: return(subtag)
         return(None)
 
     def nbAttributes(self):
         """return number of user attributes the current tag has"""
-        nAttr = len(self.tag.keys()) - 1
+        nAttr = len(list(self.tag.keys())) - 1
         if self.hasSubtag():
             nAttr -= 1
         return nAttr
@@ -151,7 +153,7 @@ class XMLstruct:
     def scale(self, sc, scaleset=set([]), exclude=set([])):
         """for all tags not in the exclude set, scale all attributes whose names are in scaleset by the given factor"""
         if self.name not in exclude:
-            for name, val in self.tag.iteritems():
+            for name, val in self.tag.items():
                 if name in scaleset:
                     self.tag[name] = val * sc
         if self.hasSubtag():
@@ -162,7 +164,7 @@ class XMLstruct:
     def write(self, file, depth=0):
         """parse XML structure recursively and append to the output fileID,
         increasing the offset (tabs) while descending into the tree"""
-        if not self.tag.has_key('myName'):
+        if 'myName' not in self.tag:
             print("Error parsing XML structure: Tag name missing!")
             sys.exit(1)
         # find number of attributes (disregarding special keys)
@@ -173,7 +175,7 @@ class XMLstruct:
         # print(start tag, with attributes if present)
         if nAttr > 0:
             file.write(self._tab * depth + "<" + self.tag['myName'] + " " + \
-                ' '.join([name + '="' + str(val) + '"' for name, val in self.tag.iteritems() \
+                ' '.join([name + '="' + str(val) + '"' for name, val in self.tag.items() \
                 if name != 'myName' and name != 'Icontain']) + endmark + '\n')
         else:
             file.write(self._tab * depth + "<" + self.tag['myName'] + ">\n")

@@ -30,7 +30,7 @@ class ClassificationDataSetPlot(object):
             out = module.activate(sample[0])
             outputs.append(out)
             valid_output.append(out[sample[1].argmax()])
-        plt.fill_between(range(len(valid_output)), 1, valid_output, facecolor='k', alpha=0.8)
+        plt.fill_between(list(range(len(valid_output))), 1, valid_output, facecolor='k', alpha=0.8)
         plt.plot(outputs, linewidth=4, alpha=0.7)
         plt.yticks(bounds)
 
@@ -84,7 +84,7 @@ class ClassificationDataSetPlot(object):
         confidence_s = []
         correct = 0
 
-        for seq_i in xrange(num_sequences):
+        for seq_i in range(num_sequences):
             seq = dataset.getSequence(seq_i)
             outputs_mean = calculate_module_output_mean(module, seq[0])
             actual.append(np.argmax(outputs_mean))
@@ -98,7 +98,7 @@ class ClassificationDataSetPlot(object):
         plt.title('{}% Correct Classification (red dots mean bad classification)'.format(correct * 100 / num_sequences))
         plt.xlabel('Sequence')
         plt.ylabel('Class')
-        plt.scatter(range(num_sequences), expected, s=s, c='r', linewidths=0)
-        plt.scatter(range(num_sequences), actual, s=s, c='k')
-        plt.scatter(confidence_x, range(module.outdim) * num_sequences, s=s*np.array(confidence_s), c='g', linewidths=0, alpha=0.66)
-        plt.yticks(range(dataset.nClasses), dataset.class_labels)
+        plt.scatter(list(range(num_sequences)), expected, s=s, c='r', linewidths=0)
+        plt.scatter(list(range(num_sequences)), actual, s=s, c='k')
+        plt.scatter(confidence_x, list(range(module.outdim)) * num_sequences, s=s*np.array(confidence_s), c='g', linewidths=0, alpha=0.66)
+        plt.yticks(list(range(dataset.nClasses)), dataset.class_labels)

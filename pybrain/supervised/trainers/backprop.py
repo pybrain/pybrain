@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 __author__ = 'Daan Wierstra and Tom Schaul'
 
 from scipy import dot, argmax
@@ -6,6 +8,7 @@ from math import isnan
 from pybrain.supervised.trainers.trainer import Trainer
 from pybrain.utilities import fListToString
 from pybrain.auxiliary import GradientDescent
+from functools import reduce
 
 
 class BackpropTrainer(Trainer):
@@ -67,7 +70,7 @@ class BackpropTrainer(Trainer):
                 self.module.resetDerivatives()
 
         if self.verbose:
-            print("Total error:", errors / ponderation)
+            print("Total error: {z: .12g}".format(z=errors / ponderation))
         if self.batchlearning:
             self.module._setParameters(self.descent(self.module.derivs))
         self.epoch += 1
@@ -124,7 +127,7 @@ class BackpropTrainer(Trainer):
                 approxderiv = (righterror - lefterror) / (2 * e)
                 self.module.params[p] = storedoldval
                 numericalDerivs.append(approxderiv)
-            r = zip(analyticalDerivs, numericalDerivs)
+            r = list(zip(analyticalDerivs, numericalDerivs))
             res.append(r)
             if not silent:
                 print(r)
@@ -150,11 +153,11 @@ class BackpropTrainer(Trainer):
             errors.append(e)
             ponderatedErrors.append(e / i)
         if verbose:
-            print('All errors:', ponderatedErrors)
+            print(('All errors:', ponderatedErrors))
         assert sum(importances) > 0
         avgErr = sum(errors) / sum(importances)
         if verbose:
-            print('Average error:', avgErr)
+            print(('Average error:', avgErr))
             print(('Max error:', max(ponderatedErrors), 'Median error:',
                    sorted(ponderatedErrors)[len(errors) / 2]))
         return avgErr
@@ -252,6 +255,6 @@ class BackpropTrainer(Trainer):
         #self.trainingErrors.append(self.testOnData(trainingData))
         self.ds = dataset
         if verbose:
-            print('train-errors:', fListToString(self.trainingErrors, 6))
-            print('valid-errors:', fListToString(self.validationErrors, 6))
+            print(('train-errors:', fListToString(self.trainingErrors, 6)))
+            print(('valid-errors:', fListToString(self.validationErrors, 6)))
         return self.trainingErrors[:bestepoch], self.validationErrors[:1 + bestepoch]

@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 """An attempt to implement Randlov and Alstrom (1998). They successfully
 use reinforcement learning to balance a bicycle, and to control it to drive
 to a specified goal location. Their work has been used since then by a few
@@ -415,7 +417,7 @@ for irehearsal in range(7000):
         r = exp.doEpisodes(1)
         perform_cumreward = task.getTotalReward()
         perform_cumrewards.append(perform_cumreward)
-        print 'PERFORMANCE: cumreward:', perform_cumreward, 'nsteps:', len(r[0])
+        print('PERFORMANCE: cumreward:', perform_cumreward, 'nsteps:', len(r[0]))
     
         # Swap back the learning agent.
         performance_agent.reset()

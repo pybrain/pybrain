@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 __author__ = 'Tom Schaul, tom@idsia.ch'
 
 from pybrain.structure.networks.feedforward import FeedForwardNetwork
@@ -99,7 +101,7 @@ class SwipingNetwork(FeedForwardNetwork):
                     # swipe directions are towards higher coordinates on dim D if the swipe%(2**D) = 0
                     # and towards lower coordinates otherwise.
                     previousunit = list(hunit)
-                    if (swipe / 2 ** dim) % 2 == 0:
+                    if (swipe // 2 ** dim) % 2 == 0:
                         previousunit[dim] -= 1
                         dir = '+'
                     else:
@@ -124,12 +126,12 @@ class SwipingNetwork(FeedForwardNetwork):
         if dic == None:
             dic = self.predefined
         for k, val in sorted(dic.items()):
-            print(' ' * indent, k,)
+            print((' ' * indent, k,))
             if isinstance(val, dict):
                 print(':')
                 self._printPredefined(val, indent + 2)
             elif isinstance(val, MotherConnection):
-                print(val.params)
+                print((val.params))
             else:
                 print(val)
 
