@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 #!/usr/bin/env python
 """ A little script illustrating how to use a (randomly initialized)
 convolutional network to play a game of Pente. """
@@ -11,10 +13,10 @@ from pybrain.structure.networks.custom.convboard import ConvolutionalBoardNetwor
 
 dim = 7
 g = PenteGame((dim, dim))
-print g
+print(g)
 n = ConvolutionalBoardNetwork(dim, 5, 3)
 p1 = ModuleDecidingPlayer(n, g)
 p2 = RandomGomokuPlayer(g)
 p2.color = g.WHITE
 g.playToTheEnd(p1, p2)
-print g
+print(g)

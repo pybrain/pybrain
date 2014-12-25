@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 __author__ = 'Tom Schaul, tom@idsia.ch and Daan Wiertra, daan@idsia.ch'
 
 from scipy import zeros, array, mean, randn, exp, dot, argmax
@@ -113,8 +115,8 @@ class RWR(DirectSearchLearner):
         self.initr0Avg = []
         for b in range(batches):
             if self.verbose:
-                print
-                print 'Batch', b + 1
+                print()
+                print(('Batch', b + 1))
             self.reset()
             self.learnOneBatch()
             self.totalEpisodes += self.batchSize
@@ -126,7 +128,7 @@ class RWR(DirectSearchLearner):
                 rws += (sum(tmp) / float(len(tmp)))
             self.greedyAvg.append(rws / self.greedyRuns)
             if self.verbose:
-                print '::', round(rws / self.greedyRuns, 5), '::'
+                print(('::', round(rws / self.greedyRuns, 5), '::'))
 
     def learnOneBatch(self):
         # collect a batch of runs as experience
@@ -172,9 +174,9 @@ class RWR(DirectSearchLearner):
         avgR0 = mean(r0s)
         avgReward /= self.batchSize
         if self.verbose:
-            print '***', round(avgLen, 3), '***', '(avg init exp. return:', round(avgR0, 5), ')',
-            print 'avg reward', round(avgReward, 5), '(tau:', round(self.tau, 3), ')'
-            print lens
+            print(('***', round(avgLen, 3), '***', '(avg init exp. return:', round(avgR0, 5), ')',))
+            print(('avg reward', round(avgReward, 5), '(tau:', round(self.tau, 3), ')'))
+            print(lens)
         # storage:
         self.rewardAvg.append(avgReward)
         self.lengthAvg.append(avgLen)
@@ -199,9 +201,9 @@ class RWR(DirectSearchLearner):
 #
 #
 #            # train the value estimating network
-#            if self.verbose: print 'Old value error:  ', self.vbp.testOnData()
+#            if self.verbose: print('Old value error:  ', self.vbp.testOnData())
 #            self.vbp.trainEpochs(self.valueTrainEpochs)
-#            if self.verbose: print 'New value error:  ', self.vbp.testOnData()
+#            if self.verbose: print('New value error:  ', self.vbp.testOnData())
 #
 #            # produce the values and analyze
 #            rminusvs = []

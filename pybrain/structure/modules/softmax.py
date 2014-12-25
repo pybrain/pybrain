@@ -3,7 +3,7 @@ __author__ = 'Tom Schaul, tom@idsia.ch'
 
 import scipy
 
-from neuronlayer import NeuronLayer
+from pybrain.structure.modules.neuronlayer import NeuronLayer
 from pybrain.tools.functions import safeExp
 
 

@@ -34,7 +34,7 @@ def generateSuperimposedSineData( sinefreqs, space, yScales=None ):
     data = sine.getFuncValues(space)
 
     dataset.newSequence()
-    for i in xrange(len(data)):
+    for i in range(len(data)):
         dataset.addSample([], data[i])
 
     return dataset

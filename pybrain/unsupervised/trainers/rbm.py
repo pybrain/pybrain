@@ -56,8 +56,8 @@ class RbmGibbsTrainer(Trainer):
                 zeros((self.rbm.visibleDim, self.rbm.hiddenDim)), \
                 zeros(self.rbm.hiddenDim), zeros(self.rbm.visibleDim)
 
-            for t in xrange(cfg.maxIter):
-                #print "*** Iteration %2d **************************************" % t
+            for t in range(cfg.maxIter):
+                #print("*** Iteration %2d **************************************" % t)
 
                 params = self.rbm.params
                 params = params.reshape((self.rbm.visibleDim, self.rbm.hiddenDim))
@@ -67,28 +67,28 @@ class RbmGibbsTrainer(Trainer):
 
                 w, hb, vb = self.calcUpdateByRows(rows)
 
-                #print "Delta: "
-                #print "Weight: ",
-                #print w
-                #print "Visible bias: ",
-                #print vb
-                #print "Hidden bias: ",
-                #print hb
-                #print ""
+                #print("Delta: ")
+                #print("Weight: ",)
+                #print(w)
+                #print("Visible bias: ",)
+                #print(vb)
+                #print("Hidden bias: ",)
+                #print(hb)
+                #print("")
 
                 olduw = uw = olduw * mm + \
                 	cfg.rWeights * (w - cfg.weightCost * params)
                 olduhb = uhb = olduhb * mm + cfg.rHidBias * hb
                 olduvb = uvb = olduvb * mm + cfg.rVisBias * vb
 
-                #print "Delta after momentum: "
-                #print "Weight: ",
-                #print uw
-                #print "Visible bias: ",
-                #print uvb
-                #print "Hidden bias: ",
-                #print uhb
-                #print ""
+                #print("Delta after momentum: ")
+                #print("Weight: ",)
+                #print(uw)
+                #print("Visible bias: ",)
+                #print(uvb)
+                #print("Hidden bias: ",)
+                #print(uhb)
+                #print("")
 
                 # update the parameters of the original rbm
                 params += uw
@@ -100,15 +100,15 @@ class RbmGibbsTrainer(Trainer):
                 self.invRbm = self.rbm.invert()
                 self.invRbm.biasParams[:] = invBiasParams
 
-                #print "Updated "
-                #print "Weight: ",
-                #print self.rbm.connections[self.rbm['visible']][0].params.reshape( \
+                #print("Updated ")
+                #print("Weight: ",)
+                #print(self.rbm.connections[self.rbm['visible']][0].params.reshape( \)
                 #    (self.rbm.indim, self.rbm.outdim))
-                #print "Visible bias: ",
-                #print self.invRbm.connections[self.invRbm['bias']][0].params
-                #print "Hidden bias: ",
-                #print self.rbm.connections[self.rbm['bias']][0].params
-                #print ""
+                #print("Visible bias: ",)
+                #print(self.invRbm.connections[self.invRbm['bias']][0].params)
+                #print("Hidden bias: ",)
+                #print(self.rbm.connections[self.rbm['bias']][0].params)
+                #print("")
 
     def calcUpdateByRow(self, row):
         """This function trains the RBM using only one data row.

@@ -2,7 +2,7 @@ __author__ = 'Tom Schaul, tom@idsia.ch'
 
 from scipy import zeros, array
 
-from maze import MazeTask
+from .maze import MazeTask
 
 
 class CheeseMaze(MazeTask):

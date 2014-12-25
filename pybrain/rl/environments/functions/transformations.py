@@ -5,7 +5,7 @@ from scipy import rand, dot, power, diag, eye, sqrt, sin, log, exp, ravel, clip,
 from scipy.linalg import orth, norm, inv
 from random import shuffle, random, gauss
 
-from function import FunctionEnvironment
+from pybrain.rl.environments.functions.function import FunctionEnvironment
 from pybrain.structure.parametercontainer import ParameterContainer
 from pybrain.rl.environments.fitnessevaluator import FitnessEvaluator
 from pybrain.utilities import sparse_orth, dense_orth

@@ -1,6 +1,6 @@
 __author__ = 'Frank Sehnke, sehnke@in.tum.de'
 
-import sensors
+from . import sensors
 import threading
 from pybrain.utilities import threaded
 from pybrain.tools.networking.udpconnection import UDPServer
@@ -72,7 +72,7 @@ class FlexCubeEnvironment(Environment):
         self.vel = zeros((8, 3), float)
 
         idx0 = arange(8).repeat(8)
-        idx1 = array(range(8) * 8)
+        idx1 = array(list(range(8)) * 8)
         self.difM = self.pos[idx0, :] - self.pos[idx1, :] #vectors from all points to all other points
         self.springM = sqrt((self.difM ** 2).sum(axis=1)).reshape(64, 1)
         self.distM = self.springM.copy() #distance matrix
@@ -147,7 +147,7 @@ class FlexCubeEnvironment(Environment):
 
         #Distances of new state
         idx0 = arange(8).repeat(8)
-        idx1 = array(range(8) * 8)
+        idx1 = array(list(range(8)) * 8)
         self.difM = self.pos[idx0, :] - self.pos[idx1, :] #vectors from all points to all other points
         self.distM = sqrt((self.difM ** 2).sum(axis=1)).reshape(64, 1) #distance matrix
 

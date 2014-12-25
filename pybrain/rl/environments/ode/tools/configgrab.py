@@ -31,6 +31,6 @@ class ConfigGrabber:
                     if line == self.delim[0] + name + self.delim[1] + "\n": flag = 1
                     else: flag = 0
         file.close()
-        #if len(output)==0: print "Attention: Config for ", name, "not found"
+        #if len(output)==0: print("Attention: Config for ", name, "not found")
         return output
 

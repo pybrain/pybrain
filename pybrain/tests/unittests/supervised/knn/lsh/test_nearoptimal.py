@@ -119,4 +119,4 @@ from pybrain.tests import runModuleTestSuite
 from pybrain.supervised.knn.lsh import nearoptimal
 
 if __name__ == "__main__":
-    runModuleTestSuite(__import__('__main__'))
+   runModuleTestSuite(__import__('__main__'))

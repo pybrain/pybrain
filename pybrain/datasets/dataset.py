@@ -1,4 +1,4 @@
-from __future__ import with_statement
+
 
 __author__ = 'Thomas Rueckstiess, ruecksti@in.tum.de'
 
@@ -67,7 +67,7 @@ class DataSet(Serializable):
             '1d': self._convertArray1d,
             '2d': self._convertArray2d,
             'list': self._convertList,
-            'none': lambda(x):x
+            'none': lambda x:x
         }
         try:
             self._convert = switch[vf]
@@ -240,18 +240,23 @@ class DataSet(Serializable):
     def getField(self, label):
         """Return the entire field given by `label` as an array or list,
         depending on user settings."""
+        # Note: label_data should always be a np.array, so this will never
+        # actually clone a list (performances are O(1)).
+        label_data = self.data[label][:self.endmarker[label]]
+
+        # Convert to list if requested.
         if self.vectorformat == 'list':
-            return self.data[label][:self.endmarker[label]].tolist()
-        else:
-            return self.data[label][:self.endmarker[label]]
+            label_data = label_data.tolist()
+
+        return label_data
 
     def hasField(self, label):
         """Tell whether the field given by `label` exists."""
-        return self.data.has_key(label)
+        return label in self.data
 
     def getFieldNames(self):
         """Return the names of the currently defined fields."""
-        return self.data.keys()
+        return list(self.data.keys())
 
     def convertField(self, label, newtype):
         """Convert the given field to a different data type."""
@@ -292,7 +297,7 @@ class DataSet(Serializable):
         """Read an incomplete data set (option arraysonly) into the given one. """
         # FIXME: Obsolete! Kept here because of some old files...
         obj = cls(1, 1)
-        for key, val in pickle.load(file(filename)).iteritems():
+        for key, val in pickle.load(file(filename)).items():
             obj.setField(key, val)
         return obj
 
@@ -336,14 +341,14 @@ class DataSet(Serializable):
         number_of_batches = full_batches if rest == 0 else full_batches + 1
 
         # We make one iterator for the startindexes ...
-        startindexes = (i * n for i in xrange(number_of_batches))
+        startindexes = (i * n for i in range(number_of_batches))
         # ... and one for the stop indexes
-        stopindexes = (((i + 1) * n) for i in xrange(number_of_batches - 1))
+        stopindexes = (((i + 1) * n) for i in range(number_of_batches - 1))
         # The last stop index is the last element of the list (last batch
         # might not be filled completely)
         stopindexes = chain(stopindexes, [len(self)])
         # Now combine them
-        indexes = zip(startindexes, stopindexes)
+        indexes = list(zip(startindexes, stopindexes))
 
         # Shuffle them according to the permutation if one is given
         if permutation is not None:
@@ -354,15 +359,15 @@ class DataSet(Serializable):
 
     def randomBatches(self, label, n):
         """Like .batches(), but the order is random."""
-        permutation = random.shuffle(range(len(self)))
+        permutation = random.shuffle(list(range(len(self))))
         return self.batches(label, n, permutation)
 
     def replaceNansByMeans(self):
         """Replace all not-a-number entries in the dataset by the means of the
         corresponding column."""
-        for d in self.data.itervalues():
+        for d in self.data.values():
             means = scipy.nansum(d[:self.getLength()], axis=0) / self.getLength()
-            for i in xrange(self.getLength()):
-                for j in xrange(d.dim):
+            for i in range(self.getLength()):
+                for j in range(d.dim):
                     if not scipy.isfinite(d[i, j]):
                         d[i, j] = means[j]

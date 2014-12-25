@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 #!/usr/bin/env python
 #########################################################################
 # Reinforcement Learning with NES on the CartPoleEnvironment 
@@ -7,7 +9,6 @@
 #########################################################################
 
 __author__ = "Thomas Rueckstiess, Frank Sehnke"
-
 
 from pybrain.tools.example_tools import ExTools
 from pybrain.tools.shortcuts import buildNetwork
@@ -39,7 +40,7 @@ for runs in range(numbExp):
     for updates in range(epis):
         for i in range(prnts):
             experiment.doEpisodes(batch)
-        print "Epsilon   : ", agent.learner.sigma
+        print("Epsilon   : ", agent.learner.sigma)
         et.printResults((agent.learner._allEvaluations)[-50:-1], runs, updates)
     et.addExps()
 et.showExps()

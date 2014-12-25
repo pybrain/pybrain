@@ -1,10 +1,11 @@
 __author__ = 'Thomas Rueckstiess, ruecksti@in.tum.de'
 # $Id$
 
+
 from scipy import ravel, r_
 from random import sample
 
-from supervised import SupervisedDataSet
+from pybrain.datasets.supervised import SupervisedDataSet
 
 
 class EmptySequenceError(Exception): pass
@@ -41,11 +42,11 @@ class SequentialDataSet(SupervisedDataSet):
         seq = ravel(self.getField('sequence_index'))
         if len(seq) == index + 1:
             # user wants to access the last sequence, return until end of data
-            return self.getField(field)[ravel(self.getField('sequence_index'))[index]:]
+            return self.getField(field)[seq[index]:]
         if len(seq) < index + 1:
             # sequence index beyond number of sequences. raise exception
             raise IndexError('sequence does not exist.')
-        return self.getField(field)[ravel(self.getField('sequence_index'))[index]:ravel(self.getField('sequence_index'))[index + 1]]
+        return self.getField(field)[seq[index]:seq[index + 1]]
 
     def getSequence(self, index):
         """Returns the sequence given by `index`.
@@ -56,10 +57,10 @@ class SequentialDataSet(SupervisedDataSet):
 
     def getSequenceIterator(self, index):
         """Return an iterator over the samples of the sequence specified by
-        `index`."""
-        fields = self.getSequence(index)
-        for i in range(self.getSequenceLength(index)):
-            yield [f[i] for f in fields]
+        `index`.
+
+        Each element is a tuple."""
+        return zip(*self.getSequence(index))
 
     def endOfSequence(self, index):
         """Return True if the marker was moved over the last element of
@@ -193,7 +194,7 @@ class SequentialDataSet(SupervisedDataSet):
         The first dataset will have a fraction given by `proportion` of the
         dataset."""
         l = self.getNumSequences()
-        leftIndices = sample(range(l), int(l * proportion))
+        leftIndices = sample(list(range(l)), int(l * proportion))
         leftDs = self.copy()
         leftDs.clear()
         rightDs = leftDs.copy()

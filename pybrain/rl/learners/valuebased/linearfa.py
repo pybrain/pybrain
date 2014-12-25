@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 __author__ = 'Tom Schaul, tom@idsia.ch'
 
 """ RL with linear function approximation. 
@@ -100,9 +102,9 @@ class Q_LinFA(LinearFALearner):
     def _updateWeights(self, state, action, reward, next_state):
         """ state and next_state are vectors, action is an integer. """
         td_error = reward + self.rewardDiscount * max(dot(self._theta, next_state)) - dot(self._theta[action], state) 
-        #print action, reward, td_error,self._theta[action], state, dot(self._theta[action], state)
-        #print self.learningRate * td_error * state
-        #print 
+        #print(action, reward, td_error,self._theta[action], state, dot(self._theta[action], state))
+        #print(self.learningRate * td_error * state)
+        #print()
         self._theta[action] += self.learningRate * td_error * state 
           
 
@@ -262,9 +264,9 @@ class LearningTester(unittest.TestCase):
                               gamma=0, lr=0.25)
         if self.verbose:
             for x, l in r:
-                print x
+                print(x)
                 for a in l:
-                    print fListToString(a[0], 2)        
+                    print((fListToString(a[0], 2)        ))
         for _, l in r:        
             self.assertAlmostEquals(min(l[0][0]), 1, places=0) 
             self.assertAlmostEquals(max(l[0][0]), 1, places=0) 
@@ -279,9 +281,9 @@ class LearningTester(unittest.TestCase):
                               lr=0.2, _lambda=0.5, gamma=0.5)
         if self.verbose:
             for x, l in r:
-                print x
+                print(x)
                 for a in l:
-                    print fListToString(a[0], 2)        
+                    print((fListToString(a[0], 2)        ))
         for _, l in r:
             self.assertAlmostEquals(min(l[0][0]), max(l[0][0]), places=0) 
             self.assertAlmostEquals(min(l[1][0]), max(l[1][0]), places=0)
@@ -289,13 +291,13 @@ class LearningTester(unittest.TestCase):
             self.assertAlmostEquals(min(l[3][0]), max(l[3][0]), places=0)                         
                         
     def testSingleAction(self):        
-        r = self.runSequences(num_actions=1, r_states=map(array, [[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0]]),
+        r = self.runSequences(num_actions=1, r_states=list(map(array, [[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0]])),
                               num_interactions=1000, lr=0.1, _lambda=0.5, gamma=0.5)
         if self.verbose:
             for x, l in r:
-                print x
+                print(x)
                 for a in l:
-                    print fListToString(a, 2)        
+                    print((fListToString(a, 2)        ))
         for _, l in r:
             self.assertAlmostEquals(min(l[0]), max(l[0]), places=0) 
             self.assertAlmostEquals(min(l[1]), max(l[1]), places=0)
@@ -307,9 +309,9 @@ class LearningTester(unittest.TestCase):
                               lr=0.1, _lambda=0.5, gamma=0.5)        
         if self.verbose:
             for x, l in r:
-                print x
+                print(x)
                 for a in l:
-                    print fListToString(a[0], 2)        
+                    print((fListToString(a[0], 2)        ))
         for _, l in r:
             self.assertAlmostEquals(min(l[0][0]), max(l[0][0]), places=0) 
             self.assertAlmostEquals(min(l[1][0]), max(l[1][0]), places=0)
@@ -326,7 +328,7 @@ class LearningTester(unittest.TestCase):
         state_seq = [choice(r_states) for  _ in range(num_interactions)]
         action_seq = [randint(0, num_actions - 1) for  _ in range(num_interactions)]
         rewards = [ones(num_interactions), rand(num_interactions), action_seq, [s[0] for s in state_seq]]
-        datas = [zip(state_seq, action_seq, r) for r in rewards]        
+        datas = [list(zip(state_seq, action_seq, r)) for r in rewards]        
         res = []        
         for algo in self.algos:
             res.append((algo.__name__, []))

@@ -21,20 +21,20 @@ class PermutationConnection(Connection):
         if len(permutation) * blocksize != self.indim:
             raise ValueError(
                 "Permutation has wrong size: should be %i but is %i." %(
-                (self.indim / blocksize), len(permutation)))
+                (self.indim // blocksize), len(permutation)))
 
         self.permutation = array(permutation)
-        self.invpermutation = permute(range(len(permutation)), permutation)
+        self.invpermutation = permute(list(range(len(permutation))), permutation)
         self.blocksize = blocksize
 
     def _forwardImplementation(self, inbuf, outbuf):
-        inbuf = inbuf.reshape(self.indim / self.blocksize, self.blocksize)
+        inbuf = inbuf.reshape(self.indim // self.blocksize, self.blocksize)
         inbuf = permute(inbuf, self.permutation)
         inbuf.shape = self.indim,
         outbuf += inbuf
 
     def _backwardImplementation(self, outerr, inerr, inbuf):
-        outerr = outerr.reshape(self.indim / self.blocksize, self.blocksize)
+        outerr = outerr.reshape(self.indim // self.blocksize, self.blocksize)
         outerr = permute(outerr, self.invpermutation)
         outerr.shape = self.indim,
         inerr += outerr

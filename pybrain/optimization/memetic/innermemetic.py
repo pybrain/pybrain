@@ -1,6 +1,6 @@
 __author__ = 'Tom Schaul, tom@idsia.ch'
 
-from memetic import MemeticSearch
+from .memetic import MemeticSearch
 from pybrain.optimization.populationbased.es import ES
 
 

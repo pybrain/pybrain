@@ -56,7 +56,7 @@ class SimpleRenderer(Renderer):
 
         # draw function
         xvalues = arange(self.min, self.max, 0.1)
-        yvalues = map(self.f, xvalues)
+        yvalues = list(map(self.f, xvalues))
         plot(xvalues, yvalues)
 
         # draw exploration path

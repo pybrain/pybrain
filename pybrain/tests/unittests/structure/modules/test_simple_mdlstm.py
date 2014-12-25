@@ -1,9 +1,8 @@
 """
 
 Build a simple mdlstm network with peepholes:
-
     >>> n = buildSimpleMDLSTMNetwork(True)
-    >>> print n
+    >>> print(n)
     simpleMDLstmNet
        Modules:
         [<BiasUnit 'bias'>, <LinearLayer 'i'>, <MDLSTMLayer 'MDlstm'>, <LinearLayer 'o'>]

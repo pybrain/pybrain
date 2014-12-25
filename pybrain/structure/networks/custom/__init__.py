@@ -1,1 +1,1 @@
-from capturegame import CaptureGameNetwork
+from .capturegame import CaptureGameNetwork

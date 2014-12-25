@@ -1,6 +1,9 @@
+from __future__ import print_function
+
 """ a type of plots used so frequently that I think they merit their own utility """
 
 __author__ = 'Tom Schaul, tom@idsia.ch'
+
 
 import pylab
 from pylab import xlabel, ylabel, legend, plot, semilogy
@@ -73,34 +76,34 @@ def plotFitnessProgession(fitdict, batchsize=1, semilog=True,
 
         i += 1
         nbRuns = len(flist)
-        print name, nbRuns, 'runs',
+        print((name, nbRuns, 'runs',))
 
         if targetcutoff != None:
             if onlysuccessful:
                 # filter out unsuccessful runs
-                flist = filter(isSuccessful, flist)
-                print ',', len(flist), 'of which were successful.'
+                flist = list(filter(isSuccessful, flist))
+                print((',', len(flist), 'of which were successful.'))
             else:
-                print
+                print()
             # cut off irrelevant part
-            flist = map(relevantPart, flist)
+            flist = list(map(relevantPart, flist))
 
         if len(flist) == 0:
             continue
 
         if averageOverEvaluations:
-            worstPerf = max(map(max, flist))
+            worstPerf = max(list(map(max, flist)))
             if semilog:
-                yPlot = list(reversed(power(10, ((array(range(resolution + 1)) / float(resolution)) *
+                yPlot = list(reversed(power(10, ((array(list(range(resolution + 1))) / float(resolution)) *
                                              (log10(worstPerf) - log10(targetcutoff)) + log10(targetcutoff)))))
             else:
-                yPlot = list(reversed((array(range(resolution + 1)) / float(resolution)) *
+                yPlot = list(reversed((array(list(range(resolution + 1))) / float(resolution)) *
                                              (worstPerf - targetcutoff) + targetcutoff))
             xPlot = avgFoundAfter(yPlot, flist, batchsize, useMedian=useMedian)
 
         else:
-            longestRun = max(map(len, flist))
-            xPlot = array(range(longestRun)) * batchsize
+            longestRun = max(list(map(len, flist)))
+            xPlot = array(list(range(longestRun))) * batchsize
             summed = zeros(longestRun)
             for l in flist:
                 summed += paddedClipped(l, longestRun)

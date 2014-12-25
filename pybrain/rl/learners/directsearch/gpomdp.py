@@ -1,6 +1,6 @@
 __author__ = 'Thomas Rueckstiess, ruecksti@in.tum.de'
 
-from policygradient import PolicyGradientLearner
+from .policygradient import PolicyGradientLearner
 from scipy import zeros, mean
 
 ### NOT WORKING YET ###
@@ -29,7 +29,7 @@ class GPOMDP(PolicyGradientLearner):
                 seqcount[t, :] += 1
 
         baselines = baselines / seqcount
-        # print baselines
+        # print(baselines)
         for seq in range(self.ds.getNumSequences()):
             _, _, rewards, loglhs = self.ds.getSequence(seq)
             for t in range(len(rewards)):

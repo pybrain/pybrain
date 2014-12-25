@@ -1,5 +1,6 @@
-__author__ = 'Tom Schaul, Tobias Glasmachers'
+from __future__ import print_function
 
+__author__ = 'Tom Schaul, Tobias Glasmachers'
 
 from scipy import dot, array, randn,  exp, floor, log, sqrt, ones, multiply, log2
 
@@ -78,7 +79,7 @@ class Rank1NES(DistributionBasedOptimizer):
     def _currentEvaluations(self):        
         fits = [self._allEvaluations[i] for i in self._pointers]
         if self._wasOpposed:
-            fits = map(lambda x:-x, fits)
+            fits = [-x for x in fits]
         return fits
                         
     def _produceSample(self):
@@ -87,16 +88,16 @@ class Rank1NES(DistributionBasedOptimizer):
     def _produceSamples(self):
         """ Append batch size new samples and evaluate them. """
         tmp = [self._sample2base(self._produceSample()) for _ in range(self.batchSize)]
-        map(self._oneEvaluation, tmp)            
+        list(map(self._oneEvaluation, tmp))            
         self._pointers = list(range(len(self._allEvaluated) - self.batchSize, len(self._allEvaluated)))                    
         
     def _notify(self):
         """ Provide some feedback during the run. """
         if self.verbose:
             if self.numEvaluations % self.verboseGaps == 0:
-                print 'Step:', self.numLearningSteps, 'best:', self.bestEvaluation,
-                print 'logVar', round(self._logDetA, 3), 
-                print 'log|vector|', round(log(dot(self._principalVector, self._principalVector))/2, 3)
+                print(('Step:', self.numLearningSteps, 'best:', self.bestEvaluation,
+                    'logVar', round(self._logDetA, 3),
+                    'log|vector|', round(log(dot(self._principalVector, self._principalVector))/2, 3)))
                   
         if self.listener is not None:
             self.listener(self.bestEvaluable, self.bestEvaluation)
@@ -112,7 +113,7 @@ class Rank1NES(DistributionBasedOptimizer):
         W = [s[:-1] + u * s[-1] for s in samples]   
         points = [self._center+exp(a) *w for w in W]
     
-        map(self._oneEvaluation, points)  
+        list(map(self._oneEvaluation, points))  
                   
         self._pointers = list(range(len(self._allEvaluated) - self.batchSize, len(self._allEvaluated)))                            
         

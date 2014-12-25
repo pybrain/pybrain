@@ -1,6 +1,8 @@
+from __future__ import print_function
+
 __author__ = 'Tom Schaul, tom@idsia.ch'
 
-from capturetask import CaptureGameTask
+from .capturetask import CaptureGameTask
 from pybrain.rl.environments.twoplayergames.capturegameplayers import ModuleDecidingPlayer
 from pybrain.rl.environments.twoplayergames import CaptureGame
 from pybrain.rl.environments.twoplayergames.capturegameplayers.captureplayer import CapturePlayer
@@ -119,8 +121,8 @@ class RelativeCaptureTask(CaptureGameTask):
         res = []
         if self.size < 3:
             return res
-        for x in range(1, (self.size + 1) / 2):
-            for y in range(x, (self.size + 1) / 2):
+        for x in range(1, (self.size + 1) // 2):
+            for y in range(x, (self.size + 1) // 2):
                 res.append((x, y))
         return res
 
@@ -136,7 +138,7 @@ class RelativeCaptureTask(CaptureGameTask):
         moves = self.env.movesDone
         win = self.env.winner == self.player.color
         if self.verbose:
-            print 'Preset:', preset, 'T:', self.temp, 'Win:', win, 'after', moves, 'moves.'
+            print(('Preset:', preset, 'T:', self.temp, 'Win:', win, 'after', moves, 'moves.'))
         res = 1 - self.numMovesCoeff * (moves - self.minmoves) / (self.maxmoves - self.minmoves)
         if win:
             return res
@@ -150,17 +152,17 @@ if __name__ == '__main__':
 
     net1 = CaptureGameNetwork(hsize=1)
     net2 = CaptureGameNetwork(hsize=1)
-    #print net1.params
-    #print net2.params
+    #print(net1.params)
+    #print(net2.params)
 
     r = RelativeCaptureTask(5, maxGames=40, useNetworks=True,
                             presetGamesProportion=0.5)
 
-    print r(net1, net2)
-    print r(net2, net1)
+    print((r(net1, net2)))
+    print((r(net2, net1)))
     r.maxGames = 200
-    print r(net1, net2)
-    print r(net2, net1)
+    print((r(net1, net2)))
+    print((r(net2, net1)))
 
 
 

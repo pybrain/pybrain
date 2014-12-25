@@ -1,4 +1,4 @@
-from __future__ import with_statement
+from __future__ import print_function
 
 __author__ = 'Tom Schaul, tom@idsia.ch; Justin Bayer, bayerj@in.tum.de'
 
@@ -12,9 +12,9 @@ import operator
 from itertools import count
 from math import sqrt
 from random import random, choice
-from string import split
 
 from scipy import where, array, exp, zeros, size, mat, median
+from functools import reduce
 
 # file extension for load/save protocol mapping
 known_extensions = {
@@ -40,7 +40,7 @@ def drawIndex(probs, tolerant=False):
         if tolerant:
             probs /= sum(probs)
         else:
-            print probs, 1 - sum(probs)
+            print((probs, 1 - sum(probs)))
             raise ValueError()
     r = random()
     s = 0
@@ -48,7 +48,7 @@ def drawIndex(probs, tolerant=False):
         s += p
         if s > r:
             return i
-    return choice(range(len(probs)))
+    return choice(list(range(len(probs))))
 
 
 def drawGibbs(vals, temperature=1.):
@@ -93,13 +93,13 @@ def setAllArgs(obj, argdict):
     This function can be useful for quick initializations. """
 
     xmlstore = isinstance(obj, XMLBuildable)
-    for n in argdict.keys():
+    for n in list(argdict.keys()):
         if hasattr(obj, n):
             setattr(obj, n, argdict[n])
             if xmlstore:
                 obj.argdict[n] = argdict[n]
         else:
-            print 'Warning: parameter name', n, 'not found!'
+            print(('Warning: parameter name', n, 'not found!'))
             if xmlstore:
                 if not hasattr(obj, '_unknown_argdict'):
                     obj._unknown_argdict = {}
@@ -225,7 +225,7 @@ class Named(XMLBuildable):
 
     def _generateName(self):
         """Return a unique name for this object."""
-        return "%s-%i" % (self.__class__.__name__, self._nameIds.next())
+        return "%s-%i" % (self.__class__.__name__, next(self._nameIds))
 
     def __repr__(self):
         """ The default representation of a named object is its name. """
@@ -234,7 +234,8 @@ class Named(XMLBuildable):
 
 def fListToString(a_list, a_precision=3):
     """ Returns a string representing a list of floats with a given precision """
-    s_list = ", ".join(("%g" % round(x, a_precision)).ljust(a_precision+3)
+    from numpy import around
+    s_list = ", ".join(("%g" % around(x, a_precision)).ljust(a_precision+3)
                       for x in a_list)
     return "[%s]" % s_list
 
@@ -254,7 +255,7 @@ def confidenceIntervalSize(stdev, nbsamples):
 
 def trace(func):
     def inner(*args, **kwargs):
-        print "%s: %s, %s" % (func.__name__, args, kwargs)
+        print(("%s: %s, %s" % (func.__name__, args, kwargs)))
         return func(*args, **kwargs)
     return inner
 
@@ -291,7 +292,7 @@ def memoize(func):
         args = tuple(args)
         # Make a set for checking in the cache, since the order of
         # .iteritems() is undefined
-        kwargs_set = frozenset(kwargs.iteritems())
+        kwargs_set = frozenset(iter(kwargs.items()))
         if (args, kwargs_set) in cache:
             result = cache[args, kwargs_set]
         else:
@@ -309,7 +310,7 @@ def storeCallResults(obj, verbose=False):
         result = oldcall(*args, **kwargs)
         results.append(result)
         if verbose:
-            print result
+            print(result)
         return result
     obj.__class__.__call__ = newcall
     return results
@@ -356,7 +357,7 @@ def int2gray(i):
 def gray2int(g, size):
     """ Transforms a Gray code back into an integer. """
     res = 0
-    for i in reversed(range(size)):
+    for i in reversed(list(range(size))):
         gi = (g >> i) % 2
         if i == size - 1:
             bi = gi
@@ -393,7 +394,7 @@ def n_to_one(arr):
 def canonicClassString(x):
     """ the __class__ attribute changed from old-style to new-style classes... """
     if isinstance(x, object):
-        return split(repr(x.__class__), "'")[1]
+        return repr(x.__class__).split("'")[1]
     else:
         return repr(x.__class__)
 
@@ -445,7 +446,7 @@ def reachable(stepFunction, start, destinations, _alreadyseen=None):
     deeper = reachable(stepFunction, new, ndestinations, _alreadyseen)
 
     # adjust distances
-    for k, val in deeper.items():
+    for k, val in list(deeper.items()):
         res[k] = val + 1
     return res
 
@@ -540,7 +541,7 @@ def permuteToBlocks2d(arr, blockheight, blockwidth):
     _height, width = arr.shape
     arr = arr.flatten()
     new = zeros(size(arr))
-    for i in xrange(size(arr)):
+    for i in range(size(arr)):
         blockx = (i % width) / blockwidth
         blocky = i / width / blockheight
         blockoffset = blocky * width / blockwidth + blockx
@@ -590,7 +591,7 @@ def blockList2Matrix(l):
 
 def blockCombine(l):
     """ Produce a matrix from a list of lists of its components. """
-    l = [map(mat, row) for row in l]
+    l = [list(map(mat, row)) for row in l]
     hdims = [m.shape[1] for m in l[0]]
     hs = sum(hdims)
     vdims = [row[0].shape[0] for row in l]
@@ -613,7 +614,7 @@ def avgFoundAfter(decreasingTargetValues, listsOfActualValues, batchSize=1, useM
     Returns an array. """
     from scipy import sum
     numLists = len(listsOfActualValues)
-    longest = max(map(len, listsOfActualValues))
+    longest = max(list(map(len, listsOfActualValues)))
     # gather a list of indices of first encounters
     res = [[0] for _ in range(numLists)]
     for tval in decreasingTargetValues:
@@ -643,7 +644,7 @@ def matchingDict(d, selection, require_existence=False):
     """ Determines if the dictionary d conforms to the specified selection,
     i.e. if a (key, x) is in the selection, then if key is in d as well it must be x
     or contained in x (if x is a list). """
-    for k, v in selection.items():
+    for k, v in list(selection.items()):
         if k in d:
             if isinstance(v, list):
                 if d[k] not in v:
@@ -660,7 +661,7 @@ def subDict(d, allowedkeys, flip=False):
     """ Returns a new dictionary with a subset of the entries of d
     that have on of the (dis-)allowed keys."""
     res = {}
-    for k, v in d.items():
+    for k, v in list(d.items()):
         if (k in allowedkeys) ^ flip:
             res[k] = v
     return res
@@ -745,7 +746,7 @@ def uniqueArrays(vs):
     resdic = {}
     for v in vs:
         resdic[xhash(v)] = v
-    return resdic.values()    
+    return list(resdic.values())    
     
 
 def seedit(seed=0):

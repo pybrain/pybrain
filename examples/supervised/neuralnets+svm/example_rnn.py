@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 #!/usr/bin/env python
 # Example script for recurrent network usage in PyBrain.
 __author__ = "Martin Felder"
@@ -11,7 +13,7 @@ from pybrain.supervised          import RPropMinusTrainer
 from pybrain.tools.validation    import testOnSequenceData
 from pybrain.tools.shortcuts     import buildNetwork
 
-from datasets import generateNoisySines
+from .datasets import generateNoisySines
 
 # create training and test data
 trndata = generateNoisySines(50, 40)
@@ -28,11 +30,11 @@ trainer = RPropMinusTrainer( rnn, dataset=trndata, verbose=True )
 ##trainer = BackpropTrainer( rnn, dataset=trndata, verbose=True, momentum=0.9, learningrate=0.00001 )
 
 # carry out the training
-for i in xrange(100):
+for i in range(100):
     trainer.trainEpochs( 2 )
     trnresult = 100. * (1.0-testOnSequenceData(rnn, trndata))
     tstresult = 100. * (1.0-testOnSequenceData(rnn, tstdata))
-    print "train error: %5.2f%%" % trnresult, ",  test error: %5.2f%%" % tstresult
+    print("train error: %5.2f%%" % trnresult, ",  test error: %5.2f%%" % tstresult)
 
 # just for reference, plot the first 5 timeseries
 plot(trndata['input'][0:250,:],'-o')

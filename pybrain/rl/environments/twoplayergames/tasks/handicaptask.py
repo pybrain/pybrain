@@ -1,6 +1,9 @@
+from __future__ import print_function
+
 __author__ = 'Tom Schaul, tom@idsia.ch'
 
-from capturetask import CaptureGameTask
+
+from .capturetask import CaptureGameTask
 from pybrain.rl.environments.twoplayergames.capturegameplayers.captureplayer import CapturePlayer
 from pybrain.rl.environments.twoplayergames.capturegameplayers import ModuleDecidingPlayer
 from pybrain.rl.environments.twoplayergames.capturegame import CaptureGame
@@ -120,8 +123,8 @@ if __name__ == '__main__':
     h = HandicapCaptureTask(4, opponentStart=False)
     p1 = RandomCapturePlayer(h.env)
     p1 = KillingPlayer(h.env)
-    print h(p1)
-    print h.results
-    print h.winProp(0)
-    print h.winProp(1)
+    print((h(p1)))
+    print((h.results))
+    print((h.winProp(0)))
+    print((h.winProp(1)))
 

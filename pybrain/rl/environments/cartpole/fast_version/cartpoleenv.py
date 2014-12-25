@@ -10,7 +10,7 @@ from pybrain.rl.environments.episodic import EpisodicTask
 
 try:
     import cartpolewrap as impl
-except ImportError, e:
+except ImportError as e:
     logging.error("FastCartPoleTask is wrapping C code that needs to be compiled - it's simple: run .../cartpolecompile.py")
     raise e
 
@@ -64,7 +64,7 @@ class FastCartPoleTask(EpisodicTask):
 
     def reset(self):
         if self.verbose:
-            print '** reset **'
+            print('** reset **')
         self.cumreward = 0
         impl.res()
 
@@ -81,18 +81,18 @@ class FastCartPoleTask(EpisodicTask):
     def getReward(self):
         r = 1. + impl.getR()
         if self.verbose:
-            print ' +r', r,
+            print((' +r', r,))
         return r
 
     def isFinished(self):
         if self.verbose:
-            print '  -finished?', impl.isFinished()
+            print(('  -finished?', impl.isFinished()))
         return impl.isFinished()
 
     def getObservation(self):
         obs = array(impl.getObs())
         if self.verbose:
-            print 'obs', obs
+            print(('obs', obs))
         obs.resize(self.outdim)
         if self.extraObservations:
             cartpos = obs[-1]
@@ -114,12 +114,12 @@ class FastCartPoleTask(EpisodicTask):
             obs[-self.extraRandoms:] = randn(self.extraRandoms)
 
         if self.verbose:
-            print 'obs', obs
+            print(('obs', obs))
         return obs
 
     def performAction(self, action):
         if self.verbose:
-            print 'act', action
+            print(('act', action))
         impl.performAction(action[0])
         self.addReward()
 

@@ -1,11 +1,10 @@
 """
 
 Initialize a game of Pente.
-
     >>> from pybrain.rl.environments.twoplayergames.pente import PenteGame
     >>> dim = 5
     >>> c = PenteGame((dim, dim))
-    >>> print c
+    >>> print(c)
      _ _ _ _ _
      _ _ _ _ _
      _ _ * _ _
@@ -24,7 +23,7 @@ Do some moves to produce a situation
     >>> c.performAction([1, (0,2)])
 
 Show the updated board:
-    >>> print c
+    >>> print(c)
      _ # # _ _
      * # * _ _
      # * * _ _
@@ -41,7 +40,7 @@ Do some captures:
 Stepping between black stones is not deadly though:
     >>> c.performAction([1, (2,3)])
     >>> c.performAction([-1, (2,2)])
-    >>> print c
+    >>> print(c)
      * _ _ * _
      * # _ _ _
      # * * # _
@@ -68,7 +67,7 @@ White wins.
     -1
 
 Check if all the values are right:
-    >>> print c
+    >>> print(c)
      * _ _ * *
      * # _ x _
      # * * # _

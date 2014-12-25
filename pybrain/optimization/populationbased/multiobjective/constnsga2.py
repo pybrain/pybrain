@@ -42,11 +42,11 @@ class ConstMultiObjectiveGA(GA):
             self._allGenerations.append((self.currentpop, self.fitnesses))
 
         if self.elitism:
-            self.bestEvaluable = list(const_non_dominated_front(map(tuple, self.currentpop),
+            self.bestEvaluable = list(const_non_dominated_front(list(map(tuple, self.currentpop)),
                                                           key=lambda x: self.fitnesses[x],
                                                           allowequality = self.allowEquality))
         else:
-            self.bestEvaluable = list(const_non_dominated_front(map(tuple, self.currentpop)+self.bestEvaluable,
+            self.bestEvaluable = list(const_non_dominated_front(list(map(tuple, self.currentpop))+self.bestEvaluable,
                                                           key=lambda x: self.fitnesses[x],
                                                           allowequality = self.allowEquality))
         self.bestEvaluation = [self.fitnesses[indiv] for indiv in self.bestEvaluable]
@@ -55,14 +55,14 @@ class ConstMultiObjectiveGA(GA):
 #                                                          key=lambda x: self.fitnesses[x],
 #                                                          allowequality = self.allowEquality)
 #        self.topProportion = float(number_of_feasible)/self.populationSize
-#        print 'Len bestEvaluable ',len(self.bestEvaluable)
+#        print('Len bestEvaluable ',len(self.bestEvaluable))
 #        for i in range(len(self.bestEvaluable)):
-#            print self.bestEvaluable[i],':',self.bestEvaluation[i]
+#            print(self.bestEvaluable[i],':',self.bestEvaluation[i])
         self.produceOffspring()
 
     def select(self):
-        return map(array, nsga2select(map(tuple, self.currentpop), self.fitnesses,
-                                      self.selectionSize, self.allowEquality))
+        return list(map(array, nsga2select(list(map(tuple, self.currentpop)), self.fitnesses,
+                                      self.selectionSize, self.allowEquality)))
 
 
 

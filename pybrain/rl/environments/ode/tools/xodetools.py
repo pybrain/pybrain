@@ -1,7 +1,9 @@
+from __future__ import print_function
+
 __author__ = 'Thomas Rueckstiess, ruecksti@in.tum.de'
 
 import sys
-from xmltools import XMLstruct
+from .xmltools import XMLstruct
 from math import asin, cos, sin, pi, degrees, radians, pow
 from scipy import array, matrix, sqrt
 import random
@@ -45,7 +47,7 @@ class XODEfile(XMLstruct):
         elif shape == 'sphere':
             return mass / (4.18879020 * pow(size[0], 3))
         else:
-            print "Unknown shape: " + shape + " not implemented!"
+            print(("Unknown shape: " + shape + " not implemented!"))
             sys.exit(1)
 
     def _dens2mass(self, shape, size, dens):
@@ -60,7 +62,7 @@ class XODEfile(XMLstruct):
         elif shape == 'sphere':
             return dens * (4.18879020 * pow(size[0], 3))
         else:
-            print "Unknown shape: " + shape + " not implemented!"
+            print(("Unknown shape: " + shape + " not implemented!"))
             sys.exit(1)
 
             
@@ -88,7 +90,7 @@ class XODEfile(XMLstruct):
         elif shape == 'sphere':
             dims = {'radius':size[0]}
         else:
-            print "Unknown shape: " + shape + " not implemented!"
+            print(("Unknown shape: " + shape + " not implemented!"))
             sys.exit(1)
         if mass is not None:
             density = self._mass2dens(shape, size, mass)
@@ -140,7 +142,7 @@ class XODEfile(XMLstruct):
             self.insert('anchor', {'x':anchor[0], 'y':anchor[1], 'z':anchor[2], 'absolute':abs})
             self.up()
         else:
-            print "Sorry, joint type " + type + " not yet implemented!"
+            print(("Sorry, joint type " + type + " not yet implemented!"))
             sys.exit()
         self.up(2)
         return name
@@ -214,10 +216,10 @@ class XODEfile(XMLstruct):
         is the one given."""
         self.top()
         if not self.downTo(joinLevel):
-            print "Error: Cannot merge " + self.name + " at level " + joinLevel
+            print(("Error: Cannot merge " + self.name + " at level " + joinLevel))
         xodefile.top()
         if not xodefile.downTo(joinLevel):
-            print "Error: Cannot merge " + xodefile.name + " at level " + joinLevel
+            print(("Error: Cannot merge " + xodefile.name + " at level " + joinLevel))
         self.insertMulti(xodefile.getCurrentSubtags())
         self._pass.update(xodefile.getPassList())
 
@@ -246,7 +248,7 @@ class XODEfile(XMLstruct):
         f.write('<!--odeenvironment parameters\n')
         if len(self._pass) > 0:
             f.write('<passpairs>\n')
-            for pset in self._pass.itervalues():
+            for pset in self._pass.values():
                 f.write(str(tuple(pset)) + '\n')
         if self._centerOn is not None:
             f.write('<centerOn>\n')
@@ -262,7 +264,7 @@ class XODEfile(XMLstruct):
             outstr = sensor[0] + "("
             for val in sensor[1]:
                 outstr += ',' + repr(val)
-            for key, val in sensor[2].iteritems():
+            for key, val in sensor[2].items():
                 outstr += ',' + key + '=' + repr(val)
             outstr = outstr.replace('(,', '(') + ")\n"
             f.write(outstr)
@@ -287,7 +289,7 @@ class XODEfile(XMLstruct):
         f.write('</xode>\n')
         self.writeCustomParameters(f)
         f.close()
-        print "Wrote " + filename + '.xode'
+        print(("Wrote " + filename + '.xode'))
 
 class XODEfinger(XODEfile):
 
@@ -685,7 +687,8 @@ class XODELSRPlate(XODELSRTable): #XODESLR
 
         self.insertBody('objectP04', 'box', [sX, sY, sZ], 30, pos=[pX, pY + dif, pZ - bZ * 0.5 - 2.0 * dif], passSet=['object'], mass=m, euler=[0, 90, 22.5], color=c)
         self.insertJoint('objectP00', 'objectP04', 'fixed', axis={'x':0, 'y':0, 'z':0}, anchor=(pX, pY, pZ - bZ * 0.5))
-        if __name__ == '__main__' :
+        
+if __name__ == '__main__' :
 
     table = XODELSRPlate('../models/ccrlPlate')
     

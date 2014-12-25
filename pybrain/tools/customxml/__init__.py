@@ -1,2 +1,2 @@
-from networkreader import NetworkReader
-from networkwriter import NetworkWriter
+from .networkreader import NetworkReader
+from .networkwriter import NetworkWriter

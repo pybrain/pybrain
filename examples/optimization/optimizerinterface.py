@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 #!/usr/bin/env python
 """
 Illustrating the interface of black-box optimizers on a few simple problems:
@@ -29,7 +31,7 @@ algo = HillClimber
 #algo = MemeticSearch
 #algo = NelderMead
 algo = CMAES
-print 'Algorithm:', algo.__name__
+print('Algorithm:', algo.__name__)
 
 
 # ------------------------
@@ -63,8 +65,8 @@ l = algo(f)
 # but if none is the case this leads to an error:
 try:
     l = algo(lambda x: sum(x)**2)
-except ValueError, e:
-    print 'Error caught:', e
+except ValueError as e:
+    print('Error caught:', e)
 
 # Initialization can also take place in 2 steps, first with the settings and then with the
 # evaluator function:
@@ -75,8 +77,8 @@ l.setEvaluator(f)
 l = algo()
 try:
     l.learn(0)
-except AssertionError, e:
-    print 'Error caught:', e
+except AssertionError as e:
+    print('Error caught:', e)
 l.setEvaluator(f)
 # no error anymore
 l.learn(0)
@@ -103,7 +105,7 @@ l = algo(f, batchSise = 10, theMiddleOfTheTutorial = 'here')
 # -----------------------
 
 # Learning is even simpler:
-print l.learn(5)
+print(l.learn(5))
 
 # The return values are the best point found, and its fitness
 # (the argument indicates the number of learning steps/generations).
@@ -113,20 +115,20 @@ print l.learn(5)
 # a) maximal number of evaluations (accessible in .numEvaluations)
 l = algo(f, maxEvaluations = 20)
 l.learn()
-print l.learn(), 'in', l.numEvaluations, 'evaluations.'
+print(l.learn(), 'in', l.numEvaluations, 'evaluations.')
 
 # b) desiredValue
 l = algo(f, desiredEvaluation = 10)
-print l.learn(), ': fitness below 10 (we minimize the function).'
+print(l.learn(), ': fitness below 10 (we minimize the function).')
 
 # c) maximal number of learning steps
 l = algo(f, maxLearningSteps = 25)
 l.learn()
-print l.learn(), 'in', l.numLearningSteps, 'learning steps.'
+print(l.learn(), 'in', l.numLearningSteps, 'learning steps.')
 
 # it is possible to continue learning from where we left off, for a
 # specific number of additional learning steps:
-print l.learn(75), 'in', l.numLearningSteps, 'total learning steps.'
+print(l.learn(75), 'in', l.numLearningSteps, 'total learning steps.')
 
 # Finally you can set storage settings and then access all evaluations made
 # during learning, e.g. for plotting:
@@ -134,9 +136,9 @@ l = algo(f, x0, storeAllEvaluations = True, storeAllEvaluated = True, maxEvaluat
 l.learn()
 try:
     import pylab
-    pylab.plot(map(abs,l._allEvaluations))
+    pylab.plot(list(map(abs,l._allEvaluations)))
     pylab.semilogy()
     pylab.show()
-except ImportError, e:
-    print 'No plotting:', e
+except ImportError as e:
+    print('No plotting:', e)
 

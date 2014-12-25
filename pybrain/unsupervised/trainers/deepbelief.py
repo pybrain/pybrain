@@ -49,7 +49,7 @@ class DeepBeliefTrainer(Trainer):
 
     def trainRbm(self, rbm, dataset):
         trainer = self.trainerKlass(rbm, dataset, self.cfg)
-        for _ in xrange(self.epochs):
+        for _ in range(self.epochs):
             trainer.train()
         return rbm
 
@@ -64,7 +64,7 @@ class DeepBeliefTrainer(Trainer):
         # with the corresponding layers.
         biascons = self.net.connections[bias]
         biascons.sort(key=lambda c: layers.index(c.outmod))
-        modules = zip(layers, layers[1:], layercons, biascons)
+        modules = list(zip(layers, layers[1:], layercons, biascons))
         for visible, hidden, layercon, biascon in modules:
             rbm = Rbm.fromModules(visible, hidden, bias,
                                   layercon, biascon)
@@ -80,7 +80,7 @@ class DeepBeliefTrainer(Trainer):
         bias = BiasUnit()
         piecenet.addModule(bias)
         # Add the first visible layer
-        firstRbm = self.iterRbms().next()
+        firstRbm = next(self.iterRbms())
         visible = copy.deepcopy(firstRbm.visible)
         piecenet.addModule(visible)
         # For saving the rbms and their inverses
@@ -90,7 +90,7 @@ class DeepBeliefTrainer(Trainer):
             self.net.sortModules()
             # Train the first layer with an rbm trainer for `epoch` epochs.
             trainer = self.trainerKlass(rbm, dataset, self.cfg)
-            for _ in xrange(self.epochs):
+            for _ in range(self.epochs):
                 trainer.train()
             self.invRbms.append(trainer.invRbm)
             self.rbms.append(rbm)

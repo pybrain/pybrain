@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 #!/usr/bin/env python
 ###########################################################################
 # This program takes 4 parameters at the command line and runs the
@@ -50,7 +52,7 @@ for n in range(agent.history.getNumSequences()):
     ret.append( sum(reward, 0).item() )
 
 # print results
-print ret, "mean:",mean(ret)
+print(ret, "mean:",mean(ret))
 #env.getRenderer().stop()
 
 

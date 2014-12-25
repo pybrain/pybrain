@@ -1,6 +1,6 @@
 __author__ = 'Tom Schaul, tom@idsia.ch'
 
-from cartpole import CartPoleEnvironment
+from .cartpole import CartPoleEnvironment
 
 
 class NonMarkovPoleEnvironment(CartPoleEnvironment):

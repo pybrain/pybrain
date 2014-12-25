@@ -2,7 +2,7 @@ __author__ = 'Tom Schaul, tom@idsia.ch'
 
 from scipy import zeros, array, amin, amax, sqrt
 
-from colormaps import ColorMap
+from .colormaps import ColorMap
 
 class CiaoPlot(ColorMap):
     """ CIAO plot of coevolution performance with respect to the best
@@ -40,7 +40,7 @@ class CiaoPlot(ColorMap):
 
 
 if __name__ == '__main__':
-    x = array(range(100))
+    x = array(list(range(100)))
     h1 = x * 4
     h2 = x + 20 * sqrt(x)
     def evo(x, y):

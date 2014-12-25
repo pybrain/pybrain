@@ -1,9 +1,8 @@
 """
 
 Build a simple recurrent network:
-
     >>> n = buildRecurrentNetwork()
-    >>> print n
+    >>> print(n)
     RecurrentNetwork
        Modules:
         [<LinearLayer 'in'>, <LinearLayer 'hidden0'>, <LinearLayer 'out'>]

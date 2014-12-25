@@ -1,5 +1,6 @@
-__author__ = 'Michael Isik'
+from __future__ import print_function
 
+__author__ = 'Michael Isik'
 
 from pybrain.tools.validation import CrossValidator
 from numpy import linspace, append, ones, zeros, array, where, apply_along_axis
@@ -46,7 +47,7 @@ class GridSearch2D:
         """ :key **kwargs:
                 verbosity : set verbosity
         """
-        for key, value in kwargs.items():
+        for key, value in list(kwargs.items()):
             if key in ("verbose", "verbosity", "ver", "v"):
                 self._verbosity = value
 
@@ -70,12 +71,12 @@ class GridSearch2D:
                 perf = self._validate(params)
                 perfs[params] = perf
                 if self._verbosity > 0:
-                    print "validated:", params, " performance = ", perf
+                    print(("validated:", params, " performance = ", perf))
 
             self._onStep()
 
-        max_idx = array(perfs.values()).argmax()
-        return perfs.keys()[max_idx]
+        max_idx = array(list(perfs.values())).argmax()
+        return list(perfs.keys())[max_idx]
 
     def _validate(self, params):
         """ Abstract validation method. Should validate the supplied metaparameters,
@@ -99,7 +100,7 @@ class GridSearch2D:
             linspaces.append(
                 self._permuteSequence(
                     list(linspace(self._min_params[i], self._max_params[i], self._n_steps[i]))))
-#        print linspaces; exit(0)
+#        print(linspaces; exit(0))
 #        linspaces = array(linspaces,float)
         nr_c = len(linspaces[0])
         nr_g = len(linspaces[1])
@@ -177,7 +178,7 @@ class GridSearchDOE:
         """ :key **kwargs:
                 verbosity : set verbosity
         """
-        for key, value in kwargs.items():
+        for key, value in list(kwargs.items()):
             if key in ("verbose", "ver", "v"):
                 self._verbosity = value
 
@@ -195,9 +196,9 @@ class GridSearchDOE:
             max_idx = local_perf.argmax()
             center = grid[max_idx]
             if self._verbosity > 0:
-                print
-                print "Found maximum at:", center, "   performance = ", local_perf[max_idx]
-                print
+                print()
+                print(("Found maximum at:", center, "   performance = ", local_perf[max_idx]))
+                print()
 
         return center
 
@@ -207,7 +208,7 @@ class GridSearchDOE:
         """
         perf = self._validate(params)
         if self._verbosity > 0:
-            print "validated:", params, " performance = ", perf
+            print(("validated:", params, " performance = ", perf))
         self._performances[tuple(params)] = perf
         return perf
 
@@ -279,7 +280,7 @@ class GridSearchCostGamma(GridSearch2D):
                 max_epochs: Maximum number of epochs for training
                 verbosity : set verbosity
         """
-        for key, value in kwargs.items():
+        for key, value in list(kwargs.items()):
             if key in ("folds", "nfolds"):
                 self._n_folds = int(value)
             elif key in ("max_epochs"):
@@ -323,7 +324,7 @@ class GridSearchDOECostGamma(GridSearchDOE):
 
     def setArgs(self, **kwargs):
         """ See GridSearchCostGamma """
-        for key, value in kwargs.items():
+        for key, value in list(kwargs.items()):
             if key in ("folds", "nfolds"):
                 self._n_folds = int(value)
             elif key in ("max_epochs"):
@@ -337,7 +338,7 @@ class GridSearchDOECostGamma(GridSearchDOE):
         glob_idx = tuple(params)
         perf = self._performances
 
-        if not perf.has_key(glob_idx):
+        if glob_idx not in perf:
             trainer = self._getTrainerForParams(params)
             local_perf = CrossValidator(trainer, self._dataset, self._n_folds, **self._validator_kwargs).validate()
             perf[glob_idx] = local_perf

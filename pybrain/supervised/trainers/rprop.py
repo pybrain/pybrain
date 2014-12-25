@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 # $Id$
 __author__ = 'Martin Felder'
 
@@ -43,8 +45,10 @@ class RPropMinusTrainer(BackpropTrainer):
             errors += e
             ponderation += p
         if self.verbose:
-            print "epoch %6d  total error %12.5g   avg weight  %12.5g" % (self.epoch, errors / ponderation,
-                                                                          sqrt((self.module.params ** 2).mean()))
+            print(("epoch {epoch:6d}  total error {error:12.5g}   avg weight  {weight:12.5g}".format(
+                epoch=self.epoch,
+                error=errors / ponderation,
+                weight=sqrt((self.module.params ** 2).mean()))))
         self.module._setParameters(self.descent(self.module.derivs - self.weightdecay * self.module.params))
         self.epoch += 1
         self.totalepochs += 1

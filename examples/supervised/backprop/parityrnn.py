@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 #!/usr/bin/env python
 """ A simple recurrent neural network that detects parity for arbitrary sequences. """
 
@@ -36,24 +38,24 @@ def evalRnnOnSeqDataset(net, DS, verbose = False, silent = False):
         for i, t in seq:
             res = net.activate(i)
             if verbose:
-                print t, res
+                print(t, res)
             r += sum((t-res)**2)
             samples += 1
         if verbose:
-            print '-'*20
+            print('-'*20)
     r /= samples
     if not silent:
-        print 'MSE:', r
+        print('MSE:', r)
     return r
 
 if __name__ == "__main__":
     N = buildParityNet()
     DS = ParityDataSet()
     evalRnnOnSeqDataset(N, DS, verbose = True)
-    print '(preset weights)'
+    print('(preset weights)')
     N.randomize()
     evalRnnOnSeqDataset(N, DS)
-    print '(random weights)'
+    print('(random weights)')
 
 
     # Backprop improves the network performance, and sometimes even finds the global optimum.
@@ -61,4 +63,4 @@ if __name__ == "__main__":
     bp = BackpropTrainer(N, DS, verbose = True)
     bp.trainEpochs(5000)
     evalRnnOnSeqDataset(N, DS)
-    print '(backprop-trained weights)'
+    print('(backprop-trained weights)')

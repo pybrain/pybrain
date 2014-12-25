@@ -45,7 +45,7 @@ Build up a DataSet for testing:
                [ 7.,  7.]])]
 
     >>> p = reversed(range(4))
-    >>> print '\\n'.join(repr(b) for b in d.batches('input', 2, p))
+    >>> print('\\n'.join(repr(b) for b in d.batches('input', 2, p)))
     array([[ 6.,  6.],
            [ 7.,  7.]])
     array([[ 4.,  4.],
@@ -71,7 +71,7 @@ UnsupervisedDataSet
     >>> d.addSample([1,0])
     >>> d.addSample([1,1])
     >>> for sample in d:
-    ...   print sample
+    ...   print(sample)
     ...
     [array([ 0.,  0.])]
     [array([ 0.,  1.])]
@@ -143,7 +143,7 @@ ReinforcementDataSet
 __author__ = 'Justin Bayer, bayerj@in.tum.de'
 
 
-from cStringIO import StringIO
+from io import StringIO
 
 from pybrain.tests import runModuleTestSuite
 
@@ -160,14 +160,14 @@ def saveInvariant(dataset):
     equal = True
     for (k, v), (k_, v_) in zip(orig_array_data, rec_array_data):
         if k != k_:
-            print "Differing keys: %s <=> %s" % (dataset.dataset.keys(),
-                                                 rec_array_data.dataset.keys())
+            print(("Differing keys: %s <=> %s" % (list(dataset.dataset.keys()),
+                                                 list(rec_array_data.dataset.keys()))))
             equal = False
             break
         if not (v == v_).all():
-            print "Differing values for %s" % k
-            print v
-            print v_
+            print(("Differing values for %s" % k))
+            print(v)
+            print(v_)
             equal = False
             break
 
@@ -185,8 +185,8 @@ def saveInvariant(dataset):
     if rec_dict == orig_dict:
         return True
     else:
-        print rec_dict
-        print orig_dict
+        print(rec_dict)
+        print(orig_dict)
         return False
 
 
