@@ -89,7 +89,7 @@ controller.initialize(1.)
 
 """
 The table needs the number of states and actions as parameters. The standard
-maze environment comes with the following 4 actions: north, south, east, west.
+maze environment comes with the following 4 actions: north, east, south, west.
 
 Then, we initialize the table with 1 everywhere. This is not always necessary
 but will help converge faster, because unvisited state-action pairs have a
