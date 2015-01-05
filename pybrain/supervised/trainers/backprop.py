@@ -8,7 +8,6 @@ from math import isnan
 from pybrain.supervised.trainers.trainer import Trainer
 from pybrain.utilities import fListToString
 from pybrain.auxiliary import GradientDescent
-from functools import reduce
 
 
 class BackpropTrainer(Trainer):
@@ -249,7 +248,8 @@ class BackpropTrainer(Trainer):
                 if min(new) > max(old):
                     self.module.params[:] = bestweights
                     break
-                elif reduce(lambda x, y: x + (y - round(new[-1], convergence_threshold)), [round(y, convergence_threshold) for y in new]) == 0:
+                lastnew = round(new[-1], convergence_threshold)
+                if sum(round(y, convergence_threshold) - lastnew for y in new) == 0:
                     self.module.params[:] = bestweights
                     break
         #self.trainingErrors.append(self.testOnData(trainingData))
