@@ -7,6 +7,7 @@ __version__ = "$Id$"
 from pylab import ion, figure, draw
 import csv
 from numpy import Infinity
+import matplotlib
 import logging
 
 from pybrain.datasets                  import ClassificationDataSet, SequentialDataSet
@@ -52,6 +53,7 @@ class NNtools(object):
         #self.Graph = MultilinePlotter(autoscale=1.2 ) #xlim=[0, self.maxepochs], ylim=[0, ymax])
         self.Graph = MultilinePlotter(xlim=[0, xmax], ylim=[0, ymax])
         self.Graph.setLineStyle([0, 1], linewidth=2)
+        matplotlib.pyplot.autoscale(enable=True)
         return self.Graph
 
 
@@ -147,6 +149,10 @@ class NNregression(NNtools):
             if self.Graph is not None:
                 self.Graph.addData(0, epoch, err_trn)
                 self.Graph.update()
+                ax = gca()
+                ax.relim()
+                ax.autoscale_view()
+                draw()
 
         # training finished!
         logging.info("Best epoch: %6d, with error: %10g" % (best_epoch, best_error))
@@ -208,7 +214,7 @@ class NNclassifier(NNtools):
             self.hidden = hidden
         self._convertAllDataToOneOfMany()
 
-        RNN = buildNetwork(self.DS.indim, self.hidden, self.DS.outdim, hiddenclass=LSTMLayer, 
+        RNN = buildNetwork(self.DS.indim, self.hidden, self.DS.outdim, hiddenclass=LSTMLayer,
                            recurrent=True, outclass=SoftmaxLayer)
         logging.info("Constructing classification RNN with following config:")
         logging.info(str(RNN) + "\n  Hidden units:\n    " + str(self.hidden))
@@ -276,6 +282,10 @@ class NNclassifier(NNtools):
             if self.Graph is not None:
                 self.Graph.addData(0, epoch, r_trn)
                 self.Graph.update()
+                ax = gca()
+                ax.relim()
+                ax.autoscale_view()
+                draw()
 
         logging.info("Best epoch: %6d, with error: %5.2f%%" % (best_epoch, best_error))
         if self.VDS is not None:
