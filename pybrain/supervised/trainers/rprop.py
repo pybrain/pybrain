@@ -54,4 +54,3 @@ class RPropMinusTrainer(BackpropTrainer):
         self.totalepochs += 1
         return errors / ponderation
 
-
