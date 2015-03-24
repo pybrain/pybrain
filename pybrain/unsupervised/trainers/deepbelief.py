@@ -97,9 +97,9 @@ class DeepBeliefTrainer(Trainer):
             # Add the connections and the hidden layer of the rbm to the net.
             hidden = copy.deepcopy(rbm.hidden)
             biascon = FullConnection(bias, hidden)
-            biascon.params[:] = rbm.biasWeights
+            biascon.params[:] = rbm.biasParams
             con = FullConnection(visible, hidden)
-            con.params[:] = rbm.weights
+            con.params[:] = rbm.params
 
             piecenet.addConnection(biascon)
             piecenet.addConnection(con)
