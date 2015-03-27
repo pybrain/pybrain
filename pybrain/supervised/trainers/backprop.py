@@ -97,6 +97,8 @@ class BackpropTrainer(Trainer):
             # importance, and others
             target = sample[1]
             outerr = self.errfun(target, self.module.outputbuffer[offset])
+            if self.verbose > 1:
+                print('output error: {}'.format(outerr))
             if len(sample) > 2:
                 importance = sample[2]
                 error += 0.5 * dot(importance, outerr ** 2)
@@ -111,6 +113,11 @@ class BackpropTrainer(Trainer):
                 str(outerr)
                 self.module.backActivate(outerr)
 
+            if self.verbose > 1:
+                print('total error so far: {}'.format(error))
+
+        if self.verbose > 1:
+            print('TOTAL error: {}'.format(error))
         return error, ponderation
 
     def _checkGradient(self, dataset=None, silent=False):
