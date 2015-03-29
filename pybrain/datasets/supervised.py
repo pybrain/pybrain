@@ -125,12 +125,12 @@ class SupervisedDataSet(DataSet):
             right (Dataset): the remaining portion of the dataset of length int(N * (1 - portion)).
         """
         separator = int(len(self) * proportion)
+        index0, indexN = 0, len(self)
         if shuffle:
             indicies = random.permutation(len(self))
         else:
             indicies = random.np.arange(len(self))
             if margin:
-                index0, indexN = 0, len(self)
                 index_margin = int(margin * len(self))
                 index0 = random.randint(0, int(index_margin / 2) + 1)
                 indexN = len(self) - index_margin + index0
