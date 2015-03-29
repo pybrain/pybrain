@@ -3,7 +3,6 @@ from __future__ import print_function
 __author__ = 'Thomas Rueckstiess, ruecksti@in.tum.de'
 
 from numpy import random
-from random import sample
 from scipy import isscalar
 
 from pybrain.datasets.dataset import DataSet
@@ -104,7 +103,22 @@ class SupervisedDataSet(DataSet):
 
     def splitWithProportion(self, proportion = 0.5):
         """Produce two new datasets, the first one containing the fraction given
-        by `proportion` of the samples."""
+        by `proportion` of the samples.
+
+        The first dataset will have a fraction given by `proportion` of the
+        dataset chosen randomly from this dataset (using random.permutation).
+        The elements in this set will change each time this funciton is called.
+        The right (second) dataset will contain the remaining samples, (also permuted randomly).
+
+        Arguments:
+            proportion (float): Fraction of dataset to return first in the pair of Datasets returned
+                Must be between 0 and 1 inclusive.
+                default: 0.5 
+
+        Returns:
+            left (Dataset): the portion of the dataset requested of length int(N * portion).
+            right (Dataset): the remaining portion of the dataset of length int(N * (1 - portion)).
+"""
         indicies = random.permutation(len(self))
         separator = int(len(self) * proportion)
 

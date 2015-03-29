@@ -192,7 +192,19 @@ class SequentialDataSet(SupervisedDataSet):
         """Produce two new datasets, each containing a part of the sequences.
 
         The first dataset will have a fraction given by `proportion` of the
-        dataset."""
+        dataset. This split is repeatable and nonrandom. So the left (first)
+        dataset will contain the first M samples unshuffled, where M is int(len(samples) * proportion) 
+        and the right (second) dataset will contain the remaining samples, unshuffled.
+
+        Arguments:
+            proportion (float): Fraction of dataset to return first in the pair of Datasets returned
+                Must be between 0 and 1 inclusive.
+                default: 0.5 
+
+        Returns:
+            left (Dataset): the portion of the dataset requested of length int(N * portion).
+            right (Dataset): the remaining portion of the dataset of length int(N * (1 - portion)).
+        """
         l = self.getNumSequences()
         leftIndices = sample(list(range(l)), int(l * proportion))
         leftDs = self.copy()
