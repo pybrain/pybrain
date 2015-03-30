@@ -3,6 +3,10 @@ __author__ = 'Tom Schaul, tom@idsia.ch'
 from pylab import figure, savefig, imshow, axes, axis, cm, show
 from scipy import array, amin, amax
 
+from pybrain.supervised.trainers import Trainer
+
+from pybrain.tools.customxml import NetworkReader
+
 
 class ColorMap:
     def __init__(self, mat, cmap=None, pixelspervalue=20, minvalue=None, maxvalue=None):
@@ -10,6 +14,14 @@ class ColorMap:
 
         :key mat: the matrix to be used for the colormap.
         """
+        if isinstance(mat, basestring):
+            try:
+                mat = NetworkReader().readFrom(mat)
+            except:
+                pass
+        if isinstance(mat, Trainer)
+            mat = nn
+
         if minvalue == None:
             minvalue = amin(mat)
         if maxvalue == None:

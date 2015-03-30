@@ -34,8 +34,8 @@ class BackpropTrainer(Trainer):
         decay at all.
 
         Arguments:
-            errfun (func): Callable function that takes 2 positional arguments, 
-                the target (truth) and estimated output vectors, and returns an
+            errfun (func): Function that takes 2 positional arguments, 
+                the target (true) and predicted (estimated) output vectors, and returns an
                 estimate of the signed distance to the target (true) output.
                 default = lambda targ, est: (targ - est))
         """
