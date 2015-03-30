@@ -4,7 +4,10 @@ from pybrain.structure.modules.neuronlayer import NeuronLayer
 
 
 class LinearLayer(NeuronLayer):
-    """ The simplest kind of module, not doing any transformation. """
+    """ The simplest kind of module, not doing any transformation. 
+
+    Does not inherit ParameterContainer interface.
+    """
 
     def _forwardImplementation(self, inbuf, outbuf):
         outbuf[:] = inbuf
