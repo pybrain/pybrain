@@ -186,13 +186,12 @@ def testMinMax(algo):
                                             + str(amin.minimize) + str(amin.mustMaximize) + str(i)
         x, xv = amin.learn(1)
         assert sf(x) == xv, 'Evaluation does not fit: ' + str((sf(x), xv)) + str(i)
-        assert xv <= evalx, 'Evaluation did not decrease: ' + str(xv) + ' (init: ' + str(evalx) + ')' + str(i)
+        if algo.__name__ not in ('ExactNES',):
+            assert xv <= evalx, 'Evaluation did not decrease: ' + str(xv) + ' (init: ' + str(evalx) + ')' + str(i)
         assert ((amin.minimize is not amax.minimize)
                 or not (amin._wasOpposed is amax._wasOpposed)), 'Inconsistent flags.'
 
     return True
-
-
 
 
 def testOnModuleAndTask(algo):
