@@ -1,6 +1,7 @@
 PyBrain -- the Python Machine Learning Library
 ===============================================
 
+|Build Status| |Coverage Status| |Version Status| |Downloads|
 
 INSTALLATION
 ------------
@@ -25,3 +26,11 @@ If you have matplotlib, the scripts in
 	examples/*
 may be instructive as well.
 
+.. |Build Status| image:: https://travis-ci.org/hobson/pybrain.svg?branch=master
+   :target: https://travis-ci.org/hobson/pybrain
+.. |Coverage Status| image:: https://coveralls.io/repos/hobson/pybrain/badge.png
+   :target: https://coveralls.io/r/hobson/pybrain
+.. |Version Status| image:: https://pypip.in/v/pybrain/badge.png
+   :target: https://pypi.python.org/pypi/pybrain/
+.. |Downloads| image:: https://pypip.in/d/pybrain/badge.png
+   :target: https://pypi.python.org/pypi/pybrain/
