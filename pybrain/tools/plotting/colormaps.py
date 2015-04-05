@@ -58,26 +58,37 @@ class ColorMaps:
                 mat = NetworkReader().readFrom(mat)
             except:
                 pass
-        # FIXME: what does NetworkReader output? (Module? Layer?) need to handle it's type here
 
-        if isinstance(mat, Trainer):
-            connections = mat.module.connections.values()
-            mat = []
-            for conlist in connections:
-                mat += conlist
+        try:  # if isinstance(mat, Trainer):
+            mat = mat.module
+        except:
+            pass
+
+        try:  # if isinstance(mat, Network):
+            mat = mat.connections.values()
+        except:
+            pass
+        
+            # connections = mat.module.connections.values()
+            # mat = []
+            # for conlist in connections:
+            #     mat += conlist
 
         try:
             mat = [v for (k, v) in mat.iteritems()]
-            if not all(isinstance(x, (ParameterContainer, Connection)) for x in mat):
-                raise ValueError("Don't know how to display ColorMaps for a sequence of type {}".format(type(mat)))
+            if not any(isinstance(m, (ParameterContainer, Connection)) for m in mat):
+                raise ValueError("Don't know how to display ColorMaps for a sequence of type {} containing key, values of type {}: {}".format(
+                                 type(mat), *[type(m) for m in mat.iteritems().next()]))
         except:
             pass
             # from traceback import print_exc
             # print_exc()
         if isinstance(mat, list):
-            self.colormaps = [ColorMap(m, cmap=cmap, pixelspervalue=pixelspervalue, minvalue=minvalue, maxvalue=maxvalue) for m in mat] 
+            for m in mat:
+                self.colormaps = [ColorMap(m, cmap=cmap, pixelspervalue=pixelspervalue, minvalue=minvalue, maxvalue=maxvalue) ] 
         else:
-            raise ValueError("Don't know how to display ColorMaps for a sequence of type {}".format(type(mat)))
+            self.colormaps = [ColorMap(mat)]
+            # raise ValueError("Don't know how to display ColorMaps for a sequence of type {}".format(type(mat)))
        
     def show(self, block=False):
         """ Display the last image drawn """
