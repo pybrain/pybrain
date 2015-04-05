@@ -12,7 +12,6 @@ setup(
     name="PyBrain",
     version="0.3.4",
     description="PyBrain is the Swiss army knife for neural networking.",
-    include_package_data = True,
     license="BSD",
     keywords="Neural Networks Machine Learning",
     url="http://pybrain.org",
