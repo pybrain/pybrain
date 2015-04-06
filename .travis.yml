@@ -21,6 +21,7 @@ install:
   - pip freeze
 script: 
   - "python pybrain/tests/runtests.py"
+  - "python pybrain/tests/test_maze.py"
 notifications:
   email:
     - admin@totalgood.com
