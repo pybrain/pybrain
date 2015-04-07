@@ -4,7 +4,6 @@ from pylab import figure, savefig, imshow, axes, axis, cm, show
 from scipy import array, amin, amax, ndarray, reshape
 
 from pybrain.structure.networks import Network
-from pybrain.supervised.trainers import Trainer
 from pybrain.tools.customxml import NetworkReader
 from pybrain.structure.parametercontainer import ParameterContainer
 from pybrain.structure.connections.connection import Connection
@@ -25,6 +24,8 @@ class ColorMap:
             minvalue = amin(mat)
         if maxvalue == None:
             maxvalue = amax(mat)
+        if isinstance(cmap, basestring) and cmap.strip():
+            cmap = getattr(cm, cmap.lower().strip())
         if not cmap:
             cmap = cm.hot
 
@@ -52,6 +53,7 @@ class ColorMaps:
         """ Make a colormap image of a matrix or sequence of Matrix/Connection objects
 
         :key mat: the matrix to be used for the colormap.
+        :key cmap: the matplotlib colormap (color scale) to use ('hot', 'hot_r', 'gray', 'gray_r', 'hsv', 'prism', pylab.cm.hot, etc)
         """
         self.colormaps = []
         if isinstance(mat, basestring):
