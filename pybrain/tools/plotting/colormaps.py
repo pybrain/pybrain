@@ -3,6 +3,7 @@ __author__ = 'Tom Schaul, tom@idsia.ch'
 from pylab import figure, savefig, imshow, axes, axis, cm, show
 from scipy import array, amin, amax, ndarray, reshape
 
+from pybrain.structure.networks import Network
 from pybrain.supervised.trainers import Trainer
 from pybrain.tools.customxml import NetworkReader
 from pybrain.structure.parametercontainer import ParameterContainer
@@ -47,7 +48,7 @@ class ColorMap:
 
 
 class ColorMaps:
-    def __init__(self, mat, cmap=None, pixelspervalue=20, minvalue=None, maxvalue=None):
+    def __init__(self, mat, cmap=None, pixelspervalue=20, minvalue=None, maxvalue=None, show=True, block=False):
         """ Make a colormap image of a matrix or sequence of Matrix/Connection objects
 
         :key mat: the matrix to be used for the colormap.
@@ -55,7 +56,8 @@ class ColorMaps:
         self.colormaps = []
         if isinstance(mat, basestring):
             try:
-                mat = NetworkReader().readFrom(mat)
+                #nn = NetworkReader(mat, newfile=False)
+                mat = NetworkReader(mat, newfile=False).readFrom(mat)
             except:
                 pass
 
@@ -64,10 +66,9 @@ class ColorMaps:
         except:
             pass
 
-        try:  # if isinstance(mat, Network):
-            mat = mat.connections.values()
-        except:
-            pass
+        if isinstance(mat, Network):
+            # connections is a dict with key: value pairs of Layer: Connection (ParameterContainer)
+            mat = [connection for connection in mat.connections.values() if connection]
         
             # connections = mat.module.connections.values()
             # mat = []
@@ -79,16 +80,26 @@ class ColorMaps:
             if not any(isinstance(m, (ParameterContainer, Connection)) for m in mat):
                 raise ValueError("Don't know how to display ColorMaps for a sequence of type {} containing key, values of type {}: {}".format(
                                  type(mat), *[type(m) for m in mat.iteritems().next()]))
-        except:
+        except AttributeError:
             pass
             # from traceback import print_exc
             # print_exc()
         if isinstance(mat, list):
             for m in mat:
-                self.colormaps = [ColorMap(m, cmap=cmap, pixelspervalue=pixelspervalue, minvalue=minvalue, maxvalue=maxvalue) ] 
+                if isinstance(m, list):
+                    if len(m) == 1:
+                        m = m[0]
+                    else:
+                        raise ValueError("Don't know how to display a ColorMap for a list containing more than one matrix: {}".format([type(m) for m in mat]))
+                try:
+                    self.colormaps = [ColorMap(m, cmap=cmap, pixelspervalue=pixelspervalue, minvalue=minvalue, maxvalue=maxvalue) ]
+                except ValueError:
+                    self.colormaps = [ColorMap(m[0], cmap=cmap, pixelspervalue=pixelspervalue, minvalue=minvalue, maxvalue=maxvalue) ]
         else:
             self.colormaps = [ColorMap(mat)]
             # raise ValueError("Don't know how to display ColorMaps for a sequence of type {}".format(type(mat)))
+        if show:
+            self.show(block=block)
        
     def show(self, block=False):
         """ Display the last image drawn """
