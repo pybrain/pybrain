@@ -3,10 +3,6 @@ python:
   - 2.7
   # - 3.3
 before_install:
-  # - sudo -H apt-get install gfortran-4.6
-  # - sudo -H pip install --upgrade pip
-  # - sudo -H pip install --upgrade setuptools
-  # - sudo -H pip install --upgrade virtualenv
   - wget http://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O miniconda.sh
   - chmod +x miniconda.sh
   - ./miniconda.sh -b
@@ -17,7 +13,6 @@ install:
   # - pip install git+https://github.com/hobson/pybrain.git@master#egg=pybrain-0.3.3
   # - pip install git+https://github.com/hobson/pug-nlp.git@master#egg=pug-nlp-master
   - python setup.py install
-  # - pip install .
   - pip freeze
 script: 
   - "python pybrain/tests/runtests.py"
