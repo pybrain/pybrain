@@ -23,7 +23,7 @@ __author__ = 'Tom Schaul, tom@idsia.ch'
 
 from inspect import isclass
 from scipy import sum, array, ndarray, log10
-from random import random, choice
+from random import random  # , choice
 
 import pybrain.optimization.optimizer as bbo
 import pybrain.optimization.populationbased.multiobjective as mobj
@@ -41,7 +41,7 @@ from pybrain.structure.modules.module import Module
 # ----------------------
 
 # simple function
-sf = lambda x:-sum((x + 1) ** 2)
+sf = lambda x: -sum((x + 1) ** 2)
 # FunctionEnvironment class
 fe = SphereFunction
 # initialized FE
