@@ -1,12 +1,12 @@
 __author__ = 'Tom Schaul, tom@idsia.ch'
-
-from scipy import array, exp, tanh, clip, log, dot, sqrt, power, pi, tan, diag, rand, real_if_close
+from scipy import (array, exp, tanh, clip, log, dot, sqrt, power, pi, tan,
+                   diag, rand, real_if_close)
 from scipy.linalg import inv, det, svd, logm, expm2
 
 
 def semilinear(x):
-    """ This function ensures that the values of the array are always positive. It is
-        x+1 for x=>0 and exp(x) for x<0. """
+    """ This function ensures that the values of the array are always positive.
+        It is x+1 for x=>0 and exp(x) for x<0. """
     try:
         # assume x is a numpy array
         shape = x.shape
@@ -47,7 +47,7 @@ def semilinearPrime(x):
 
 
 def safeExp(x):
-    """ Bounded range for the exponential function (won't produce inf or NaN). """
+    "Bounded range for the exponential function (won't produce inf or NaN)."
     return exp(clip(x, -500, 500))
 
 
@@ -76,8 +76,8 @@ def ranking(R):
 
 
 def expln(x):
-    """ This continuous function ensures that the values of the array are always positive.
-        It is ln(x+1)+1 for x >= 0 and exp(x) for x < 0. """
+    """ This continuous function ensures that the values of the array are
+        always positive. It is ln(x+1)+1 for x >= 0 and exp(x) for x < 0. """
     def f(val):
         if val < 0:
             # exponential function for x < 0
@@ -112,8 +112,9 @@ def explnPrime(x):
 
 
 def multivariateNormalPdf(z, x, sigma):
-    """ The pdf of a multivariate normal distribution (not in scipy).
-    The sample z and the mean x should be 1-dim-arrays, and sigma a square 2-dim-array. """
+    """ The pdf of a multivariate normal distribution (not in scipy). The
+    sample z and the mean x should be 1-dim-arrays, and sigma a square
+    2-dim-array. """
     assert len(z.shape) == 1 and len(x.shape) == 1 and len(x) == len(z) and sigma.shape == (len(x), len(z))
     tmp = -0.5 * dot(dot((z - x), inv(sigma)), (z - x))
     res = (1. / power(2.0 * pi, len(z) / 2.)) * (1. / sqrt(det(sigma))) * exp(tmp)
@@ -121,14 +122,16 @@ def multivariateNormalPdf(z, x, sigma):
 
 
 def simpleMultivariateNormalPdf(z, detFactorSigma):
-    """ Assuming z has been transformed to a mean of zero and an identity matrix of covariances.
-    Needs to provide the determinant of the factorized (real) covariance matrix. """
+    """ Assuming z has been transformed to a mean of zero and an identity
+    matrix of covariances. Needs to provide the determinant of the factorized
+    (real) covariance matrix. """
     dim = len(z)
     return exp(-0.5 * dot(z, z)) / (power(2.0 * pi, dim / 2.) * detFactorSigma)
 
 
 def multivariateCauchy(mu, sigma, onlyDiagonal=True):
-    """ Generates a sample according to a given multivariate Cauchy distribution. """
+    """ Generates a sample according to a given multivariate Cauchy
+    distribution. """
     if not onlyDiagonal:
         u, s, d = svd(sigma)
         coeffs = sqrt(s)
@@ -149,7 +152,11 @@ def approxChiFunction(dim):
 
 
 def sqrtm(M):
-    """ Returns the symmetric semi-definite positive square root of a matrix. """
+    """ Returns the symmetric semi-definite positive square root of a matrix.
+    """
     r = real_if_close(expm2(0.5 * logm(M)), 1e-8)
     return (r + r.T) / 2
 
+
+def abs_error(targ, est):
+    return targ - est

@@ -8,6 +8,7 @@ from math import isnan
 from pybrain.supervised.trainers.trainer import Trainer
 from pybrain.utilities import fListToString
 from pybrain.auxiliary import GradientDescent
+from pybrain.tools.functions import abs_error
 
 
 class BackpropTrainer(Trainer):
@@ -17,27 +18,28 @@ class BackpropTrainer(Trainer):
 
     def __init__(self, module, dataset=None, learningrate=0.01, lrdecay=1.0,
                  momentum=0., verbose=False, batchlearning=False,
-                 weightdecay=0., errfun=lambda targ, est: (targ - est)):
+                 weightdecay=0., errfun=None):
         """Create a BackpropTrainer to train the specified `module` on the
         specified `dataset`.
 
         The learning rate gives the ratio of which parameters are changed into
-        the direction of the gradient. The learning rate decreases by `lrdecay`,
-        which is used to to multiply the learning rate after each training
-        step. The parameters are also adjusted with respect to `momentum`, which
-        is the ratio by which the gradient of the last timestep is used.
+        the direction of the gradient. The learning rate decreases by
+        `lrdecay`, which is used to to multiply the learning rate after each
+        training step. The parameters are also adjusted with respect to
+        `momentum`, which is the ratio by which the gradient of the last
+        timestep is used.
 
-        If `batchlearning` is set, the parameters are updated only at the end of
-        each epoch. Default is False.
+        If `batchlearning` is set, the parameters are updated only at the end
+        of each epoch. Default is False.
 
         `weightdecay` corresponds to the weightdecay rate, where 0 is no weight
         decay at all.
 
         Arguments:
-            errfun (func): Function that takes 2 positional arguments, 
-                the target (true) and predicted (estimated) output vectors, and returns an
-                estimate of the signed distance to the target (true) output.
-                default = lambda targ, est: (targ - est))
+            errfun (func): Function that takes 2 positional arguments,
+                the target (true) and predicted (estimated) output vectors, and
+                returns an estimate of the signed distance to the target (true)
+                output. default = lambda targ, est: (targ - est))
         """
         Trainer.__init__(self, module)
         self.setData(dataset)
@@ -52,7 +54,7 @@ class BackpropTrainer(Trainer):
         self.descent.momentum = momentum
         self.descent.alphadecay = lrdecay
         self.descent.init(module.params)
-        self.errfun = errfun or (lambda x, y: (x - y))
+        self.errfun = errfun or abs_error
 
     def train(self):
         """Train the associated module for one epoch."""
@@ -211,7 +213,7 @@ class BackpropTrainer(Trainer):
         If no dataset is given, the dataset passed during Trainer
         initialization is used. validationProportion is the ratio of the dataset
         that is used for the validation dataset.
-        
+
         If the training and validation data is already set, the splitPropotion is ignored
 
         If maxEpochs is given, at most that many epochs
