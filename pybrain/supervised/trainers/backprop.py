@@ -1,7 +1,5 @@
 from __future__ import print_function
 
-__author__ = 'Daan Wierstra and Tom Schaul'
-
 from scipy import dot, argmax
 from random import shuffle
 from math import isnan
@@ -10,11 +8,13 @@ from pybrain.utilities import fListToString
 from pybrain.auxiliary import GradientDescent
 from pybrain.tools.functions import abs_error
 
+__author__ = 'Daan Wierstra and Tom Schaul'
+
 
 class BackpropTrainer(Trainer):
-    """Trainer that trains the parameters of a module according to a
-    supervised dataset (potentially sequential) by backpropagating the errors
-    (through time)."""
+    """Trainer that trains the parameters of a module according to a supervised
+    dataset (potentially sequential) by backpropagating the errors (through
+    time)."""
 
     def __init__(self, module, dataset=None, learningrate=0.01, lrdecay=1.0,
                  momentum=0., verbose=False, batchlearning=False,
@@ -71,7 +71,8 @@ class BackpropTrainer(Trainer):
             errors += e
             ponderation += p
             if not self.batchlearning:
-                gradient = self.module.derivs - self.weightdecay * self.module.params
+                gradient = (self.module.derivs -
+                            self.weightdecay * self.module.params)
                 new = self.descent(gradient, errors)
                 if new is not None:
                     self.module.params[:] = new
@@ -84,7 +85,6 @@ class BackpropTrainer(Trainer):
         self.epoch += 1
         self.totalepochs += 1
         return errors / ponderation
-
 
     def _calcDerivs(self, seq):
         """Calculate error function and backpropagate output errors to yield
@@ -151,9 +151,9 @@ class BackpropTrainer(Trainer):
     def testOnData(self, dataset=None, verbose=False):
         """Compute the MSE of the module performance on the given dataset.
 
-        If no dataset is supplied, the one passed upon Trainer initialization is
-        used."""
-        if dataset == None:
+        If no dataset is supplied, the one passed upon Trainer initialization
+        is used."""
+        if dataset is None:
             dataset = self.ds
         dataset.reset()
         if verbose:
@@ -163,7 +163,8 @@ class BackpropTrainer(Trainer):
         ponderatedErrors = []
         for seq in dataset._provideSequences():
             self.module.reset()
-            e, i = dataset._evaluateSequence(self.module.activate, seq, verbose)
+            e, i = dataset._evaluateSequence(self.module.activate, seq,
+                                             verbose)
             importances.append(i)
             errors.append(e)
             ponderatedErrors.append(e / i)
@@ -185,7 +186,7 @@ class BackpropTrainer(Trainer):
         initialization is used. If return_targets is set, also return
         corresponding target classes.
         """
-        if dataset == None:
+        if dataset is None:
             dataset = self.ds
         dataset.reset()
         out = []
@@ -211,10 +212,11 @@ class BackpropTrainer(Trainer):
         error.
 
         If no dataset is given, the dataset passed during Trainer
-        initialization is used. validationProportion is the ratio of the dataset
-        that is used for the validation dataset.
+        initialization is used. validationProportion is the ratio of the
+        dataset that is used for the validation dataset.
 
-        If the training and validation data is already set, the splitPropotion is ignored
+        If the training and validation data is already set, the splitPropotion
+        is ignored
 
         If maxEpochs is given, at most that many epochs
         are trained. Each time validation error hits a minimum, try for
@@ -225,13 +227,14 @@ class BackpropTrainer(Trainer):
         if verbose is None:
             verbose = self.verbose
         if trainingData is None or validationData is None:
-            # Split the dataset randomly: validationProportion of the samples for
-            # validation.
+            # Split the dataset randomly: validationProportion of the samples
+            # for validation.
             trainingData, validationData = (
                 dataset.splitWithProportion(1 - validationProportion))
         if not (len(trainingData) > 0 and len(validationData)):
-            raise ValueError("Provided dataset too small to be split into training " +
-                             "and validation sets with proportion " + str(validationProportion))
+            raise ValueError("Provided dataset too small to be split into "
+                             "training and validation sets with proportion " +
+                             str(validationProportion))
         self.ds = trainingData
         bestweights = self.module.params.copy()
         bestverr = self.testOnData(validationData)
@@ -251,7 +254,7 @@ class BackpropTrainer(Trainer):
                 bestweights = self.module.params.copy()
                 bestepoch = epochs
 
-            if maxEpochs != None and epochs >= maxEpochs:
+            if maxEpochs is not None and epochs >= maxEpochs:
                 self.module.params[:] = bestweights
                 break
             epochs += 1
@@ -259,18 +262,19 @@ class BackpropTrainer(Trainer):
             if len(self.validationErrors) >= continueEpochs * 2:
                 # have the validation errors started going up again?
                 # compare the average of the last few to the previous few
-                old = self.validationErrors[-continueEpochs * 2:-continueEpochs]
+                old = self.validationErrors[-continueEpochs * 2:- continueEpochs]
                 new = self.validationErrors[-continueEpochs:]
                 if min(new) > max(old):
                     self.module.params[:] = bestweights
                     break
                 lastnew = round(new[-1], convergence_threshold)
-                if sum(round(y, convergence_threshold) - lastnew for y in new) == 0:
+                if sum(round(y, convergence_threshold) -
+                       lastnew for y in new) == 0:
                     self.module.params[:] = bestweights
                     break
-        #self.trainingErrors.append(self.testOnData(trainingData))
         self.ds = dataset
         if verbose:
             print(('train-errors:', fListToString(self.trainingErrors, 6)))
             print(('valid-errors:', fListToString(self.validationErrors, 6)))
-        return self.trainingErrors[:bestepoch], self.validationErrors[:1 + bestepoch]
+        # slice off the inital bestverr
+        return self.trainingErrors[:bestepoch], self.validationErrors[1:1 + bestepoch]
