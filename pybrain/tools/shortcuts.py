@@ -42,7 +42,9 @@ def buildNetwork(*layers, **options):
            'peepholes': False,
            'recurrent': False,
            'fast': False,
+           'use_random_seed': True,
     }
+
     for key in options:
         if key not in list(opt.keys()):
             raise NetworkError('buildNetwork unknown option: %s' % key)
@@ -76,9 +78,13 @@ def buildNetwork(*layers, **options):
         # add bias module and connection to out module, if desired
         n.addModule(BiasUnit(name='bias'))
         if opt['outputbias']:
-            n.addConnection(FullConnection(n['bias'], n['out']))
+            n.addConnection(FullConnection(n['bias'], n['out'], use_random_seed=opt['use_random_seed']))
     # arbitrary number of hidden layers of type 'hiddenclass'
-    for i, num in enumerate(layers[1:-1]):
+    hidden_layers = layers[1:-1]
+    if type(hidden_layers) in [tuple]:
+        hidden_layers = hidden_layers[0]
+
+    for i, num in enumerate(hidden_layers):
         layername = 'hidden%i' % i
         if issubclass(opt['hiddenclass'], LSTMLayer):
             n.addModule(opt['hiddenclass'](num, peepholes=opt['peepholes'], name=layername))
@@ -86,24 +92,24 @@ def buildNetwork(*layers, **options):
             n.addModule(opt['hiddenclass'](num, name=layername))
         if opt['bias']:
             # also connect all the layers with the bias
-            n.addConnection(FullConnection(n['bias'], n[layername]))
+            n.addConnection(FullConnection(n['bias'], n[layername], use_random_seed=opt['use_random_seed']))
     # connections between hidden layers
     for i in range(len(layers) - 3):
-        n.addConnection(FullConnection(n['hidden%i' % i], n['hidden%i' % (i + 1)]))
+        n.addConnection(FullConnection(n['hidden%i' % i], n['hidden%i' % (i + 1)], use_random_seed=opt['use_random_seed']))
     # other connections
     if len(layers) == 2:
         # flat network, connection from in to out
-        n.addConnection(FullConnection(n['in'], n['out']))
+        n.addConnection(FullConnection(n['in'], n['out'], use_random_seed=opt['use_random_seed']))
     else:
         # network with hidden layer(s), connections from in to first hidden and last hidden to out
-        n.addConnection(FullConnection(n['in'], n['hidden0']))
-        n.addConnection(FullConnection(n['hidden%i' % (len(layers) - 3)], n['out']))
+        n.addConnection(FullConnection(n['in'], n['hidden0'], use_random_seed=opt['use_random_seed']))
+        n.addConnection(FullConnection(n['hidden%i' % (len(layers) - 3)], n['out'], use_random_seed=opt['use_random_seed']))
 
     # recurrent connections
     if issubclass(opt['hiddenclass'], LSTMLayer):
         if len(layers) > 3:
             errorexit("LSTM networks with > 1 hidden layers are not supported!")
-        n.addRecurrentConnection(FullConnection(n['hidden0'], n['hidden0']))
+        n.addRecurrentConnection(FullConnection(n['hidden0'], n['hidden0'], use_random_seed=opt['use_random_seed']))
 
     n.sortModules()
     return n
@@ -132,6 +138,7 @@ def _buildNetwork(*layers, **options):
         )
     """
     bias = options['bias'] if 'bias' in options else False
+    use_random_seed = options['use_random_seed'] if 'use_random_seed' in options else False
 
     net = FeedForwardNetwork()
     layerParts = iter(layers)
@@ -151,7 +158,7 @@ def _buildNetwork(*layers, **options):
                 if bias:
                     biasUnit = BiasUnit('BiasUnit for %s' % layer.name)
                     net.addModule(biasUnit)
-                    net.addConnection(FullConnection(biasUnit, layer))
+                    net.addConnection(FullConnection(biasUnit, layer, use_random_seed=use_random_seed))
             else:
                 ConnectionClass = IdentityConnection
             new_part = False
