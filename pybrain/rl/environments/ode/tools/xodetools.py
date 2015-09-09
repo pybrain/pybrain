@@ -281,7 +281,7 @@ class XODEfile(XMLstruct):
         """writes the created structure (plus header and footer) to file with
         the given basename (.xode is appended)"""
         if filename is None: filename = self._xodename
-        f = file(filename + '.xode', 'wb')  # <-- wb here ensures Linux compatibility
+        f = open(filename + '.xode', 'wb')  # <-- wb here ensures Linux compatibility
         f.write('<?xml version="1.0" encoding="UTF-8"?>\n')
         f.write('<xode version="1.0r23" name="' + self._xodename + '"\n')
         f.write('xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://tanksoftware.com/xode/1.0r23/xode.xsd">\n\n')

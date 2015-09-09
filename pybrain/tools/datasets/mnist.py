@@ -7,7 +7,7 @@ from pybrain.datasets import SupervisedDataSet
 
 
 def labels(filename):
-    fp = file(filename)
+    fp = open(filename)
     magicnumber, length = struct.unpack('>ii', fp.read(8))
     assert magicnumber in (2049, 2051), ("Not an MNIST file: %i" % magicnumber)
     for _ in range(length):
@@ -16,7 +16,7 @@ def labels(filename):
 
 
 def images(filename):
-    fp = file(filename,'rb')
+    fp = open(filename,'rb')
     chunk = fp.read(16)
     magicnumber, length, numrows, numcols = struct.unpack('>iiii', chunk)
     assert magicnumber in (2049, 2051), ("Not an MNIST file: %i" % magicnumber)

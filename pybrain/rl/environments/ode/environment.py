@@ -174,7 +174,7 @@ class ODEEnvironment(Environment):
 
     def loadXODE(self, filename, reload=False):
         """ loads an XODE file (xml format) and parses it. """
-        f = file(filename)
+        f = open(filename)
         self._currentXODEfile = filename
         p = xode.parser.Parser()
         self.root = p.parseFile(f)

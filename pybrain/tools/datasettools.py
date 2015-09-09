@@ -83,7 +83,7 @@ class DataSetNormalizer(object):
             self.load(fname)
 
     def load(self, fname):
-        f = file(fname)
+        f = open(fname)
         c = []
         # the first line determines whether we interpret the file as
         # giving min/max of features or mean/std
@@ -103,7 +103,7 @@ class DataSetNormalizer(object):
         self.newmax = bounds[1]
 
     def save(self, fname):
-        f = file(fname, "w+")
+        f = open(fname, "w+")
         f.write('x\n')
         f.write('%g %g' % (self.newmin, self.newmax))
         for i in range(self.dim):
