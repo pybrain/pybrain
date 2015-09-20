@@ -104,15 +104,15 @@ class GRULayer(NeuronLayer, ParameterContainer):
 
         # peephole treatment
         if self.offset > 0:
-            self.resetgatex[self.offset] += self.resetPeepWeights * prevout
-            self.updategatex[self.offset] += self.updatePeepWeights * prevout
+            self.resetgatex[self.offset] += dot(reshape(self.resetPeepWeights, (dim, dim)), prevout)
+            self.updategatex[self.offset] += dot(reshape(self.updatePeepWeights, (dim, dim)), prevout)
 
         self.resetgate[self.offset] = self.f(self.resetgatex[self.offset])
         self.updategate[self.offset] = self.f(self.updategatex[self.offset])
         
-        if self.offset > 0:    
+        if self.offset > 0:
             self.candidatex[self.offset] += self.resetgate[self.offset] * \
-            self.candidatePeepWeights * prevout
+            dot(reshape(self.candidatePeepWeights, (dim, dim)), prevout)
             
         self.candidate[self.offset] = self.g(self.candidatex[self.offset])
 
@@ -136,11 +136,11 @@ class GRULayer(NeuronLayer, ParameterContainer):
         
         # Output errors backpropagated in time from next timestep
         if not self._isLastTimestep():
-            self.outError[self.offset] += self.resetPeepWeights * self.resetgateError[self.offset+1]
-            self.outError[self.offset] += self.updatePeepWeights * self.updategateError[self.offset+1]
-            self.outError[self.offset] += self.resetgate[self.offset+1] * self.candidatePeepWeights \
-                                            * self.candidateError[self.offset+1]
             self.outError[self.offset] += self.updategate[self.offset+1] * self.outError[self.offset+1]
+            self.outError[self.offset] += dot(reshape(self.resetPeepWeights, (dim, dim)).T, self.resetgateError[self.offset+1]) 
+            self.outError[self.offset] += dot(reshape(self.updatePeepWeights, (dim, dim)).T, self.updategateError[self.offset+1])
+            self.outError[self.offset] += self.resetgate[self.offset+1] * dot(reshape(self.candidatePeepWeights, (dim, dim)).T,
+                                            self.candidateError[self.offset+1])
         
         self.candidateError[self.offset] = (1 - z) * self.gprime(self.candidatex[self.offset]) \
                                             * self.outError[self.offset]
@@ -149,16 +149,16 @@ class GRULayer(NeuronLayer, ParameterContainer):
             self.updategateError[self.offset] = self.fprime(self.updategatex[self.offset]) \
                                             * (prevout - self.candidate[self.offset]) \
                                             * self.outError[self.offset]
-        
+                                            
             self.resetgateError[self.offset] = self.fprime(self.resetgatex[self.offset]) \
-                                            * (self.resetPeepWeights * prevout) \
+                                            * dot(reshape(self.resetPeepWeights, (dim, dim)).T, prevout) \
                                             * self.candidateError[self.offset]
 
         # compute peep derivatives
         if self.offset > 0:
-            self.resetPeepDerivs += self.resetgateError[self.offset] * prevout
-            self.updatePeepDerivs += self.updategateError[self.offset] * prevout
-            self.candidatePeepDerivs += self.candidateError[self.offset] * r * prevout
+            self.resetPeepDerivs += outer(self.resetgateError[self.offset], prevout).T.flatten()
+            self.updatePeepDerivs += outer(self.updategateError[self.offset], prevout).T.flatten()
+            self.candidatePeepDerivs += outer(self.candidateError[self.offset], r * prevout).T.flatten()
 
         # compute out errors
         inerr[:dim] = self.resetgateError[self.offset]
