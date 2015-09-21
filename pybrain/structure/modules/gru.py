@@ -77,9 +77,9 @@ class GRULayer(NeuronLayer, ParameterContainer):
     def _setDerivatives(self, d, owner = None):
         ParameterContainer._setDerivatives(self, d, owner)
         dim = self.outdim
-        self.resetPeepDerivs = self.params[:dim]
-        self.updatePeepDerivs = self.params[dim:dim*2]
-        self.candidatePeepDerivs = self.derivs[:dim]
+        self.resetPeepDerivs = self.derivs[:dim]
+        self.updatePeepDerivs = self.derivs[dim:dim*2]
+        self.candidatePeepDerivs = self.derivs[dim*2:]
 
 
     def _isLastTimestep(self):
