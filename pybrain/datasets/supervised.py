@@ -102,9 +102,9 @@ class SupervisedDataSet(DataSet):
             res += self.evaluateMSE(module.activate, **args)
         return res/averageOver
 
-    def splitWithProportion(self, proportion = 0.5):
-        """Produce two new datasets, the first one containing the fraction given
-        by `proportion` of the samples."""
+    def splitWithProportionSuper(self, proportion = 0.5):
+        """Produce two new supervised datasets, the first one containing 
+        the fraction given by `proportion` of the samples."""
         indicies = random.permutation(len(self))
         separator = int(len(self) * proportion)
 
@@ -116,4 +116,27 @@ class SupervisedDataSet(DataSet):
         rightDs = SupervisedDataSet(inp=self['input'][rightIndicies].copy(),
                                     target=self['target'][rightIndicies].copy())
         return leftDs, rightDs
+
+def splitWithProportionClass(self, proportion = 0.5):
+    """Produce two new classification datasets, the first one containing 
+    the fraction given by `proportion` of the samples."""
+    indicies = random.permutation(len(self))
+    separator = int(len(self) * proportion)
+
+    leftIndicies = indicies[:separator]
+    rightIndicies = indicies[separator:]
+
+    leftDs = ClassificationDataSet(2, 1, nb_classes = 3)
+    leftDs.setField('input', self['input'][leftIndicies])
+    leftDs.setField('target', self['target'][leftIndicies])
+    leftDs.setField('class', self['class'][leftIndicies])
+    leftDs.linkFields(['input', 'target'])
+
+    rightDs = ClassificationDataSet(2, 1, nb_classes = 3)
+    rightDs.setField('input', self['input'][rightIndicies])
+    rightDs.setField('target', self['target'][rightIndicies])
+    rightDs.setField('class', self['class'][rightIndicies])
+    rightDs.linkFields(['input', 'target'])
+
+    return leftDs, rightDs
 
