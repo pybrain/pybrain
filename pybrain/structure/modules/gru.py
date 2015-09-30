@@ -139,12 +139,6 @@ class GRULayer(NeuronLayer, ParameterContainer):
         
         # Output errors backpropagated in time from next timestep
         if not self._isLastTimestep():
-            self.contrib1[self.offset] = self.updategate[self.offset+1] * self.outError[self.offset+1]
-            self.contrib2[self.offset] = dot(reshape(self.resetPeepWeights, (dim, dim)).T, self.resetgateError[self.offset+1]) 
-            self.contrib3[self.offset] = dot(reshape(self.updatePeepWeights, (dim, dim)).T, self.updategateError[self.offset+1])
-            self.contrib4[self.offset] = dot(reshape(self.candidatePeepWeights, (dim, dim)).T,
-                                            self.resetgate[self.offset+1] * self.candidateError[self.offset+1])
-            
             self.outError[self.offset] += self.updategate[self.offset+1] * self.outError[self.offset+1]
             self.outError[self.offset] += dot(reshape(self.resetPeepWeights, (dim, dim)).T, self.resetgateError[self.offset+1]) 
             self.outError[self.offset] += dot(reshape(self.updatePeepWeights, (dim, dim)).T, self.updategateError[self.offset+1])
@@ -162,7 +156,7 @@ class GRULayer(NeuronLayer, ParameterContainer):
                                         * self.candidateError[self.offset]
 
         # compute peep derivatives
-        if self.offset > 0:            
+        if self.offset > 0:
             self.resetPeepDerivs += outer(self.resetgateError[self.offset], prevout).flatten()
             self.updatePeepDerivs += outer(self.updategateError[self.offset], prevout).flatten()
             self.candidatePeepDerivs += outer(self.candidateError[self.offset] * r, prevout).flatten()
