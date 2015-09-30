@@ -139,8 +139,8 @@ class GRULayer(NeuronLayer, ParameterContainer):
             self.outError[self.offset] += self.updategate[self.offset+1] * self.outError[self.offset+1]
             self.outError[self.offset] += dot(reshape(self.resetPeepWeights, (dim, dim)).T, self.resetgateError[self.offset+1]) 
             self.outError[self.offset] += dot(reshape(self.updatePeepWeights, (dim, dim)).T, self.updategateError[self.offset+1])
-            self.outError[self.offset] += self.resetgate[self.offset+1] * dot(reshape(self.candidatePeepWeights, (dim, dim)).T,
-                                            self.candidateError[self.offset+1])
+            self.outError[self.offset] += dot(reshape(self.candidatePeepWeights, (dim, dim)).T,
+                                            self.resetgate[self.offset+1] * self.candidateError[self.offset+1])
         
         self.candidateError[self.offset] = (1 - z) * self.gprime(self.candidatex[self.offset]) \
                                             * self.outError[self.offset]
@@ -151,14 +151,14 @@ class GRULayer(NeuronLayer, ParameterContainer):
                                             * self.outError[self.offset]
                                             
             self.resetgateError[self.offset] = self.fprime(self.resetgatex[self.offset]) \
-                                            * dot(reshape(self.resetPeepWeights, (dim, dim)).T, prevout) \
+                                            * dot(reshape(self.candidatePeepWeights, (dim, dim)).T, prevout) \
                                             * self.candidateError[self.offset]
 
         # compute peep derivatives
         if self.offset > 0:
             self.resetPeepDerivs += outer(self.resetgateError[self.offset], prevout).T.flatten()
             self.updatePeepDerivs += outer(self.updategateError[self.offset], prevout).T.flatten()
-            self.candidatePeepDerivs += outer(self.candidateError[self.offset], r * prevout).T.flatten()
+            self.candidatePeepDerivs += outer(self.candidateError[self.offset] * r, prevout).flatten()
 
         # compute out errors
         inerr[:dim] = self.resetgateError[self.offset]
