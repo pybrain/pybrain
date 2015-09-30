@@ -1,6 +1,12 @@
-__author__ = 'Jack Russell'
+# -*- coding: utf-8 -*-
+"""
+Created on Thu Sep 17 13:47:02 2015
 
-from scipy import tanh
+@author: jackrussell
+"""
+__original__author__ = 'Daan Wierstra and Tom Schaul'
+
+from scipy import tanh, dot, reshape, outer, zeros
 
 from pybrain.structure.modules.neuronlayer import NeuronLayer
 from pybrain.structure.modules.module import Module
@@ -30,7 +36,6 @@ class GRULayer(NeuronLayer, ParameterContainer):
     """
 
     sequential = True
-#    peepholes = False
     maxoffset = 0
 
     # Transfer functions and their derivatives
@@ -38,8 +43,6 @@ class GRULayer(NeuronLayer, ParameterContainer):
     fprime = lambda _, x: sigmoidPrime(x)
     g = lambda _, x: tanh(x)
     gprime = lambda _, x: tanhPrime(x)
-#    h = lambda _, x: tanh(x)
-#    hprime = lambda _, x: tanhPrime(x)
 
 
     def __init__(self, dim, name = None):
@@ -62,21 +65,21 @@ class GRULayer(NeuronLayer, ParameterContainer):
         ]
 
         Module.__init__(self, 3*dim, dim, name)
-        ParameterContainer.__init__(self, dim*3)
+        ParameterContainer.__init__(self, dim*dim*3)
         self._setParameters(self.params)
         self._setDerivatives(self.derivs)
 
 
     def _setParameters(self, p, owner = None):
         ParameterContainer._setParameters(self, p, owner)
-        dim = self.outdim
+        dim = self.outdim ** 2
         self.resetPeepWeights = self.params[:dim]
         self.updatePeepWeights = self.params[dim:dim*2]
         self.candidatePeepWeights = self.params[dim*2:]
 
     def _setDerivatives(self, d, owner = None):
         ParameterContainer._setDerivatives(self, d, owner)
-        dim = self.outdim
+        dim = self.outdim ** 2
         self.resetPeepDerivs = self.derivs[:dim]
         self.updatePeepDerivs = self.derivs[dim:dim*2]
         self.candidatePeepDerivs = self.derivs[dim*2:]
@@ -97,7 +100,7 @@ class GRULayer(NeuronLayer, ParameterContainer):
             raise str((self.offset, self.resetgatex.shape))
 
         self.updategatex[self.offset] = inbuf[dim:dim*2]
-        self.candidatex[self.offset] = inbuf[dim*2:dim*3]
+        self.candidatex[self.offset] = inbuf[dim*2:]
         
         if self.offset > 0:
             prevout = self.outputbuffer[self.offset-1]
@@ -129,13 +132,19 @@ class GRULayer(NeuronLayer, ParameterContainer):
         if self.offset > 0:
             prevout = self.outputbuffer[self.offset-1]
         else:
-            prevout = 0
-        
+            prevout = zeros(dim)
+
         # Output error from current timestep
         self.outError[self.offset] = outerr
         
         # Output errors backpropagated in time from next timestep
         if not self._isLastTimestep():
+            self.contrib1[self.offset] = self.updategate[self.offset+1] * self.outError[self.offset+1]
+            self.contrib2[self.offset] = dot(reshape(self.resetPeepWeights, (dim, dim)).T, self.resetgateError[self.offset+1]) 
+            self.contrib3[self.offset] = dot(reshape(self.updatePeepWeights, (dim, dim)).T, self.updategateError[self.offset+1])
+            self.contrib4[self.offset] = dot(reshape(self.candidatePeepWeights, (dim, dim)).T,
+                                            self.resetgate[self.offset+1] * self.candidateError[self.offset+1])
+            
             self.outError[self.offset] += self.updategate[self.offset+1] * self.outError[self.offset+1]
             self.outError[self.offset] += dot(reshape(self.resetPeepWeights, (dim, dim)).T, self.resetgateError[self.offset+1]) 
             self.outError[self.offset] += dot(reshape(self.updatePeepWeights, (dim, dim)).T, self.updategateError[self.offset+1])
@@ -145,25 +154,24 @@ class GRULayer(NeuronLayer, ParameterContainer):
         self.candidateError[self.offset] = (1 - z) * self.gprime(self.candidatex[self.offset]) \
                                             * self.outError[self.offset]
         
-        if self.offset > 0:
-            self.updategateError[self.offset] = self.fprime(self.updategatex[self.offset]) \
-                                            * (prevout - self.candidate[self.offset]) \
-                                            * self.outError[self.offset]
-                                            
-            self.resetgateError[self.offset] = self.fprime(self.resetgatex[self.offset]) \
-                                            * dot(reshape(self.candidatePeepWeights, (dim, dim)).T, prevout) \
-                                            * self.candidateError[self.offset]
+        self.updategateError[self.offset] = self.fprime(self.updategatex[self.offset]) \
+                                        * (prevout - self.candidate[self.offset]) \
+                                        * self.outError[self.offset]                                            
+        self.resetgateError[self.offset] = self.fprime(self.resetgatex[self.offset]) \
+                                        * dot(reshape(self.candidatePeepWeights, (dim, dim)), prevout) \
+                                        * self.candidateError[self.offset]
 
         # compute peep derivatives
-        if self.offset > 0:
-            self.resetPeepDerivs += outer(self.resetgateError[self.offset], prevout).T.flatten()
-            self.updatePeepDerivs += outer(self.updategateError[self.offset], prevout).T.flatten()
+        if self.offset > 0:            
+            self.resetPeepDerivs += outer(self.resetgateError[self.offset], prevout).flatten()
+            self.updatePeepDerivs += outer(self.updategateError[self.offset], prevout).flatten()
             self.candidatePeepDerivs += outer(self.candidateError[self.offset] * r, prevout).flatten()
 
         # compute out errors
         inerr[:dim] = self.resetgateError[self.offset]
         inerr[dim:dim*2] = self.updategateError[self.offset]
         inerr[dim*2:] = self.candidateError[self.offset]
+        
 
     def whichNeuron(self, inputIndex = None, outputIndex = None):
         if inputIndex != None:
