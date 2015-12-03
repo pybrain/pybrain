@@ -71,6 +71,18 @@ $ python setup.py install</pre>
 <p>Long answer:
 We keep more detailed installation instructions (including dependencies)
 up-to-date in a wiki at <a class="reference external" href="http://wiki.github.com/pybrain/pybrain/installation">http://wiki.github.com/pybrain/pybrain/installation</a>.</p>
+<p>Possible difficulties for Windows users:
+To change environment variables, go to Control Panel > System and Security > System > Advanced System Settings.  You should be on the "Advanced" tab in the System Properties pop-up window.  Click "Environment Variables" and find PYTHONPATH under System Variables.  Edit the variable called "Path" with the path the location of Pybrain in your files. To verify that this worked, go to the command line and type in 'python' and make sure you see the following:
+C:\Users\username>python
+Python 2.?.? (other information)
+Type "help", "copyright", or "license" for more information.
+>>>
+When downloading the ez_setup.py script put the file in the same folder as Python.
+To verify that the easy_install setup worked correctly after running the script you should see the following at the end of many lines: 
+Processing dependencies for setuptools==0.8
+Finished processing dependencies for setuptools==0.8
+C:\Python27>
+If you are a novice or unfamiliar with Git, see this <a class="reference external" href = "http://git-scm.com/book/en/v2/Getting-Started-Git-Basics">guide to Git</a>.</p>
 </div>
 <div class="section" id="quickstart">
 <h2>Quickstart<a class="headerlink" href="#quickstart" title="Permalink to this headline">¶</a></h2>
