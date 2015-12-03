@@ -27,8 +27,8 @@ import sys
 import os
 
 
-f_in = file(os.path.join("tutorials",sys.argv[1])+".py")
-f_out = file(os.path.join("sphinx",sys.argv[1])+".txt", "w+")
+f_in = open(os.path.join("tutorials",sys.argv[1])+".py")
+f_out = open(os.path.join("sphinx",sys.argv[1])+".txt", "w+")
 
 # write the header
 f_out.write(".. _"+sys.argv[1]+":\n\n")

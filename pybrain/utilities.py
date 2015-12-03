@@ -174,7 +174,7 @@ class Serializable(object):
         if format is None:
             # try to derive protocol from file extension
             format = formatFromExtension(filename)
-        with file(filename, 'wb') as fp:
+        with open(filename, 'wb') as fp:
             self.saveToFileLike(fp, format, **kwargs)
 
     @classmethod
@@ -184,7 +184,7 @@ class Serializable(object):
         if format is None:
             # try to derive protocol from file extension
             format = formatFromExtension(filename)
-        with file(filename, 'rbU') as fp:
+        with open(filename, 'rbU') as fp:
             obj = cls.loadFromFileLike(fp, format)
             obj.filename = filename
             return obj

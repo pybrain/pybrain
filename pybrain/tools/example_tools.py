@@ -28,7 +28,7 @@ class ExTools():
 
     # Method for loading a weight matrix and initialize the network
     def loadWeights(self, filename):
-        filepointer = file(filename)
+        filepointer = open(filename)
         self.agent.learner.current = load(filepointer)
         filepointer.close()
         self.agent.learner.gd.init(self.agent.learner.current)
@@ -37,13 +37,13 @@ class ExTools():
 
     # Method for saving the weight matrix    
     def saveWeights(self, filename, w):
-        filepointer = file(filename, 'w+')
+        filepointer = open(filename, 'w+')
         dump(w, filepointer)
         filepointer.close()
 
     # Method for saving the weight matrix    
     def saveResults(self, filename, results):
-        filepointer = file(filename, 'w+')
+        filepointer = open(filename, 'w+')
         dump(results, filepointer)
         filepointer.close()
 
