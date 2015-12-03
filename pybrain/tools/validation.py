@@ -328,7 +328,7 @@ class CrossValidator(object):
             test_ds.setField("input"  , inp[test_idxs])
             test_ds.setField("target" , tar[test_idxs])
 #            perf += self.getPerformance( trainer.module, dataset )
-            perf += self._calculatePerformance(trainer.module, dataset)
+            perf += self._calculatePerformance(trainer.module, test_ds)
 
         perf /= n_folds
         return perf
