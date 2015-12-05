@@ -115,8 +115,9 @@ class GA(ContinuousOptimizer, Evolution):
         shuffle(children)
         if len(children) > nbChildren:
             children = children[:nbChildren]  
-        elif len(children) < nbChildren:
-            children +=sample(children,(nbChildren-len(children)))  
+		while len(children) < nbChildren:
+            children +=sample(children,min(nbChildren-len(children), len(children)))  
+
         return children
         
     def childexist(self,indiv,pop):
