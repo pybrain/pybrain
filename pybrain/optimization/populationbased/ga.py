@@ -97,7 +97,7 @@ class GA(ContinuousOptimizer, Evolution):
         children = []
         for i in range(len(parents)//2):
             p1 = parents[i]
-            p2 = parents[i+(len(parents)/2)]
+            p2 = parents[i+(len(parents)//2)]
             if xdim < 2:
                 children.append(p1)
                 children.append(p2)
@@ -115,8 +115,9 @@ class GA(ContinuousOptimizer, Evolution):
         shuffle(children)
         if len(children) > nbChildren:
             children = children[:nbChildren]  
-        elif len(children) < nbChildren:
-            children +=sample(children,(nbChildren-len(children)))  
+        else:
+            while (len(children) < nbChildren):
+                children += sample(children,1)
         return children
         
     def childexist(self,indiv,pop):
