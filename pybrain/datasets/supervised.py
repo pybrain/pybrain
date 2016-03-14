@@ -111,9 +111,9 @@ class SupervisedDataSet(DataSet):
         leftIndicies = indicies[:separator]
         rightIndicies = indicies[separator:]
 
-        leftDs = SupervisedDataSet(inp=self['input'][leftIndicies].copy(),
+        leftDs = type(self)(inp=self['input'][leftIndicies].copy(),
                                    target=self['target'][leftIndicies].copy())
-        rightDs = SupervisedDataSet(inp=self['input'][rightIndicies].copy(),
+        rightDs = type(self)(inp=self['input'][rightIndicies].copy(),
                                     target=self['target'][rightIndicies].copy())
         return leftDs, rightDs
 
