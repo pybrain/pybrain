@@ -1,37 +1,45 @@
 from __future__ import print_function
 
-__author__ = 'Daan Wierstra and Tom Schaul'
-
 from scipy import dot, argmax
 from random import shuffle
 from math import isnan
 from pybrain.supervised.trainers.trainer import Trainer
 from pybrain.utilities import fListToString
 from pybrain.auxiliary import GradientDescent
+from pybrain.tools.functions import abs_error
+
+__author__ = 'Daan Wierstra and Tom Schaul'
 
 
 class BackpropTrainer(Trainer):
-    """Trainer that trains the parameters of a module according to a
-    supervised dataset (potentially sequential) by backpropagating the errors
-    (through time)."""
+    """Trainer that trains the parameters of a module according to a supervised
+    dataset (potentially sequential) by backpropagating the errors (through
+    time)."""
 
     def __init__(self, module, dataset=None, learningrate=0.01, lrdecay=1.0,
                  momentum=0., verbose=False, batchlearning=False,
-                 weightdecay=0.):
+                 weightdecay=0., errfun=None):
         """Create a BackpropTrainer to train the specified `module` on the
         specified `dataset`.
 
         The learning rate gives the ratio of which parameters are changed into
-        the direction of the gradient. The learning rate decreases by `lrdecay`,
-        which is used to to multiply the learning rate after each training
-        step. The parameters are also adjusted with respect to `momentum`, which
-        is the ratio by which the gradient of the last timestep is used.
+        the direction of the gradient. The learning rate decreases by
+        `lrdecay`, which is used to to multiply the learning rate after each
+        training step. The parameters are also adjusted with respect to
+        `momentum`, which is the ratio by which the gradient of the last
+        timestep is used.
 
-        If `batchlearning` is set, the parameters are updated only at the end of
-        each epoch. Default is False.
+        If `batchlearning` is set, the parameters are updated only at the end
+        of each epoch. Default is False.
 
         `weightdecay` corresponds to the weightdecay rate, where 0 is no weight
         decay at all.
+
+        Arguments:
+            errfun (func): Function that takes 2 positional arguments,
+                the target (true) and predicted (estimated) output vectors, and
+                returns an estimate of the signed distance to the target (true)
+                output. default = lambda targ, est: (targ - est))
         """
         Trainer.__init__(self, module)
         self.setData(dataset)
@@ -46,6 +54,7 @@ class BackpropTrainer(Trainer):
         self.descent.momentum = momentum
         self.descent.alphadecay = lrdecay
         self.descent.init(module.params)
+        self.errfun = errfun or abs_error
 
     def train(self):
         """Train the associated module for one epoch."""
@@ -62,7 +71,8 @@ class BackpropTrainer(Trainer):
             errors += e
             ponderation += p
             if not self.batchlearning:
-                gradient = self.module.derivs - self.weightdecay * self.module.params
+                gradient = (self.module.derivs -
+                            self.weightdecay * self.module.params)
                 new = self.descent(gradient, errors)
                 if new is not None:
                     self.module.params[:] = new
@@ -76,7 +86,6 @@ class BackpropTrainer(Trainer):
         self.totalepochs += 1
         return errors / ponderation
 
-
     def _calcDerivs(self, seq):
         """Calculate error function and backpropagate output errors to yield
         the gradient."""
@@ -89,7 +98,9 @@ class BackpropTrainer(Trainer):
             # need to make a distinction here between datasets containing
             # importance, and others
             target = sample[1]
-            outerr = target - self.module.outputbuffer[offset]
+            outerr = self.errfun(target, self.module.outputbuffer[offset])
+            if self.verbose > 1:
+                print('output error: {}'.format(outerr))
             if len(sample) > 2:
                 importance = sample[2]
                 error += 0.5 * dot(importance, outerr ** 2)
@@ -104,6 +115,11 @@ class BackpropTrainer(Trainer):
                 str(outerr)
                 self.module.backActivate(outerr)
 
+            if self.verbose > 1:
+                print('total error so far: {}'.format(error))
+
+        if self.verbose > 1:
+            print('TOTAL error: {}'.format(error))
         return error, ponderation
 
     def _checkGradient(self, dataset=None, silent=False):
@@ -135,9 +151,9 @@ class BackpropTrainer(Trainer):
     def testOnData(self, dataset=None, verbose=False):
         """Compute the MSE of the module performance on the given dataset.
 
-        If no dataset is supplied, the one passed upon Trainer initialization is
-        used."""
-        if dataset == None:
+        If no dataset is supplied, the one passed upon Trainer initialization
+        is used."""
+        if dataset is None:
             dataset = self.ds
         dataset.reset()
         if verbose:
@@ -147,7 +163,8 @@ class BackpropTrainer(Trainer):
         ponderatedErrors = []
         for seq in dataset._provideSequences():
             self.module.reset()
-            e, i = dataset._evaluateSequence(self.module.activate, seq, verbose)
+            e, i = dataset._evaluateSequence(self.module.activate, seq,
+                                             verbose)
             importances.append(i)
             errors.append(e)
             ponderatedErrors.append(e / i)
@@ -169,7 +186,7 @@ class BackpropTrainer(Trainer):
         initialization is used. If return_targets is set, also return
         corresponding target classes.
         """
-        if dataset == None:
+        if dataset is None:
             dataset = self.ds
         dataset.reset()
         out = []
@@ -195,10 +212,11 @@ class BackpropTrainer(Trainer):
         error.
 
         If no dataset is given, the dataset passed during Trainer
-        initialization is used. validationProportion is the ratio of the dataset
-        that is used for the validation dataset.
-        
-        If the training and validation data is already set, the splitPropotion is ignored
+        initialization is used. validationProportion is the ratio of the
+        dataset that is used for the validation dataset.
+
+        If the training and validation data is already set, the splitPropotion
+        is ignored
 
         If maxEpochs is given, at most that many epochs
         are trained. Each time validation error hits a minimum, try for
@@ -209,13 +227,14 @@ class BackpropTrainer(Trainer):
         if verbose is None:
             verbose = self.verbose
         if trainingData is None or validationData is None:
-            # Split the dataset randomly: validationProportion of the samples for
-            # validation.
+            # Split the dataset randomly: validationProportion of the samples
+            # for validation.
             trainingData, validationData = (
                 dataset.splitWithProportion(1 - validationProportion))
         if not (len(trainingData) > 0 and len(validationData)):
-            raise ValueError("Provided dataset too small to be split into training " +
-                             "and validation sets with proportion " + str(validationProportion))
+            raise ValueError("Provided dataset too small to be split into "
+                             "training and validation sets with proportion " +
+                             str(validationProportion))
         self.ds = trainingData
         bestweights = self.module.params.copy()
         bestverr = self.testOnData(validationData)
@@ -235,7 +254,7 @@ class BackpropTrainer(Trainer):
                 bestweights = self.module.params.copy()
                 bestepoch = epochs
 
-            if maxEpochs != None and epochs >= maxEpochs:
+            if maxEpochs is not None and epochs >= maxEpochs:
                 self.module.params[:] = bestweights
                 break
             epochs += 1
@@ -243,18 +262,19 @@ class BackpropTrainer(Trainer):
             if len(self.validationErrors) >= continueEpochs * 2:
                 # have the validation errors started going up again?
                 # compare the average of the last few to the previous few
-                old = self.validationErrors[-continueEpochs * 2:-continueEpochs]
+                old = self.validationErrors[-continueEpochs * 2:- continueEpochs]
                 new = self.validationErrors[-continueEpochs:]
                 if min(new) > max(old):
                     self.module.params[:] = bestweights
                     break
                 lastnew = round(new[-1], convergence_threshold)
-                if sum(round(y, convergence_threshold) - lastnew for y in new) == 0:
+                if sum(round(y, convergence_threshold) -
+                       lastnew for y in new) == 0:
                     self.module.params[:] = bestweights
                     break
-        #self.trainingErrors.append(self.testOnData(trainingData))
         self.ds = dataset
         if verbose:
             print(('train-errors:', fListToString(self.trainingErrors, 6)))
             print(('valid-errors:', fListToString(self.validationErrors, 6)))
-        return self.trainingErrors[:bestepoch], self.validationErrors[:1 + bestepoch]
+        # slice off the inital bestverr
+        return self.trainingErrors[:bestepoch], self.validationErrors[1:1 + bestepoch]
