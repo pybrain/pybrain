@@ -93,13 +93,13 @@ sequences of variable length, that can be accessed via the methods
     getSequence(index)
     getSequenceLength(index)
 
-Creating a :class:`Sequentialdataset` is no different from its parent, since it still contains only 'input' and 'target' fields.
-:class:`Sequentialdataset` inherits from :class:`SupervisedDataSet`, which can be seen as a special
+Creating a :class:`SequentialDataSet` is no different from its parent, since it still contains only 'input' and 'target' fields.
+:class:`SequentialDataSet` inherits from :class:`SupervisedDataSet`, which can be seen as a special
 case with a sequence length of 1 for all sequences.
 
 To fill the dataset with content, it is advisable to call :meth:`newSequence` at the start of each sequence to be
 stored, and then add patterns by using :meth:`appendLinked` as above. This way, the class handles indexing and such
-transparently. One can theoretically construct a :class:`Sequentialdataset` directly from arrays, but messing with
+transparently. One can theoretically construct a :class:`SequentialDataSet` directly from arrays, but messing with
 the index field is not recommended.
 
 A typical way of iterating over a sequence dataset ``DS`` would be something like::
@@ -162,14 +162,14 @@ does this conversion automatically::
     [[0 1 1 1 2 2]]
 
 In case you want to do sequence classification, there is also a :class:`SequenceClassificationDataSet`, which combines
-the features of this class and the :class:`Sequentialdataset`.
+the features of this class and the :class:`SequentialDataSet`.
 
 :ref:`importancedataset`
 ------------------------
 
-This is another extension of :class:`Sequentialdataset` that allows assigning different weights to patterns. Essentially,
+This is another extension of :class:`SequentialDataSet` that allows assigning different weights to patterns. Essentially,
 it works like its parent, except comprising another linked field named 'importance', which should contain a value between
-0.0 and 1.0 for each pattern. A :class:`Sequentialdataset` is a special case with all weights equal to 1.0.
+0.0 and 1.0 for each pattern. A :class:`SequentialDataSet` is a special case with all weights equal to 1.0.
 
 We have packed this functionality into a different class because it is rarely used and drains some computational resources.
 So far, there is no corresponding non-sequential dataset class.

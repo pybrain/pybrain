@@ -130,12 +130,12 @@ sequences of variable length, that can be accessed via the methods</p>
 <span class="n">getSequenceLength</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Creating a <tt class="xref docutils literal"><span class="pre">Sequentialdataset</span></tt> is no different from its parent, since it still contains only &#8216;input&#8217; and &#8216;target&#8217; fields.
-<tt class="xref docutils literal"><span class="pre">Sequentialdataset</span></tt> inherits from <tt class="xref docutils literal"><span class="pre">SupervisedDataSet</span></tt>, which can be seen as a special
+<p>Creating a <tt class="xref docutils literal"><span class="pre">SequentialDataSet</span></tt> is no different from its parent, since it still contains only &#8216;input&#8217; and &#8216;target&#8217; fields.
+<tt class="xref docutils literal"><span class="pre">SequentialDataSet</span></tt> inherits from <tt class="xref docutils literal"><span class="pre">SupervisedDataSet</span></tt>, which can be seen as a special
 case with a sequence length of 1 for all sequences.</p>
 <p>To fill the dataset with content, it is advisable to call <tt class="xref docutils literal"><span class="pre">newSequence()</span></tt> at the start of each sequence to be
 stored, and then add patterns by using <tt class="xref docutils literal"><span class="pre">appendLinked()</span></tt> as above. This way, the class handles indexing and such
-transparently. One can theoretically construct a <tt class="xref docutils literal"><span class="pre">Sequentialdataset</span></tt> directly from arrays, but messing with
+transparently. One can theoretically construct a <tt class="xref docutils literal"><span class="pre">SequentialDataSet</span></tt> directly from arrays, but messing with
 the index field is not recommended.</p>
 <p>A typical way of iterating over a sequence dataset <tt class="docutils literal"><span class="pre">DS</span></tt> would be something like:</p>
 <div class="highlight-python"><pre>for i in range(DS.getNumSequences):
@@ -195,13 +195,13 @@ does this conversion automatically:</p>
 </pre></div>
 </div>
 <p>In case you want to do sequence classification, there is also a <tt class="xref docutils literal"><span class="pre">SequenceClassificationDataSet</span></tt>, which combines
-the features of this class and the <tt class="xref docutils literal"><span class="pre">Sequentialdataset</span></tt>.</p>
+the features of this class and the <tt class="xref docutils literal"><span class="pre">SequentialDataSet</span></tt>.</p>
 </div>
 <div class="section" id="importancedataset">
 <h2><a class="reference external" href="../api/datasets/importancedatasets.html#importancedataset"><em>importance &#8211; Datasets for Weighted Supervised Training</em></a><a class="headerlink" href="#importancedataset" title="Permalink to this headline">¶</a></h2>
-<p>This is another extension of <tt class="xref docutils literal"><span class="pre">Sequentialdataset</span></tt> that allows assigning different weights to patterns. Essentially,
+<p>This is another extension of <tt class="xref docutils literal"><span class="pre">SequentialDataSet</span></tt> that allows assigning different weights to patterns. Essentially,
 it works like its parent, except comprising another linked field named &#8216;importance&#8217;, which should contain a value between
-0.0 and 1.0 for each pattern. A <tt class="xref docutils literal"><span class="pre">Sequentialdataset</span></tt> is a special case with all weights equal to 1.0.</p>
+0.0 and 1.0 for each pattern. A <tt class="xref docutils literal"><span class="pre">SequentialDataSet</span></tt> is a special case with all weights equal to 1.0.</p>
 <p>We have packed this functionality into a different class because it is rarely used and drains some computational resources.
 So far, there is no corresponding non-sequential dataset class.</p>
 </div>
