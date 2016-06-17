@@ -10,7 +10,7 @@ from pybrain.utilities import one_to_n
 class NFQ(ValueBasedLearner):
     """ Neuro-fitted Q-learning"""
 
-    def __init__(self, alpha=0.5, gamma=0.99, maxEpochs=None):
+    def __init__(self, maxEpochs=None, alpha=0.5, gamma=0.99):
         ValueBasedLearner.__init__(self)
         self.alpha = alpha
         self.gamma = gamma
