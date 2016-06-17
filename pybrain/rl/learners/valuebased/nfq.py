@@ -10,9 +10,10 @@ from pybrain.utilities import one_to_n
 class NFQ(ValueBasedLearner):
     """ Neuro-fitted Q-learning"""
 
-    def __init__(self, maxEpochs=20):
+    def __init__(self, alpha=0.5, gamma=0.99, maxEpochs=None):
         ValueBasedLearner.__init__(self)
-        self.gamma = 0.9
+        self.alpha = alpha
+        self.gamma = gamma
         self.maxEpochs = maxEpochs
 
     def learn(self):
@@ -33,7 +34,7 @@ class NFQ(ValueBasedLearner):
                 Q = self.module.getValue(state_, action_[0])
 
                 inp = r_[state_, one_to_n(action_[0], self.module.numActions)]
-                tgt = Q + 0.5*(reward_ + self.gamma * max(self.module.getActionValues(state)) - Q)
+                tgt = Q + self.alpha*(reward_ + self.gamma * max(self.module.getActionValues(state)) - Q)
                 supervised.addSample(inp, tgt)
 
                 # update last experience with current one
