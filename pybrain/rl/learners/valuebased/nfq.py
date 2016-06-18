@@ -41,12 +41,9 @@ class NFQ(ValueBasedLearner):
                 lastexperience = (state, action, reward)
 
         # train module with backprop/rprop on dataset
-        trainer = RPropMinusTrainer(self.module.network, dataset=supervised, batchlearning=True, verbose=False)
-        trainer.trainUntilConvergence(maxEpochs=self.maxEpochs)
-
-        # alternative: backprop, was not as stable as rprop
-        # trainer = BackpropTrainer(self.module.network, dataset=supervised, learningrate=0.005, batchlearning=True, verbose=True)
+        # trainer = RPropMinusTrainer(self.module.network, dataset=supervised, batchlearning=True, verbose=False)
         # trainer.trainUntilConvergence(maxEpochs=self.maxEpochs)
 
-
-
+        alternative: backprop, was not as stable as rprop
+        trainer = BackpropTrainer(self.module.network, dataset=supervised, learningrate=self.alpha, batchlearning=True, verbose=False)
+        trainer.trainUntilConvergence(maxEpochs=self.maxEpochs)
