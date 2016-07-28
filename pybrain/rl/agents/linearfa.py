@@ -81,7 +81,7 @@ class LinearFA_Agent(LoggingAgent):
             return
         for seq in self.history:
             for obs, action, reward in seq:
-                if self.laststate is not None:
+                if self.lastobs is not None:
                     self.learner._updateWeights(self.lastobs, self.lastaction, self.lastreward, obs)
                 self.lastobs = obs
                 self.lastaction = action[0]
