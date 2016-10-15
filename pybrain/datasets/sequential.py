@@ -188,26 +188,32 @@ class SequentialDataSet(SupervisedDataSet):
             res += totalError / ponderation
         return res / averageOver
 
-    def splitWithProportion(self, proportion=0.5):
-        """Produce two new datasets, each containing a part of the sequences.
+    def splitWithProportion(self, proportion = 0.5):
+        """Produce two new datasets, the first one containing the fraction given
+        by `proportion` of the samples."""
+        indicies = random.permutation(len(self))
+        separator = int(len(self) * proportion)
 
-        The first dataset will have a fraction given by `proportion` of the
-        dataset."""
-        l = self.getNumSequences()
-        leftIndices = sample(list(range(l)), int(l * proportion))
-        leftDs = self.copy()
-        leftDs.clear()
-        rightDs = leftDs.copy()
-        index = 0
-        for seq in iter(self):
-            if index in leftIndices:
-                leftDs.newSequence()
-                for sp in seq:
-                    leftDs.addSample(*sp)
-            else:
-                rightDs.newSequence()
-                for sp in seq:
-                    rightDs.addSample(*sp)
-            index += 1
+        leftIndicies = indicies[:separator]
+        rightIndicies = indicies[separator:]
+
+        datasetClass = self.__class__
+        if datasetClass.__name__ == 'ClassificationDataSet':
+            kwargs = {'nb_classes': self.nClasses, 'class_labels': self.class_labels}
+            
+        leftDs = datasetClass(inp=self.indim, target=self.outdim, **kwargs)
+        rightDs = datasetClass(inp=self.indim, target=self.outdim, **kwargs)
+
+        leftDs.setField('input', self['input'][leftIndicies].copy())
+        leftDs.setField('target', self['target'][leftIndicies].copy())
+        rightDs.setField('input', self['input'][rightIndicies].copy())
+        rightDs.setField('target', self['target'][rightIndicies].copy())
+
+        """If the dataset that is being split is already a ClassificationDataSet, we also have to set the class field of the data """
+        if datasetClass.__name__ == 'ClassificationDataSet':
+            if (len(self['class'])>0): # if the ClassificationDataSet hasn't been converted to many classes
+                leftDs.setField('class', self['class'][leftIndicies].copy())
+                rightDs.setField('class', self['class'][rightIndicies].copy())
+
         return leftDs, rightDs
 
