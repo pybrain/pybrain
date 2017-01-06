@@ -1,39 +1,13 @@
-############################################################################
-# PyBrain Tutorial "Reinforcement Learning"
-#
-# Author: Thomas Rueckstiess, ruecksti@in.tum.de
-############################################################################
 
-__author__ = 'Thomas Rueckstiess, ruecksti@in.tum.de'
-
-"""
-A reinforcement learning (RL) task in pybrain always consists of a few
-components that interact with each other: Environment, Agent, Task, and
-Experiment. In this tutorial we will go through each of them, create
-the instances and explain what they do.
-
-But first of all, we need to import some general packages and the RL
-components from PyBrain:
-"""
-
-import time
 from scipy import * #@UnusedWildImport
 
-from pybrain.rl.environments.mazes import Maze, MDPMazeTask
+from pybrain.rl.environments.markets import Market
 from pybrain.rl.learners.valuebased import ActionValueTable
+from pybrain.rl.learners import SARSA
 from pybrain.rl.agents import LearningAgent
-from pybrain.rl.learners import Q, SARSA #@UnusedImport
+from pybrain.rl.environments.markets.tasks import EMAMarketTask
+
 from pybrain.rl.experiments import Experiment
-
-
-"""
-For later visualization purposes, we also need to initialize the
-plotting engine.
-"""
-
-import pylab
-pylab.gray()
-pylab.ion()
 
 """
 The Environment is the world, in which the agent acts. It receives input
@@ -41,27 +15,14 @@ with the .performAction() method and returns an output with
 .getSensors(). All environments in PyBrain are located under
 pybrain/rl/environments.
 
-One of these environments is the maze environment, which we will use for
-this tutorial. It creates a labyrinth with free fields, walls, and an
-goal point. An agent can move over the free fields and needs to find the
-goal point. Let's define the maze structure, a simple 2D numpy array, where
-1 is a wall and 0 is a free field:
 """
-structure = array([[1, 1, 1, 1, 1, 1, 1, 1, 1],
-                   [1, 0, 0, 1, 0, 0, 0, 0, 1],
-                   [1, 0, 0, 1, 0, 0, 1, 0, 1],
-                   [1, 0, 0, 1, 0, 0, 1, 0, 1],
-                   [1, 0, 0, 1, 0, 1, 1, 0, 1],
-                   [1, 0, 0, 0, 0, 0, 1, 0, 1],
-                   [1, 1, 1, 1, 1, 1, 1, 0, 1],
-                   [1, 0, 0, 0, 0, 0, 0, 0, 1],
-                   [1, 1, 1, 1, 1, 1, 1, 1, 1]])
 
 """
 Then we create the environment with the structure as first parameter
 and the goal field tuple as second parameter:
 """
-environment = Maze(structure, (7, 7))
+
+environment = Market()
 
 """
 Next, we need an agent. The agent is where the learning happens. It can
@@ -82,16 +43,18 @@ the ActionValueInterface. There are currently two modules in PyBrain
 that do this: The ActionValueTable for discrete actions and the
 ActionValueNetwork for continuous actions. Our maze uses discrete
 actions, so we need a table:
+
+I will need to use continuous actions network
 """
 
-controller = ActionValueTable(81, 4)
-controller.initialize(1.)
+controller = ActionValueTable(16, 3)
+controller.initialize(0.0020)
 
 """
 The table needs the number of states and actions as parameters. The standard
-maze environment comes with the following 4 actions: north, east, south, west.
+market environment comes with the following 4 actions: long, short and wait
 
-Then, we initialize the table with 1 everywhere. This is not always necessary
+Then, we initialize the table with min gap everywhere. This is not always necessary
 but will help converge faster, because unvisited state-action pairs have a
 promising positive value and will be preferred over visited ones that didn't
 lead to the goal.
@@ -104,7 +67,7 @@ well-known algorithms is the Q-Learning algorithm. Let's now create
 the agent and give it the controller and learner as parameters.
 """
 
-learner = Q()
+learner = SARSA()
 agent = LearningAgent(controller, learner)
 
 """
@@ -118,7 +81,7 @@ MDP stands for "markov decision process" and means here, that the agent knows
 its exact location in the maze. The task receives the environment as parameter.
 """
 
-task = MDPMazeTask(environment)
+task = EMAMarketTask(environment)
 
 """
 Finally, in order to learn something, we create an experiment, tell it both
@@ -127,14 +90,11 @@ for some number of steps or infinitely, like here:
 """
 
 experiment = Experiment(task, agent)
-timeStart = time.time()
-while time.time() < timeStart + 60:
-    experiment.doInteractions(100)
-    agent.learn()
-    agent.reset()
 
-    pylab.pcolor(controller.params.reshape(81, 4).max(1).reshape(9, 9))
-    pylab.draw()
+experiment.doInteractions()
+
+agent.learn()
+agent.reset()
 
 """
 Above, the experiment executes 100 interactions between agent and
@@ -164,5 +124,3 @@ and change back and forth, but eventually the learning should converge
 to the true state values, having higher scores (brigher fields) the
 closer they are to the goal.
 """
-
-raw_input('press any key to exit')
