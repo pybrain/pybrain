@@ -17,7 +17,7 @@ class BackpropTrainer(Trainer):
 
     def __init__(self, module, dataset=None, learningrate=0.01, lrdecay=1.0,
                  momentum=0., verbose=False, batchlearning=False,
-                 weightdecay=0.):
+                 weightdecay=0., errfun=lambda targ, est: (targ - est)):
         """Create a BackpropTrainer to train the specified `module` on the
         specified `dataset`.
 
@@ -32,6 +32,12 @@ class BackpropTrainer(Trainer):
 
         `weightdecay` corresponds to the weightdecay rate, where 0 is no weight
         decay at all.
+
+        Arguments:
+            errfun (func): Callable function that takes 2 positional arguments, 
+                the target (truth) and estimated output vectors, and returns an
+                estimate of the signed distance to the target (true) output.
+                default = lambda targ, est: (targ - est))
         """
         Trainer.__init__(self, module)
         self.setData(dataset)
@@ -46,6 +52,7 @@ class BackpropTrainer(Trainer):
         self.descent.momentum = momentum
         self.descent.alphadecay = lrdecay
         self.descent.init(module.params)
+        self.errfun = errfun or (lambda x, y: (x - y))
 
     def train(self):
         """Train the associated module for one epoch."""
@@ -89,7 +96,9 @@ class BackpropTrainer(Trainer):
             # need to make a distinction here between datasets containing
             # importance, and others
             target = sample[1]
-            outerr = target - self.module.outputbuffer[offset]
+            outerr = self.errfun(target, self.module.outputbuffer[offset])
+            if self.verbose > 1:
+                print('output error: {}'.format(outerr))
             if len(sample) > 2:
                 importance = sample[2]
                 error += 0.5 * dot(importance, outerr ** 2)
@@ -104,6 +113,11 @@ class BackpropTrainer(Trainer):
                 str(outerr)
                 self.module.backActivate(outerr)
 
+            if self.verbose > 1:
+                print('total error so far: {}'.format(error))
+
+        if self.verbose > 1:
+            print('TOTAL error: {}'.format(error))
         return error, ponderation
 
     def _checkGradient(self, dataset=None, silent=False):
