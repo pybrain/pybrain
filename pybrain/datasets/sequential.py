@@ -2,7 +2,7 @@ __author__ = 'Thomas Rueckstiess, ruecksti@in.tum.de'
 # $Id$
 
 
-from scipy import ravel, r_
+from scipy import ravel, r_, zeros
 from random import sample
 
 from pybrain.datasets.supervised import SupervisedDataSet
@@ -22,6 +22,7 @@ class SequentialDataSet(SupervisedDataSet):
         SupervisedDataSet.__init__(self, indim, targetdim)
         # add field that stores the beginning of a new episode
         self.addField('sequence_index', 1)
+        self.data['sequence_index'] = zeros((0, 1), int)
         self.append('sequence_index', 0)
         self.currentSeq = 0
 
@@ -210,4 +211,3 @@ class SequentialDataSet(SupervisedDataSet):
                     rightDs.addSample(*sp)
             index += 1
         return leftDs, rightDs
-
