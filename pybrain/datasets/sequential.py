@@ -42,7 +42,7 @@ class SequentialDataSet(SupervisedDataSet):
         seq = ravel(self.getField('sequence_index'))
         if len(seq) == index + 1:
             # user wants to access the last sequence, return until end of data
-            return self.getField(field)[seq[index]:]
+            return self.getField(field)[int(seq[index]):]
         if len(seq) < index + 1:
             # sequence index beyond number of sequences. raise exception
             raise IndexError('sequence does not exist.')
