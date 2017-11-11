@@ -5,7 +5,7 @@ __author__ = 'Tom Schaul, Sun Yi, Tobias Glasmachers'
 from pybrain.tools.rankingfunctions import HansenRanking
 from pybrain.optimization.distributionbased.distributionbased import DistributionBasedOptimizer
 from pybrain.auxiliary.importancemixing import importanceMixing
-from scipy.linalg import expm2
+from scipy.linalg import expm
 from scipy import dot, array, randn, eye, outer, exp, trace, floor, log, sqrt
 
 
@@ -72,8 +72,8 @@ class XNES(DistributionBasedOptimizer):
         self._lastInvA = self._invA
 
         self._center += self.centerLearningRate * dot(self._A, dCenter)
-        self._A = dot(self._A, expm2(dA))
-        self._invA = dot(expm2(-dA), self._invA)
+        self._A = dot(self._A, expm(dA))
+        self._invA = dot(expm(-dA), self._invA)
         self._logDetA += 0.5 * self.scaleLearningRate * covTrace
         if self.storeAllDistributions:
             self._allDistributions.append((self._center.copy(), self._A.copy()))
