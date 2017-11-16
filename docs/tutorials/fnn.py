@@ -10,7 +10,7 @@ from __future__ import print_function
 for classification, and train a network on it while visualizing the results
 online.
 
-First we need to import the necessary components from PyBrain."""
+First we need to import the necessary components from PyBrain. """
 
 from pybrain.datasets            import ClassificationDataSet
 from pybrain.utilities           import percentError
@@ -18,10 +18,12 @@ from pybrain.tools.shortcuts     import buildNetwork
 from pybrain.supervised.trainers import BackpropTrainer
 from pybrain.structure.modules   import SoftmaxLayer
 
-""" Furthermore, pylab is needed for the graphical output. """
-from pylab import ion, ioff, figure, draw, contourf, clf, show, hold, plot
+"""SciPy and NumPy are used for numerical operations. """
 from scipy import diag, arange, meshgrid, where
 from numpy.random import multivariate_normal
+
+""" Furthermore, pylab is needed for the graphical output. """
+from pylab import ion, ioff, figure, draw, contourf, clf, show, hold, plot
 
 """ To have a nice dataset for visualization, we produce a set of
 points in 2D belonging to three different classes. You could also
@@ -94,9 +96,9 @@ for i in range(20):
     """ Evaluate the network on the training and test data. There are several ways to do this - check
     out the :mod:`pybrain.tools.validation` module, for instance. Here we let the trainer do the test. """
     trnresult = percentError(trainer.testOnClassData(),
-                              trndata['class'])
-    tstresult = percentError(trainer.testOnClassData(
-           dataset=tstdata), tstdata['class'])
+                             trndata['class'])
+    tstresult = percentError(trainer.testOnClassData(dataset=tstdata), 
+                             tstdata['class'])
 
     print("epoch: %4d" % trainer.totalepochs, \
           "  train error: %5.2f%%" % trnresult, \
@@ -108,7 +110,8 @@ for i in range(20):
     out = out.argmax(axis=1)  # the highest output activation gives the class
     out = out.reshape(X.shape)
 
-    """ Now plot the test data and the underlying grid as a filled contour. """
+    """ Now plot the test data and the underlying grid as a filled contour. 
+    Here we use PyLab as plotting library. """
     figure(1)
     ioff()  # interactive graphics off
     clf()   # clear the plot
