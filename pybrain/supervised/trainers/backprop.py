@@ -4,11 +4,10 @@ __author__ = 'Daan Wierstra and Tom Schaul'
 
 from scipy import dot, argmax
 from random import shuffle
-from math import isnan
+from math import isnan, sqrt
 from pybrain.supervised.trainers.trainer import Trainer
 from pybrain.utilities import fListToString
 from pybrain.auxiliary import GradientDescent
-
 
 class BackpropTrainer(Trainer):
     """Trainer that trains the parameters of a module according to a
@@ -225,6 +224,11 @@ class BackpropTrainer(Trainer):
         while True:
             trainingError = self.train()
             validationError = self.testOnData(validationData)
+            
+            if verbose:
+                print "MSE/RMSE - training: {:.5f} / {:.5f}, validation: {:.5f} / {:.5f}".format(trainingError, 
+                    sqrt(trainingError), validationError, sqrt(validationError))            
+            
             if isnan(trainingError) or isnan(validationError):
                 raise Exception("Training produced NaN results")
             self.trainingErrors.append(trainingError)
