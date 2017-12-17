@@ -17,7 +17,7 @@ components from PyBrain:
 """
 
 from scipy import * #@UnusedWildImport
-import pylab
+import matplotlib.pyplot as plt
 
 from pybrain.rl.environments.mazes import Maze, MDPMazeTask
 from pybrain.rl.learners.valuebased import ActionValueTable
@@ -31,8 +31,8 @@ For later visualization purposes, we also need to initialize the
 plotting engine.
 """
 
-pylab.gray()
-pylab.ion()
+plt.gray()
+plt.ion()
 
 
 """
@@ -133,8 +133,9 @@ while True:
     agent.learn()
     agent.reset()
 
-    pylab.pcolor(controller.params.reshape(81,4).max(1).reshape(9,9))
-    pylab.draw()
+    plt.pcolor(controller.params.reshape(81,4).max(1).reshape(9,9))
+    plt.show()
+    plt.pause(0.1)
 
 
 """
