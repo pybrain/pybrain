@@ -2,7 +2,7 @@ __author__ = 'Thomas Rueckstiess, ruecksti@in.tum.de'
 
 from scipy import random
 from scipy.ndimage import minimum_position
-from scipy import mgrid, zeros, tile, array, floor, sum
+from scipy import mgrid, zeros, tile, array, floor, sum, linalg
 
 from pybrain.structure.modules.module import Module
 
@@ -15,12 +15,16 @@ class KohonenMap(Module):
         the full Kohonen map to the next layer, set to False it will only
         return 2 values: the x and y coordinate of the winner neuron. """
 
-    def __init__(self, dim, nNeurons, name=None, outputFullMap=False):
+    def __init__(self, dim, nNeurons, name=None, outputFullMap=False, keys=None):
         if outputFullMap:
             outdim = nNeurons ** 2
         else:
             outdim = 2
         Module.__init__(self, dim, outdim, name)
+
+        if keys is not None:
+            assert len(keys) == dim
+            self.keys = keys
 
         # switch modes
         self.outputFullMap = outputFullMap
@@ -41,6 +45,12 @@ class KohonenMap(Module):
         self.distmatrix[:, :, 0] = distx
         self.distmatrix[:, :, 1] = disty
 
+        self.freqmatrix = zeros((self.nNeurons, self.nNeurons))
+
+
+    def get_freqmatrix(self):
+        return self.freqmatrix/linalg.norm(self.freqmatrix)
+
 
     def _forwardImplementation(self, inbuf, outbuf):
         """ assigns one of the neurons to the input given in inbuf and writes
@@ -51,6 +61,7 @@ class KohonenMap(Module):
         self.winner = array(minimum_position(error))
         if not self.outputFullMap:
             outbuf[:] = self.winner
+            self.freqmatrix[self.winner[0]][self.winner[1]] += 1
 
 
     def _backwardImplementation(self, outerr, inerr, outbuf, inbuf):
@@ -73,5 +84,8 @@ class KohonenMap(Module):
             distm[:, :, i] = tempm
             distm[:, :, i] = tempm
 
-        self.neurons[tl[0]:br[0], tl[1]:br[1]] -= self.learningrate * self.difference[tl[0]:br[0], tl[1]:br[1]] * distm[tl[0]:br[0], tl[1]:br[1]]
-
+        self.neurons[tl[0]:br[0], tl[1]:br[1]] -= self.learningrate * self.difference[tl[0]:br[0], tl[1]:br[1]] * distm[
+                                                                                                                  tl[0]:
+                                                                                                                  br[0],
+                                                                                                                  tl[1]:
+                                                                                                                  br[1]]
