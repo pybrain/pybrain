@@ -13,7 +13,7 @@ class FullConnection(Connection, ParameterContainer):
 
     def __init__(self, *args, **kwargs):
         Connection.__init__(self, *args, **kwargs)
-        ParameterContainer.__init__(self, self.indim*self.outdim)
+        ParameterContainer.__init__(self, self.indim*self.outdim, **kwargs)
 
     def _forwardImplementation(self, inbuf, outbuf):
         outbuf += dot(reshape(self.params, (self.outdim, self.indim)), inbuf)

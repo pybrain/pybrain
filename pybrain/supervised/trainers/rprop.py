@@ -35,7 +35,7 @@ class RPropMinusTrainer(BackpropTrainer):
         self.descent.deltanull = delta0
         self.descent.init(module.params)  # reinitialize, since mode changed
 
-    def train(self):
+    def train(self, logger=None):
         """ Train the network for one epoch """
         self.module.resetDerivatives()
         errors = 0
@@ -45,10 +45,14 @@ class RPropMinusTrainer(BackpropTrainer):
             errors += e
             ponderation += p
         if self.verbose:
-            print(("epoch {epoch:6d}  total error {error:12.5g}   avg weight  {weight:12.5g}".format(
+            msg = ("epoch {epoch:6d}  total error {error:12.5g}   avg weight  {weight:12.5g}".format(
                 epoch=self.epoch,
                 error=errors / ponderation,
-                weight=sqrt((self.module.params ** 2).mean()))))
+                weight=sqrt((self.module.params ** 2).mean())))
+            if logger:
+                logger.info(msg)
+            else:
+                print(msg)
         self.module._setParameters(self.descent(self.module.derivs - self.weightdecay * self.module.params))
         self.epoch += 1
         self.totalepochs += 1

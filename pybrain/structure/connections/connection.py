@@ -14,7 +14,7 @@ class Connection(Named):
     paramdim = 0
 
     def __init__(self, inmod, outmod, name = None,
-                 inSliceFrom = 0, inSliceTo = None, outSliceFrom = 0, outSliceTo = None):
+                 inSliceFrom = 0, inSliceTo = None, outSliceFrom = 0, outSliceTo = None, **kwargs):
         """ Every connection requires an input and an output module. Optionally, it is possible to define slices on the buffers.
 
             :arg inmod: input module

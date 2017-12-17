@@ -47,7 +47,7 @@ class BackpropTrainer(Trainer):
         self.descent.alphadecay = lrdecay
         self.descent.init(module.params)
 
-    def train(self):
+    def train(self, logger=None):
         """Train the associated module for one epoch."""
         assert len(self.ds) > 0, "Dataset cannot be empty."
         self.module.resetDerivatives()
@@ -69,7 +69,11 @@ class BackpropTrainer(Trainer):
                 self.module.resetDerivatives()
 
         if self.verbose:
-            print("Total error: {z: .12g}".format(z=errors / ponderation))
+            msg = "Total error: {z: .12g}".format(z=errors / ponderation)
+            if logger:
+                logger.info(msg)
+            else:
+                print(msg)
         if self.batchlearning:
             self.module._setParameters(self.descent(self.module.derivs))
         self.epoch += 1

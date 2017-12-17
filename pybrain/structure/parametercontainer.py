@@ -2,6 +2,7 @@ __author__ = 'Daan Wierstra and Tom Schaul'
 
 from scipy import size, zeros, ndarray, array
 from numpy.random import randn
+from numpy.random import seed
 
 from pybrain.structure.evolvables.evolvable import Evolvable
 
@@ -21,13 +22,15 @@ class ParameterContainer(Evolvable):
     # a flag that enables storage of derivatives
     hasDerivatives = False
 
-    def __init__(self, paramdim = 0, **args):
+    def __init__(self, paramdim = 0, use_random_seed=True, **args):
         """ initialize all parameters with random values, normally distributed around 0
 
             :key stdParams: standard deviation of the values (default: 1).
+            :key use_random_seed: flag to use random seed or set the seed based on connection dimensions
         """
         self.setArgs(**args)
         self.paramdim = paramdim
+        self.use_random_seed = use_random_seed
         if paramdim > 0:
             self._params = zeros(self.paramdim)
             # enable derivatives if it is a instance of Module or Connection
@@ -39,6 +42,30 @@ class ParameterContainer(Evolvable):
             if self.hasDerivatives:
                 self._derivs = zeros(self.paramdim)
             self.randomize()
+        else:
+            # We need to initialize, otherwise, forward propagation fails
+            # File "/usr/local/lib/python2.7/site-packages/pybrain/supervised/trainers/rprop.py", line 42, in train
+            #   e, p = self._calcDerivs(seq)
+            # File "/usr/local/lib/python2.7/site-packages/pybrain/supervised/trainers/backprop.py", line 83, in _calcDerivs
+            #   self.module.activate(sample[0])
+            # File "/usr/local/lib/python2.7/site-packages/pybrain/structure/networks/feedforward.py", line 20, in activate
+            #    return super(FeedForwardNetworkComponent, self).activate(inpt)
+            #  File "/usr/local/lib/python2.7/site-packages/pybrain/structure/modules/module.py", line 106, in activate
+            #    self.forward()
+            #  File "/usr/local/lib/python2.7/site-packages/pybrain/structure/modules/module.py", line 73, in forward
+            #    self.outputbuffer[self.offset])
+            #  File "/usr/local/lib/python2.7/site-packages/pybrain/structure/networks/feedforward.py", line 33, in _forwardImplementatio
+            #    c.forward()
+            #  File "/usr/local/lib/python2.7/site-packages/pybrain/structure/connections/connection.py", line 77, in forward
+            #    self.outmod.inputbuffer[outmodOffset, self.outSliceFrom:self.outSliceTo])
+            #  File "/usr/local/lib/python2.7/site-packages/pybrain/structure/connections/full.py", line 19, in _forwardImplementation
+            #    outbuf += dot(reshape(self.params, (self.outdim, self.indim)), inbuf)
+            #  File "/usr/local/lib/python2.7/site-packages/pybrain/structure/parametercontainer.py", line 46, in params
+            #    return self._params
+            # AttributeError: 'FullConnection' object has no attribute '_params'
+
+            self._params = zeros(paramdim)
+            self._derivs = zeros(paramdim)
 
     @property
     def params(self):
@@ -81,6 +108,8 @@ class ParameterContainer(Evolvable):
         self._derivs *= 0
 
     def randomize(self):
+        if not self.use_random_seed:
+            seed(self.paramdim)
         self._params[:] = randn(self.paramdim)*self.stdParams
         if self.hasDerivatives:
             self.resetDerivatives()
