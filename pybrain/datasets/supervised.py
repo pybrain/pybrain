@@ -111,9 +111,13 @@ class SupervisedDataSet(DataSet):
         leftIndicies = indicies[:separator]
         rightIndicies = indicies[separator:]
 
-        leftDs = SupervisedDataSet(inp=self['input'][leftIndicies].copy(),
-                                   target=self['target'][leftIndicies].copy())
-        rightDs = SupervisedDataSet(inp=self['input'][rightIndicies].copy(),
-                                    target=self['target'][rightIndicies].copy())
+        datasetClass = self.__class__
+        if datasetClass.__name__ == 'ClassificationDataSet':
+            kwargs = {'nb_classes': self.nClasses, 'class_labels': self.class_labels}
+            
+        leftDs = datasetClass(inp=self['input'][leftIndicies].copy(),
+                                   target=self['target'][leftIndicies].copy(), **kwargs)
+        rightDs = datasetClass(inp=self['input'][rightIndicies].copy(),
+                                    target=self['target'][rightIndicies].copy(), **kwargs)
         return leftDs, rightDs
 
