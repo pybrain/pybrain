@@ -342,3 +342,103 @@ class TopologyOptimizer(BlackBoxOptimizer):
                 self._initEvaluable = MaskedParameters(self._initEvaluable, returnZeros = True)   
     
      
+class TabuOptimizer(BlackBoxOptimizer):
+    """A class that makes it easy to add the tabu meta-heuristic to subclasses of BlackBoxOptimizer.
+    
+    To use this class create an empty class that inherits from this and an existing implementation
+    of BlackBoxOptimizer.
+    The resulting class will behave like the second superclass if when _setUp is false, and will
+    add tabu functionality to the second superclass if you call tabuSetUp before learn.
+    See tabusearch.py and tests/unittests/optimization/test_tabuhillclimber.py for examples.
+    
+    This class adds (most) of the meta-heuristic functionality described in Tabu Search: a Tutorial by Glover
+    http://www.cse.unt.edu/~garlick/teaching/4310/assign/TS%20-%20Tutorial.pdf
+    """
+    _setUp=False
+    tabuList=[]
+    def tabuSetUp(self, tabuGenerator, tabuPenalty, tabuList=[], maxTabuList=7,):
+        """Intializes tabu related varibables and sets a flag that activates tabu behavior.
+
+        tabuGenerator should be  a callable that produces callable tabus given two evaluables. 
+        tabePenalty is the amount that tabu moves are penalized by.  It is effectively 
+        an aspiration function, but the implentation is differnt than in most tabu algorizims."""  
+
+        self.tabuList=tabuList
+        self.maxTabuList=maxTabuList
+        self.tabuGenerator=tabuGenerator
+        self.tabuPenalty=tabuPenalty
+        self._evaluator=self._BlackBoxOptimizer__evaluator
+
+    def _oneEvaluation(self, evaluable):
+        """ This method should be called by all tabu optimizers for producing an evaluation. 
+        
+        This is nearly identical to BlackBoxOptimizer's _oneEvaluation except that it subtracts
+        the tabuPenalty from the evaluations of tabuEvaluables"""
+        
+        if not self._setUp:
+            return BlackBoxOptimizer._oneEvaluation(self,evaluable)
+        if self._wasUnwrapped:
+            self.wrappingEvaluable._setParameters(evaluable)
+            res = self.evaluator(self.wrappingEvaluable)
+        elif self._wasWrapped:            
+            res = self.evaluator(evaluable.params)
+        else:            
+            res = self.evaluator(evaluable)
+            ''' added by JPQ '''
+            if self.constrained :
+                self.feasible = self.evaluator.outfeasible
+                self.violation = self.evaluator.outviolation
+            # ---
+        if isscalar(res):
+            # detect numerical instability
+            if isnan(res) or isinf(res):
+                raise DivergenceError
+            #apply pentalty if tabu
+            for t in self.tabuList:
+                if t(evaluable):
+                    res-=self.tabuPenalty
+                    break
+            # always keep track of the best
+            if (self.numEvaluations == 0
+                or self.bestEvaluation is None
+                or (self.minimize and res <= self.bestEvaluation)
+                or (not self.minimize and res >= self.bestEvaluation)):
+                self.bestEvaluation = res
+                #update tabuList
+                self.tabuList.append(self.tabuGenerator(self.bestEvaluable,evaluable))
+                l=len(self.tabuList)
+                if l > self.maxTabuList:
+                    self.tabuList=self.tabuList[(l-self.maxTabuList):l]
+                self.bestEvaluable = evaluable.copy()
+        
+        self.numEvaluations += 1
+        
+        # if desired, also keep track of all evaluables and/or their fitness.                        
+        if self.storeAllEvaluated:
+            if self._wasUnwrapped:            
+                self._allEvaluated.append(self.wrappingEvaluable.copy())
+            elif self._wasWrapped:            
+                self._allEvaluated.append(evaluable.params.copy())
+            else:            
+                self._allEvaluated.append(evaluable.copy())        
+        if self.storeAllEvaluations:
+            if self._wasOpposed and isscalar(res):
+                ''' added by JPQ '''
+                if self.constrained :
+                    self._allEvaluations.append([-res,self.feasible,self.violation])
+                # ---
+                else:
+                    self._allEvaluations.append(-res)
+            else:
+                ''' added by JPQ '''
+                if self.constrained :
+                    self._allEvaluations.append([res,self.feasible,self.violation])
+                # ---
+                else:
+                    self._allEvaluations.append(res)
+        ''' added by JPQ '''
+        if self.constrained :
+            return [res,self.feasible,self.violation]
+        else:
+        # ---
+            return res
