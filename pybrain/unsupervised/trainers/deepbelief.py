@@ -110,7 +110,7 @@ class DeepBeliefTrainer(Trainer):
             piecenet.sortModules()
 
             dataset = UnsupervisedDataSet(rbm.hiddenDim)
-            for sample, in self.dataset:
+            for sample,somevar in self.dataset:
                 new_sample = piecenet.activate(sample)
                 dataset.addSample(new_sample)
             visible = hidden
