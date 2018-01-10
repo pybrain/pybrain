@@ -1,0 +1,9 @@
+# list of non-python files that should be included with every distribution (pip install)
+# include *.txt
+recursive-include . *.txt
+# include *.md
+recursive-include . *.md
+# include *.rst
+recursive-include . *.rst
+include README.*
+

@@ -210,4 +210,3 @@ class SequentialDataSet(SupervisedDataSet):
                     rightDs.addSample(*sp)
             index += 1
         return leftDs, rightDs
-
