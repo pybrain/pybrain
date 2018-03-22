@@ -15,7 +15,7 @@ class LoggingAgent(Agent):
 
     logging = True
 
-    lastobs = None
+    lastobs = []
     lastaction = None
     lastreward = None
 
@@ -41,7 +41,7 @@ class LoggingAgent(Agent):
 
     def getAction(self):
         """Step 2: store the action in a temporary variable until reward is given. """
-        assert self.lastobs != None
+        assert self.lastobs.any()
         assert self.lastaction == None
         assert self.lastreward == None
 
@@ -51,7 +51,7 @@ class LoggingAgent(Agent):
     def giveReward(self, r):
         """Step 3: store observation, action and reward in the history dataset. """
         # step 3: assume that state and action have been set
-        assert self.lastobs != None
+        assert self.lastobs.any()
         assert self.lastaction != None
         assert self.lastreward == None
 
@@ -70,7 +70,7 @@ class LoggingAgent(Agent):
 
     def reset(self):
         """ Clear the history of the agent. """
-        self.lastobs = None
+        self.lastobs = []
         self.lastaction = None
         self.lastreward = None
 
