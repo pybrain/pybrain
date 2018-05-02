@@ -6,6 +6,7 @@ from pybrain.structure.parametercontainer import ParameterContainer
 
 class FullConnectionWithDropout(Connection, ParameterContainer):
     """Full connection with dropout, the drop out rate r is the rate to drop the output from lower layer
+        You can close the dropout function by setting r to 0, and set dropoutmask to np.ones((self.indim))
    """
 
     def __init__(self, *args, r=0.1,**kwargs):
@@ -28,6 +29,9 @@ class FullConnectionWithDropout(Connection, ParameterContainer):
         outbuf += np.dot(np.reshape(self.params, (self.outdim, self.indim)),inbuf)
 
     def refresh(self):
+        '''
+            reset the mask. Should run this every time after iterate to change the mask. Current trainer won't do that
+        '''
         self.dropoutMask=np.random.binomial(1,(1-self.r),(self.indim))
     def _backwardImplementation(self, outerr, inerr, inbuf):
         
@@ -37,6 +41,4 @@ class FullConnectionWithDropout(Connection, ParameterContainer):
         
 
     def whichBuffers(self, paramIndex):
-        """Return the index of the input module's output buffer and
-        the output module's input buffer for the given weight."""
         return paramIndex % self.inmod.outdim, paramIndex // self.inmod.outdim
