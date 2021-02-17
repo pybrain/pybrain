@@ -139,7 +139,9 @@ class ClassificationDataSet(SupervisedDataSet):
         if self.nClasses <= 0:
             self.calculateStatistics()
         oldtarg = self.getField('target')
-        newtarg = zeros([len(self), self.nClasses], dtype='Int32') + bounds[0]
+        newtarg = zeros([len(self), self.nClasses], dtype='int32') + bounds[0]
+        #data type 'Int32' not understood 
+        # dtype='Int32' => dtype='int32')
         for i in range(len(self)):
             newtarg[i, int(oldtarg[i])] = bounds[1]
         self.setField('target', newtarg)
