@@ -102,7 +102,7 @@ class RlglueAgentAdapter(object):
         :type task_specification:   string
         """
         # This is (for now) actually a dummy method to satisfy the
-        # RLGlue interface. It is the programmer's job to check wether an
+        # RLGlue interface. It is the programmer's job to check whether an
         # experiment fits the agent object.
         self.agent.reset()
 
