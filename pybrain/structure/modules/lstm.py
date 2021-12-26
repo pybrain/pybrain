@@ -76,7 +76,7 @@ class LSTMLayer(NeuronLayer, ParameterContainer):
 
 
     def _isLastTimestep(self):
-        """Tell wether the current offset is the maximum offset."""
+        """Tell whether the current offset is the maximum offset."""
         return self.maxoffset == self.offset
 
     def _forwardImplementation(self, inbuf, outbuf):

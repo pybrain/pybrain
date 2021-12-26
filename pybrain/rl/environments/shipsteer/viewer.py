@@ -103,7 +103,7 @@ class FlexCubeRenderer(object):
         else: sleep(self.dt)
 
     def drawScene(self):
-        ''' This methode describes the complete scene.'''
+        ''' This method describes the complete scene.'''
         # clear the buffer
         if self.zDis < 10: self.zDis += 0.25
         if self.lastz > 100: self.lastz -= self.zDis

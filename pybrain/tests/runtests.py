@@ -22,7 +22,7 @@ def setUpLogging():
 
 
 def testImport(module_name):
-    """Tell wether a module can be imported.
+    """Tell whether a module can be imported.
 
     This function has a cache, so modules are only tested once on
     importability.

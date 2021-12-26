@@ -11,7 +11,7 @@ class JohnnieTask(EpisodicTask):
         self.maxPower = 100.0 #Overall maximal tourque - is multiplied with relative max tourque for individual joint to get individual max tourque
         self.reward_history = []
         self.count = 0 #timestep counter
-        self.epiLen = 500 #suggestet episodic length for normal Johnnie tasks
+        self.epiLen = 500 #suggested episodic length for normal Johnnie tasks
         self.incLearn = 0 #counts the task resets for incrementall learning
         self.env.FricMu = 20.0 #We need higher friction for Johnnie
         self.env.dt = 0.01 #We also need more timly resolution
@@ -58,7 +58,7 @@ class JohnnieTask(EpisodicTask):
 class StandingTask(JohnnieTask):
     def __init__(self, env):
         JohnnieTask.__init__(self, env)
-        #add task spezific sensors, TODO build attitude sensors
+        #add task specific sensors, TODO build attitude sensors
         self.env.addSensor(SpecificBodyPositionSensor(['footLeft'], "footLPos"))
         self.env.addSensor(SpecificBodyPositionSensor(['footRight'], "footRPos"))
         self.env.addSensor(SpecificBodyPositionSensor(['palm'], "bodyPos"))
@@ -67,14 +67,14 @@ class StandingTask(JohnnieTask):
         #we changed sensors so we need to update environments sensorLength variable
         self.env.obsLen = len(self.env.getSensors())
 
-        #normalization for the task spezific sensors
+        #normalization for the task specific sensors
         for _ in range(self.env.obsLen - 2 * self.env.actLen):
             self.sensor_limits.append((-20, 20))
         self.epiLen = 1000 #suggested episode length for this task
 
     def getReward(self):
         # calculate reward and return reward
-        reward = self.env.getSensorByName('headPos')[1] / float(self.epiLen) #reward is hight of head
+        reward = self.env.getSensorByName('headPos')[1] / float(self.epiLen) #reward is height of head
         #to prevent jumping reward can't get bigger than head position while standing absolut upright
         reward = clip(reward, -14.0, 4.0)
         return reward
@@ -128,7 +128,7 @@ class RobustStandingTask(RobStandingTask):
 class JumpingTask(JohnnieTask):
     def __init__(self, env):
         JohnnieTask.__init__(self, env)
-        #add task spezific sensors, TODO build attitude sensors
+        #add task specific sensors, TODO build attitude sensors
         self.env.addSensor(SpecificBodyPositionSensor(['footLeft']))
         self.env.addSensor(SpecificBodyPositionSensor(['footRight']))
         self.env.addSensor(SpecificBodyPositionSensor(['palm']))
@@ -137,16 +137,16 @@ class JumpingTask(JohnnieTask):
         #we changed sensors so we need to update environments sensorLength variable
         self.env.obsLen = len(self.env.getSensors())
 
-        #normalization for the task spezific sensors
+        #normalization for the task specific sensors
         for _ in range(self.env.obsLen - 2 * self.env.actLen):
             self.sensor_limits.append((-20, 20))
         self.epiLen = 400 #suggested episode length for this task
-        self.maxHight = 4.0 #maximum hight reached during episode
+        self.maxHight = 4.0 #maximum height reached during episode
         self.maxPower = 400.0 #jumping needs more power
 
     def getReward(self):
         # calculate reward and return reward
-        reward = self.env.getSensorByName('SpecificBodyPositionSensor8')[1] #reward is hight of head
+        reward = self.env.getSensorByName('SpecificBodyPositionSensor8')[1] #reward is height of head
         if reward > self.maxHight:
             self.maxHight = reward
         if self.count == self.epiLen:
@@ -174,7 +174,7 @@ class StandingUpTask(StandingTask):
         if self.count < 800:
             return 0.0
         else:
-            reward = self.env.getSensorByName('SpecificBodyPositionSensor8')[1] / float(self.epiLen - 800) #reward is hight of head
+            reward = self.env.getSensorByName('SpecificBodyPositionSensor8')[1] / float(self.epiLen - 800) #reward is height of head
             #to prevent jumping reward can't get bigger than head position while standing absolut upright
             reward = clip(reward, -14.0, 4.0)
             return reward

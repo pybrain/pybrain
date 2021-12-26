@@ -15,7 +15,7 @@ class CCRLTask(EpisodicTask):
         self.maxPower = 100.0
         self.reward_history = []
         self.count = 0 #timestep counter
-        self.epiLen = 1500 #suggestet episodic length for normal Johnnie tasks
+        self.epiLen = 1500 #suggested episodic length for normal Johnnie tasks
         self.incLearn = 0 #counts the task resets for incrementall learning
         self.env.FricMu = 20.0 #We need higher friction for CCRL
         self.env.dt = 0.002 #We also need more timly resolution
@@ -42,7 +42,7 @@ class CCRLTask(EpisodicTask):
         self.env.addSensor(SpecificBodyPositionSensor(['fingerLeft2'], "finger2Pos"))
         #we changed sensors so we need to update environments sensorLength variable
         self.env.obsLen = len(self.env.getSensors())
-        #normalization for the task spezific sensors
+        #normalization for the task specific sensors
         for i in range(self.env.obsLen - 2 * self.env.actLen):
             self.sensor_limits.append((-4, 4))
         self.actor_limits = None
@@ -111,7 +111,7 @@ class CCRLGlasTask(CCRLTask):
     def __init__(self, env):
         CCRLTask.__init__(self, env)
         self.dif = array([0.0, 0.0, 0.0])
-        self.epiLen = 1000 #suggestet episodic length for normal Johnnie tasks
+        self.epiLen = 1000 #suggested episodic length for normal Johnnie tasks
 
     def isFinished(self):
         #returns true if episode timesteps has reached episode length and resets the task
@@ -141,7 +141,7 @@ class CCRLPlateTask(CCRLTask):
     def __init__(self, env):
         CCRLTask.__init__(self, env)
         self.dif = array([0.0, 0.2, 0.8])
-        self.epiLen = 1000 #suggestet episodic length for normal Johnnie tasks
+        self.epiLen = 1000 #suggested episodic length for normal Johnnie tasks
 
     def isFinished(self):
         #returns true if episode timesteps has reached episode length and resets the task
@@ -172,7 +172,7 @@ class CCRLPlateTask(CCRLTask):
 class CCRLGlasVarTask(CCRLGlasTask):
     def __init__(self, env):
         CCRLGlasTask.__init__(self, env)
-        self.epiLen = 5000 #suggestet episodic length for normal Johnnie tasks
+        self.epiLen = 5000 #suggested episodic length for normal Johnnie tasks
 
     def isFinished(self):
         #returns true if episode timesteps has reached episode length and resets the task
@@ -227,7 +227,7 @@ class CCRLGlasVarRandTask(CCRLGlasVarTask):
 class CCRLPointTask(CCRLGlasVarTask):
     def __init__(self, env):
         CCRLGlasVarTask.__init__(self, env)
-        self.epiLen = 1000 #suggestet episodic length for normal Johnnie tasks
+        self.epiLen = 1000 #suggested episodic length for normal Johnnie tasks
 
     def isFinished(self):
         #returns true if episode timesteps has reached episode length and resets the task
@@ -291,7 +291,7 @@ class CCRLPointTask(CCRLGlasVarTask):
 class CCRLPointVarTask(CCRLPointTask):
     def __init__(self, env):
         CCRLPointTask.__init__(self, env)
-        self.epiLen = 2000 #suggestet episodic length for normal Johnnie tasks
+        self.epiLen = 2000 #suggested episodic length for normal Johnnie tasks
 
     def isFinished(self):
         #returns true if episode timesteps has reached episode length and resets the task
