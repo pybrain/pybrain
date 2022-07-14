@@ -421,14 +421,14 @@ def reachable(stepFunction, start, destinations, _alreadyseen=None):
         _alreadyseen = []
     _alreadyseen.extend(start)
 
-    # dict with distances to destinations
+    """ resultant dictionary with distances to destinations """
     res = {}
     for s in start:
         if s in destinations:
             res[s] = 0
             start.remove(s)
 
-    # do one step
+    """ do one step """
     new = set()
     for s in start:
         new.update(stepFunction(s))
@@ -442,12 +442,14 @@ def reachable(stepFunction, start, destinations, _alreadyseen=None):
             ndestinations.remove(s)
             _alreadyseen.append(s)
 
-    # recursively do the rest
+    """ recursively do the rest """
     deeper = reachable(stepFunction, new, ndestinations, _alreadyseen)
 
-    # adjust distances
+    """adjust the distances """
     for k, val in list(deeper.items()):
         res[k] = val + 1
+    
+    """return the resultant dictionary"""
     return res
 
 
@@ -461,8 +463,12 @@ def flood(stepFunction, fullSet, initSet, relevant=None):
         flooded = set(initSet)
     else:
         full = set(fullSet)
+        """The intersection() method returns a set that contains the similarity between two or more sets
+        Here it will save the intersection between set full and set(initSet) in the flooded variable
+        """
         flooded = full.intersection(set(initSet))
         if relevant is None:
+            """saves a copy of full set in relevant variable"""
             relevant = full.copy()
     if relevant:
         relevant = set(relevant)
