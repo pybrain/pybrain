@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 #########################################################################
 # Reinforcement Tools for printing, saving and loading for RL examples 
 # 
@@ -6,7 +8,7 @@
 # Author: Frank Sehnke, sehnke@in.tum.de
 #########################################################################
 
-from cPickle import load, dump
+from pickle import load, dump
 from scipy import array, sqrt
 from pylab import errorbar, show
 
@@ -26,7 +28,7 @@ class ExTools():
 
     # Method for loading a weight matrix and initialize the network
     def loadWeights(self, filename):
-        filepointer = file(filename)
+        filepointer = open(filename)
         self.agent.learner.current = load(filepointer)
         filepointer.close()
         self.agent.learner.gd.init(self.agent.learner.current)
@@ -35,13 +37,13 @@ class ExTools():
 
     # Method for saving the weight matrix    
     def saveWeights(self, filename, w):
-        filepointer = file(filename, 'w+')
+        filepointer = open(filename, 'w+')
         dump(w, filepointer)
         filepointer.close()
 
     # Method for saving the weight matrix    
     def saveResults(self, filename, results):
-        filepointer = file(filename, 'w+')
+        filepointer = open(filename, 'w+')
         dump(results, filepointer)
         filepointer.close()
 
@@ -49,20 +51,21 @@ class ExTools():
         if self.kind == "optimizer":
             rLen = len(resList)
             avReward = array(resList).sum()/rLen
-            print "Parameters:", self.agent.learner._bestFound()
-            print "Experiment:", runs,
-            print " Evaluation:", (updates+1)*self.batch*self.prnts,
-            print " BestReward:", self.agent.learner.bestEvaluation, 
-            print " AverageReward:", avReward
-            print 
+            print(("Parameters:", self.agent.learner._bestFound()))
+            print(("Experiment:", runs,
+                " Evaluation:", (updates+1)*self.batch*self.prnts,
+                " BestReward:", self.agent.learner.bestEvaluation,
+                " AverageReward:", avReward))
+            print()
             self.rl.append(avReward)
         else:
             avReward = resList
-            #print "Parameters: ", self.agent.learner._bestFound()
-            print "Step: ", runs, "/", (updates+1)*self.batch*self.prnts,
-            #print "Best: ", self.agent.learner.bestEvaluation, 
-            print "Base: ", avReward
-            #print 
+            #print("Parameters: ", self.agent.learner._bestFound())
+            print((
+                "Step: ", runs, "/", (updates+1)*self.batch*self.prnts,
+                #"Best: ", self.agent.learner.bestEvaluation,
+                "Base: ", avReward))
+            #print()
             self.rl.append(avReward)
 
     def addExps(self):
@@ -77,5 +80,5 @@ class ExTools():
         v = (d**2).sum(axis=0)
         v = v/nEx
         stand = sqrt(v)
-        errorbar(array(range(len(self.rll[0])))*self.prnts*self.batch+self.prnts*self.batch,r,stand)
+        errorbar(array(list(range(len(self.rll[0]))))*self.prnts*self.batch+self.prnts*self.batch,r,stand)
         show()

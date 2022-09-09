@@ -100,7 +100,7 @@ class AcrobotTask(EpisodicTask):
         theta2 = x[1]
         y_acrobot[1] = y_acrobot[0] - cos(theta1)
         y_acrobot[2] = y_acrobot[1] - cos(theta2)
-        #print y_acrobot
+        #print(y_acrobot)
         #goal
         goal = y_acrobot[0] + self.target
         if self.easy_rewards:

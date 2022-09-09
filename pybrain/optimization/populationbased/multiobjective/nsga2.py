@@ -26,24 +26,38 @@ class MultiObjectiveGA(GA):
     def _learnStep(self):
         """ do one generation step """
         # evaluate fitness
-        self.fitnesses = dict([(tuple(indiv), self._oneEvaluation(indiv)) for indiv in self.currentpop])
+        """ added by JPQ """
+        if isinstance(self.fitnesses,dict):
+            oldfitnesses = self.fitnesses
+            self.fitnesses = dict()
+            for indiv in self.currentpop:
+                if tuple(indiv) in oldfitnesses:
+                    self.fitnesses[tuple(indiv)] = oldfitnesses[tuple(indiv)]
+                else:
+                    self.fitnesses[tuple(indiv)] = self._oneEvaluation(indiv)
+            del oldfitnesses
+        else:
+        # ---
+            self.fitnesses = dict([(tuple(indiv), self._oneEvaluation(indiv)) for indiv in self.currentpop])
+
         if self.storeAllPopulations:
             self._allGenerations.append((self.currentpop, self.fitnesses))
 
         if self.elitism:
-            self.bestEvaluable = list(non_dominated_front(map(tuple, self.currentpop),
+            self.bestEvaluable = list(non_dominated_front(list(map(tuple, self.currentpop)),
                                                           key=lambda x: self.fitnesses[x],
                                                           allowequality = self.allowEquality))
         else:
-            self.bestEvaluable = list(non_dominated_front(map(tuple, self.currentpop)+self.bestEvaluable,
+            self.bestEvaluable = list(non_dominated_front(list(map(tuple, self.currentpop))+self.bestEvaluable,
                                                           key=lambda x: self.fitnesses[x],
                                                           allowequality = self.allowEquality))
         self.bestEvaluation = [self.fitnesses[indiv] for indiv in self.bestEvaluable]
+
         self.produceOffspring()
 
     def select(self):
-        return map(array, nsga2select(map(tuple, self.currentpop), self.fitnesses,
-                                      self.selectionSize, self.allowEquality))
+        return list(map(array, nsga2select(list(map(tuple, self.currentpop)), self.fitnesses,
+                                      self.selectionSize, self.allowEquality)))
 
 
 
@@ -53,6 +67,7 @@ def nsga2select(population, fitnesses, survivors, allowequality = True):
     fronts = non_dominated_sort(population,
                                 key=lambda x: fitnesses[x],
                                 allowequality = allowequality)
+    
     individuals = set()
     for front in fronts:
         remaining = survivors - len(individuals)

@@ -2,7 +2,7 @@ __author__ = 'Tom Schaul, tom@idsia.ch'
 
 from random import choice
 
-from nonsuicide import NonSuicidePlayer
+from .nonsuicide import NonSuicidePlayer
 
 
 class KillingPlayer(NonSuicidePlayer):

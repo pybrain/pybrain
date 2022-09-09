@@ -39,9 +39,9 @@ class EpisodicTask(Task, FitnessEvaluator):
     def performAction(self, action):
         """ Execute one action. """
         Task.performAction(self, action)
-        self.addReward()
         self.samples += 1
-
+        self.addReward()
+        
     def addReward(self):
         """ A filtered mapping towards performAction of the underlying environment. """
         # by default, the cumulative reward is just the sum over the episode

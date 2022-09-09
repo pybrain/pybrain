@@ -22,5 +22,5 @@ class LinearConnection(Connection, ParameterContainer):
         outbuf += inbuf * self.params
 
     def _backwardImplementation(self, outerr, inerr, inbuf):
-        #CHECKME: not setting derivatives
+        #CHECKME: not setting derivatives -- this means the multiplicative weight is never updated!
         inerr += outerr * self.params

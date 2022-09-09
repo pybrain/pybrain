@@ -3,7 +3,7 @@ __author__ = 'Tom Schaul, tom@idsia.ch'
 from scipy import array, zeros
 from random import random
 
-from maze import MazeTask
+from .maze import MazeTask
 from pybrain.rl.environments.mazes import PolarMaze
 
 

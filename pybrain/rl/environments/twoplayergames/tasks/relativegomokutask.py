@@ -1,6 +1,8 @@
+from __future__ import print_function
+
 __author__ = 'Tom Schaul, tom@idsia.ch'
 
-from gomokutask import GomokuTask
+from .gomokutask import GomokuTask
 from pybrain.rl.environments.twoplayergames.gomokuplayers import ModuleDecidingPlayer
 from pybrain.rl.environments.twoplayergames import GomokuGame
 from pybrain.rl.environments.twoplayergames.gomokuplayers.gomokuplayer import GomokuPlayer
@@ -107,7 +109,7 @@ class RelativeGomokuTask(GomokuTask):
         moves = self.env.movesDone
         win = self.env.winner == self.player.color
         if self.verbose:
-            print 'Preset:', preset, 'T:', self.temp, 'Win:', win, 'after', moves, 'moves.'
+            print(('Preset:', preset, 'T:', self.temp, 'Win:', win, 'after', moves, 'moves.'))
         res = 1 - self.numMovesCoeff * (moves -self.minmoves)/(self.maxmoves-self.minmoves)
         if win:
             return res
@@ -120,11 +122,11 @@ if __name__ == '__main__':
     net1 = CaptureGameNetwork(hsize = 1)
     net2 = CaptureGameNetwork(hsize = 1)
     r = RelativeGomokuTask(7, maxGames = 10, useNetworks = True)
-    print r(net1, net2)
-    print r(net2, net1)
-    print r.env
+    print((r(net1, net2)))
+    print((r(net2, net1)))
+    print((r.env))
     r.maxGames = 50
-    print r(net1, net2)
-    print r(net2, net1)
-    print r.env
+    print((r(net1, net2)))
+    print((r(net2, net1)))
+    print((r.env))
 

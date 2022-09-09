@@ -17,7 +17,7 @@ components from PyBrain:
 """
 
 from scipy import * #@UnusedWildImport
-import pylab
+import matplotlib.pyplot as plt
 
 from pybrain.rl.environments.mazes import Maze, MDPMazeTask
 from pybrain.rl.learners.valuebased import ActionValueTable
@@ -31,8 +31,8 @@ For later visualization purposes, we also need to initialize the
 plotting engine.
 """
 
-pylab.gray()
-pylab.ion()
+plt.gray()
+plt.ion()
 
 
 """
@@ -89,7 +89,7 @@ controller.initialize(1.)
 
 """
 The table needs the number of states and actions as parameters. The standard
-maze environment comes with the following 4 actions: north, south, east, west.
+maze environment comes with the following 4 actions: north, east, south, west.
 
 Then, we initialize the table with 1 everywhere. This is not always necessary
 but will help converge faster, because unvisited state-action pairs have a
@@ -133,8 +133,9 @@ while True:
     agent.learn()
     agent.reset()
 
-    pylab.pcolor(controller.params.reshape(81,4).max(1).reshape(9,9))
-    pylab.draw()
+    plt.pcolor(controller.params.reshape(81,4).max(1).reshape(9,9))
+    plt.show()
+    plt.pause(0.1)
 
 
 """

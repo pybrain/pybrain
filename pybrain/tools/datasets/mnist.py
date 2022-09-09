@@ -7,21 +7,21 @@ from pybrain.datasets import SupervisedDataSet
 
 
 def labels(filename):
-    fp = file(filename)
+    fp = open(filename)
     magicnumber, length = struct.unpack('>ii', fp.read(8))
     assert magicnumber in (2049, 2051), ("Not an MNIST file: %i" % magicnumber)
-    for _ in xrange(length):
+    for _ in range(length):
         label, = struct.unpack('B', fp.read(1))
         yield label
 
 
 def images(filename):
-    fp = file(filename)
+    fp = open(filename,'rb')
     chunk = fp.read(16)
     magicnumber, length, numrows, numcols = struct.unpack('>iiii', chunk)
     assert magicnumber in (2049, 2051), ("Not an MNIST file: %i" % magicnumber)
     imagesize = numrows * numcols
-    for _ in xrange(length):
+    for _ in range(length):
         imagestring = fp.read(imagesize)
         image = struct.unpack('B' * imagesize, imagestring)
         yield scipy.array(image)
@@ -42,7 +42,7 @@ def makeMnistDataSets(path):
     test_images = images(test_image_file)
     test_labels = (flaggedArrayByIndex(l, 10) for l in labels(test_label_file))
 
-    for image, label in itertools.izip(test_images, test_labels):
+    for image, label in zip(test_images, test_labels):
         test.addSample(image, label)
 
     train = SupervisedDataSet(28 * 28, 10)
@@ -50,7 +50,7 @@ def makeMnistDataSets(path):
     train_label_file = os.path.join(path, 'train-labels-idx1-ubyte')
     train_images = images(train_image_file)
     train_labels = (flaggedArrayByIndex(l, 10) for l in labels(train_label_file))
-    for image, label in itertools.izip(train_images, train_labels):
+    for image, label in zip(train_images, train_labels):
         train.addSample(image, label)
 
     return train, test

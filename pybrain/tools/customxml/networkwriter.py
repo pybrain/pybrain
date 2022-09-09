@@ -2,7 +2,7 @@ __author__ = 'Tom Schaul, tom@idsia.ch'
 
 from inspect import isclass
 
-from handling import XMLHandling
+from .handling import XMLHandling
 from pybrain.structure.connections.shared import SharedConnection
 from pybrain.structure.networks.network import Network
 from pybrain.structure.networks.recurrent import RecurrentNetwork
@@ -62,7 +62,7 @@ class NetworkWriter(XMLHandling):
         for m in net.modulesSorted:
             for c in net.connections[m]:
                 self.writeConnection(conns, c, False)
-        if isinstance(net, RecurrentNetwork):
+        if hasattr(net, "recurrentConns"):
             for c in net.recurrentConns:
                 self.writeConnection(conns, c, True)
 
@@ -96,7 +96,7 @@ class NetworkWriter(XMLHandling):
 
     def writeArgs(self, node, argdict):
         """ write a dictionnary of arguments """
-        for name, val in argdict.items():
+        for name, val in list(argdict.items()):
             if val != None:
                 tmp = self.newChild(node, name)
                 if isclass(val):

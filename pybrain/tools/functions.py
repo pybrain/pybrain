@@ -1,7 +1,7 @@
 __author__ = 'Tom Schaul, tom@idsia.ch'
 
 from scipy import array, exp, tanh, clip, log, dot, sqrt, power, pi, tan, diag, rand, real_if_close
-from scipy.linalg import inv, det, svd, logm, expm2
+from scipy.linalg import inv, det, svd, logm, expm
 
 
 def semilinear(x):
@@ -22,7 +22,7 @@ def semilinear(x):
         else:
             # linear function for x>=0
             return val + 1.0
-    return array(map(f, x)).reshape(shape)
+    return array(list(map(f, x))).reshape(shape)
 
 
 def semilinearPrime(x):
@@ -43,11 +43,11 @@ def semilinearPrime(x):
         else:
             # linear function for x>=0
             return 1.0
-    return array(map(f, x)).reshape(shape)
+    return array(list(map(f, x))).reshape(shape)
 
 
 def safeExp(x):
-    """ Bounded range for the exponential function (won't rpoduce inf or NaN). """
+    """ Bounded range for the exponential function (won't produce inf or NaN). """
     return exp(clip(x, -500, 500))
 
 
@@ -72,7 +72,7 @@ def ranking(R):
     """ Produces a linear ranking of the values in R. """
     l = sorted(list(enumerate(R)), cmp=lambda a, b: cmp(a[1], b[1]))
     l = sorted(list(enumerate(l)), cmp=lambda a, b: cmp(a[1], b[1]))
-    return array(map(lambda (r, dummy): r, l))
+    return array([kv[0] for kv in l])
 
 
 def expln(x):
@@ -86,7 +86,7 @@ def expln(x):
             # natural log function for x >= 0
             return log(val + 1.0) + 1
     try:
-        result = array(map(f, x))
+        result = array(list(map(f, x)))
     except TypeError:
         result = array(f(x))
 
@@ -104,7 +104,7 @@ def explnPrime(x):
             # linear function for x>=0
             return 1.0 / (val + 1.0)
     try:
-        result = array(map(f, x))
+        result = array(list(map(f, x)))
     except TypeError:
         result = array(f(x))
 
@@ -150,6 +150,6 @@ def approxChiFunction(dim):
 
 def sqrtm(M):
     """ Returns the symmetric semi-definite positive square root of a matrix. """
-    r = real_if_close(expm2(0.5 * logm(M)), 1e-8)
+    r = real_if_close(expm(0.5 * logm(M)), 1e-8)
     return (r + r.T) / 2
 

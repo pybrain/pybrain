@@ -1,0 +1,2 @@
+from pybrain.rl.learners.modelbased.policyiteration import trueValues, trueQValues, policyIteration
+from pybrain.rl.learners.modelbased.leastsquares import LSTD_values, LSTD_Qvalues, LSPI_policy, LSTD_PI_policy

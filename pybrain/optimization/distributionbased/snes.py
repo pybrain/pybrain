@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 __author__ = 'Tom Schaul, tom@idsia.ch'
 
 from pybrain.optimization.distributionbased.distributionbased import DistributionBasedOptimizer
@@ -56,13 +58,16 @@ class SNES(DistributionBasedOptimizer):
     
     @property
     def _population(self):
-        return [self._allEvaluated[i] for i in self._pointers]
-        
+        if self._wasUnwrapped:
+            return [self._allEvaluated[i].params for i in self._pointers]
+        else:
+            return [self._allEvaluated[i] for i in self._pointers]
+            
     @property
     def _currentEvaluations(self):        
         fits = [self._allEvaluations[i] for i in self._pointers]
         if self._wasOpposed:
-            fits = map(lambda x:-x, fits)
+            fits = [-x for x in fits]
         return fits
                         
     def _produceSample(self):
@@ -83,13 +88,13 @@ class SNES(DistributionBasedOptimizer):
             self._allEvaluations = []
             
         tmp = [self._sample2base(self._produceSample()) for _ in range(self.batchSize)]
-        map(self._oneEvaluation, tmp)            
+        list(map(self._oneEvaluation, tmp))            
         self._pointers = list(range(len(self._allEvaluated) - self.batchSize, len(self._allEvaluated)))                    
             
     def _learnStep(self):
         # produce samples
         self._produceSamples()
-        samples = map(self._base2sample, self._population) 
+        samples = list(map(self._base2sample, self._population)) 
         
         #compute utilities
         utilities = self.shapingFunction(self._currentEvaluations)
@@ -109,5 +114,5 @@ class SNES(DistributionBasedOptimizer):
         
 if __name__ == "__main__":
     from pybrain.rl.environments.functions.unimodal import ElliFunction
-    print SNES(ElliFunction(100), ones(100), verbose=True).learn()
+    print((SNES(ElliFunction(100), ones(100), verbose=True).learn()))
     

@@ -5,17 +5,23 @@ from scipy import rand, dot, power, diag, eye, sqrt, sin, log, exp, ravel, clip,
 from scipy.linalg import orth, norm, inv
 from random import shuffle, random, gauss
 
-from function import FunctionEnvironment
+from pybrain.rl.environments.functions.function import FunctionEnvironment
 from pybrain.structure.parametercontainer import ParameterContainer
 from pybrain.rl.environments.fitnessevaluator import FitnessEvaluator
 from pybrain.utilities import sparse_orth, dense_orth
+from pybrain.rl.environments.functions.multiobjective import MultiObjectiveFunction
 
 
 def oppositeFunction(basef):
     """ the opposite of a function """
     if isinstance(basef, FitnessEvaluator):
         if isinstance(basef, FunctionEnvironment):
-            res = FunctionEnvironment(basef.xdim, basef.xopt)
+            ''' added by JPQ '''
+            if isinstance(basef, MultiObjectiveFunction):
+                res = MultiObjectiveFunction()
+            else:
+            # ---
+                res = FunctionEnvironment(basef.xdim, basef.xopt)
         else:
             res = FitnessEvaluator()        
         res.f = lambda x:-basef.f(x)

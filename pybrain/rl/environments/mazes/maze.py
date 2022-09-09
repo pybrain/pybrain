@@ -78,7 +78,7 @@ class Maze(Environment, Named):
     def performAction(self, action):
         if self.stochAction > 0:
             if random() < self.stochAction:
-                action = choice(range(len(self.allActions)))
+                action = choice(list(range(len(self.allActions))))
         tmp = self._moveInDir(self.perseus, self.allActions[action])
         if self.mazeTable[tmp] == False:
             self.perseus = tmp

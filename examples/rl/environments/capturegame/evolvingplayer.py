@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 #!/usr/bin/env python
 """ A script illustrating how to evolve a simple Capture-Game Player
 which uses a MDRNN as network, with a simple ES algorithm."""
@@ -29,7 +31,7 @@ else:
     net = CaptureGameNetwork(size = size, hsize = 2, simpleborders = True)
 
 net = CheaplyCopiable(net)
-print net.name, 'has', net.paramdim, 'trainable parameters.'
+print(net.name, 'has', net.paramdim, 'trainable parameters.')
 
 learner = ES(task, net, mu = 5, lambada = 5,
              verbose = True, evaluatorIsNoisy = True,
@@ -41,11 +43,11 @@ newsize = 7
 bignew = newnet.getBase().resizedTo(newsize)
 bigold = net.getBase().resizedTo(newsize)
 
-print 'The rescaled network,', bignew.name, ', has', bignew.paramdim, 'trainable parameters.'
+print('The rescaled network,', bignew.name, ', has', bignew.paramdim, 'trainable parameters.')
 
 newtask = CaptureGameTask(newsize, averageOverGames = 50, opponent = KillingPlayer)
-print 'Old net on big board score:', newtask(bigold)
-print 'New net on big board score:', newtask(bignew)
+print('Old net on big board score:', newtask(bigold))
+print('New net on big board score:', newtask(bignew))
 
 
 # plot the progression

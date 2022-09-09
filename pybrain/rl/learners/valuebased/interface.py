@@ -50,7 +50,7 @@ class ActionValueTable(Table, ActionValueInterface):
 
     def getMaxAction(self, state):
         """ Return the action with the maximal value for the given state. """
-        values = self.params.reshape(self.numRows, self.numColumns)[state, :].flatten()
+        values = self.params.reshape(self.numRows, self.numColumns)[int(state), :].flatten()
         action = where(values == max(values))[0]
         action = choice(action)
         return action

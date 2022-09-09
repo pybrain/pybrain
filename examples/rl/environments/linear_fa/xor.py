@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 """ Toy example for RL with linear function approximation. 
 This illustrates how a 'AND'-state-space can be solved, but not 
 an 'XOR' space. 
@@ -42,9 +44,9 @@ class LinFA_QAgent(LearningAgent):
 
 def runExp(gamma=0, epsilon=0.1, xor=False, lr = 0.02):    
     if xor: 
-        print "Attempting the XOR task"
+        print("Attempting the XOR task")
     else:
-        print "Attempting the AND task"
+        print("Attempting the AND task")
         
     task = XORTask()
     task.and_task = not xor
@@ -60,16 +62,16 @@ def runExp(gamma=0, epsilon=0.1, xor=False, lr = 0.02):
     sofar = 0
     for i in range(30):
         exp.doInteractions(100)
-        print exp.task.cumreward - sofar,
+        print(exp.task.cumreward - sofar, end=' ')
         if i%10 == 9: 
-            print                
+            print()                
         sofar = exp.task.cumreward          
         l._decayLearningRate()
 
 
 if __name__ == "__main__":
     runExp(xor=False)
-    print 
+    print() 
     runExp(xor=True)
-    print 
+    print() 
     runExp(xor=True)

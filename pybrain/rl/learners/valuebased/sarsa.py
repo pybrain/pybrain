@@ -31,6 +31,11 @@ class SARSA(ValueBasedLearner):
             samples = [[self.dataset.getSample()]]
 
         for seq in samples:
+            # information from the previous episode (sequence)
+            # should not influence the training on this episode
+            self.laststate = None
+            self.lastaction = None
+            self.lastreward = None
             for state, action, reward in seq:
 
                 state = int(state)

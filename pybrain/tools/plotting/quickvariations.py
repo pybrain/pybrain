@@ -20,7 +20,7 @@ def plotVariations(datalist, titles, genFun, varyperplot=None, prePlotFun=None, 
     fdl = subDict(optionlists, varyperplot, True)
     # title contains file and non-varying parameters
     titadd1 = ''.join([k+'='+str(vs[0])[:min(5, len(str(vs[0])))]+' '
-                    for k,vs in odl.items()
+                    for k,vs in list(odl.items())
                     if len(vs) == 1])
     for x, tit in zip(datalist, titles):
         for figdict in sorted(dictCombinations(fdl.copy())):
@@ -28,7 +28,7 @@ def plotVariations(datalist, titles, genFun, varyperplot=None, prePlotFun=None, 
 
             # it also contains the parameters that don't vary per figure
             titadd2 = ''.join([k+'='+str(v)[:min(5, len(str(v)))]+' '
-                               for k,v in figdict.items()])
+                               for k,v in list(figdict.items())])
             pylab.title(tit+'\n'+titadd1+titadd2)
 
             # code initializing the plot
@@ -38,7 +38,7 @@ def plotVariations(datalist, titles, genFun, varyperplot=None, prePlotFun=None, 
             for i, odict in enumerate(sorted(dictCombinations(odl.copy()))):
                 # concise labels
                 lab = ''.join([k[:3]+'='+str(v)[:min(5, len(str(v)))]+'-'
-                               for k,v in odict.items()
+                               for k,v in list(odict.items())
                                if len(odl[k]) > 1])
                 if len(lab) > 0:
                     lab = lab[:-1]  # remove trailing '-'
@@ -50,7 +50,7 @@ def plotVariations(datalist, titles, genFun, varyperplot=None, prePlotFun=None, 
                         xs, ys = generated
                     else:
                         ys = generated
-                        xs = range(len(ys))
+                        xs = list(range(len(ys)))
                     # the differentiator can slightly move the curves to be able to tell them apart if they overlap
                     if _differentiator != 0.0:
                         ys = generated+_differentiator*i

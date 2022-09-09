@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 __author__ = 'Tom Schaul, tom@idsia.ch'
 
 from pybrain.optimization.optimizer import BlackBoxOptimizer, TopologyOptimizer
@@ -53,7 +55,7 @@ class MemeticSearch(HillClimber, TopologyOptimizer):
     def _notify(self):
         HillClimber._notify(self)
         if self.verbose:
-            print '  Bits on in best mask:', sum(self.bestEvaluable.mask)
+            print(('  Bits on in best mask:', sum(self.bestEvaluable.mask)))
 
     @property
     def batchSize(self):

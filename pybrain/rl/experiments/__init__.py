@@ -1,3 +1,3 @@
-from experiment import Experiment
-from episodic import EpisodicExperiment
-from continuous import ContinuousExperiment
+from pybrain.rl.experiments.experiment import Experiment
+from pybrain.rl.experiments.episodic import EpisodicExperiment
+from pybrain.rl.experiments.continuous import ContinuousExperiment

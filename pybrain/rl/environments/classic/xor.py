@@ -36,7 +36,7 @@ class XORTask(EpisodicTask):
             self.r = 1
         else:
             self.r = -1
-        #print self.obs, action, self.r    
+        #print(self.obs, action, self.r    )
         self.addReward()       
             
     def getReward(self):

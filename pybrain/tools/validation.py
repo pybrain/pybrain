@@ -116,7 +116,7 @@ class SequenceHelper(object):
         """
         sequence_ends = delete(dataset.getField('sequence_index') - 1, 0)
         sequence_ends = append(sequence_ends, dataset.getLength() - 1)
-#        print sequence_ends; exit()
+#        print(sequence_ends; exit())
         sequence_ends = array(sequence_ends)
         return sequence_ends
 
@@ -215,7 +215,7 @@ class ModuleValidator(object):
         outputs = []
         for seq in dataset._provideSequences():
             module.reset()
-            for i in xrange(len(seq)):
+            for i in range(len(seq)):
                 output = module.activate(seq[i][0])
                 outputs.append(output.copy())
         outputs = array(outputs)
@@ -275,7 +275,7 @@ class CrossValidator(object):
         :key max_epochs: maximum number of epochs the trainer should train the module for.
         :key verbosity: set verbosity level
         """
-        for key, value in kwargs.items():
+        for key, value in list(kwargs.items()):
             if key in ("verbose", "ver", "v"):
                 self._verbosity = value
             elif key in ("max_epochs"):
@@ -300,7 +300,7 @@ class CrossValidator(object):
         perf = 0.
         for i in range(n_folds):
             # determine train indices
-            train_perms_idxs = range(n_folds)
+            train_perms_idxs = list(range(n_folds))
             train_perms_idxs.pop(i)
             temp_list = []
             for train_perms_idx in train_perms_idxs:
@@ -311,7 +311,7 @@ class CrossValidator(object):
             test_idxs = perms[i]
 
             # train
-            #print "training iteration", i
+            #print("training iteration", i)
             train_ds = SupervisedDataSet(indim, outdim)
             train_ds.setField("input"  , inp[train_idxs])
             train_ds.setField("target" , tar[train_idxs])
@@ -323,12 +323,12 @@ class CrossValidator(object):
                 trainer.trainEpochs(self._max_epochs)
 
             # test
-            #print "testing iteration", i
+            #print("testing iteration", i)
             test_ds = SupervisedDataSet(indim, outdim)
             test_ds.setField("input"  , inp[test_idxs])
             test_ds.setField("target" , tar[test_idxs])
 #            perf += self.getPerformance( trainer.module, dataset )
-            perf += self._calculatePerformance(trainer.module, dataset)
+            perf += self._calculatePerformance(trainer.module, test_ds)
 
         perf /= n_folds
         return perf
@@ -370,10 +370,10 @@ def testOnSequenceData(module, dataset):
     # one-of-many values
     class_output = []
     class_target = []
-    for j in xrange(len(output)):
+    for j in range(len(output)):
         # sum up the output values of one sequence
         summed_output += output[j]
-#            print j, output[j], " --> ", summed_output
+#            print(j, output[j], " --> ", summed_output)
         # if we reached the end of the sequence
         if j in ends:
             # convert summed_output and target to class labels
@@ -383,13 +383,13 @@ def testOnSequenceData(module, dataset):
             # reset the summed_output to zeros
             summed_output = zeros(dataset.outdim)
 
-    ##print format % tuple(class_output)
-    ##print format % tuple(class_target)
+    ##print(format % tuple(class_output))
+    ##print(format % tuple(class_target))
 
     class_output = array(class_output)
     class_target = array(class_target)
-#    print class_target
-#    print class_output
+#    print(class_target)
+#    print(class_output)
     return Validator.classificationPerformance(class_output, class_target)
 
 

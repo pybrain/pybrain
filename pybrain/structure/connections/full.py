@@ -2,7 +2,7 @@ __author__ = 'Tom Schaul, tom@idsia.ch'
 
 from scipy import reshape, dot, outer
 
-from connection import Connection
+from pybrain.structure.connections.connection import Connection
 from pybrain.structure.parametercontainer import ParameterContainer
 
 
@@ -26,4 +26,4 @@ class FullConnection(Connection, ParameterContainer):
     def whichBuffers(self, paramIndex):
         """Return the index of the input module's output buffer and
         the output module's input buffer for the given weight."""
-        return paramIndex % self.inmod.outdim, paramIndex / self.inmod.outdim
+        return paramIndex % self.inmod.outdim, paramIndex // self.inmod.outdim

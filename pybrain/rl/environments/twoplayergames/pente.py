@@ -15,7 +15,7 @@ class PenteGame(GomokuGame):
     def reset(self):
         GomokuGame.reset(self)
         self.pairsTaken = {self.BLACK: 0, self.WHITE: 0}
-        center = (self.size[0] / 2, self.size[1] / 2)
+        center = (self.size[0] // 2, self.size[1] // 2)
         self._setStone(-self.startcolor, center)
         self.movesDone += 1
 
@@ -78,7 +78,7 @@ class PenteGame(GomokuGame):
         GomokuGame._setStone(self, c, pos)
         for p in tokill:
             self.b[p] = self.EMPTY
-        self.pairsTaken[c] += len(tokill) / 2
+        self.pairsTaken[c] += len(tokill) // 2
 
     def __str__(self):
         s = GomokuGame.__str__(self)

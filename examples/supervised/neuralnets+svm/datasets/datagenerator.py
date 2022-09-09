@@ -19,7 +19,7 @@ def generateClassificationData(size, nClasses=3):
 
     cov = [diag([1,1]), diag([0.5,1.2]), diag([1.5,0.7])]
     dataset = ClassificationDataSet(2, 1, nb_classes=nClasses)
-    for _ in xrange(size):
+    for _ in range(size):
         for c in range(3):
             input = multivariate_normal(means[c],cov[c])
             dataset.addSample(input, [c%nClasses])
@@ -51,14 +51,14 @@ def generateNoisySines( npoints, nseq, noise=0.3 ):
     y1 = np.sin(x+rand(1)*3.)
     y2 = np.sin(x/2.+rand(1)*3.)
     DS = SequenceClassificationDataSet(1,1, nb_classes=2)
-    for _ in xrange(nseq):
+    for _ in range(nseq):
         DS.newSequence()
         buf = rand(npoints)*noise + y1 + (rand(1)-0.5)*noise
-        for i in xrange(npoints):
+        for i in range(npoints):
             DS.addSample([buf[i]],[0])
         DS.newSequence()
         buf = rand(npoints)*noise + y2 + (rand(1)-0.5)*noise
-        for i in xrange(npoints):
+        for i in range(npoints):
             DS.addSample([buf[i]],[1])
     return DS
 

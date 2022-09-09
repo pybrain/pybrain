@@ -33,7 +33,7 @@ class MinimizeTask(EpisodicTask):
 
     def getReward(self):
         # sleep(0.01)
-        # print self.state, self.action
+        # print(self.state, self.action)
         reward = self.env.f([s + 0.1 * a for s, a in zip(self.state, self.action)])
         return - sum(reward)
 

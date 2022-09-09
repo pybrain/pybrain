@@ -11,7 +11,7 @@ from pybrain.structure.connections import FullConnection, IdentityConnection
 
 try:
     from arac.pybrainbridge import _RecurrentNetwork, _FeedForwardNetwork
-except ImportError, e:
+except ImportError as e:
     logging.info("No fast networks available: %s" % e)
 
 
@@ -44,7 +44,7 @@ def buildNetwork(*layers, **options):
            'fast': False,
     }
     for key in options:
-        if key not in opt.keys():
+        if key not in list(opt.keys()):
             raise NetworkError('buildNetwork unknown option: %s' % key)
         opt[key] = options[key]
 
@@ -80,7 +80,10 @@ def buildNetwork(*layers, **options):
     # arbitrary number of hidden layers of type 'hiddenclass'
     for i, num in enumerate(layers[1:-1]):
         layername = 'hidden%i' % i
-        n.addModule(opt['hiddenclass'](num, name=layername))
+        if issubclass(opt['hiddenclass'], LSTMLayer):
+            n.addModule(opt['hiddenclass'](num, peepholes=opt['peepholes'], name=layername))
+        else:
+            n.addModule(opt['hiddenclass'](num, name=layername))
         if opt['bias']:
             # also connect all the layers with the bias
             n.addConnection(FullConnection(n['bias'], n[layername]))
@@ -132,8 +135,8 @@ def _buildNetwork(*layers, **options):
 
     net = FeedForwardNetwork()
     layerParts = iter(layers)
-    firstPart = iter(layerParts.next())
-    firstLayer = firstPart.next()
+    firstPart = iter(next(layerParts))
+    firstLayer = next(firstPart)
     net.addInputModule(firstLayer)
 
     prevLayer = firstLayer

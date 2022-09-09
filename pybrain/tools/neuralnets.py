@@ -166,7 +166,7 @@ class NNclassifier(NNtools):
     def __init__(self, DS, **kwargs):
         """ Initialize the classifier: the least we need is the dataset to be classified. All keywords given are set as member variables. """
         if not isinstance(DS, ClassificationDataSet):
-            raise TypeError, 'Need a ClassificationDataSet to do classification!'
+            raise TypeError('Need a ClassificationDataSet to do classification!')
         NNtools.__init__(self, DS, **kwargs)
         self.nClasses = self.DS.nClasses  # need this because targets may be altered later
         self.clsnames = None
@@ -208,7 +208,8 @@ class NNclassifier(NNtools):
             self.hidden = hidden
         self._convertAllDataToOneOfMany()
 
-        RNN = buildNetwork(self.DS.indim, self.hidden, self.DS.outdim, hiddenclass=LSTMLayer, outclass=SoftmaxLayer)
+        RNN = buildNetwork(self.DS.indim, self.hidden, self.DS.outdim, hiddenclass=LSTMLayer, 
+                           recurrent=True, outclass=SoftmaxLayer)
         logging.info("Constructing classification RNN with following config:")
         logging.info(str(RNN) + "\n  Hidden units:\n    " + str(self.hidden))
         logging.info("Trainer received the following special arguments:")

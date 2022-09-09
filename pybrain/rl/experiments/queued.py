@@ -1,6 +1,6 @@
 __author__ = 'Thomas Rueckstiess, ruecksti@in.tum.de'
 
-from episodic import EpisodicExperiment
+from .episodic import EpisodicExperiment
 from scipy import arange
 
 

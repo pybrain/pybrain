@@ -1,9 +1,12 @@
+from __future__ import print_function
+
 __author__ = 'Thomas Rueckstiess, ruecksti@in.tum.de'
 
+from numpy import random
 from random import sample
 from scipy import isscalar
 
-from dataset import DataSet
+from pybrain.datasets.dataset import DataSet
 from pybrain.utilities import fListToString
 
 
@@ -61,7 +64,7 @@ class SupervisedDataSet(DataSet):
     def _provideSequences(self):
         """Return an iterator over sequence lists, although the dataset contains
         only single samples."""
-        return iter(map(lambda x: [x], iter(self)))
+        return iter([[x] for x in iter(self)])
 
     def evaluateMSE(self, f, **args):
         """Evaluate the predictions of a function on the dataset and return the
@@ -85,9 +88,9 @@ class SupervisedDataSet(DataSet):
             totalError += e
             ponderation += len(target)
             if verbose:
-                print     'out:    ', fListToString( list( res ) )
-                print     'correct:', fListToString( target )
-                print     'error: % .8f' % e
+                print((    'out:    ', fListToString( list( res ) )))
+                print((    'correct:', fListToString( target )))
+                print((    'error: % .8f' % e))
         return totalError, ponderation
 
     def evaluateModuleMSE(self, module, averageOver = 1, **args):
@@ -102,16 +105,15 @@ class SupervisedDataSet(DataSet):
     def splitWithProportion(self, proportion = 0.5):
         """Produce two new datasets, the first one containing the fraction given
         by `proportion` of the samples."""
-        leftIndices = sample(range(len(self)), int(len(self)*proportion))
-        leftDs = self.copy()
-        leftDs.clear()
-        rightDs = leftDs.copy()
-        index = 0
-        for sp in self:
-            if index in leftIndices:
-                leftDs.addSample(*sp)
-            else:
-                rightDs.addSample(*sp)
-            index += 1
+        indicies = random.permutation(len(self))
+        separator = int(len(self) * proportion)
+
+        leftIndicies = indicies[:separator]
+        rightIndicies = indicies[separator:]
+
+        leftDs = SupervisedDataSet(inp=self['input'][leftIndicies].copy(),
+                                   target=self['target'][leftIndicies].copy())
+        rightDs = SupervisedDataSet(inp=self['input'][rightIndicies].copy(),
+                                    target=self['target'][rightIndicies].copy())
         return leftDs, rightDs
 

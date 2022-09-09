@@ -6,7 +6,7 @@
 subDict produces a sub-dictionary, by removing some keys.
 
     >>> d3 = subDict(d1, ['ones', 2, 4])
-    >>> print sorted(d3.items())
+    >>> print(sorted(d3.items()))
     [(2, [2, 4, 6, 8]), (4, 4), ('ones', [1, 1, 1, 'one'])]
 
 We can also flip the selection, and limit the keys to the ones NOT in the list:
@@ -38,7 +38,7 @@ dictCombinations will produce all the combinations of the elements in lists
 with their keys, not allowing for identical items,
 but dealing with non-lists, and any types of keys and values.
 
-    >>> for x in dictCombinations(d1): print sorted(x.items())
+    >>> for x in dictCombinations(d1): print(sorted(x.items()))
     [(2, 2), (4, 4), (8, 'eight'), ('ones', 1)]
     [(2, 4), (4, 4), (8, 'eight'), ('ones', 1)]
     [(2, 6), (4, 4), (8, 'eight'), ('ones', 1)]

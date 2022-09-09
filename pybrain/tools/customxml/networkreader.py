@@ -1,7 +1,9 @@
+from __future__ import print_function
+
 __author__ = 'Tom Schaul, tom@idsia.ch'
 
 
-from handling import XMLHandling
+from .handling import XMLHandling
 
 # those imports are necessary for the eval() commands to find the right classes
 import pybrain #@UnusedImport
@@ -89,8 +91,8 @@ class NetworkReader(XMLHandling):
         try:
             m = eval(mclass)(**argdict)
         except:
-            print 'Could not construct', mclass
-            print 'with arguments:', argdict
+            print(('Could not construct', mclass))
+            print(('with arguments:', argdict))
             return None
         m.name = node.getAttribute('name')
         self.readParams(node, m)
@@ -109,8 +111,7 @@ class NetworkReader(XMLHandling):
         return res
 
     def readParams(self, node, m):
-        import string
         pnode = self.getChild(node, 'Parameters')
         if pnode:
-            params = eval(string.strip(pnode.firstChild.data))
+            params = eval(pnode.firstChild.data.strip())
             m._setParameters(params)

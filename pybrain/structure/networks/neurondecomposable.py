@@ -101,7 +101,7 @@ class NeuronDecomposableNetwork(object):
             res.addOutputModule(m)
         for m in n.modules:
             res.addModule(m)
-        for c in chain(*n.connections.values()):
+        for c in chain(*list(n.connections.values())):
             res.addConnection(c)
         res.name = n.name
         res.sortModules()

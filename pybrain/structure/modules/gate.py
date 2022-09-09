@@ -61,12 +61,12 @@ class DoubleGateLayer(NeuronLayer):
         self.setArgs(dim=dim, name=self.name)
 
     def _forwardImplementation(self, inbuf, outbuf):
-        dim = self.indim / 2
+        dim = self.indim // 2
         outbuf[:dim] += sigmoid(inbuf[:dim]) * inbuf[dim:]
         outbuf[dim:] += (1 - sigmoid(inbuf[:dim])) * inbuf[dim:]
 
     def _backwardImplementation(self, outerr, inerr, outbuf, inbuf):
-        dim = self.indim / 2
+        dim = self.indim // 2
         in0 = inbuf[:dim]
         in1 = inbuf[dim:]
         out0 = outerr[:dim]

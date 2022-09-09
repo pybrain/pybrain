@@ -16,6 +16,9 @@ class DiscreteStateDependentExplorer(DiscreteExplorer):
     """
 
     def __init__(self, epsilon = 0.2, decay = 0.9998):
+        """ TODO: the epsilon and decay parameters are currently
+            not implemented.
+        """
         DiscreteExplorer.__init__(self)
         self.state = None
 

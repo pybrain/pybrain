@@ -1,5 +1,6 @@
-__author__ = "Martin Felder, felder@in.tum.de"
+from __future__ import print_function
 
+__author__ = "Martin Felder, felder@in.tum.de"
 
 try:
     from svm import svm_model, svm_parameter, svm_problem, cross_validation #@UnresolvedImport
@@ -81,15 +82,15 @@ class SVMTrainer(object):
         defined for the LIBSVM svm_model class, see their documentation.
 
         :key searchlog: Save a list of coordinates and the achieved CV accuracy to this file."""
-        if kwargs.has_key('weight'):
+        if 'weight' in kwargs:
             self.params['nr_weight'] = len(kwargs['weight'])
-        if kwargs.has_key('log2C'):
+        if 'log2C' in kwargs:
             self.params['C'] = 2 ** kwargs['log2C']
             kwargs.pop('log2C')
-        if kwargs.has_key('log2g'):
+        if 'log2g' in kwargs:
             self.params['gamma'] = 2 ** kwargs['log2g']
             kwargs.pop('log2g')
-        if kwargs.has_key('searchlog'):
+        if 'searchlog' in kwargs:
             self.searchlog = kwargs['searchlog']
             kwargs.pop('searchlog')
         self.params.update(kwargs)
@@ -152,7 +153,7 @@ class GridSearch(svm_model):
         
     def setParams(self, **kwargs):
         """ set parameters for SVM training """
-        if kwargs.has_key('weight'):
+        if 'weight' in kwargs:
             self.params['nr_weight'] = len(kwargs['weight'])
         self.params.update(kwargs)
     
@@ -262,7 +263,7 @@ class GridSearch(svm_model):
         x = dbarr[:, 0]
         dimy = len(x[x == x[0]])
         dimx = x.size / dimy
-        print 'plotting: ', dimx, dimy
+        print(('plotting: ', dimx, dimy))
         x = x.reshape(dimx, dimy)
         y = dbarr[:, 1]
         y = y.reshape(dimx, dimy)

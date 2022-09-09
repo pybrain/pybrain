@@ -1,9 +1,11 @@
+from __future__ import print_function
+
 __author__ = 'Daan Wierstra and Tom Schaul'
 
 from scipy import dot, argmax
 from random import shuffle
-
-from trainer import Trainer
+from math import isnan
+from pybrain.supervised.trainers.trainer import Trainer
 from pybrain.utilities import fListToString
 from pybrain.auxiliary import GradientDescent
 
@@ -67,7 +69,7 @@ class BackpropTrainer(Trainer):
                 self.module.resetDerivatives()
 
         if self.verbose:
-            print "Total error:", errors / ponderation
+            print("Total error: {z: .12g}".format(z=errors / ponderation))
         if self.batchlearning:
             self.module._setParameters(self.descent(self.module.derivs))
         self.epoch += 1
@@ -124,10 +126,10 @@ class BackpropTrainer(Trainer):
                 approxderiv = (righterror - lefterror) / (2 * e)
                 self.module.params[p] = storedoldval
                 numericalDerivs.append(approxderiv)
-            r = zip(analyticalDerivs, numericalDerivs)
+            r = list(zip(analyticalDerivs, numericalDerivs))
             res.append(r)
             if not silent:
-                print r
+                print(r)
         return res
 
     def testOnData(self, dataset=None, verbose=False):
@@ -139,7 +141,7 @@ class BackpropTrainer(Trainer):
             dataset = self.ds
         dataset.reset()
         if verbose:
-            print '\nTesting on data:'
+            print('\nTesting on data:')
         errors = []
         importances = []
         ponderatedErrors = []
@@ -150,13 +152,13 @@ class BackpropTrainer(Trainer):
             errors.append(e)
             ponderatedErrors.append(e / i)
         if verbose:
-            print 'All errors:', ponderatedErrors
+            print(('All errors:', ponderatedErrors))
         assert sum(importances) > 0
         avgErr = sum(errors) / sum(importances)
         if verbose:
-            print 'Average error:', avgErr
-            print ('Max error:', max(ponderatedErrors), 'Median error:',
-                   sorted(ponderatedErrors)[len(errors) / 2])
+            print(('Average error:', avgErr))
+            print(('Max error:', max(ponderatedErrors), 'Median error:',
+                   sorted(ponderatedErrors)[len(errors) // 2]))
         return avgErr
 
     def testOnClassData(self, dataset=None, verbose=False,
@@ -184,7 +186,9 @@ class BackpropTrainer(Trainer):
             return out
 
     def trainUntilConvergence(self, dataset=None, maxEpochs=None, verbose=None,
-                              continueEpochs=10, validationProportion=0.25):
+                              continueEpochs=10, validationProportion=0.25,
+                              trainingData=None, validationData=None,
+                              convergence_threshold=10):
         """Train the module on the dataset until it converges.
 
         Return the module with the parameters that gave the minimal validation
@@ -193,51 +197,64 @@ class BackpropTrainer(Trainer):
         If no dataset is given, the dataset passed during Trainer
         initialization is used. validationProportion is the ratio of the dataset
         that is used for the validation dataset.
+        
+        If the training and validation data is already set, the splitPropotion is ignored
 
         If maxEpochs is given, at most that many epochs
         are trained. Each time validation error hits a minimum, try for
         continueEpochs epochs to find a better one."""
         epochs = 0
-        if dataset == None:
+        if dataset is None:
             dataset = self.ds
-        if verbose == None:
+        if verbose is None:
             verbose = self.verbose
-        # Split the dataset randomly: validationProportion of the samples for
-        # validation.
-        trainingData, validationData = (
-            dataset.splitWithProportion(1 - validationProportion))
+        if trainingData is None or validationData is None:
+            # Split the dataset randomly: validationProportion of the samples for
+            # validation.
+            trainingData, validationData = (
+                dataset.splitWithProportion(1 - validationProportion))
         if not (len(trainingData) > 0 and len(validationData)):
             raise ValueError("Provided dataset too small to be split into training " +
                              "and validation sets with proportion " + str(validationProportion))
         self.ds = trainingData
         bestweights = self.module.params.copy()
         bestverr = self.testOnData(validationData)
-        trainingErrors = []
-        validationErrors = [bestverr]
+        bestepoch = 0
+        self.trainingErrors = []
+        self.validationErrors = [bestverr]
         while True:
-            trainingErrors.append(self.train())
-            validationErrors.append(self.testOnData(validationData))
-            if epochs == 0 or validationErrors[-1] < bestverr:
+            trainingError = self.train()
+            validationError = self.testOnData(validationData)
+            if isnan(trainingError) or isnan(validationError):
+                raise Exception("Training produced NaN results")
+            self.trainingErrors.append(trainingError)
+            self.validationErrors.append(validationError)
+            if epochs == 0 or self.validationErrors[-1] < bestverr:
                 # one update is always done
-                bestverr = validationErrors[-1]
+                bestverr = self.validationErrors[-1]
                 bestweights = self.module.params.copy()
+                bestepoch = epochs
 
             if maxEpochs != None and epochs >= maxEpochs:
                 self.module.params[:] = bestweights
                 break
             epochs += 1
 
-            if len(validationErrors) >= continueEpochs * 2:
+            if len(self.validationErrors) >= continueEpochs * 2:
                 # have the validation errors started going up again?
                 # compare the average of the last few to the previous few
-                old = validationErrors[-continueEpochs * 2:-continueEpochs]
-                new = validationErrors[-continueEpochs:]
+                old = self.validationErrors[-continueEpochs * 2:-continueEpochs]
+                new = self.validationErrors[-continueEpochs:]
                 if min(new) > max(old):
                     self.module.params[:] = bestweights
                     break
-        trainingErrors.append(self.testOnData(trainingData))
+                lastnew = round(new[-1], convergence_threshold)
+                if sum(round(y, convergence_threshold) - lastnew for y in new) == 0:
+                    self.module.params[:] = bestweights
+                    break
+        #self.trainingErrors.append(self.testOnData(trainingData))
         self.ds = dataset
         if verbose:
-            print 'train-errors:', fListToString(trainingErrors, 6)
-            print 'valid-errors:', fListToString(validationErrors, 6)
-        return trainingErrors, validationErrors
+            print(('train-errors:', fListToString(self.trainingErrors, 6)))
+            print(('valid-errors:', fListToString(self.validationErrors, 6)))
+        return self.trainingErrors[:bestepoch], self.validationErrors[:1 + bestepoch]

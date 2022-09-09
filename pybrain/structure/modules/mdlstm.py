@@ -2,8 +2,8 @@ __author__ = 'Tom Schaul, tom@idsia.ch'
 
 from scipy import zeros, tanh
 
-from neuronlayer import NeuronLayer
-from module import Module
+from pybrain.structure.modules.neuronlayer import NeuronLayer
+from pybrain.structure.modules.module import Module
 from pybrain.structure.parametercontainer import ParameterContainer
 from pybrain.tools.functions import sigmoid, sigmoidPrime, tanhPrime
 from pybrain.structure.moduleslice import ModuleSlice

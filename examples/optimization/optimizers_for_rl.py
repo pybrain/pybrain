@@ -1,3 +1,4 @@
+from __future__ import print_function
 #!/usr/bin/env python
 """
 Illustrating how to use optimization algorithms in a reinforcement learning framework.
@@ -36,10 +37,10 @@ agent = OptimizationAgent(net, learner)
 exp = EpisodicExperiment(task, agent)
 exp.doEpisodes(100)
 
-print 'Episodes learned from:', len(learner._allEvaluations)
+print('Episodes learned from:', len(learner._allEvaluations))
 n, fit = learner._bestFound()
-print 'Best fitness found:', fit
-print 'with this network:'
-print n
-print 'containing these parameters:'
-print fListToString(n.params, 4)
+print('Best fitness found:', fit)
+print('with this network:')
+print(n)
+print('containing these parameters:')
+print(fListToString(n.params, 4))

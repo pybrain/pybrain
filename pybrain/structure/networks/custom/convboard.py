@@ -22,7 +22,7 @@ class ConvolutionalBoardNetwork(SimpleConvolutionalNetwork):
         self.addInputModule(inlayer)
 
         # we need some treatment of the border too - thus we pad the direct board input.
-        x = convSize/2
+        x = convSize//2
         insize = boardSize+2*x
         if convSize % 2 == 0:
             insize -= 1
@@ -36,11 +36,11 @@ class ConvolutionalBoardNetwork(SimpleConvolutionalNetwork):
 
         paddable = []
         if convSize % 2 == 0:
-            xs = range(x)+range(insize-x+1, insize)
+            xs = list(range(x))+list(range(insize-x+1, insize))
         else:
-            xs = range(x)+range(insize-x, insize)
-        paddable.extend(crossproduct([range(insize), xs]))
-        paddable.extend(crossproduct([xs, range(x, boardSize+x)]))
+            xs = list(range(x))+list(range(insize-x, insize))
+        paddable.extend(crossproduct([list(range(insize)), xs]))
+        paddable.extend(crossproduct([xs, list(range(x, boardSize+x))]))
 
         for (i, j) in paddable:
             self.addConnection(SharedFullConnection(biasConn, bias, paddedlayer,

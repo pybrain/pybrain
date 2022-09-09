@@ -3,7 +3,7 @@ __author__ = 'Tom Schaul, tom@idsia.ch'
 from scipy import zeros
 from random import choice, random
 
-from maze import Maze
+from .maze import Maze
 
 
 class PolarMaze(Maze):
@@ -23,12 +23,12 @@ class PolarMaze(Maze):
 
     def reset(self):
         Maze.reset(self)
-        self.perseusDir = choice(range(4))
+        self.perseusDir = choice(list(range(4)))
 
     def performAction(self, action):
         if self.stochAction > 0:
             if random() < self.stochAction:
-                action = choice(range(len(PolarMaze.allActions)))
+                action = choice(list(range(len(PolarMaze.allActions))))
         act = PolarMaze.allActions[action]
         self.bang = False
         if act == self.Forward:

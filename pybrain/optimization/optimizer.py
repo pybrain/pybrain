@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 __author__ = 'Tom Schaul, tom@idsia.ch'
 
 from scipy import array, randn, ndarray, isinf, isnan, isscalar
@@ -41,6 +43,13 @@ class BlackBoxOptimizer(DirectSearchLearner):
     
     #: dimension of the search space, if applicable
     numParameters = None
+    
+    '''added by JPQ Boundaries of the search space, if applicable'''
+    xBound = None
+    feasible = None
+    constrained = None
+    violation = None
+    # ---   
     
     #: Store all evaluations (in the ._allEvaluations list)?
     storeAllEvaluations = False
@@ -123,15 +132,23 @@ class BlackBoxOptimizer(DirectSearchLearner):
                 elif self.numParameters is not evaluator.xdim:
                     raise ValueError("Parameter dimension mismatch: evaluator expects "+str(evaluator.xdim)\
                                      +" but it was set to "+str(self.numParameters)+".")
-                
+                '''added by JPQ to handle boundaries on the parameters'''
+                self.evaluator = evaluator
+                if self.xBound is None:            
+                    self.xBound = evaluator.xbound
+                if self.feasible is None:
+                    self.feasible = evaluator.feasible
+                if self.constrained is None:
+                    self.constrained = evaluator.constrained
+                if self.violation is None:
+                    self.violation = evaluator.violation
+                # ---
         # default: maximize
         if self.minimize is None:
             self.minimize = False
-        
         self.__evaluator = evaluator
         if self._wasOpposed:
             self._flipDirection()
-                                      
         #set the starting point for optimization (as provided, or randomly)
         self._setInitEvaluable(initEvaluable)        
         self.bestEvaluation = None
@@ -178,7 +195,7 @@ class BlackBoxOptimizer(DirectSearchLearner):
         """ The main loop that does the learning. """
         assert self.__evaluator is not None, "No evaluator has been set. Learning cannot start."
         if additionalLearningSteps is not None:
-            self.maxLearningSteps = self.numLearningSteps + additionalLearningSteps
+            self.maxLearningSteps = self.numLearningSteps + additionalLearningSteps - 1
         while not self._stoppingCriterion():
             try:
                 self._learnStep()
@@ -186,6 +203,9 @@ class BlackBoxOptimizer(DirectSearchLearner):
                 self.numLearningSteps += 1
             except DivergenceError:
                 logging.warning("Algorithm diverged. Stopped after "+str(self.numLearningSteps)+" learning steps.")
+                break
+            except ValueError:
+                logging.warning("Something numerical went wrong. Stopped after "+str(self.numLearningSteps)+" learning steps.")
                 break
         return self._bestFound()
         
@@ -211,6 +231,11 @@ class BlackBoxOptimizer(DirectSearchLearner):
             res = self.__evaluator(evaluable.params)
         else:            
             res = self.__evaluator(evaluable)
+            ''' added by JPQ '''
+            if self.constrained :
+                self.feasible = self.__evaluator.outfeasible
+                self.violation = self.__evaluator.outviolation
+            # ---
         if isscalar(res):
             # detect numerical instability
             if isnan(res) or isinf(res):
@@ -235,10 +260,25 @@ class BlackBoxOptimizer(DirectSearchLearner):
                 self._allEvaluated.append(evaluable.copy())        
         if self.storeAllEvaluations:
             if self._wasOpposed and isscalar(res):
-                self._allEvaluations.append(-res)
+                ''' added by JPQ '''
+                if self.constrained :
+                    self._allEvaluations.append([-res,self.feasible,self.violation])
+                # ---
+                else:
+                    self._allEvaluations.append(-res)
             else:
-                self._allEvaluations.append(res)
-        return res
+                ''' added by JPQ '''
+                if self.constrained :
+                    self._allEvaluations.append([res,self.feasible,self.violation])
+                # ---
+                else:
+                    self._allEvaluations.append(res)
+        ''' added by JPQ '''
+        if self.constrained :
+            return [res,self.feasible,self.violation]
+        else:
+        # ---
+            return res
     
     def _stoppingCriterion(self):
         if self.maxEvaluations is not None and self.numEvaluations+self.batchSize > self.maxEvaluations:
@@ -254,7 +294,7 @@ class BlackBoxOptimizer(DirectSearchLearner):
     def _notify(self):
         """ Provide some feedback during the run. """
         if self.verbose:
-            print 'Step:', self.numLearningSteps, 'best:', self.bestEvaluation
+            print(('Step:', self.numLearningSteps, 'best:', self.bestEvaluation))
         if self.listener is not None:
             self.listener(self.bestEvaluable, self.bestEvaluation)
         
