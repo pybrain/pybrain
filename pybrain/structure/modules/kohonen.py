@@ -1,6 +1,6 @@
 __author__ = 'Thomas Rueckstiess, ruecksti@in.tum.de'
 
-from scipy import random
+from numpy import random
 from scipy.ndimage import minimum_position
 from scipy import mgrid, zeros, tile, array, floor, sum
 
