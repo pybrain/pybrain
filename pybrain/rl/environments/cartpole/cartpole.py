@@ -3,7 +3,8 @@ __author__ = 'Thomas Rueckstiess, ruecksti@in.tum.de'
 from matplotlib.mlab import rk4
 from math import sin, cos
 import time
-from scipy import eye, matrix, random, asarray
+from scipy import eye, matrix, asarray
+from numpy import random
 
 from pybrain.rl.environments.graphical import GraphicalEnvironment
 

@@ -1,6 +1,6 @@
 __author__ = "Thomas Rueckstiess, ruecksti@in.tum.de"
 
-from scipy import random
+from numpy import random
 
 from pybrain.rl.explorers.explorer import Explorer
 from pybrain.tools.functions import expln, explnPrime

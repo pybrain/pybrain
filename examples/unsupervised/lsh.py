@@ -9,9 +9,9 @@ from random import shuffle
 
 from pylab import show, plot, clf
 from pybrain.supervised.knn.lsh.nearoptimal import MultiDimHash
-from scipy import random, array, dot, zeros
+from scipy import array, dot, zeros
 from scipy.linalg import orth
-
+from numpy import random
 
 def randomRotation(dim):
     """Return a random rotation matrix of rank dim."""

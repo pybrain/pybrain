@@ -1,6 +1,7 @@
 __author__ = 'Thomas Rueckstiess, ruecksti@in.tum.de, Tom Schaul'
 
-from scipy import ones, zeros, dot, ravel, random
+from scipy import ones, zeros, dot, ravel
+from numpy import random
 from scipy.linalg import pinv
 
 from pybrain.auxiliary import GradientDescent

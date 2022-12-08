@@ -1,7 +1,7 @@
 __author__ = 'Tom Schaul, tom@idsia.ch'
 
 from scipy import randn, zeros
-from scipy import random as rd, array
+from scipy import array
 from random import choice, random, gauss, shuffle, sample
 from numpy import ndarray
 

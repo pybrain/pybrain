@@ -13,9 +13,10 @@
 __author__ = "Thomas Rueckstiess, ruecksti@in.tum.de"
 
 from scipy.cluster.vq import kmeans2
-from scipy import random, array
+from scipy import array
 from scipy.linalg import norm
 from functools import reduce
+from numpy import random
 
 def kinit(X, k):
     'init k seeds according to kmeans++'

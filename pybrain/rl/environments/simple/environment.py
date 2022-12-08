@@ -1,6 +1,7 @@
 __author__ = 'Thomas Rueckstiess, ruecksti@in.tum.de'
 
-from scipy import random, zeros
+from scipy import zeros
+from numpy import random
 from pybrain.rl.environments import Environment
 
 

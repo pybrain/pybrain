@@ -3,6 +3,7 @@ __author__ = ('Julian Togelius, julian@idsia.ch',
 
 import scipy
 import logging
+from numpy import random
 
 from pybrain.optimization.optimizer import ContinuousOptimizer
 
@@ -66,7 +67,7 @@ class ParticleSwarmOptimizer(ContinuousOptimizer):
 
         self.particles = []
         for _ in range(self.size):
-            startingPosition = scipy.random.random(self.dim)
+            startingPosition = random.random(self.dim)
             startingPosition *= (maxs - mins)
             startingPosition += mins
             self.particles.append(Particle(startingPosition, self.minimize))
@@ -87,11 +88,11 @@ class ParticleSwarmOptimizer(ContinuousOptimizer):
         for particle in self.particles:
             bestPosition = self.best(self.neighbours[particle]).position
             diff_social = self.sociality \
-                          * scipy.random.random() \
+                          * random.random() \
                           * (bestPosition - particle.position)
 
             diff_memory = self.memory \
-                          * scipy.random.random() \
+                          * random.random() \
                           * (particle.bestPosition - particle.position)
 
             particle.velocity *= self.inertia

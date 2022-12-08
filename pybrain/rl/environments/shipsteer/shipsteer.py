@@ -1,6 +1,6 @@
 __author__ = 'Martin Felder, felder@in.tum.de'
 
-from scipy import random
+from numpy import random
 from pybrain.tools.networking.udpconnection import UDPServer
 import threading
 from pybrain.utilities import threaded

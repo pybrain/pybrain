@@ -4,7 +4,8 @@ __author__ = 'Frank Sehnke, sehnke@in.tum.de'
 
 from pybrain.rl.environments import EpisodicTask
 from pybrain.rl.environments.ode.sensors import SpecificBodyPositionSensor
-from scipy import tanh, zeros, array, random, sqrt, asarray
+from scipy import tanh, zeros, array, sqrt, asarray
+from numpy import random
 
 
 #Basic class for all ccrl tasks
