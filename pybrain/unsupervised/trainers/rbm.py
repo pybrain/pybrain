@@ -2,8 +2,8 @@ __author__ = ('Christian Osendorfer, osendorf@in.tum.de;'
               'Justin S Bayer, bayerj@in.tum.de'
               'SUN Yi, yi@idsia.ch')
 
-from scipy import random, outer, zeros, ones
-
+from scipy import outer, zeros, ones
+from numpy import random
 from pybrain.datasets import SupervisedDataSet, UnsupervisedDataSet
 from pybrain.supervised.trainers import Trainer
 from pybrain.utilities import abstractMethod

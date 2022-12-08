@@ -16,7 +16,8 @@ from collections import defaultdict
 from heapq import nlargest
 from math import sqrt, log, ceil
 
-from scipy import array, dot, random, ones
+from scipy import array, dot, ones
+from numpy import random
 
 try:
     # Python 2

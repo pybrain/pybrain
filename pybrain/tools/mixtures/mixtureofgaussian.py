@@ -1,7 +1,8 @@
 __author__ = 'Frank Sehnke, sehnke@in.tum.de'
 
 
-from scipy import random, zeros, ones, sqrt, exp, sin, cos, log
+from scipy import zeros, ones, sqrt, exp, sin, cos, log
+from numpy import random
 
 stND = zeros(1000)
 for i in range(1000):
