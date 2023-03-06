@@ -10,7 +10,7 @@ Quick answer: make sure you have SciPy installed, then
 Longer answer: (if the above was any trouble) we keep more
 detailed installation instructions (including those
 for the dependencies) up-to-date in a wiki at:
-	http://wiki.github.com/pybrain/pybrain/installation
+	https://github.com/pybrain/pybrain/wiki/Installation
 
 
 DOCUMENTATION
